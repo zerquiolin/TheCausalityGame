@@ -1,0 +1,68 @@
+{
+    "schema_version": "1.0.0",
+    "id": "template",
+    "scm_spec": {
+        "class": "TheCausalityGame.scm.example:DummySCM",
+        "config": {
+            "nodes": [],
+            "edges": []
+        }
+    },
+    "mission_spec": {
+        "class": "TheCausalityGame.missions.example:GenericPredictionMission",
+        "config": {
+            "mission_kind": "pred_v1",
+            "accepted_deliverables": [
+                "pred_grid_v1",
+                "predict_fn_v1"
+            ]
+        }
+    },
+    "agent_specs": [
+        {
+            "id": "random",
+            "class": "TheCausalityGame.agents.random:RandomAgent",
+            "config": {}
+        }
+    ],
+    "metric_specs": {
+        "behavior": {
+            "id": "rounds",
+            "class": "TheCausalityGame.evaluators.behavior:RoundsUsed",
+            "config": {}
+        },
+        "result": {
+            "id": "mse",
+            "class": "TheCausalityGame.evaluators.regression:MSEMetric",
+            "config": {
+                "supported": [
+                    [
+                        "pred_v1",
+                        "pred_grid_v1"
+                    ],
+                    [
+                        "pred_v1",
+                        "predict_fn_v1"
+                    ]
+                ]
+            }
+        }
+    },
+    "custom_metric_specs": [],
+    "run_plan": {
+        "rounds": 5,
+        "execution": "sequential",
+        "parallel_backend": "thread",
+        "max_workers": null,
+        "budgets": {
+            "time_s": 30,
+            "samples": 5000,
+            "memory_mb": 512
+        }
+    },
+    "seeds": {
+        "global": 123
+    },
+    "hook_plan": [],
+    "artifacts_policy": {}
+}

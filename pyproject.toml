@@ -1,0 +1,53 @@
+[project]
+name = "thecausalitygame"
+version = "0.1.0"
+description = "The Causality Game — foundations (core, tests, infra examples)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Your Org", email = "dev@your.org" }]
+dependencies = [
+  "pydantic>=2.6,<3",
+  "typer>=0.12,<1",
+  "jsonschema>=4.22",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8",
+  "pytest-cov>=5",
+  "ruff>=0.5",
+  "mypy>=1.10",
+  "black>=24.8",
+  "pip-audit>=2.7",
+  "bandit>=1.7",
+]
+
+[project.scripts]
+tcg = "TheCausalityGame.core.cli.main:app"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = ["D","E","F","I","B","UP","SIM","PL","PERF"]
+ignore = ["D104","D105","D107","E501"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_unused_ignores = true
+warn_return_any = true
+exclude = ["^tests/data/"]
+
+[tool.pytest.ini_options]
+addopts = "-q --cov=TheCausalityGame --cov-report=term-missing"

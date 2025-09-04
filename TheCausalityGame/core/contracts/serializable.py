@@ -1,0 +1,41 @@
+"""The Causality Game - Serializable Contract."""
+
+from __future__ import annotations
+
+from abc import ABC, abstractmethod
+from typing import Any, TypeVar
+
+from TheCausalityGame.core.infra.serialization import dumps, loads
+
+T = TypeVar("T", bound="Serializable")
+
+
+class Serializable(ABC):
+    """Abstract base for objects that can be represented as a spec & JSON.
+
+    The canonical spec we use across the framework is:
+        {"class": "<module>:<ClassName>", "config": {...}}
+    """
+
+    @abstractmethod
+    def to_spec(self) -> dict[str, Any]:
+        """Return a canonical spec for this instance."""
+
+    @classmethod
+    @abstractmethod
+    def from_spec(cls: type[T], spec: dict[str, Any]) -> T:
+        """Create an instance from a canonical spec."""
+
+    # ----- JSON helpers (backed by strict JSON) -----
+
+    def to_json(self) -> str:
+        """Strict JSON dump of the canonical spec (for persistence/sharing)."""
+        return dumps(self.to_spec(), ensure_ascii=True, indent=None)
+
+    @classmethod
+    def from_json(cls: type[T], s: str) -> T:
+        """Strict JSON load (for persistence/sharing)."""
+        spec = loads(s)
+        if not isinstance(spec, dict):
+            raise TypeError("JSON must represent an object/spec (dict).")
+        return cls.from_spec(spec)

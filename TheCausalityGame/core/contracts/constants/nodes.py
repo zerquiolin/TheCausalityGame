@@ -1,0 +1,4 @@
+# Node Accessibility
+ACCESSIBILITY_LATENT = "latent"
+ACCESSIBILITY_OBSERVABLE = "observable"
+ACCESSIBILITY_CONTROLLABLE = "controllable"
