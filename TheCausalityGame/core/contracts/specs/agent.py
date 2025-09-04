@@ -1,13 +1,12 @@
 from contracts.types.common import JsonDict
 from pydantic import BaseModel, ConfigDict, Field
 
-from .common import ComponentSpec
-
 
 class AgentSpec(BaseModel):
     """Specification for constructing an agent.
 
-    Attributes:
+    Attributes
+    ----------
         id: Unique agent identifier for the run.
         class_: Import path 'module:Class' (aliased from 'class' in JSON).
         config: Optional agent configuration payload.

@@ -3,8 +3,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Iterable, Optional
-
+from typing import Any
 
 CLASS_PAT = re.compile(r"^[A-Za-z_][\w\.]*(:|\.)[A-Za-z_]\w*$")
 
@@ -27,7 +26,8 @@ class LintIssue:
 class LintPolicy:
     """Policy toggles for linting.
 
-    Attributes:
+    Attributes
+    ----------
         allowed_module_prefixes: if provided, component classes must originate from these module/package prefixes.
         require_metrics: require a metrics section.
         max_rounds: hard upper bound for rounds (0 disables).
@@ -93,7 +93,7 @@ def _validate_component(
 
 
 def lint_manifest(
-    manifest: dict[str, Any], policy: Optional[LintPolicy] = None
+    manifest: dict[str, Any], policy: LintPolicy | None = None
 ) -> tuple[bool, list[LintIssue]]:
     """Return (ok, issues) for a manifest dict given a policy."""
     pol = policy or LintPolicy()

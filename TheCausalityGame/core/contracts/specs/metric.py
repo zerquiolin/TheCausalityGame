@@ -1,4 +1,4 @@
-from typing import Tuple
+
 from contracts.types.common import JsonDict
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -20,4 +20,4 @@ class MetricSpecs(BaseModel):
 
     behavior: MetricSpec
     result: MetricSpec
-    custom: Tuple[MetricSpec, ...] = ()
+    custom: tuple[MetricSpec, ...] = ()

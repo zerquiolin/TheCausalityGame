@@ -19,7 +19,8 @@ from TheCausalityGame.core.contracts.serializable import Serializable
 class AgentContext:
     """Execution context stored on an agent instance.
 
-    Attributes:
+    Attributes
+    ----------
         config: Agent configuration (immutable view).
         manifest_id: Id of the current ProblemInstance.
         agent_id: Id of the running agent.

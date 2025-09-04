@@ -1,18 +1,18 @@
 from contracts.types.common import JsonDict
-
 from pydantic import BaseModel, ConfigDict
 
 from .agent import AgentSpec
+from .hook import HookSpec
 from .metric import MetricSpec, MetricSpecs
 from .run import RunPlan
-from .hook import HookSpec
 from .settings import RuntimeSettingsSpec
 
 
 class ProblemInstanceSpec(BaseModel):
     """Top-level manifest describing a benchmark run.
 
-    Attributes:
+    Attributes
+    ----------
         schema_version: Manifest schema version string.
         id: Run identifier (used as folder name under runs/).
         scm_spec: SCM specification {'class','config'}.

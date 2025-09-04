@@ -13,7 +13,8 @@ class NoiseDistribution(Serializable):
             size (int): The size of the noise to generate.
             random_state (int, optional): Seed for random number generation. Defaults to 911.
 
-        Returns:
+        Returns
+        -------
             float: A generated noise value.
 
         """

@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import logging
 import traceback
+from collections.abc import Callable, Iterable
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass
-from typing import Any, Callable, Iterable, Optional, Type, TypeVar
+from typing import Any, TypeVar
 
 # Import your canonical error classes. If names differ, map below.
 from TheCausalityGame.core.contracts.errors import (
@@ -67,7 +68,7 @@ class UserMessage:
 
 # Stable error codes used across UI, CLI and logs.
 # Keep codes short and immutable; they are part of your public surface.
-_ERROR_MAP: list[tuple[Type[BaseException], str, str, str]] = [
+_ERROR_MAP: list[tuple[type[BaseException], str, str, str]] = [
     # (ExceptionType, code, level, default title)
     (ConfigurationError, "CONFIG_INVALID", "error", "Configuration error"),
     (SerializationError, "SERDE_ERROR", "error", "Serialization error"),
@@ -94,7 +95,7 @@ def format_user_message(
     exc: BaseException,
     *,
     debug: bool = False,
-    context: Optional[dict[str, Any]] = None,
+    context: dict[str, Any] | None = None,
 ) -> UserMessage:
     """Create a safe, user-facing message from an exception.
 
@@ -103,7 +104,8 @@ def format_user_message(
         debug: If True, include a short stack trace in details (for developers).
         context: Optional context labels (agent_id, round_idx, file, etc.).
 
-    Returns:
+    Returns
+    -------
         UserMessage suitable for console/CLI/JSON artifacts.
     """
     code, level, title = _classify(exc)
@@ -129,8 +131,8 @@ def log_exception(
     logger: logging.Logger,
     exc: BaseException,
     *,
-    context: Optional[dict[str, Any]] = None,
-    level_override: Optional[int] = None,
+    context: dict[str, Any] | None = None,
+    level_override: int | None = None,
     debug: bool = False,
 ) -> None:
     """Log an exception in a structured and consistent way."""
@@ -150,7 +152,7 @@ def log_exception(
 
 
 def emit_hook(
-    emitter: Optional[Callable[[str, dict[str, Any]], None]],
+    emitter: Callable[[str, dict[str, Any]], None] | None,
     event: str,
     data: dict[str, Any],
 ) -> None:
@@ -172,11 +174,11 @@ F = TypeVar("F", bound=Callable[..., Any])
 def catch_errors(
     *,
     logger: logging.Logger,
-    user_notify: Optional[Callable[[UserMessage], None]] = None,
-    hook_emitter: Optional[Callable[[str, dict[str, Any]], None]] = None,
+    user_notify: Callable[[UserMessage], None] | None = None,
+    hook_emitter: Callable[[str, dict[str, Any]], None] | None = None,
     debug: bool = False,
     reraise: bool = False,
-    context_provider: Optional[Callable[[], dict[str, Any]]] = None,
+    context_provider: Callable[[], dict[str, Any]] | None = None,
 ) -> Callable[[F], F]:
     """Decorator to catch, log, emit hook, and surface a user message.
 
@@ -213,11 +215,11 @@ def catch_errors(
 def error_boundary(
     *,
     logger: logging.Logger,
-    user_notify: Optional[Callable[[UserMessage], None]] = None,
-    hook_emitter: Optional[Callable[[str, dict[str, Any]], None]] = None,
+    user_notify: Callable[[UserMessage], None] | None = None,
+    hook_emitter: Callable[[str, dict[str, Any]], None] | None = None,
     debug: bool = False,
     reraise: bool = False,
-    context: Optional[dict[str, Any]] = None,
+    context: dict[str, Any] | None = None,
 ) -> Iterable[None]:
     """Context manager variant of catch_errors for ad-hoc blocks."""
     try:

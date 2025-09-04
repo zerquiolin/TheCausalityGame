@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 
 @dataclass(frozen=True, slots=True)
@@ -13,18 +13,18 @@ class GameInstance:
     base_seed: int
     scm: ComponentSpec
     mission: ComponentSpec
-    metrics: Optional[MetricsSpecModel]
-    agents: Tuple[AgentSpecModel, ...]
+    metrics: MetricsSpecModel | None
+    agents: tuple[AgentSpecModel, ...]
     run_plan: RunPlan
 
     @staticmethod
-    def from_manifest(m: Dict[str, Any]) -> "GameInstance":
+    def from_manifest(m: dict[str, Any]) -> GameInstance:
         """Build a GameInstance from a plain dict (manifest JSON)."""
 
-        def as_comp(d: Dict[str, Any]) -> ComponentSpec:
+        def as_comp(d: dict[str, Any]) -> ComponentSpec:
             return ComponentSpec(cls=d["class"], params=d.get("params", {}) or {})
 
-        def as_agent(d: Dict[str, Any]) -> AgentSpecModel:
+        def as_agent(d: dict[str, Any]) -> AgentSpecModel:
             return AgentSpecModel(id=d["id"], component=as_comp(d))
 
         metrics = None

@@ -1,4 +1,5 @@
 from typing import Literal
+
 from pydantic import BaseModel, ConfigDict, Field
 
 from .budget import BudgetSpec
@@ -10,7 +11,8 @@ class RunPlan(BaseModel):
     Runs are performed in isolated environments per agent. Execution can be
     sequential (one agent after the other) or parallel (concurrently).
 
-    Attributes:
+    Attributes
+    ----------
         rounds: Number of rounds per agent.
         execution: 'sequential' or 'parallel'.
         parallel_backend: 'thread' for I/O-bound or 'process' for CPU-bound runs.

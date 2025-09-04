@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-from typing import List
 
 from TheCausalityGame.core.infra import RuntimeSettings, configure_logging, get_logger
 
@@ -11,7 +10,7 @@ class ListHandler(logging.Handler):
 
     def __init__(self, level: int = logging.NOTSET) -> None:
         super().__init__(level)
-        self.records: List[logging.LogRecord] = []
+        self.records: list[logging.LogRecord] = []
 
     def emit(self, record: logging.LogRecord) -> None:  # noqa: D401
         self.records.append(record)

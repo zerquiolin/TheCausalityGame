@@ -19,7 +19,7 @@ class RuntimeSettings:
         mode: str | None = None,
         debug: bool | None = None,
         trusted: bool | None = None,
-    ) -> "RuntimeSettings":
+    ) -> RuntimeSettings:
         # environment overrides (prefixed to avoid collisions)
         env_mode = os.getenv("TCG_MODE")
         env_debug = os.getenv("TCG_DEBUG")

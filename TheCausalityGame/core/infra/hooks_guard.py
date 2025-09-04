@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Protocol
+from typing import Any, Protocol
 
 from TheCausalityGame.core.contracts.enums import HookEvent
 from TheCausalityGame.core.infra.security import (
-    TrustError,
     assert_no_callables,
     ensure_json_safe,
 )

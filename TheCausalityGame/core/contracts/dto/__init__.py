@@ -6,7 +6,6 @@ from .rounds import RoundInfo
 from .samples import Samples, SamplesBatch
 from .transcript import TranscriptEntry
 
-
 __all__ = [
     "RoundInfo",
     "ExperimentSpace",

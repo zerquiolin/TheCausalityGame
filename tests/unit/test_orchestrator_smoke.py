@@ -5,14 +5,13 @@ from typing import Any
 
 import pytest
 
-from TheCausalityGame.core.contracts.agent import BaseAgent, AgentContext
+from TheCausalityGame.core.contracts.agent import AgentContext, BaseAgent
 from TheCausalityGame.core.contracts.decisions import SubmitFinal
 from TheCausalityGame.core.contracts.deliverables import DataDeliverable
 from TheCausalityGame.core.contracts.dto import MetricScore, ProblemInstance
 from TheCausalityGame.core.infra.serialization import loads
 from TheCausalityGame.core.infra.settings import RuntimeSettings
 from TheCausalityGame.core.runtime.orchestrator import run_all_agents
-
 
 # ---- Inline dummy runtime pieces (kept inside the test module) ----
 

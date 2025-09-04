@@ -2,8 +2,6 @@
 import logging
 
 # Typing
-from typing import Optional
-
 # Graph
 import networkx as nx
 import numpy as np
@@ -36,7 +34,8 @@ class SCM(Serializable):
     a data generation function. The nodes are evaluated in topological order of the DAG, respecting
     causal dependencies.
 
-    Attributes:
+    Attributes
+    ----------
         dag (DAG): The underlying directed acyclic graph defining variable dependencies.
         nodes (List[EquationBasedNumericalSCMNode | EquationBasedCategoricalSCMNode]): List of nodes in topological order.
         random_state (np.random.RandomState): Random number generator for reproducibility.
@@ -46,7 +45,7 @@ class SCM(Serializable):
         self,
         dag: DAG,
         nodes: list[SCMNode],
-        random_state: Optional[np.random.RandomState],
+        random_state: np.random.RandomState | None,
         logger: logging.Logger = None,
         name=None,
     ):
@@ -114,7 +113,8 @@ class SCM(Serializable):
         """
         Returns a list of leaf variables in the SCM, which are nodes with no outgoing edges.
 
-        Returns:
+        Returns
+        -------
             List[str]: A list of leaf variable names.
         """
         return [n for n in self.vars if self.dag.graph.out_degree(n) == 0]
@@ -123,7 +123,8 @@ class SCM(Serializable):
         """
         Returns the SCM's random number generator.
 
-        Returns:
+        Returns
+        -------
             np.random.RandomState: The random generator used for sampling.
         """
         return self.random_state
@@ -146,7 +147,7 @@ class SCM(Serializable):
         interventions: dict[str, float] = {},
         num_samples: int = 1,
         cancel_noise: bool = False,
-        random_state: Optional[dict[str, np.random.RandomState]] = None,
+        random_state: dict[str, np.random.RandomState] | None = None,
     ) -> list[dict[str, float]]:
         """
         Generates multiple samples from the SCM.
@@ -156,7 +157,8 @@ class SCM(Serializable):
             num_samples (int): Number of samples to generate.
             random_state (np.random.RandomState, optional): Optional random generator for reproducibility.
 
-        Returns:
+        Returns
+        -------
             List[Dict[str, float]]: A list of sample dictionaries.
         """
         random_states = random_state or {v: self.random_state for v in self.vars}
@@ -189,7 +191,8 @@ class SCM(Serializable):
         """
         Serializes the SCM to a dictionary format.
 
-        Returns:
+        Returns
+        -------
             Dict: A dictionary representing the SCM's structure and state.
         """
         # Serialize nodes and their parameters
@@ -211,7 +214,8 @@ class SCM(Serializable):
         Args:
             data (Dict): Dictionary containing SCM structure and state.
 
-        Returns:
+        Returns
+        -------
             SCM: A new SCM instance.
         """
         if "class" in data and data["class"] not in [__class__.__name__]:
@@ -234,14 +238,14 @@ class SCM(Serializable):
             data["vars"], key=lambda n: topological_order.index(n["name"])
         ):
             # extract parents from edges if they are not explicitly given
-            if not "parents" in node_as_dict:
+            if "parents" not in node_as_dict:
                 node_as_dict["parents"] = [
                     e[0] for e in edges if e[1] == node_as_dict["name"]
                 ]
 
             # Generate parent mappings if not provided
             if (
-                not "parent_mappings" in node_as_dict
+                "parent_mappings" not in node_as_dict
                 or not node_as_dict["parent_mappings"]
             ):
                 node_as_dict["parent_mappings"] = {

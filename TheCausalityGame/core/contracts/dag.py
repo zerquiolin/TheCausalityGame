@@ -1,5 +1,5 @@
 # Abstract
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 # Typing
 from typing import Any
@@ -25,7 +25,8 @@ class DAG(Serializable):
         """
         Returns a list of nodes in the DAG.
 
-        Returns:
+        Returns
+        -------
             List[Any]: A list of node identifiers.
         """
         return list(self.graph.nodes())
@@ -35,7 +36,8 @@ class DAG(Serializable):
         """
         Returns a list of edges in the DAG.
 
-        Returns:
+        Returns
+        -------
             List[Tuple[Any, Any]]: A list of (source, target) edge tuples.
         """
         return list(self.graph.edges())
@@ -47,7 +49,8 @@ class DAG(Serializable):
         Args:
             node (Any): The node whose parents are to be retrieved.
 
-        Returns:
+        Returns
+        -------
             List[Any]: A list of parent nodes.
         """
         return list(self.graph.predecessors(node))
@@ -57,7 +60,8 @@ class DAG(Serializable):
         Categorizes nodes in the DAG as roots (no incoming edges),
         leaves (no outgoing edges), or intermediates (both in and out).
 
-        Returns:
+        Returns
+        -------
             Tuple[List[Any], List[Any], List[Any]]: Lists of roots, leaves, and intermediates.
         """
         roots, leaves, intermediates = [], [], []
@@ -74,7 +78,8 @@ class DAG(Serializable):
         """
         Constructs a dictionary mapping each node to its list of parent nodes.
 
-        Returns:
+        Returns
+        -------
             Dict[Any, List[Any]]: A mapping of each node to its parents.
         """
         return {node: self.get_parents(node) for node in self.graph.nodes()}

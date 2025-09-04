@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import sys
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
-from typing import Any, Callable, Mapping, Tuple, List, Dict, Optional
+from typing import Any
 
 from TheCausalityGame.core.contracts.agent import BaseAgent
 from TheCausalityGame.core.contracts.decisions import Decision
@@ -49,7 +50,7 @@ class Environment:
 
     scm: Any
     mission: Any
-    metrics: Optional[MetricsEvaluator] = None
+    metrics: MetricsEvaluator | None = None
 
     def __post_init__(self) -> None:
         if hasattr(self.mission, "mount"):
@@ -284,12 +285,11 @@ class Environment:
         trusted: bool,
         round_index: int,
         available: AvailableActions,
-    ) -> Tuple[Action, ActionOutcome, Observation, int, int]:
+    ) -> tuple[Action, ActionOutcome, Observation, int, int]:
         """Apply a Decision and return (Action, Outcome, Observation, rows_generated, bytes_generated)."""
-
         if decision.is_experiment:
-            samples_list: List[Samples] = []
-            intervention_keys: List[str] = []
+            samples_list: list[Samples] = []
+            intervention_keys: list[str] = []
             total_rows = 0
             total_bytes = 0
 
@@ -385,7 +385,7 @@ class Environment:
 
     # -------------------- memory estimation --------------------
 
-    def _estimate_dataset_bytes(self, ds: Mapping[str, List[Any]] | Any) -> int:
+    def _estimate_dataset_bytes(self, ds: Mapping[str, list[Any]] | Any) -> int:
         """Best-effort, fast approximation of a columnar dataset's memory footprint.
 
         For numpy/pandas outputs, override this method and use `.nbytes` or

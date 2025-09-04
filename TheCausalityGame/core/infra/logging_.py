@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import logging
 import sys
-from typing import Any, Mapping
+from typing import Any
 
 
 def _json(msg: str, **fields: Any) -> str:

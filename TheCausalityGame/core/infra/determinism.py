@@ -40,7 +40,8 @@ def hash_intervention_key(
         n: number of requested samples.
         extra: optional bag (e.g., mission/scm ids/versions).
 
-    Returns:
+    Returns
+    -------
         128-character hex string (blake2b-512).
     """
     payload = {
@@ -68,7 +69,8 @@ def make_intervention_seed(
 ) -> int:
     """Derive a 32-bit RNG seed from the intervention key.
 
-    Returns:
+    Returns
+    -------
         Integer in [0, 2**32-2] suitable for numpy/random seeding.
     """
     hex_digest = hash_intervention_key(

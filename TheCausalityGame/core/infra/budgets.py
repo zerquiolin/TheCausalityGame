@@ -2,14 +2,14 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass, field
-from typing import Optional
 
 
 @dataclass(slots=True)
 class BudgetState:
     """Mutable runtime budget state.
 
-    Attributes:
+    Attributes
+    ----------
         hard_round_limit: Maximum number of rounds allowed.
         time_limit_s: Optional wall-clock time limit (seconds).
         sample_limit: Optional cap on cumulative samples generated.
@@ -21,9 +21,9 @@ class BudgetState:
     """
 
     hard_round_limit: int
-    time_limit_s: Optional[float] = None
-    sample_limit: Optional[int] = None
-    memory_mb_limit: Optional[float] = None
+    time_limit_s: float | None = None
+    sample_limit: int | None = None
+    memory_mb_limit: float | None = None
 
     # live counters
     rounds_used: int = 0
@@ -38,7 +38,7 @@ class BudgetState:
         """Return seconds elapsed since state creation."""
         return time.perf_counter() - self._t0
 
-    def seconds_left(self) -> Optional[float]:
+    def seconds_left(self) -> float | None:
         """Return seconds left (None if unlimited)."""
         if self.time_limit_s is None:
             return None
@@ -48,13 +48,13 @@ class BudgetState:
         """Return remaining rounds (non-negative)."""
         return max(0, self.hard_round_limit - self.rounds_used)
 
-    def samples_left(self) -> Optional[int]:
+    def samples_left(self) -> int | None:
         """Return remaining sample allowance (None if unlimited)."""
         if self.sample_limit is None:
             return None
         return max(0, self.sample_limit - self.samples_used)
 
-    def memory_mb_left(self) -> Optional[float]:
+    def memory_mb_left(self) -> float | None:
         """Return remaining memory allowance in MB (None if unlimited)."""
         if self.memory_mb_limit is None:
             return None

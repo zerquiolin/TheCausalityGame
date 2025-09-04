@@ -4,23 +4,25 @@ from __future__ import annotations
 
 import importlib
 import importlib.metadata as im
-from typing import Any, Type
+from typing import Any
 
 from ..contracts.errors import LoadError
 
 _ALLOWLIST = ("TheCausalityGame.",)
 
 
-def load_class(class_path: str) -> Type[Any]:
+def load_class(class_path: str) -> type[Any]:
     """Load a class with `module:Class` syntax and allow-list enforcement.
 
     Args:
       class_path: Fully qualified string.
 
-    Returns:
+    Returns
+    -------
       A class object.
 
-    Raises:
+    Raises
+    ------
       LoadError: If path is malformed, disallowed, or import fails.
     """
     try:

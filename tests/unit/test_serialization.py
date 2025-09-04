@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
@@ -8,7 +7,7 @@ from typing import Any
 
 import pytest
 
-from TheCausalityGame.core.infra.serialization import dumps, loads, get_class_path
+from TheCausalityGame.core.infra.serialization import dumps, get_class_path, loads
 
 
 @dataclass

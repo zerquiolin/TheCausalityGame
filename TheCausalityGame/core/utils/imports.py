@@ -1,10 +1,9 @@
 # Utils
-import sys
-import inspect
 import importlib
+import inspect
+import sys
 
 # Types
-from typing import Type
 
 
 def get_class(fqcn: str):
@@ -15,7 +14,7 @@ def get_class(fqcn: str):
     return getattr(mod, class_name)
 
 
-def find_importable_classes(folder_route: str, base_class: Type) -> dict[str, Type]:
+def find_importable_classes(folder_route: str, base_class: type) -> dict[str, type]:
     """
     Recursively scan the given folder for Python modules and return all classes
     that are subclasses of `base_class`, mapping class names to class objects.
@@ -24,7 +23,8 @@ def find_importable_classes(folder_route: str, base_class: Type) -> dict[str, Ty
         folder_route (str): Path to the folder (e.g., 'causalitygame/missions').
         base_class (Type): The base class to filter by.
 
-    Returns:
+    Returns
+    -------
         dict[str, Type]: A dictionary mapping class names to discovered class types.
     """
     import pathlib

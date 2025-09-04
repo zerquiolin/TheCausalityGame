@@ -19,7 +19,8 @@ from typing import Any
 class CallableRef:
     """JSON-safe reference to rebuild a callable later (no pickled code).
 
-    Attributes:
+    Attributes
+    ----------
       class_path: Fully-qualified 'module:Class' for reconstruction.
       config: JSON-serializable kwargs for the constructor.
     """
@@ -32,7 +33,8 @@ class CallableRef:
 class DataDeliverable:
     """Data deliverable (portable artifact).
 
-    Attributes:
+    Attributes
+    ----------
       schema_id: Mission-defined identifier for the JSON/JSONL schema (e.g., 'pred_grid_v1').
       path: Path to the artifact under the run directory.
       schema_version: Optional version string for the schema itself.
@@ -47,7 +49,8 @@ class DataDeliverable:
 class CallableDeliverable:
     """Callable deliverable (dev/trusted mode only).
 
-    Attributes:
+    Attributes
+    ----------
       protocol_id: Mission-defined identifier for the protocol (e.g., 'predict_fn_v1').
       obj: Live Python object used NOW in trusted mode (implements that protocol).
       ref: JSON-safe reference for later reconstruction (no pickling).
@@ -62,7 +65,8 @@ class CallableDeliverable:
 class DeliverableHandle:
     """Internal envelope after mission validation.
 
-    Attributes:
+    Attributes
+    ----------
       kind: Mission-defined deliverable kind identifier (schema_id or protocol_id).
       manifest: JSON-safe dict persisted to transcripts (e.g., {'deliverable_type': ..., ...}).
       in_memory: Optional live object usable at runtime (callables in trusted mode).

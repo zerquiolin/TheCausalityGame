@@ -4,7 +4,8 @@ from pydantic import BaseModel, ConfigDict, Field
 class BudgetSpec(BaseModel):
     """Resource budgets applied per agent run.
 
-    Attributes:
+    Attributes
+    ----------
         time_s: Optional wall-clock time budget in seconds.
         samples: Optional maximum number of samples the agent may request.
         memory_mb: Optional advisory memory budget in megabytes.

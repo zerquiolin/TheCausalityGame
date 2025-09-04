@@ -3,9 +3,10 @@ from __future__ import annotations
 import dataclasses as _dc
 import datetime as _dt
 import json
+from collections.abc import Mapping
 from enum import Enum
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
 from pydantic import BaseModel
 

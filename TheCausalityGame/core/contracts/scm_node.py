@@ -2,7 +2,7 @@
 
 import logging
 from abc import abstractmethod
-from typing import Callable
+from collections.abc import Callable
 
 import numpy as np
 import pandas as pd
@@ -70,14 +70,15 @@ class SCMNode(Serializable):
 
     def prepare_new_random_state_structure(self, random_state):
         """
-            generates a random structure that is required by this node. By default, this is just a simple RandomState.
+            Generates a random structure that is required by this node. By default, this is just a simple RandomState.
             However, if need be and keeping in mind reproducibility, it can be useful to generate several such objects
             so that several random things can be determined for multiple sampled instances in parallel, e.g., noise and category or so.
 
         Args:
             random_state (_type_): _description_
 
-        Returns:
+        Returns
+        -------
             _type_: _description_
         """
         return np.random.RandomState(random_state.randint(0, 10**5))
@@ -93,7 +94,8 @@ class SCMNode(Serializable):
             parent_values (dict): A dictionary of parent node values.
             random_state (np.random.RandomState): Random state for generating random values.
 
-        Returns:
+        Returns
+        -------
             float | str: The generated value for the node.
         """
         raise NotImplementedError("Subclasses must implement this method.")

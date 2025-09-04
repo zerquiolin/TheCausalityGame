@@ -1,22 +1,25 @@
 from __future__ import annotations
 
 import importlib
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Tuple
+from typing import Any
 
+from TheCausalityGame.core.contracts.agent import BaseAgent
 from TheCausalityGame.core.engine.evaluator import (
     MetricsEvaluator,
+)
+from TheCausalityGame.core.engine.evaluator import (
     MetricsSpec as MetricsBundle,
 )
 from TheCausalityGame.core.runtime.game_instance import (
-    GameInstance,
-    ComponentSpec,
-    MetricsSpecModel,
     AgentSpecModel,
+    ComponentSpec,
+    GameInstance,
+    MetricsSpecModel,
 )
 from TheCausalityGame.core.runtime.orchestrator import Orchestrator, RunMode
-from TheCausalityGame.core.contracts.agent import BaseAgent
 
 
 # TODO: This method already exists in the registry module.
@@ -37,7 +40,7 @@ def _instantiate(spec: ComponentSpec) -> Any:
 
 
 # TODO: This is also a requirement in the metric classes, should implement an abstract class like 'from_spec" or similar.
-def _make_metrics(m: Optional[MetricsSpecModel]) -> Optional[MetricsEvaluator]:
+def _make_metrics(m: MetricsSpecModel | None) -> MetricsEvaluator | None:
     if not m:
         return None
     behavior = _instantiate(m.behavior)
@@ -71,13 +74,13 @@ class Game:
     def _make_orchestrator(self) -> Orchestrator:
         mi = self.instance
 
-        def build_scm(_manifest: Dict[str, Any]) -> Any:
+        def build_scm(_manifest: dict[str, Any]) -> Any:
             return _instantiate(mi.scm)
 
-        def build_mission(_manifest: Dict[str, Any]) -> Any:
+        def build_mission(_manifest: dict[str, Any]) -> Any:
             return _instantiate(mi.mission)
 
-        def build_metrics(_manifest: Dict[str, Any]) -> Optional[MetricsEvaluator]:
+        def build_metrics(_manifest: dict[str, Any]) -> MetricsEvaluator | None:
             return _make_metrics(mi.metrics)
 
         return Orchestrator(
@@ -88,7 +91,7 @@ class Game:
             max_parallel_workers=mi.run_plan.max_parallel_workers,
         )
 
-    def run(self) -> Dict[str, Dict[str, Any]]:
+    def run(self) -> dict[str, dict[str, Any]]:
         """Run all agents per the instance's RunPlan and return summaries per agent."""
         orch = self._make_orchestrator()
         agents = tuple(_agent_factory_from_spec(a) for a in self.instance.agents)

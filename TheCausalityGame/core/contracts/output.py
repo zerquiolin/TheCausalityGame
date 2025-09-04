@@ -34,7 +34,8 @@ class Output(JSONSerializable, Protocol):
           datasets_dir: Path to datasets directory.
           config: Optional output-specific configuration.
 
-        Returns:
+        Returns
+        -------
           A list of emitted file paths.
         """
         ...

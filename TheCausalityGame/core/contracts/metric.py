@@ -29,7 +29,8 @@ class Metric(Serializable):
     ) -> float:
         """Compute a score for this run.
 
-        Returns:
+        Returns
+        -------
             float score value.
 
         """
@@ -43,7 +44,8 @@ class BehaviorMetric(Metric):
     def evaluate(self, transcript: Transcript) -> float:
         """Compute a score for this run.
 
-        Returns:
+        Returns
+        -------
             float score value.
 
         """
@@ -57,7 +59,8 @@ class ResultMetric(Metric):
     def evaluate(self, result: Any) -> float:
         """Compute a score for this run.
 
-        Returns:
+        Returns
+        -------
             float score value.
 
         """

@@ -1,4 +1,5 @@
 from typing import Literal
+
 from contracts.types.common import JsonDict
 from pydantic import BaseModel, ConfigDict
 
@@ -6,7 +7,8 @@ from pydantic import BaseModel, ConfigDict
 class HookSpec(BaseModel):
     """Specification for a runtime hook subscription.
 
-    Attributes:
+    Attributes
+    ----------
         id: Logical identifier for the hook subscription.
         class_path: Import path for a hook object implementing __call__(event,payload).
         entry_point: Alternative import path (kept for compatibility).

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any
 
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from .actions import Action, Observation
 
@@ -45,6 +45,6 @@ class Transcript(BaseModel):
     agent_id: str
     mission_id: str
 
-    metadata: Dict[str, Any] = Field(default_factory=dict)
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
     steps: list[TranscriptEntry] = Field(default_factory=list)

@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+from collections.abc import Callable, Iterable
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
-from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Iterable, Optional
+from typing import Any
+
+from contracts.enum.run import RunMode
 
 from TheCausalityGame.core.contracts.agent import AgentContext, BaseAgent
 from TheCausalityGame.core.contracts.dto import TranscriptEntry
@@ -14,15 +16,12 @@ from TheCausalityGame.core.engine.evaluator import MetricsEvaluator
 from TheCausalityGame.core.infra.logging_ import get_logger
 from TheCausalityGame.core.infra.serialization import jsonl_write
 
-from contracts.enum.run import RunMode
-
-
 HookEmit = Callable[[HookEvent, dict[str, Any]], None]
 WriteStep = Callable[[TranscriptEntry], None]
 
 BuildSCM = Callable[[dict[str, Any]], Any]
 BuildMission = Callable[[dict[str, Any]], Any]
-BuildMetrics = Callable[[dict[str, Any]], Optional[MetricsEvaluator]]
+BuildMetrics = Callable[[dict[str, Any]], MetricsEvaluator | None]
 BuildAgent = Callable[[dict[str, Any]], BaseAgent]
 
 
@@ -38,11 +37,11 @@ class Orchestrator:
     run_dir: Path
     build_scm: BuildSCM
     build_mission: BuildMission
-    build_metrics: Optional[BuildMetrics] = None
+    build_metrics: BuildMetrics | None = None
 
     # Optional dependencies
     hook_emit: HookEmit = field(default=lambda *_: None)
-    write_step: Optional[WriteStep] = None
+    write_step: WriteStep | None = None
 
     # Parallel clamp
     max_parallel_workers: int = 0  # 0/None => choose sensibly at runtime
@@ -86,7 +85,7 @@ class Orchestrator:
         time_limit_s: float | None = None,
         sample_limit: int | None = None,
         memory_mb_limit: float | None = None,
-        game_scenario: Optional[dict[str, Any]] = None,
+        game_scenario: dict[str, Any] | None = None,
         base_seed: int = 0,
     ) -> dict[str, Any]:
         """Run ONE agent to completion against a fresh Environment."""
@@ -199,7 +198,7 @@ class Orchestrator:
                 )
 
             # IMPORTANT: recover by agent_id order if desired; here we map by the same order
-            for fut, (agent_id, _) in zip(as_completed(futures), agents):
+            for fut, (agent_id, _) in zip(as_completed(futures), agents, strict=False):
                 try:
                     results[agent_id] = fut.result()
                 except Exception as e:  # pragma: no cover (rare paths)

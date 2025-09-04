@@ -45,7 +45,8 @@ class Mission(Serializable):
         Args:
             transcript (Transcript): Transcript containing the history of actions and observations.
 
-        Returns:
+        Returns
+        -------
             dict: Evaluation results.
 
         """

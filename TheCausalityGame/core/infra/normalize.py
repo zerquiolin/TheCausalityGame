@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Tuple
+from typing import Any
 
 from TheCausalityGame.core.contracts.decisions import (
     AgentDecision,
@@ -43,7 +43,7 @@ def _payload_from_deliverable(deliv: Any, *, trusted: bool) -> dict[str, Any]:
 
 def decision_to_action(
     decision: AgentDecision, *, trusted: bool
-) -> Tuple[Action, dict[str, Any]]:
+) -> tuple[Action, dict[str, Any]]:
     """Convert a typed AgentDecision to (JSON-safe Action, raw payload).
 
     The Action is what we persist (transcripts). The raw payload is passed to
