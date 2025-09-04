@@ -192,7 +192,7 @@ def catch_errors(
             context = context_provider() if context_provider else {}
             try:
                 return fn(*args, **kwargs)
-            except BaseException as exc:  # noqa: BLE001
+            except BaseException as exc:
                 log_exception(logger, exc, context=context, debug=debug)
                 msg = format_user_message(exc, debug=debug, context=context)
                 emit_hook(
@@ -224,7 +224,7 @@ def error_boundary(
     """Context manager variant of catch_errors for ad-hoc blocks."""
     try:
         yield
-    except BaseException as exc:  # noqa: BLE001
+    except BaseException as exc:
         log_exception(logger, exc, context=context, debug=debug)
         msg = format_user_message(exc, debug=debug, context=context)
         emit_hook(

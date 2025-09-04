@@ -161,9 +161,9 @@ class SCM(Serializable):
         -------
             List[Dict[str, float]]: A list of sample dictionaries.
         """
-        random_states = random_state or {v: self.random_state for v in self.vars}
+        random_states = random_state or dict.fromkeys(self.vars, self.random_state)
         if not isinstance(random_states, dict):
-            random_states = {v: random_states for v in self.vars}
+            random_states = dict.fromkeys(self.vars, random_states)
         sample = pd.DataFrame(index=range(num_samples))
 
         for node_name, node in [

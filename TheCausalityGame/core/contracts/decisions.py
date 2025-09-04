@@ -5,7 +5,7 @@ from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field, replace
 from typing import Any, Literal, Union
 
-__all__ = ["ExperimentSpec", "Decision", "ExperimentLike"]
+__all__ = ["Decision", "ExperimentLike", "ExperimentSpec"]
 
 
 @dataclass(frozen=True, slots=True)

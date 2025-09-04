@@ -27,7 +27,7 @@ def load_class(class_path: str) -> type[Any]:
     """
     try:
         pkg, cls = class_path.split(":")
-    except ValueError as e:  # noqa: PERF203
+    except ValueError as e:
         raise LoadError(
             f"invalid class path '{class_path}', expected 'module:Class'"
         ) from e
@@ -36,7 +36,7 @@ def load_class(class_path: str) -> type[Any]:
     try:
         mod = importlib.import_module(pkg)
         return getattr(mod, cls)
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         raise LoadError(f"failed to import '{class_path}': {e}") from e
 
 

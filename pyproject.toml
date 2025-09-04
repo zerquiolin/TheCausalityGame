@@ -36,7 +36,7 @@ where = ["src"]
 [tool.ruff]
 line-length = 100
 target-version = "py310"
-select = ["D","E","F","I","B","UP","SIM","PL","PERF"]
+select = ["RUF","ARG","C4","BLE","TRY","ANN","N","D","E","F","I","B","UP","SIM","PL","PERF", "NPY"]
 ignore = ["D104","D105","D107","E501"]
 
 [tool.ruff.lint.pydocstyle]
@@ -48,6 +48,7 @@ strict = true
 warn_unused_ignores = true
 warn_return_any = true
 exclude = ["^tests/data/"]
+plugins = ["pydantic.mypy"]
 
 [tool.pytest.ini_options]
 addopts = "-q --cov=TheCausalityGame --cov-report=term-missing"

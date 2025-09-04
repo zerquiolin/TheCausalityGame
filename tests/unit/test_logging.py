@@ -12,7 +12,7 @@ class ListHandler(logging.Handler):
         super().__init__(level)
         self.records: list[logging.LogRecord] = []
 
-    def emit(self, record: logging.LogRecord) -> None:  # noqa: D401
+    def emit(self, record: logging.LogRecord) -> None:
         self.records.append(record)
 
 
