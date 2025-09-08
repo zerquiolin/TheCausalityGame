@@ -3,10 +3,14 @@
 from __future__ import annotations
 
 import importlib
-import importlib.metadata as im
+import inspect
+import json
 from typing import Any
 
-from ..contracts.errors import LoadError
+from pydantic import BaseModel
+
+from TheCausalityGame.core.contracts.errors import LoadError
+from TheCausalityGame.core.contracts.serializable import Serializable
 
 _ALLOWLIST = ("TheCausalityGame.",)
 
@@ -40,23 +44,60 @@ def load_class(class_path: str) -> type[Any]:
         raise LoadError(f"failed to import '{class_path}': {e}") from e
 
 
-def load_entry_point(group: str, name: str) -> Any:
-    """Load a Python entry point."""
-    eps = im.entry_points().select(group=group, name=name)
-    if not eps:
-        raise LoadError(f"entry point not found: {group}:{name}")
-    return eps[0].load()
+def get_class_path(obj_or_class: Any) -> str:
+    """Return 'module:Class' for a class or instance."""
+    if isinstance(obj_or_class, str):
+        if ":" in obj_or_class:
+            return obj_or_class
+        raise ValueError("String must be in 'module:Class' form, e.g. 'pkg.mod:Type'.")
+    cls = obj_or_class if isinstance(obj_or_class, type) else type(obj_or_class)
+    module = getattr(cls, "__module__", None)
+    name = getattr(cls, "__name__", None)
+    if not module or not name:
+        raise TypeError(f"Cannot derive class path from {obj_or_class!r}")
+    if module.startswith("pathlib._"):
+        module = "pathlib"
+    return f"{module}:{name}"
 
 
-def build_from_spec(spec: dict) -> Any:
-    """Instantiate from a spec dict.
+def build_from_spec(spec: BaseModel | dict[str, Any] | str):
+    """Instantiate an object from a spec mapping or JSON string.
 
-    Spec shape:
-      { "class": "TheCausalityGame.mod:Class", "config": {...} }
-      or { "class": "...:Class", "params": {...} }
+    The spec must include a class path under 'class_' (preferred) or 'class'.
     """
-    if "class" not in spec:
-        raise LoadError("spec missing 'class'")
-    cls = load_class(spec["class"])
-    kwargs = spec.get("config") or spec.get("params") or {}
-    return cls(**kwargs)
+    # Check for an spec instance class
+    if isinstance(spec, BaseModel):
+        cls = load_class(spec.class_)
+        return cls.from_spec(spec)
+
+    # Check for a JSON string
+    if isinstance(spec, str):
+        try:
+            spec = json.loads(spec)
+        except json.JSONDecodeError as e:
+            raise LoadError(f"failed to parse spec: {e}") from e
+
+    # Check for a dictionary
+    if not isinstance(spec, dict):
+        raise LoadError("spec is not a valid format")
+
+    class_path = spec.get("class_") or spec.get("class")
+    spec_path = spec.get("spec_") or spec.get("spec")
+
+    if not class_path:
+        raise LoadError("spec must contain a 'class_' (or 'class') key")
+
+    if not spec_path:
+        raise LoadError("spec must contain a 'spec_' (or 'spec') key")
+
+    cls = load_class(class_path)  # validate class
+    spc = load_class(spec_path)  # validate spec
+
+    from_spec = getattr(cls, "from_spec", None)
+    if not callable(from_spec):
+        raise LoadError(f"'{class_path}' does not implement a 'from_spec' classmethod")
+
+    # Create Spec class
+    spec = spc(**spec)
+
+    return from_spec(spec)

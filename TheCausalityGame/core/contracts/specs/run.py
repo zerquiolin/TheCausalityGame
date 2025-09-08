@@ -5,7 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from .budget import BudgetSpec
 
 
-class RunPlan(BaseModel):
+class RunPlanSpec(BaseModel):
     """Execution policy for agent runs.
 
     Runs are performed in isolated environments per agent. Execution can be
@@ -22,8 +22,19 @@ class RunPlan(BaseModel):
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    rounds: int = Field(ge=1)
-    execution: Literal["sequential", "parallel"] = "sequential"
-    parallel_backend: Literal["thread", "process"] = "thread"
-    max_workers: int | None = Field(default=None, ge=1)
-    budgets: BudgetSpec = Field(default_factory=BudgetSpec)
+    rounds: int = Field(ge=1, description="Number of rounds per agent.")
+    execution: Literal["sequential", "parallel"] = Field(
+        default="sequential", description="Execution strategy for multiple agents."
+    )
+    parallel_backend: Literal["thread", "process"] = Field(
+        default="thread",
+        description="Parallel backend for parallel execution strategy.",
+    )
+    max_workers: int | None = Field(
+        default=None,
+        ge=1,
+        description="Maximum number of parallel workers; None for auto.",
+    )
+    budgets: BudgetSpec = Field(
+        default_factory=BudgetSpec, description="Resource budgets per agent run."
+    )

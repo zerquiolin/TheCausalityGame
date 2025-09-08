@@ -3,3 +3,8 @@ numpy
 pandas
 networkx
 sympy
+ruff
+pytest
+pytest-cov
+scipy
+matplotlib

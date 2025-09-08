@@ -68,19 +68,3 @@ def jsonl_write(path: Path, record: Mapping[str, Any] | Any) -> None:
     with path.open("a", encoding="utf-8") as f:
         f.write(dumps(record))
         f.write("\n")
-
-
-def get_class_path(obj_or_class: Any) -> str:
-    """Return 'module:Class' for a class or instance."""
-    if isinstance(obj_or_class, str):
-        if ":" in obj_or_class:
-            return obj_or_class
-        raise ValueError("String must be in 'module:Class' form, e.g. 'pkg.mod:Type'.")
-    cls = obj_or_class if isinstance(obj_or_class, type) else type(obj_or_class)
-    module = getattr(cls, "__module__", None)
-    name = getattr(cls, "__name__", None)
-    if not module or not name:
-        raise TypeError(f"Cannot derive class path from {obj_or_class!r}")
-    if module.startswith("pathlib._"):
-        module = "pathlib"
-    return f"{module}:{name}"

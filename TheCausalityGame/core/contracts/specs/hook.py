@@ -1,7 +1,8 @@
 from typing import Literal
 
-from contracts.types.common import JsonDict
 from pydantic import BaseModel, ConfigDict
+
+from TheCausalityGame.core.contracts.types.common import JsonDict
 
 
 class HookSpec(BaseModel):

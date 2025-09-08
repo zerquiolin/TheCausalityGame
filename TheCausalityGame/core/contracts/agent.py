@@ -7,11 +7,10 @@ from dataclasses import dataclass
 from typing import Any, Mapping  # noqa: UP035
 
 from TheCausalityGame.core.contracts.decisions import Decision
-from TheCausalityGame.core.contracts.dto import (
-    ActionOutcome,
-    AvailableActions,
-    RoundInfo,
-)
+from TheCausalityGame.core.contracts.dto.outcome import ActionOutcome
+from TheCausalityGame.core.contracts.dto.rounds import RoundInfo
+from TheCausalityGame.core.contracts.dto.availability import AvailableActions
+
 from TheCausalityGame.core.contracts.serializable import Serializable
 
 
@@ -21,9 +20,9 @@ class AgentContext:
 
     Attributes
     ----------
+        agent_id: Id of the running agent.
         config: Agent configuration (immutable view).
         manifest_id: Id of the current ProblemInstance.
-        agent_id: Id of the running agent.
         base_seed: Optional global seed used as root for deterministic derivations.
         game_scenario: Hints about mission and constraints (max rounds, budgets, etc.).
             Recommended keys:
@@ -34,9 +33,9 @@ class AgentContext:
 
     """
 
+    agent_id: str
     config: Mapping[str, Any]
     manifest_id: str
-    agent_id: str
     base_seed: int | None = None
     game_scenario: Mapping[str, Any] | None = None
 
@@ -63,10 +62,7 @@ class Agent(Serializable):
     def context(self) -> AgentContext:
         """Return the injected runtime context."""
         if self._context is None:
-            raise RuntimeError(
-                "Agent context not set. Orchestrator must call `agent.set_context(...)` "
-                "before running the agent."
-            )
+            raise RuntimeError("Agent context not set")
         return self._context
 
     # -------- required public API --------

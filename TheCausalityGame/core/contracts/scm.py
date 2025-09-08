@@ -19,6 +19,9 @@ from TheCausalityGame.core.contracts.scm_node import (
     SCMNode,
 )
 from TheCausalityGame.core.contracts.serializable import Serializable
+from TheCausalityGame.core.contracts.specs.scm import SCMSpec
+from TheCausalityGame.core.contracts.specs.scm_node import SCMNodeSpec
+from TheCausalityGame.core.infra.registry import build_from_spec, get_class_path
 from TheCausalityGame.core.utils.imports import get_class
 from TheCausalityGame.core.utils.random_state_serialization import (
     random_state_from_json,
@@ -186,8 +189,7 @@ class SCM(Serializable):
         ), f"sample should be a dataframe but is {type(sample)}"
         return sample
 
-    # TODO: Fix serializaton to a spec class
-    def to_dict(self) -> dict:
+    def to_spec(self) -> SCMSpec:
         """
         Serializes the SCM to a dictionary format.
 
@@ -199,15 +201,16 @@ class SCM(Serializable):
         nodes_data = [node.to_dict() for node in self.nodes.values()]
 
         # Serialize the random state
-        return {
-            "vars": nodes_data,
-            "edges": self.dag.to_dict()["edges"],
-            "random_state": random_state_to_json(self.random_state),
-        }
+        return SCMSpec(
+            class_=get_class_path(self.__class__),
+            vars=nodes_data,
+            dag=self.dag.to_spec(),
+            random_state=random_state_to_json(self.random_state),
+            # TODO: Create spec for the DAG.
+        )
 
-    # TODO: Fix deserialization to the correct class
     @classmethod
-    def from_dict(cls, data: dict) -> "SCM":
+    def from_spec(cls, spec: SCMSpec) -> "SCM":
         """
         Deserializes an SCM instance from a dictionary.
 
@@ -218,50 +221,52 @@ class SCM(Serializable):
         -------
             SCM: A new SCM instance.
         """
-        if "class" in data and data["class"] not in [__class__.__name__]:
-            class_name = data.pop("class")
-            return get_class(class_name).from_dict(data)
-
-        # Reconstruct the DAG from the dictionary
-        nodes = [v["name"] for v in data["vars"]]
-        edges = data["edges"]
-        dag = DAG.from_dict(
-            {"nodes": nodes, "edges": edges}
-        )  # TODO: This is now from_spec method
+        dag = build_from_spec(spec.dag)
 
         # Ensure nodes are sorted in topological order
         topological_order = list(nx.topological_sort(dag.graph))
         nodes = []
 
         # Create nodes in topological order
-        for node_as_dict in sorted(
-            data["vars"], key=lambda n: topological_order.index(n["name"])
+        for node_spec in sorted(
+            spec.vars, key=lambda n: topological_order.index(n.name)
         ):
-            # extract parents from edges if they are not explicitly given
-            if "parents" not in node_as_dict:
-                node_as_dict["parents"] = [
-                    e[0] for e in edges if e[1] == node_as_dict["name"]
-                ]
+            # TODO: This strategy might be faster.
+            # 1) Parents: prefer explicit, else read from the DAG
+            parents = (
+                node_spec.parents
+                or list(dag.graph.predecessors(node_spec.name))
+                or None
+            )
 
-            # Generate parent mappings if not provided
-            if (
-                "parent_mappings" not in node_as_dict
-                or not node_as_dict["parent_mappings"]
-            ):
-                node_as_dict["parent_mappings"] = {
-                    node.name: {cat: idx for idx, cat in enumerate(node.domain)}
-                    for node in nodes
-                    if node.name in (node_as_dict["parents"] or [])
-                    and isinstance(node.domain[0], str)
+            # 2) Parent mappings: prefer explicit, else build from already-created nodes
+            if node_spec.parent_mappings:
+                parent_mappings = node_spec.parent_mappings
+            else:
+                # index maps only for categorical parents (domain is non-empty and all strings)
+                cat_index = {
+                    n.name: {cat: i for i, cat in enumerate(n.domain)}
+                    for n in nodes
+                    if getattr(n, "domain", None)
+                    and len(n.domain) > 0
+                    and all(isinstance(cat, str) for cat in n.domain)
                 }
+                parent_mappings = {
+                    p: cat_index[p] for p in (parents or []) if p in cat_index
+                } or None
 
             # get node object
-            nodes.append(SCMNode.from_dict(node_as_dict))
+            nodes.append(
+                build_from_spec(
+                    spec=node_spec.model_copy(
+                        update={"parents": parents, "parent_mappings": parent_mappings}
+                    )
+                )
+            )
 
         # Reconstruct the random state
         random_state = (
-            random_state_from_json(data["random_state"])
-            if "random_state" in data
-            else None
+            random_state_from_json(spec.random_state) if spec.random_state else None
         )
+
         return cls(dag, nodes, random_state)

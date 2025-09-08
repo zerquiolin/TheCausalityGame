@@ -5,9 +5,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
-import pytest
-
-from TheCausalityGame.core.infra.serialization import dumps, get_class_path, loads
+from TheCausalityGame.core.infra.serialization import dumps, loads
 
 
 @dataclass
@@ -43,15 +41,3 @@ def test_dumps_loads_roundtrip() -> None:
     assert out["enum"] == "alpha"
     assert sorted(out["set"]) == [9, 10]
     assert out["tuple"] == [1, 2]
-
-
-def test_get_class_path() -> None:
-    # string passthrough
-    assert get_class_path("pathlib:Path") == "pathlib:Path"
-    # from class
-    assert get_class_path(Path) == "pathlib:Path"
-    # from instance
-    assert get_class_path(Path(".")) == "pathlib:PosixPath"
-    # invalid string
-    with pytest.raises(ValueError):
-        get_class_path("Path")

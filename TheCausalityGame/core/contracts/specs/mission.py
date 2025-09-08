@@ -2,10 +2,10 @@
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from TheCausalityGame.core.contracts.types.common import JsonDict
+from TheCausalityGame.core.contracts.specs.metric import MetricSpec
 
 
-class AgentSpec(BaseModel):
+class MissionSpec(BaseModel):
     """Specification for constructing an agent.
 
     Attributes
@@ -17,7 +17,5 @@ class AgentSpec(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     class_: str = Field(alias="class")
-    params: JsonDict = Field(
-        default_factory=dict,
-        description="Optional agent configuration payload.",
-    )
+    behavior_metric: MetricSpec
+    result_metric: MetricSpec

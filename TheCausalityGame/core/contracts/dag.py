@@ -19,6 +19,11 @@ class DAG(Serializable):
 
     def __init__(self, graph: nx.DiGraph):
         self.graph = graph
+        # Check for cycles
+        if not nx.is_directed_acyclic_graph(self.graph):
+            raise ValueError(
+                "The provided graph is not a Directed Acyclic Graph (DAG)."
+            )
 
     @property
     def nodes(self) -> list[Any]:

@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import Any
 
-from contracts.types.common import JsonDict
 from pydantic import BaseModel, ConfigDict, Field
 
-from .metric import MetricScore
-from .samples import SamplesBatch
+from TheCausalityGame.core.contracts.dto.metric import MetricScore
+from TheCausalityGame.core.contracts.dto.samples import SamplesBatch
+from TheCausalityGame.core.contracts.types.common import JsonDict
 
 
 class Feedback(BaseModel):

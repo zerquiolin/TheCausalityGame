@@ -1,6 +1,6 @@
-
-from contracts.types.common import JsonDict
 from pydantic import BaseModel, ConfigDict, Field
+
+from TheCausalityGame.core.contracts.types.common import JsonDict
 
 
 class MetricSpec(BaseModel):
@@ -8,9 +8,11 @@ class MetricSpec(BaseModel):
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    id: str
     class_: str = Field(alias="class")
-    params: JsonDict = {}
+    params: JsonDict = Field(
+        default_factory=dict,
+        description="Optional metric configuration payload.",
+    )
 
 
 class MetricSpecs(BaseModel):
@@ -20,4 +22,7 @@ class MetricSpecs(BaseModel):
 
     behavior: MetricSpec
     result: MetricSpec
-    custom: tuple[MetricSpec, ...] = ()
+    custom: tuple[MetricSpec, ...] = Field(
+        default_factory=tuple,
+        description="Optional custom metrics.",
+    )

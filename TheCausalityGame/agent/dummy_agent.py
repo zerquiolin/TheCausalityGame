@@ -1,10 +1,10 @@
 # agents/dummy_agent.py
-from TheCausalityGame.core.contracts.agent import BaseAgent
-from TheCausalityGame.core.contracts.dto import Action, Observation
+from TheCausalityGame.core.contracts.agent import Agent
+from TheCausalityGame.core.contracts.dto.actions import Action, Observation
 from TheCausalityGame.core.contracts.errors import AgentError
 
 
-class DummyAgent(BaseAgent):
+class DummyAgent(Agent):
     """A minimal agent that just returns a fixed action."""
 
     def act(self, observation: Observation) -> Action:
@@ -15,5 +15,5 @@ class DummyAgent(BaseAgent):
             )
         except Exception as e:
             raise AgentError(
-                "DummyAgent failed to produce an action", details={"error": str(e)}
+                "ummyAgent failed to produce an action", details={"error": str(e)}
             ) from e

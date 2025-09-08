@@ -1,8 +1,10 @@
 """The Causality Game - SCM Node contract."""
 
+import json
 import logging
 from abc import abstractmethod
 from collections.abc import Callable
+from typing import TypeVar
 
 import numpy as np
 import pandas as pd
@@ -12,11 +14,17 @@ from TheCausalityGame.core.contracts.constants.nodes import (
 )
 from TheCausalityGame.core.contracts.noise import NoiseDistribution
 from TheCausalityGame.core.contracts.serializable import Serializable
+
+# Spec
+from TheCausalityGame.core.contracts.specs.scm_node import SCMNodeSpec
+from TheCausalityGame.core.infra.registry import get_class_path
 from TheCausalityGame.core.utils.imports import get_class
 from TheCausalityGame.core.utils.random_state_serialization import (
     random_state_from_json,
     random_state_to_json,
 )
+
+T = TypeVar("T", bound="Serializable")
 
 
 class SCMNode(Serializable):
@@ -103,38 +111,24 @@ class SCMNode(Serializable):
     def _to_dict(self) -> dict:
         return {}
 
-    def to_dict(self) -> dict:
+    def to_spec(self) -> SCMNodeSpec:
         d = {
-            "class": f"{self.__module__}.{self.__class__.__name__}",
+            "class_": get_class_path(self.__class__),
             "name": self.name,
             "accessibility": self.accessibility,
             "domain": self.domain,
             "parents": self.parents,
-            "parent_mappings": self.parent_mappings,
+            "parent_mappings": self.parent_mappings if self.parent_mappings else None,
+            "noise_distribution": self.noise_distribution.to_dict(),
             "random_state": (
-                random_state_to_json(self.random_state)
-                if self.random_state is not None
-                else None
+                random_state_to_json(self.random_state) if self.random_state else None
             ),
         }
         d.update(self._to_dict())
-        assert "class" in d
-        return d
+        assert "class" in d or "class_" in d, f"Serialized node has no class entry: {d}"
 
-    @classmethod
-    def from_dict(cls, data: dict) -> "SCMNode":
-        assert "class" in data, f"Serialized node has no class entry: {data}"
-        data = data.copy()
-        data["random_state"] = (
-            random_state_from_json(data["random_state"])
-            if "random_state" in data and data["random_state"] is not None
-            else None
-        )
-        class_name = data.pop("class")
-        fully_qualified_class_name = (
-            class_name if "." in class_name else f"causalitygame.scm.nodes.{class_name}"
-        )
-        return get_class(fully_qualified_class_name).from_dict(data)
+        node = SCMNodeSpec(**d)
+        return node
 
 
 class NumericSCMNode(SCMNode):

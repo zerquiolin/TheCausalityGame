@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 from typing import Any, TypeVar
 
 from TheCausalityGame.core.infra.serialization import dumps, loads
+from TheCausalityGame.core.utils.random_state_serialization import random_state_to_json
 
 T = TypeVar("T", bound="Serializable")
 
@@ -28,9 +29,13 @@ class Serializable(ABC):
 
     # ----- JSON helpers (backed by strict JSON) -----
 
+    def to_dict(self) -> dict[str, Any]:
+        """Strict dict dump of the canonical spec (for persistence/sharing)."""
+        return self.to_spec().model_dump(exclude_none=True)
+
     def to_json(self) -> str:
         """Strict JSON dump of the canonical spec (for persistence/sharing)."""
-        return dumps(self.to_spec(), ensure_ascii=True, indent=None)
+        return dumps(self.to_dict(), indent=None)
 
     @classmethod
     def from_json(cls: type[T], s: str) -> T:

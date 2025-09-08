@@ -1,11 +1,11 @@
-from contracts.types.common import JsonDict
 from pydantic import BaseModel, ConfigDict
 
-from .agent import AgentSpec
-from .hook import HookSpec
-from .metric import MetricSpec, MetricSpecs
-from .run import RunPlan
-from .settings import RuntimeSettingsSpec
+from TheCausalityGame.core.contracts.specs.agent import AgentSpec
+from TheCausalityGame.core.contracts.specs.hook import HookSpec
+from TheCausalityGame.core.contracts.specs.metric import MetricSpec, MetricSpecs
+from TheCausalityGame.core.contracts.specs.run import RunPlanSpec
+from TheCausalityGame.core.contracts.specs.settings import RuntimeSettingsSpec
+from TheCausalityGame.core.contracts.types.common import JsonDict
 
 
 class ProblemInstanceSpec(BaseModel):
@@ -38,7 +38,7 @@ class ProblemInstanceSpec(BaseModel):
     metric_specs: MetricSpecs
     custom_metric_specs: list[MetricSpec] = []
 
-    run_plan: RunPlan
+    run_plan: RunPlanSpec
 
     seeds: JsonDict = {}
     hook_plan: list[HookSpec] = []

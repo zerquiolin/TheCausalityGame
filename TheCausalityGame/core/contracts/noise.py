@@ -6,7 +6,7 @@ from TheCausalityGame.core.contracts.serializable import Serializable
 class NoiseDistribution(Serializable):
     """Abstract base for noise distributions."""
 
-    def generate(self, size, random_state: int | None = 911) -> float:
+    def generate(self, size: int, random_state: int | None = 911) -> float:
         """Generate a noise value using the provided random state.
 
         Args:
@@ -18,4 +18,4 @@ class NoiseDistribution(Serializable):
             float: A generated noise value.
 
         """
-        return self.noise.rsv(random_state=random_state, size=size)
+        raise NotImplementedError
