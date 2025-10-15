@@ -1,6 +1,6 @@
 from TheCausalityGame.core.contracts.result_validator import ResultValidator
 from TheCausalityGame.core.contracts.specs.result_validator import ResultValidatorSpec
-from TheCausalityGame.core.infra.registry import get_class_path
+from TheCausalityGame.core.infraestructure.registry import get_class_path
 
 
 class TreatmentEffectFunctionValidator(ResultValidator):
@@ -14,7 +14,7 @@ class TreatmentEffectFunctionValidator(ResultValidator):
         if result.__code__.co_argcount != 4:
             raise ValueError("Result function must have exactly three arguments")
         # Check the argument names of the function
-        if result.__code__.co_varnames[:3] != (
+        if result.__code__.co_varnames[:4] != (
             "X",
             "treatment",
             "outcome",

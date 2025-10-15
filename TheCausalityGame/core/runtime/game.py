@@ -1,6 +1,5 @@
 from TheCausalityGame.core.contracts.agent import Agent, AgentContext
 from TheCausalityGame.core.contracts.dto.transcript import Transcript
-from TheCausalityGame.core.contracts.enum.hooks import HookEvent
 from TheCausalityGame.core.contracts.metric import Metric
 from TheCausalityGame.core.contracts.mission import Mission
 from TheCausalityGame.core.contracts.scm import SCM
@@ -8,10 +7,11 @@ from TheCausalityGame.core.contracts.specs.agent import AgentSpec
 from TheCausalityGame.core.contracts.specs.budget import BudgetSpec
 from TheCausalityGame.core.contracts.specs.mission import MissionSpec
 from TheCausalityGame.core.contracts.specs.scm import SCMSpec
-from TheCausalityGame.core.engine.environment import Environment
-from TheCausalityGame.core.infra.registry import build_from_spec
+from TheCausalityGame.core.infraestructure.logger import Logger
+from TheCausalityGame.core.infraestructure.registry import build_from_spec
+from TheCausalityGame.core.lib.enum.hooks import HookEvent
 from TheCausalityGame.core.managers.hook import HookManager
-from TheCausalityGame.core.managers.plot import PlotManager
+from TheCausalityGame.core.runtime.environment import Environment
 
 
 class Game:
@@ -24,8 +24,7 @@ class Game:
         custom_metrics_specs: list[MissionSpec],
         budget_spec: BudgetSpec,
         hook_manager: HookManager,
-        plot_manager: PlotManager,
-        logger,
+        logger: Logger,
     ) -> None:
         # Manifest ID
         self.manifest_id = manifest_id
@@ -68,21 +67,18 @@ class Game:
             self.custom_metrics,
             budget_spec,
             hook_manager,
-            plot_manager,
             logger,
         )
         # Hook Manager
         self.hook_manager = hook_manager
-        # Plot Manager
-        self.plot_manager = plot_manager
         # Logger
-        self.logger = logger
+        self.logger: Logger = logger
 
     def run(self) -> Transcript:
         # Log start
-        self.logger.info(f"Starting game run for agent {self.agent.id}.")
+        self.logger.info(f"Starting game run. {self.agent.id}")
         # Flag start
-        self.hook_manager.execute(HookEvent.RUN_START)
+        self.hook_manager.trigger(HookEvent.RUN_START)
         # Run Environment
         transcript_entries = self.environment.run()
         # Build Transcript
@@ -94,9 +90,7 @@ class Game:
             entries=transcript_entries,
         )  # TODO: Pass in the transcript in the hook start
         # Flag end
-        self.hook_manager.execute(HookEvent.RUN_END)
+        self.hook_manager.trigger(HookEvent.RUN_END)
         # Log end
-        self.logger.info(f"Game run for agent {self.agent.id} completed.")
-        # Plot End
-        self.plot_manager.trigger_end(self.transcript)
+        self.logger.info(f"Game run ended. {self.agent.id}")
         return self.transcript

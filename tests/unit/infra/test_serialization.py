@@ -5,7 +5,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
-from TheCausalityGame.core.infra.serialization import dumps, loads
+from TheCausalityGame.core.infraestructure.serialization import dumps, loads
 
 
 @dataclass

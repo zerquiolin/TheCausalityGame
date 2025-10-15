@@ -4,7 +4,7 @@
 # networkx
 import networkx as nx
 
-from TheCausalityGame.core.infra.registry import build_from_spec
+from TheCausalityGame.core.infraestructure.registry import build_from_spec
 
 # DAG
 from TheCausalityGame.scm.dag.core import CoreDAG

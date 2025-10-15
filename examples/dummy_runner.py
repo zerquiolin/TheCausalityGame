@@ -10,8 +10,8 @@ from TheCausalityGame.core.contracts.dto import (
     ProblemInstance,
     RunPlan,
 )
-from TheCausalityGame.core.infra.settings import RuntimeSettings
-from TheCausalityGame.core.runtime.game_runner import GameRunner
+from TheCausalityGame.core.contracts.specs.settings import RuntimeSettings
+from TheCausalityGame.core.runtime.runner import GameRunner
 
 # ---------------- Dummy components ---------------- #
 

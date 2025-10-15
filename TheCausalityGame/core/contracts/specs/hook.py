@@ -1,7 +1,7 @@
 from typing import Literal
 
-from TheCausalityGame.core.contracts.enum.hooks import HookEvent
-from TheCausalityGame.core.contracts.specs.common import CommonSpec
+from TheCausalityGame.core.lib.enum.hooks import HookEvent
+from TheCausalityGame.core.specs.common import CommonSpec
 
 
 class HookSpec(CommonSpec):

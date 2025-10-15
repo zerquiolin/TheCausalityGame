@@ -1,10 +1,10 @@
 {
     "class_": "TheCausalityGame.scm.core:CoreSCM",
-    "spec_": "TheCausalityGame.core.contracts.specs.scm:SCMSpec",
+    "spec_": "TheCausalityGame.core.specs.scm:SCMSpec",
     "vars": [
         {
             "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-            "spec_": "TheCausalityGame.core.contracts.specs.scm_node:SCMNodeSpec",
+            "spec_": "TheCausalityGame.core.specs.scm_node:SCMNodeSpec",
             "name": "Z",
             "accessibility": "controllable",
             "domain": [
@@ -13,7 +13,7 @@
             ],
             "noise_distribution": {
                 "class_": "TheCausalityGame.scm.noise.uniform:UniformNoiseDistribution",
-                "spec_": "TheCausalityGame.core.contracts.specs.noise:NoiseDistributionSpec",
+                "spec_": "TheCausalityGame.core.specs.noise:NoiseDistributionSpec",
                 "params": {
                     "low": -1.0,
                     "high": 1.0
@@ -22,7 +22,7 @@
         },
         {
             "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-            "spec_": "TheCausalityGame.core.contracts.specs.scm_node:SCMNodeSpec",
+            "spec_": "TheCausalityGame.core.specs.scm_node:SCMNodeSpec",
             "name": "X",
             "accessibility": "observable",
             "domain": [
@@ -35,7 +35,7 @@
             "equation": "2*Z",
             "noise_distribution": {
                 "class_": "TheCausalityGame.scm.noise.uniform:UniformNoiseDistribution",
-                "spec_": "TheCausalityGame.core.contracts.specs.noise:NoiseDistributionSpec",
+                "spec_": "TheCausalityGame.core.specs.noise:NoiseDistributionSpec",
                 "params": {
                     "low": -1.0,
                     "high": 1.0
@@ -44,7 +44,7 @@
         },
         {
             "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-            "spec_": "TheCausalityGame.core.contracts.specs.scm_node:SCMNodeSpec",
+            "spec_": "TheCausalityGame.core.specs.scm_node:SCMNodeSpec",
             "name": "Y",
             "accessibility": "observable",
             "domain": [
@@ -58,7 +58,7 @@
             "equation": "X + 2*Z",
             "noise_distribution": {
                 "class_": "TheCausalityGame.scm.noise.uniform:UniformNoiseDistribution",
-                "spec_": "TheCausalityGame.core.contracts.specs.noise:NoiseDistributionSpec",
+                "spec_": "TheCausalityGame.core.specs.noise:NoiseDistributionSpec",
                 "params": {
                     "low": -1.0,
                     "high": 1.0
@@ -68,7 +68,7 @@
     ],
     "dag": {
         "class_": "TheCausalityGame.scm.dag.core:CoreDAG",
-        "spec_": "TheCausalityGame.core.contracts.specs.dag:DAGSpec",
+        "spec_": "TheCausalityGame.core.specs.dag:DAGSpec",
         "nodes": [
             "Z",
             "X",

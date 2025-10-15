@@ -1,6 +1,6 @@
 """The Causality Game - Agent Spec."""
 
-from TheCausalityGame.core.contracts.specs.common import CommonSpec
+from TheCausalityGame.core.specs.common import CommonSpec
 
 
 class NoiseDistributionSpec(CommonSpec):

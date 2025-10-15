@@ -1,6 +1,6 @@
 from typing import Literal
 
-from TheCausalityGame.core.contracts.specs.common import CommonSpec
+from TheCausalityGame.core.specs.common import CommonSpec
 
 
 class PlotSpec(CommonSpec):

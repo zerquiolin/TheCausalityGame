@@ -1,6 +1,5 @@
 """The Causality Game - SCM Node contract."""
 
-import json
 import logging
 from abc import abstractmethod
 from collections.abc import Callable
@@ -9,17 +8,16 @@ from typing import TypeVar
 import numpy as np
 import pandas as pd
 
-from TheCausalityGame.core.contracts.constants.nodes import (
-    ACCESSIBILITY_CONTROLLABLE,
-)
 from TheCausalityGame.core.contracts.noise import NoiseDistribution
 from TheCausalityGame.core.contracts.serializable import Serializable
 
 # Spec
 from TheCausalityGame.core.contracts.specs.scm_node import SCMNodeSpec
-from TheCausalityGame.core.infra.registry import get_class_path
-from TheCausalityGame.core.utils.random_state_serialization import (
-    random_state_from_json,
+from TheCausalityGame.core.infraestructure.registry import get_class_path
+from TheCausalityGame.core.lib.constants.nodes import (
+    ACCESSIBILITY_CONTROLLABLE,
+)
+from TheCausalityGame.core.lib.utils.random_state_serialization import (
     random_state_to_json,
 )
 

@@ -1,6 +1,6 @@
 """The Causality Game - Result Validator contract."""
 
-from TheCausalityGame.core.contracts.specs.common import CommonSpec
+from TheCausalityGame.core.specs.common import CommonSpec
 
 
 class ResultValidatorSpec(CommonSpec):

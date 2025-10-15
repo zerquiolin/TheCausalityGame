@@ -1,7 +1,7 @@
 """The Causality Game - Test Serialized Noises."""
 
 # Registry
-from TheCausalityGame.core.infra.registry import build_from_spec
+from TheCausalityGame.core.infraestructure.registry import build_from_spec
 
 # Noises
 from TheCausalityGame.scm.noise.dirac import DiracNoiseDistribution

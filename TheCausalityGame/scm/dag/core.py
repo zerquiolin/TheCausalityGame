@@ -9,9 +9,8 @@ from networkx.readwrite import json_graph
 
 # Internal imports
 from TheCausalityGame.core.contracts.dag import DAG
-
 from TheCausalityGame.core.contracts.specs.dag import DAGSpec
-from TheCausalityGame.core.infra.registry import get_class_path
+from TheCausalityGame.core.infraestructure.registry import get_class_path
 
 
 class CoreDAG(DAG):

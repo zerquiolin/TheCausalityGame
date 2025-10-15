@@ -4,13 +4,13 @@ from typing import Any
 
 from pydantic import ConfigDict, Field
 
-from TheCausalityGame.core.contracts.decisions import Decision
-from TheCausalityGame.core.contracts.dto.common import CommonDTO
-from TheCausalityGame.core.contracts.dto.environment import (
+from TheCausalityGame.core.dto.common import CommonDTO
+from TheCausalityGame.core.dto.environment import (
     BudgetSnapshot,
     Feedback,
     SamplesCollection,
 )
+from TheCausalityGame.core.infraestructure.decisions import Decision
 
 
 class TranscriptEntry(CommonDTO):

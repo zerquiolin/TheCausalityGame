@@ -2,7 +2,10 @@ from TheCausalityGame.core.contracts.dto.transcript import Transcript
 from TheCausalityGame.core.contracts.mission import Mission
 from TheCausalityGame.core.contracts.scm import SCM
 from TheCausalityGame.core.contracts.specs.mission import MissionSpec
-from TheCausalityGame.core.infra.registry import build_from_spec, get_class_path
+from TheCausalityGame.core.infraestructure.registry import (
+    build_from_spec,
+    get_class_path,
+)
 
 # Identify specific metric classes
 
@@ -27,7 +30,7 @@ class ConditionalAverageTreatmentEffectMission(Mission):
         # Mount Behavior Metric
         self.behavior_metric.mount(scm)
         # Mount Deliverable Metric
-        self.deliverable_metric.mount(scm)
+        self.result_metric.mount(scm)
         # Update the is_mounted flag
         self.is_mounted = True
 

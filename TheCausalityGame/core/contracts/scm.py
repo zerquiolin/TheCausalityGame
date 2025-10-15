@@ -7,11 +7,6 @@ import networkx as nx
 import numpy as np
 import pandas as pd
 
-from TheCausalityGame.core.contracts.constants.nodes import (
-    ACCESSIBILITY_CONTROLLABLE,
-    ACCESSIBILITY_LATENT,
-    ACCESSIBILITY_OBSERVABLE,
-)
 from TheCausalityGame.core.contracts.dag import DAG
 
 # Nodes
@@ -20,9 +15,16 @@ from TheCausalityGame.core.contracts.scm_node import (
 )
 from TheCausalityGame.core.contracts.serializable import Serializable
 from TheCausalityGame.core.contracts.specs.scm import SCMSpec
-from TheCausalityGame.core.contracts.specs.scm_node import SCMNodeSpec
-from TheCausalityGame.core.infra.registry import build_from_spec, get_class_path
-from TheCausalityGame.core.utils.random_state_serialization import (
+from TheCausalityGame.core.infraestructure.registry import (
+    build_from_spec,
+    get_class_path,
+)
+from TheCausalityGame.core.lib.constants.nodes import (
+    ACCESSIBILITY_CONTROLLABLE,
+    ACCESSIBILITY_LATENT,
+    ACCESSIBILITY_OBSERVABLE,
+)
+from TheCausalityGame.core.lib.utils.random_state_serialization import (
     random_state_from_json,
     random_state_to_json,
 )

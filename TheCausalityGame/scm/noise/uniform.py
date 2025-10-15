@@ -4,7 +4,7 @@ from scipy.stats import uniform
 
 from TheCausalityGame.core.contracts.noise import NoiseDistribution
 from TheCausalityGame.core.contracts.specs.noise import NoiseDistributionSpec
-from TheCausalityGame.core.infra.registry import get_class_path
+from TheCausalityGame.core.infraestructure.registry import get_class_path
 
 
 class UniformNoiseDistribution(NoiseDistribution):

@@ -3,23 +3,23 @@
 from collections import Counter
 
 # Types
-from typing import Callable, Dict, List, Optional, Type
+from typing import Callable, Dict, List, Optional
 
 # Science
 import numpy as np
 import pandas as pd
 import sympy as sp
 
-# Constants
-from TheCausalityGame.core.contracts.constants.nodes import ACCESSIBILITY_OBSERVABLE
 from TheCausalityGame.core.contracts.noise import NoiseDistribution
 from TheCausalityGame.core.contracts.scm_node import CategoricSCMNode, NumericSCMNode
 from TheCausalityGame.core.contracts.specs.scm_node import SCMNodeSpec
-from TheCausalityGame.core.infra.registry import build_from_spec
-from TheCausalityGame.core.utils.random_state_serialization import (
+from TheCausalityGame.core.infraestructure.registry import build_from_spec
+
+# Constants
+from TheCausalityGame.core.lib.constants.nodes import ACCESSIBILITY_OBSERVABLE
+from TheCausalityGame.core.lib.utils.random_state_serialization import (
     random_state_from_json,
 )
-
 from TheCausalityGame.scm.noise.uniform import UniformNoiseDistribution
 
 

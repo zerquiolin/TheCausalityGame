@@ -2,8 +2,7 @@
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from TheCausalityGame.core.contracts.types.common import JsonDict
-from TheCausalityGame.core.infra.registry import (
+from TheCausalityGame.core.infraestructure.registry import (
     get_class_path,
 )
 
@@ -22,7 +21,7 @@ class CommonSpec(BaseModel):
 
     class_: str = Field(alias="class")
     spec_: str | None = Field(default=None, description="Spec class path.")
-    params: JsonDict | None = Field(
+    params: dict | None = Field(
         default=None,
         description="Optional class configuration payload.",
     )

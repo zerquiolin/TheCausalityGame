@@ -2,7 +2,7 @@ import numpy as np
 
 from TheCausalityGame.core.contracts.result_validator import ResultValidator
 from TheCausalityGame.core.contracts.specs.result_validator import ResultValidatorSpec
-from TheCausalityGame.core.infra.registry import get_class_path
+from TheCausalityGame.core.infraestructure.registry import get_class_path
 
 
 class ListResultValidator(ResultValidator):

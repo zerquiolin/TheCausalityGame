@@ -5,8 +5,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, TypeVar
 
-from TheCausalityGame.core.infra.serialization import dumps, loads
-from TheCausalityGame.core.utils.random_state_serialization import random_state_to_json
+from TheCausalityGame.core.infraestructure.serialization import dumps, loads
 
 T = TypeVar("T", bound="Serializable")
 

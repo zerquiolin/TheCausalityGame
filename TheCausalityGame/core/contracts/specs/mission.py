@@ -1,10 +1,8 @@
 """The Causality Game - Agent Spec."""
 
-from pydantic import BaseModel, ConfigDict, Field
-
-from TheCausalityGame.core.contracts.specs.common import CommonSpec
-from TheCausalityGame.core.contracts.specs.metric import MetricSpec
-from TheCausalityGame.core.contracts.specs.result_validator import ResultValidatorSpec
+from TheCausalityGame.core.specs.common import CommonSpec
+from TheCausalityGame.core.specs.metric import MetricSpec
+from TheCausalityGame.core.specs.result_validator import ResultValidatorSpec
 
 
 class MissionSpec(CommonSpec):

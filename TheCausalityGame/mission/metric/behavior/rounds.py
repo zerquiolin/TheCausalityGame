@@ -2,8 +2,8 @@ from TheCausalityGame.core.contracts.dto.transcript import Transcript
 from TheCausalityGame.core.contracts.metric import BehaviorMetric
 from TheCausalityGame.core.contracts.scm import SCM
 from TheCausalityGame.core.contracts.specs.metric import MetricSpec
-from TheCausalityGame.core.infra.registry import get_class_path
-from TheCausalityGame.core.utils.metrics import log_penalty
+from TheCausalityGame.core.infraestructure.registry import get_class_path
+from TheCausalityGame.core.lib.utils.metrics import log_penalty
 
 
 class RoundsBehaviorMetric(BehaviorMetric):

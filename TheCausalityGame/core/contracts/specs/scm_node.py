@@ -4,9 +4,9 @@ from typing import Any
 
 from pydantic import Field
 
-from TheCausalityGame.core.contracts.constants.nodes import ACCESSIBILITY_CONTROLLABLE
-from TheCausalityGame.core.contracts.specs.common import CommonSpec
-from TheCausalityGame.core.contracts.specs.noise import NoiseDistributionSpec
+from TheCausalityGame.core.lib.constants.nodes import ACCESSIBILITY_CONTROLLABLE
+from TheCausalityGame.core.specs.common import CommonSpec
+from TheCausalityGame.core.specs.noise import NoiseDistributionSpec
 
 
 class SCMNodeSpec(CommonSpec):

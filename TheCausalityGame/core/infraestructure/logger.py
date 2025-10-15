@@ -36,45 +36,47 @@ class Logger:
         self.logger.setLevel(level)
         self.logger.propagate = False
 
-        # Avoid duplicate handlers if reinitialized
-        if not self.logger.handlers:
-            self._setup_handlers(max_bytes, backup_count)
+        # Clear existing handlers to avoid duplicates
+        if self.logger.hasHandlers():
+            self.logger.handlers.clear()
+
+        self._setup_handlers(max_bytes, backup_count)
 
     # ----------------------------------------------------
     def _setup_handlers(self, max_bytes: int, backup_count: int) -> None:
         """Configure console and file handlers."""
-        formatter = self._get_formatter()
+        base_format = "[%(asctime)s] [%(levelname)-8s] [%(name)s] %(message)s"
+        datefmt = "%Y-%m-%d %H:%M:%S"
+
+        plain_formatter = logging.Formatter(base_format, datefmt)
+        color_formatter = (
+            self._get_formatter(base_format, datefmt)
+            if self.colorize
+            else plain_formatter
+        )
 
         # Console handler
         if self.log_to_console:
             ch = logging.StreamHandler()
             ch.setLevel(self.level)
-            ch.setFormatter(formatter)
+            ch.setFormatter(color_formatter)
             self.logger.addHandler(ch)
 
         # File handler (if directory provided)
         if self.log_dir:
             os.makedirs(self.log_dir, exist_ok=True)
-            log_file = os.path.join(
-                self.log_dir, f"{self.name}_{datetime.now().strftime('%Y%m%d')}.log"
-            )
+            log_file = os.path.join(self.log_dir, f"{self.name}.log")
             fh = RotatingFileHandler(
                 log_file, maxBytes=max_bytes, backupCount=backup_count, encoding="utf-8"
             )
             fh.setLevel(self.level)
-            fh.setFormatter(formatter)
+            fh.setFormatter(plain_formatter)  # no colors
             self.logger.addHandler(fh)
 
     # ----------------------------------------------------
-    def _get_formatter(self) -> logging.Formatter:
-        """Return colorized or plain formatter."""
-        base_format = "[%(asctime)s] [%(levelname)-8s] [%(name)s] %(message)s"
-        datefmt = "%Y-%m-%d %H:%M:%S"
+    def _get_formatter(self, base_format: str, datefmt: str) -> logging.Formatter:
+        """Return colorized formatter for console output only."""
 
-        if not self.colorize:
-            return logging.Formatter(base_format, datefmt)
-
-        # ANSI color codes
         colors = {
             "DEBUG": "\033[36m",  # Cyan
             "INFO": "\033[32m",  # Green
@@ -84,13 +86,33 @@ class Logger:
         }
         reset = "\033[0m"
 
-        class ColorFormatter(logging.Formatter):
+        class SafeColorFormatter(logging.Formatter):
             def format(self, record):
-                level_color = colors.get(record.levelname, "")
-                record.levelname = f"{level_color}{record.levelname}{reset}"
-                return super().format(record)
+                # Make a shallow copy to avoid mutating shared record
+                record_copy = logging.LogRecord(
+                    name=record.name,
+                    level=record.levelno,
+                    pathname=record.pathname,
+                    lineno=record.lineno,
+                    msg=record.msg,
+                    args=record.args,
+                    exc_info=record.exc_info,
+                )
+                record_copy.created = record.created
+                record_copy.msecs = record.msecs
+                record_copy.relativeCreated = record.relativeCreated
+                record_copy.thread = record.thread
+                record_copy.process = record.process
+                record_copy.levelname = record.levelname
+                record_copy.levelno = record.levelno
 
-        return ColorFormatter(base_format, datefmt)
+                # Apply color only for this formatter (console)
+                level_color = colors.get(record_copy.levelname, "")
+                record_copy.levelname = f"{level_color}{record_copy.levelname}{reset}"
+
+                return super().format(record_copy)
+
+        return SafeColorFormatter(base_format, datefmt)
 
     # ----------------------------------------------------
     def info(self, msg: str, *args, **kwargs) -> None:

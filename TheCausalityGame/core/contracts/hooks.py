@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Protocol
 
-from TheCausalityGame.core.contracts.enum.hooks import HookEvent
+from TheCausalityGame.core.lib.enum.hooks import HookEvent
 
 
 class Hook(Protocol):

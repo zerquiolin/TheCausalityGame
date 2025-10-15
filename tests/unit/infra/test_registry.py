@@ -3,13 +3,13 @@ from __future__ import annotations
 import pytest
 
 from TheCausalityGame.agent.dummy_agent import DummyAgent
-from TheCausalityGame.scm.noise.uniform import UniformNoiseDistribution
-from TheCausalityGame.core.contracts.errors import LoadError
-from TheCausalityGame.core.infra.registry import (
+from TheCausalityGame.core.infraestructure.registry import (
     build_from_spec,
     get_class_path,
     load_class,
 )
+from TheCausalityGame.core.lib.classes.errors import LoadError
+from TheCausalityGame.scm.noise.uniform import UniformNoiseDistribution
 
 
 def test_load_class_disallowed_package_rejected() -> None:

@@ -2,8 +2,8 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from TheCausalityGame.core.contracts.specs.hook import HookSpec
-from TheCausalityGame.core.contracts.specs.plot import PlotSpec
+from TheCausalityGame.core.specs.hook import HookSpec
+from TheCausalityGame.core.specs.plot import PlotSpec
 
 from .budget import BudgetSpec
 

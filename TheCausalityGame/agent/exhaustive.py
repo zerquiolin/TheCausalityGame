@@ -3,7 +3,6 @@ import pandas as pd
 from sklearn.linear_model import SGDRegressor
 
 from TheCausalityGame.core.contracts.agent import Agent
-from TheCausalityGame.core.contracts.decisions import Decision
 from TheCausalityGame.core.contracts.dto.environment import (
     AvailableActions,
     Feedback,
@@ -11,7 +10,8 @@ from TheCausalityGame.core.contracts.dto.environment import (
     SamplesCollection,
 )
 from TheCausalityGame.core.contracts.specs.agent import AgentSpec
-from TheCausalityGame.core.infra.registry import get_class_path
+from TheCausalityGame.core.infraestructure.decisions import Decision
+from TheCausalityGame.core.infraestructure.registry import get_class_path
 
 
 class ExhaustiveAgent(Agent):

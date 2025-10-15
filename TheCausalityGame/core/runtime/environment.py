@@ -3,7 +3,6 @@ import zlib
 import numpy as np
 
 from TheCausalityGame.core.contracts.agent import Agent
-from TheCausalityGame.core.contracts.decisions import Decision, ExperimentSpec
 
 # DTO
 from TheCausalityGame.core.contracts.dto.environment import (
@@ -15,7 +14,6 @@ from TheCausalityGame.core.contracts.dto.environment import (
     SamplesCollection,
 )
 from TheCausalityGame.core.contracts.dto.transcript import Transcript, TranscriptEntry
-from TheCausalityGame.core.contracts.enum.hooks import HookEvent
 from TheCausalityGame.core.contracts.metric import Metric
 from TheCausalityGame.core.contracts.mission import (
     BehaviorMetric,
@@ -24,9 +22,13 @@ from TheCausalityGame.core.contracts.mission import (
 )
 from TheCausalityGame.core.contracts.scm import SCM
 from TheCausalityGame.core.contracts.specs.budget import BudgetSpec
-from TheCausalityGame.core.infra.budgets import BudgetEnforcer, BudgetExceededError
+from TheCausalityGame.core.infraestructure.budgets import (
+    BudgetEnforcer,
+    BudgetExceededError,
+)
+from TheCausalityGame.core.infraestructure.decisions import Decision, ExperimentSpec
+from TheCausalityGame.core.lib.enum.hooks import HookEvent
 from TheCausalityGame.core.managers.hook import HookManager
-from TheCausalityGame.core.managers.plot import PlotManager
 
 
 class Environment:
@@ -38,7 +40,6 @@ class Environment:
         custom_metrics: list[Metric],
         budget_spec: BudgetSpec,
         hook_manager: HookManager,
-        plot_manager: PlotManager,
         logger,
     ):
         # Agent
@@ -53,8 +54,6 @@ class Environment:
         self.budget = BudgetEnforcer(budget_spec)
         # Hook Manager
         self.hook_manager = hook_manager
-        # Plot Manager
-        self.plot_manager = plot_manager
         # Logger
         self.logger = logger
         # Available Actions
@@ -179,10 +178,6 @@ class Environment:
 
                 # (Hook) New snapshot
                 self.hook_manager.trigger(HookEvent.NEW_SNAPSHOT)
-
-                # TODO: Move all plotting to the orchestrator
-                # # Plot current state
-                # self.plot_manager.trigger_round(transcript_entry)
 
                 # (Hook) Round end
                 self.hook_manager.trigger(HookEvent.ROUND_END)

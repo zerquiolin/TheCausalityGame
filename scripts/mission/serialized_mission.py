@@ -1,7 +1,12 @@
 """The Causality Game - Test Serialized DAGs."""
 
 # Registry
-from TheCausalityGame.core.infra.registry import build_from_spec
+from TheCausalityGame.core.infraestructure.registry import build_from_spec
+
+# Mission
+from TheCausalityGame.mission.conditional_average_treatment_effect import (
+    ConditionalAverageTreatmentEffectMission,
+)
 
 # Metrics
 from TheCausalityGame.mission.metric.behavior.rounds import RoundsBehaviorMetric
@@ -10,11 +15,6 @@ from TheCausalityGame.mission.metric.result.pehe import PEHEResultMetric
 # Result Validator
 from TheCausalityGame.mission.result_validator.tef_validator import (
     TreatmentEffectFunctionValidator,
-)
-
-# Mission
-from TheCausalityGame.mission.conditional_average_treatment_effect import (
-    ConditionalAverageTreatmentEffectMission,
 )
 
 # Create Behavior and Result Metrics

@@ -1,17 +1,18 @@
 # Science
 import numpy as np
 
-# Constants
-from TheCausalityGame.core.contracts.constants.nodes import (
-    ACCESSIBILITY_CONTROLLABLE,
-    ACCESSIBILITY_OBSERVABLE,
-)
 from TheCausalityGame.core.contracts.mission import ResultMetric
 
 # Types
 from TheCausalityGame.core.contracts.scm import SCM
 from TheCausalityGame.core.contracts.specs.metric import MetricSpec
-from TheCausalityGame.core.infra.registry import get_class_path
+from TheCausalityGame.core.infraestructure.registry import get_class_path
+
+# Constants
+from TheCausalityGame.core.lib.constants.nodes import (
+    ACCESSIBILITY_CONTROLLABLE,
+    ACCESSIBILITY_OBSERVABLE,
+)
 
 
 class PEHEResultMetric(ResultMetric):

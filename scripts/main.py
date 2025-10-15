@@ -1,7 +1,7 @@
 import json
 
-from TheCausalityGame.core.engine.runner import Runner
-from TheCausalityGame.core.infra.registry import build_from_spec
+from TheCausalityGame.core.infraestructure.registry import build_from_spec
+from TheCausalityGame.core.runtime.runner import Runner
 
 # Get problem instance
 problem_instance_path = "test_problem_instance.json"

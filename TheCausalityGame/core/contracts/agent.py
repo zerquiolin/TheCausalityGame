@@ -6,7 +6,6 @@ from abc import abstractmethod
 from dataclasses import dataclass
 from typing import Any, Mapping  # noqa: UP035
 
-from TheCausalityGame.core.contracts.decisions import Decision
 from TheCausalityGame.core.contracts.dto.environment import (
     AvailableActions,
     Feedback,
@@ -14,6 +13,7 @@ from TheCausalityGame.core.contracts.dto.environment import (
     SamplesCollection,
 )
 from TheCausalityGame.core.contracts.serializable import Serializable
+from TheCausalityGame.core.infraestructure.decisions import Decision
 
 
 @dataclass(frozen=True, slots=True)

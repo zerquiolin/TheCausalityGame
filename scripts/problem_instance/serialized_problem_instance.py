@@ -9,7 +9,7 @@ from TheCausalityGame.core.contracts.problem_instance import ProblemInstance
 from TheCausalityGame.core.contracts.specs.budget import BudgetSpec
 from TheCausalityGame.core.contracts.specs.run import RunPlanSpec
 from TheCausalityGame.core.contracts.specs.settings import RuntimeSettingsSpec
-from TheCausalityGame.core.infra.registry import build_from_spec
+from TheCausalityGame.core.infraestructure.registry import build_from_spec
 from TheCausalityGame.mission.conditional_average_treatment_effect import (
     ConditionalAverageTreatmentEffectMission,
 )
@@ -89,7 +89,7 @@ run_plan = RunPlanSpec(
     execution="parallel",
     parallel_backend="thread",
     max_workers=None,
-    budgets=budget,
+    budget=budget,
 )
 
 # Create Runtime Settings
