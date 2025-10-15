@@ -1,0 +1,154 @@
+{
+    "class_": "TheCausalityGame.core.contracts.problem_instance:ProblemInstance",
+    "spec_": "TheCausalityGame.core.contracts.specs.problem_instance:ProblemInstanceSpec",
+    "id": "test_problem_instance",
+    "schema_version": "0.1.0",
+    "agents": [
+        {
+            "class_": "TheCausalityGame.agent.exhaustive:ExhaustiveAgent",
+            "spec_": "TheCausalityGame.core.contracts.specs.agent:AgentSpec",
+            "params": {
+                "num_obs": 1,
+                "num_inter": 1
+            },
+            "id": "911"
+        }
+    ],
+    "scm": {
+        "class_": "TheCausalityGame.scm.core:CoreSCM",
+        "spec_": "TheCausalityGame.core.contracts.specs.scm:SCMSpec",
+        "vars": [
+            {
+                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+                "spec_": "TheCausalityGame.core.contracts.specs.scm_node:SCMNodeSpec",
+                "name": "Z",
+                "accessibility": "controllable",
+                "domain": [
+                    1.0,
+                    5.0
+                ],
+                "noise_distribution": {
+                    "class_": "TheCausalityGame.scm.noise.uniform:UniformNoiseDistribution",
+                    "spec_": "TheCausalityGame.core.contracts.specs.noise:NoiseDistributionSpec",
+                    "params": {
+                        "low": -1.0,
+                        "high": 1.0
+                    }
+                }
+            },
+            {
+                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+                "spec_": "TheCausalityGame.core.contracts.specs.scm_node:SCMNodeSpec",
+                "name": "X",
+                "accessibility": "observable",
+                "domain": [
+                    2.0,
+                    10.0
+                ],
+                "parents": [
+                    "Z"
+                ],
+                "equation": "2*Z",
+                "noise_distribution": {
+                    "class_": "TheCausalityGame.scm.noise.uniform:UniformNoiseDistribution",
+                    "spec_": "TheCausalityGame.core.contracts.specs.noise:NoiseDistributionSpec",
+                    "params": {
+                        "low": -1.0,
+                        "high": 1.0
+                    }
+                }
+            },
+            {
+                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+                "spec_": "TheCausalityGame.core.contracts.specs.scm_node:SCMNodeSpec",
+                "name": "Y",
+                "accessibility": "observable",
+                "domain": [
+                    3.0,
+                    15.0
+                ],
+                "parents": [
+                    "Z",
+                    "X"
+                ],
+                "equation": "X + 2*Z",
+                "noise_distribution": {
+                    "class_": "TheCausalityGame.scm.noise.uniform:UniformNoiseDistribution",
+                    "spec_": "TheCausalityGame.core.contracts.specs.noise:NoiseDistributionSpec",
+                    "params": {
+                        "low": -1.0,
+                        "high": 1.0
+                    }
+                }
+            }
+        ],
+        "dag": {
+            "class_": "TheCausalityGame.scm.dag.core:CoreDAG",
+            "spec_": "TheCausalityGame.core.contracts.specs.dag:DAGSpec",
+            "nodes": [
+                "Z",
+                "X",
+                "Y"
+            ],
+            "edges": [
+                [
+                    "Z",
+                    "X"
+                ],
+                [
+                    "Z",
+                    "Y"
+                ],
+                [
+                    "X",
+                    "Y"
+                ]
+            ]
+        }
+    },
+    "mission": {
+        "class_": "TheCausalityGame.mission.conditional_average_treatment_effect:ConditionalAverageTreatmentEffectMission",
+        "spec_": "TheCausalityGame.core.contracts.specs.mission:MissionSpec",
+        "params": {},
+        "behavior_metric": {
+            "class_": "TheCausalityGame.mission.metric.behavior.rounds:RoundsBehaviorMetric",
+            "spec_": "TheCausalityGame.core.contracts.specs.metric:MetricSpec",
+            "params": {
+                "alpha": 0.1
+            }
+        },
+        "result_metric": {
+            "class_": "TheCausalityGame.mission.metric.result.pehe:PEHEResultMetric",
+            "spec_": "TheCausalityGame.core.contracts.specs.metric:MetricSpec",
+            "params": {}
+        },
+        "result_validator": {
+            "class_": "TheCausalityGame.mission.result_validator.tef_validator:TreatmentEffectFunctionValidator",
+            "spec_": "TheCausalityGame.core.contracts.specs.result_validator:ResultValidatorSpec",
+            "params": {}
+        }
+    },
+    "custom_metrics": [],
+    "run_plan": {
+        "execution": "parallel",
+        "parallel_backend": "thread",
+        "budget": {
+            "rounds": 100,
+            "time_s": 60.0,
+            "samples": 100,
+            "memory_mb": 512
+        },
+        "hook_plan": [],
+        "plot_plan": []
+    },
+    "seeds": {
+        "agent": 42,
+        "scm": 911,
+        "misc": 7
+    },
+    "runtime": {
+        "mode": "dev",
+        "debug": true,
+        "trusted": true
+    }
+}

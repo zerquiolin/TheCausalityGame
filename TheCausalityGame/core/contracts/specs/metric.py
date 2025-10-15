@@ -1,28 +1,20 @@
-from pydantic import BaseModel, ConfigDict, Field
+"""The Causality Game - Metric Spec."""
 
-from TheCausalityGame.core.contracts.types.common import JsonDict
+from pydantic import Field
+
+from TheCausalityGame.core.contracts.specs.common import CommonSpec
 
 
-class MetricSpec(BaseModel):
+class MetricSpec(CommonSpec):
     """Specification for constructing a metric."""
 
-    model_config = ConfigDict(extra="forbid", frozen=True)
 
-    class_: str = Field(alias="class")
-    params: JsonDict = Field(
-        default_factory=dict,
-        description="Optional metric configuration payload.",
-    )
-
-
-class MetricSpecs(BaseModel):
+class MetricsSpec(CommonSpec):
     """Canonical metric pair for each mission."""
-
-    model_config = ConfigDict(extra="forbid", frozen=True)
 
     behavior: MetricSpec
     result: MetricSpec
-    custom: tuple[MetricSpec, ...] = Field(
-        default_factory=tuple,
+    custom: list[MetricSpec] | None = Field(
+        default=None,
         description="Optional custom metrics.",
     )

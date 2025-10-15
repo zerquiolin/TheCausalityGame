@@ -8,3 +8,4 @@ pytest
 pytest-cov
 scipy
 matplotlib
+scikit-learn

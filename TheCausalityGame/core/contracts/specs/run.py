@@ -2,6 +2,9 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from TheCausalityGame.core.contracts.specs.hook import HookSpec
+from TheCausalityGame.core.contracts.specs.plot import PlotSpec
+
 from .budget import BudgetSpec
 
 
@@ -22,7 +25,6 @@ class RunPlanSpec(BaseModel):
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    rounds: int = Field(ge=1, description="Number of rounds per agent.")
     execution: Literal["sequential", "parallel"] = Field(
         default="sequential", description="Execution strategy for multiple agents."
     )
@@ -35,6 +37,14 @@ class RunPlanSpec(BaseModel):
         ge=1,
         description="Maximum number of parallel workers; None for auto.",
     )
-    budgets: BudgetSpec = Field(
+    budget: BudgetSpec = Field(
         default_factory=BudgetSpec, description="Resource budgets per agent run."
+    )
+    hook_plan: list[HookSpec] = Field(
+        default_factory=list,
+        description="Hook subscriptions for lifecycle events.",
+    )
+    plot_plan: list[PlotSpec] = Field(
+        default_factory=list,
+        description="Plot specifications for visualizations.",
     )

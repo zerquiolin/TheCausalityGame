@@ -22,7 +22,6 @@ from TheCausalityGame.core.contracts.serializable import Serializable
 from TheCausalityGame.core.contracts.specs.scm import SCMSpec
 from TheCausalityGame.core.contracts.specs.scm_node import SCMNodeSpec
 from TheCausalityGame.core.infra.registry import build_from_spec, get_class_path
-from TheCausalityGame.core.utils.imports import get_class
 from TheCausalityGame.core.utils.random_state_serialization import (
     random_state_from_json,
     random_state_to_json,
@@ -147,7 +146,7 @@ class SCM(Serializable):
 
     def generate_samples(
         self,
-        interventions: dict[str, float] = {},
+        interventions: dict[str, float] | None = None,
         num_samples: int = 1,
         cancel_noise: bool = False,
         random_state: dict[str, np.random.RandomState] | None = None,
@@ -168,6 +167,9 @@ class SCM(Serializable):
         if not isinstance(random_states, dict):
             random_states = dict.fromkeys(self.vars, random_states)
         sample = pd.DataFrame(index=range(num_samples))
+
+        # If no interventions provided, use empty dict
+        interventions = interventions or {}
 
         for node_name, node in [
             (node_name, self.nodes[node_name]) for node_name in self.vars

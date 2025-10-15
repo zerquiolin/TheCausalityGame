@@ -12,7 +12,7 @@ class UniformNoiseDistribution(NoiseDistribution):
         self.low = low
         self.high = high
 
-    def generate(self, size, random_state: int = 911) -> float:
+    def generate(self, size: int, random_state: int = 911) -> float:
         return uniform.rvs(
             loc=self.low,
             scale=self.high - self.low,
@@ -28,4 +28,4 @@ class UniformNoiseDistribution(NoiseDistribution):
 
     @classmethod
     def from_spec(cls, spec: NoiseDistributionSpec) -> "UniformNoiseDistribution":
-        return cls(**spec.params)
+        return cls(**spec.params)  # TODO: This might raise an error is params is None

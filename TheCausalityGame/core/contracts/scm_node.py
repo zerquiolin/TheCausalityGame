@@ -18,7 +18,6 @@ from TheCausalityGame.core.contracts.serializable import Serializable
 # Spec
 from TheCausalityGame.core.contracts.specs.scm_node import SCMNodeSpec
 from TheCausalityGame.core.infra.registry import get_class_path
-from TheCausalityGame.core.utils.imports import get_class
 from TheCausalityGame.core.utils.random_state_serialization import (
     random_state_from_json,
     random_state_to_json,

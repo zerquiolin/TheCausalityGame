@@ -10,11 +10,11 @@ class RuntimeSettingsSpec(BaseModel):
         default="restricted",
         description="Mode of operation. Can be either 'restricted' or 'dev'.",
     )
-    debug: bool | None = Field(
-        default=None,
+    debug: bool = Field(
+        default=False,
         description="Enable debug mode with more verbose logging and relaxed checks.",
     )
-    trusted: bool | None = Field(
-        default=None,
+    trusted: bool = Field(
+        default=False,
         description="Allow callable deliverables, etc. (e.g., for testing).",
     )

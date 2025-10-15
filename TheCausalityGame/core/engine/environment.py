@@ -1,423 +1,279 @@
-from __future__ import annotations
+import zlib
 
-import sys
-from collections.abc import Callable, Mapping
-from dataclasses import dataclass
-from typing import Any
+import numpy as np
 
-from TheCausalityGame.core.contracts.agent import BaseAgent
-from TheCausalityGame.core.contracts.decisions import Decision
-from TheCausalityGame.core.contracts.dto import (
-    Action,
-    ActionOutcome,
+from TheCausalityGame.core.contracts.agent import Agent
+from TheCausalityGame.core.contracts.decisions import Decision, ExperimentSpec
+
+# DTO
+from TheCausalityGame.core.contracts.dto.environment import (
     AvailableActions,
-    ExperimentSpace,
-    Observation,
+    ExperimentVariable,
+    Feedback,
     RoundInfo,
     Samples,
-    SamplesBatch,
-    StepRecord,
+    SamplesCollection,
 )
-from TheCausalityGame.core.contracts.enums import HookEvent, StepKind
-from TheCausalityGame.core.engine.evaluator import MetricsEvaluator
-from TheCausalityGame.core.infra.budgets import (
-    BudgetEnforcer,
-    BudgetExceededError,
-    BudgetState,
+from TheCausalityGame.core.contracts.dto.transcript import Transcript, TranscriptEntry
+from TheCausalityGame.core.contracts.enum.hooks import HookEvent
+from TheCausalityGame.core.contracts.metric import Metric
+from TheCausalityGame.core.contracts.mission import (
+    BehaviorMetric,
+    Mission,
+    ResultMetric,
 )
-from TheCausalityGame.core.infra.determinism import (
-    hash_intervention_key,
-    make_intervention_seed,
-)
-from TheCausalityGame.core.infra.logging_ import get_logger
-
-HookEmit = Callable[[HookEvent, dict[str, Any]], None]
-WriteStep = Callable[[StepRecord], None]
+from TheCausalityGame.core.contracts.scm import SCM
+from TheCausalityGame.core.contracts.specs.budget import BudgetSpec
+from TheCausalityGame.core.infra.budgets import BudgetEnforcer, BudgetExceededError
+from TheCausalityGame.core.managers.hook import HookManager
+from TheCausalityGame.core.managers.plot import PlotManager
 
 
-@dataclass(slots=True)
 class Environment:
-    """Environment: binds SCM + Mission and runs the round loop for one agent.
-
-    Features:
-      - Two decisions: 'experiment' (one or more (interventions, n)), 'answer'
-      - Deterministic seeds derived in env
-      - Budget enforcement (rounds, time, samples, memory)
-      - Hook emission via HookEvent enum
-      - Step transcripts via StepKind enum
-      - MetricsEvaluator applied outside the hot loop (optional)
-    """
-
-    scm: Any
-    mission: Any
-    metrics: MetricsEvaluator | None = None
-
-    def __post_init__(self) -> None:
-        if hasattr(self.mission, "mount"):
-            self.mission.mount(self.scm)
-
-    # -------------------- Thin API --------------------
-
-    def generate_samples(
-        self, *, n: int, interventions: Mapping[str, Any] | None, seed: int
-    ) -> Mapping[str, list[Any]]:
-        """Delegate sampling to SCM."""
-        return self.scm.generate_samples(n=n, interventions=interventions, seed=seed)
-
-    def mission_validate_submit(self, payload: dict[str, Any], *, trusted: bool) -> Any:
-        """Delegate deliverable validation to Mission."""
-        return self.mission.validate_submit(payload, trusted=trusted)
-
-    # TODO: The truth is actually calculated within the Metric, not in the Environment nor the Mission.
-    def truth_handle_for_metrics(self) -> Any:
-        """Let the Mission compute/own ground-truth handle."""
-        return self.mission.truth_handle_for_metrics(self.scm)
-
-    # -------------------- Run loop --------------------
-
-    def run(
+    def __init__(
         self,
-        *,
-        agent_id: str,
-        agent: BaseAgent,
-        rounds: int,
-        trusted: bool,
-        hook_emit: HookEmit,
-        write_step: WriteStep,
-        # budgets
-        time_limit_s: float | None = None,
-        sample_limit: int | None = None,
-        memory_mb_limit: float | None = None,
-    ) -> dict[str, Any]:
-        """Execute the full round loop and return a run summary."""
-        logger = get_logger("tcg.env")
-
-        budget = BudgetEnforcer(
-            BudgetState(
-                hard_round_limit=rounds,
-                time_limit_s=time_limit_s,
-                sample_limit=sample_limit,
-                memory_mb_limit=memory_mb_limit,
-            )
+        agent: Agent,
+        scm: SCM,
+        mission: Mission,
+        custom_metrics: list[Metric],
+        budget_spec: BudgetSpec,
+        hook_manager: HookManager,
+        plot_manager: PlotManager,
+        logger,
+    ):
+        # Agent
+        self.agent = agent
+        # SCM
+        self.scm = scm
+        # Mission
+        self.mission = mission
+        # Metrics
+        self.custom_metrics = custom_metrics
+        # Budget Enforcer
+        self.budget = BudgetEnforcer(budget_spec)
+        # Hook Manager
+        self.hook_manager = hook_manager
+        # Plot Manager
+        self.plot_manager = plot_manager
+        # Logger
+        self.logger = logger
+        # Available Actions
+        self.available_actions = AvailableActions(
+            experiments=[
+                ExperimentVariable(name=node.name, domain=node.domain)
+                for node in self.scm.nodes.values() or []
+                if node.accessibility == "controllable" and node.domain is not None
+            ],
+            answer="submit",
         )
+        # Measurable Nodes
+        self.measurable_nodes = [
+            node.name
+            for node in self.scm.nodes.values()
+            if node.accessibility in ("measurable", "controllable")
+        ]
+        # Random States for experiments
+        self.random_states: dict[str | tuple, np.random.RandomState] = {}
 
-        done = False
-        last_deliverable: dict[str, Any] | None = None
-        transcript: list[dict[str, Any]] = []
+        # Mount mission
+        self.mission.mount(self.scm)
 
-        hook_emit(HookEvent.RUN_START, {"agent_id": agent_id})
+    def run(self) -> list[TranscriptEntry]:
+        transcript: list[TranscriptEntry] = []
 
         try:
-            for r in range(rounds):
-                if done:
+            self.budget.start_time()
+            for r in range(1, self.budget.rounds_limit + 1):
+                # (Budget) Check time budget
+                self.budget.check_time()
+
+                # (Transcript) New entry
+                transcript_entry = TranscriptEntry(round=r)
+                transcript.append(transcript_entry)
+
+                # (Budget) Pause timer while triggering hooks
+                self.budget.pause_time()
+
+                # (Hook) Round start
+                self.hook_manager.trigger(HookEvent.ROUND_START, transcript[-1])
+                # (Hook) Before act
+                self.hook_manager.trigger(HookEvent.BEFORE_ACT)
+
+                # (Budget) Resume timer before asking agent for action
+                self.budget.resume_time()
+
+                # Ask agent for action
+                decision: Decision = self.agent.act(
+                    round_info=RoundInfo(
+                        round_number=r, budget_state=self.budget.snapshot()
+                    ),
+                    available_actions=self.available_actions,
+                )
+
+                # (Transcript) Add decision
+                transcript_entry.decision = decision
+
+                # Get partial submission from agent
+                answer = self.agent.answer()
+
+                # (Transcript) Add answer
+                transcript_entry.answer = answer
+
+                # (Budget) Pause timer while triggering hooks
+                self.budget.pause_time()
+
+                # (Hook) After act
+                self.hook_manager.trigger(HookEvent.AFTER_ACT)
+                # (Hook) Before eval
+                self.hook_manager.trigger(HookEvent.BEFORE_EVAL)
+
+                # Apply decision
+                samples_collection = self._apply_decision(decision)
+                # Evaluate run
+                feedback = self._get_feedback(transcript)
+
+                # (Transcript) Add samples collection
+                transcript_entry.samples_collection = samples_collection
+                # (Transcript) Add feedback
+                transcript_entry.feedback = feedback
+
+                # (Hook) After eval
+                self.hook_manager.trigger(HookEvent.AFTER_EVAL)
+
+                # (Hook) Before inform
+                self.hook_manager.trigger(HookEvent.BEFORE_INFORM)
+
+                # (Budget) Resume timer before informing agent
+                self.budget.resume_time()
+
+                # Filter samples collection to only include measurable nodes
+                filtered_samples_collection = SamplesCollection()
+                if samples_collection is not None:
+                    for samples in samples_collection:
+                        new_samples = Samples(
+                            kind=samples.kind,
+                            n=samples.n,
+                            data=samples.data[self.measurable_nodes],
+                            interventions=samples.interventions,
+                        )
+                        filtered_samples_collection.append(new_samples)
+
+                # Inform agent
+                self.agent.inform(filtered_samples_collection, feedback)
+
+                # (Budget) Pause timer while triggering hooks
+                self.budget.pause_time()
+
+                # (Hook) After inform
+                self.hook_manager.trigger(HookEvent.AFTER_INFORM)
+
+                # (Budget) Charge round
+                self.budget.tick_round()
+                # (Budget) Charge samples used
+                self.budget.charge_samples(samples_collection.total_n())
+                # (Budget) Charge memory used
+                self.budget.charge_memory(samples_collection.total_bytes())
+
+                # (Transcript) Add budget snapshot
+                transcript_entry.budget_snapshot = self.budget.snapshot()
+
+                # (Hook) New snapshot
+                self.hook_manager.trigger(HookEvent.NEW_SNAPSHOT)
+
+                # TODO: Move all plotting to the orchestrator
+                # # Plot current state
+                # self.plot_manager.trigger_round(transcript_entry)
+
+                # (Hook) Round end
+                self.hook_manager.trigger(HookEvent.ROUND_END)
+
+                # Check if done
+                if decision.kind == "answer":
                     break
 
-                budget.check_time()
-                budget.tick_round()
-
-                hook_emit(HookEvent.ROUND_START, {"agent_id": agent_id, "round": r})
-
-                round_info = RoundInfo(
-                    round_index=r,
-                    remaining_rounds=rounds - r,
-                    budgets_snapshot=budget.snapshot(),
-                )
-                available = self._available_actions()
-
-                # status step (useful for consumers)
-                observation = Observation(
-                    kind=StepKind.STATUS.value, payload={"round": r}
-                )
-                step0 = StepRecord(
-                    round_index=r,
-                    step_index=0,
-                    agent_id=agent_id,
-                    mission_id=type(self.mission).__name__,
-                    observation=observation,
-                )
-                write_step(step0)
-                transcript.append(step0.model_dump())
-
-                hook_emit(
-                    HookEvent.BEFORE_ACT,
-                    {
-                        "agent_id": agent_id,
-                        "round": r,
-                        "experiment_vars": list(available.experiment.variables.keys()),
-                        "budgets": round_info.budgets_snapshot,
-                    },
-                )
-
-                decision: Decision = agent.act(round_info, available)
-
-                (
-                    action,
-                    outcome,
-                    observation,
-                    rows_generated,
-                    bytes_generated,
-                ) = self._apply_decision(
-                    decision,
-                    agent=agent,
-                    trusted=trusted,
-                    round_index=r,
-                    available=available,
-                )
-
-                # charge budgets
-                if rows_generated > 0:
-                    budget.charge_samples(rows_generated)
-                if bytes_generated > 0:
-                    budget.charge_memory(bytes_generated)
-
-                # TODO: outcome.feedback is currently always None
-                agent.inform(outcome)
-
-                # TODO: Both the mission spec and
-                step1 = StepRecord(
-                    round_index=r,
-                    step_index=1,
-                    agent_id=agent_id,
-                    mission_id=type(self.mission).__name__,
-                    action=action,
-                    observation=observation,
-                    done=action.kind in (StepKind.ACTION_SUBMIT_FINAL.value,),
-                )
-                write_step(step1)
-                transcript.append(step1.model_dump())
-
-                # TODO: I think this part must be simplified and used within the _apply_decision() since the actionoutcome feedback is always None. Here we can use the feedback for the observation or other processes.
-                if action.kind == StepKind.ACTION_EXPERIMENT.value:
-                    hook_emit(
-                        HookEvent.AFTER_ACT,
-                        {
-                            "agent_id": agent_id,
-                            "round": r,
-                            "action": action.kind,
-                            "rows": (observation.payload or {}).get("rows"),
-                            "intervention_keys": (observation.payload or {}).get(
-                                "intervention_keys"
-                            ),
-                            "bytes_generated": bytes_generated,
-                            "budgets": budget.snapshot(),
-                        },
-                    )
-                elif action.kind == StepKind.ACTION_SUBMIT_FINAL.value:
-                    last_deliverable = None
-                    if outcome.feedback and hasattr(outcome.feedback, "deliverable"):
-                        last_deliverable = outcome.feedback.deliverable  # type: ignore[assignment]
-                    done = True
-                    hook_emit(
-                        HookEvent.SUBMIT_FINAL, {"agent_id": agent_id, "round": r}
-                    )
-                    hook_emit(
-                        HookEvent.AFTER_ACT,
-                        {"agent_id": agent_id, "round": r, "action": action.kind},
-                    )
-
-                hook_emit(HookEvent.ROUND_END, {"agent_id": agent_id, "round": r})
-
-            # Final metrics (optional)
-            result: dict[str, Any] = {
-                "done": done,
-                "last_deliverable": last_deliverable,
-            }
-
-            # TODO: The metrics should evaluate both behavior and results, but the truth is calculated within the Metric itself.
-            # TODO: This section should only call the metric.evaluate(...) or similar. The metric itself is in charge of evaluating both behavior and result metrics.
-            if self.metrics is not None:
-                behavior_scores = self.metrics.evaluate_behavior(transcript=transcript)
-                result["behavior_scores"] = [m.model_dump() for m in behavior_scores]
-                if last_deliverable is not None:
-                    truth = self.truth_handle_for_metrics()
-                    result_scores = self.metrics.evaluate_results(
-                        deliverable=last_deliverable, truth=truth
-                    )
-                    result["result_scores"] = [m.model_dump() for m in result_scores]
-
-            hook_emit(HookEvent.RUN_END, {"agent_id": agent_id})
-            logger.info(
-                "run finished",
-                extra={"agent_id": agent_id, "rounds": rounds, "done": done},
-            )
-            return result
-
         except BudgetExceededError as e:
-            hook_emit(HookEvent.RUN_END, {"agent_id": agent_id, "error": str(e)})
-            logger.warning(
-                "run aborted by budget", extra={"agent_id": agent_id, "reason": str(e)}
-            )
-            return {"done": False, "error": str(e)}
+            self.logger.warning(f"Budget exceeded: {e}")
+        except Exception as e:
+            self.logger.error(f"Unexpected error: {e}")
+        finally:
+            self.hook_manager.trigger(HookEvent.ROUND_END)
 
-    # -------------------- helpers --------------------
+        return transcript
 
-    # TODO: it would be great to have the accesibility and other info as constants.
-    def _available_actions(self) -> AvailableActions:
-        """Derive experiment space from SCM nodes (controllable domains)."""
-        controllable: dict[str, list] = {}
-        nodes = getattr(self.scm, "nodes", {}) or {}
-        values_iter = getattr(nodes, "values", lambda: [])()
-        for node in values_iter:
-            if getattr(node, "accessibility", None) == "controllable":
-                domain = getattr(node, "domain", None)
-                if domain is not None:
-                    controllable[getattr(node, "name", "unknown")] = list(domain)
-        exp_space = ExperimentSpace(variables=controllable, max_n=None)
-        return AvailableActions(experiment=exp_space, answer={})
+    def _apply_decision(self, decision: Decision) -> SamplesCollection | None:
+        if decision.kind == "answer":
+            return None
 
-    def _validate_interventions(
-        self, interventions: Mapping[str, Any], exp: ExperimentSpace
-    ) -> None:
-        """Ensure interventions are within the advertised experiment space."""
-        for var, val in interventions.items():
-            if var not in exp.variables:
-                raise ValueError(f"Unknown intervention variable: {var}")
-            if val not in exp.variables[var]:
-                raise ValueError(
-                    f"Value {val!r} not in domain of {var}: {exp.variables[var]!r}"
+        collection: list[Samples] = []
+
+        for experiment in decision.experiments:
+            treatment, n = experiment.treatment, experiment.n
+            # Check experiment validity
+            self._validate_experiment(treatment)
+            # Hash the treatment to use as a key for random state
+            hashed = tuple(sorted(treatment.items())) if treatment else "observational"
+            if hashed not in self.random_states:
+                # Create a new random state for this treatment
+                seed = zlib.crc32(str(hashed).encode())
+                rs_base = np.random.RandomState(seed)
+                self.random_states[hashed] = (
+                    self.scm.prepare_new_random_state_structure(rs_base)
                 )
 
-    def _apply_decision(
-        self,
-        decision: Decision,
-        *,
-        agent: BaseAgent,
-        trusted: bool,
-        round_index: int,
-        available: AvailableActions,
-    ) -> tuple[Action, ActionOutcome, Observation, int, int]:
-        """Apply a Decision and return (Action, Outcome, Observation, rows_generated, bytes_generated)."""
-        if decision.is_experiment:
-            samples_list: list[Samples] = []
-            intervention_keys: list[str] = []
-            total_rows = 0
-            total_bytes = 0
+            # Generate samples using the hashed random state
+            samples = self.scm.generate_samples(
+                interventions=treatment,
+                num_samples=n,
+                random_state=self.random_states[hashed],
+            )
 
-            for spec in decision.experiments:
-                iv: Mapping[str, Any] | None = spec.interventions or {}
-                self._validate_interventions(iv, available.experiment) if iv else None
-
-                ctx = agent.context
-                ikey = hash_intervention_key(
-                    base_seed=ctx.base_seed,
-                    manifest_id=ctx.manifest_id,
-                    agent_id=ctx.agent_id,
-                    round_index=round_index,
-                    interventions=iv,
-                    n=spec.n,
+            collection.append(
+                Samples(
+                    kind=(
+                        "observational"
+                        if hashed == "observational"
+                        else "interventional"
+                    ),
+                    n=n,
+                    data=samples,
+                    interventions=treatment,
                 )
-                seed = make_intervention_seed(
-                    base_seed=ctx.base_seed,
-                    manifest_id=ctx.manifest_id,
-                    agent_id=ctx.agent_id,
-                    round_index=round_index,
-                    interventions=iv,
-                    n=spec.n,
-                )
-
-                ds = self.generate_samples(n=spec.n, interventions=iv, seed=seed)
-
-                rows = 0
-                if isinstance(ds, Mapping) and ds:
-                    rows = len(next(iter(ds.values())))
-                total_rows += rows
-
-                approx_bytes = self._estimate_dataset_bytes(ds)
-                total_bytes += approx_bytes
-
-                samples_list.append(
-                    Samples(
-                        kind="observational" if not iv else "interventional",
-                        data=ds,  # type: ignore[arg-type]
-                        n=rows,
-                        interventions=iv,
-                        seed=seed,
-                        key=ikey,
-                    )
-                )
-                intervention_keys.append(ikey)
-
-            action = Action(
-                kind=StepKind.ACTION_EXPERIMENT.value,
-                payload={"count": len(samples_list), "keys": intervention_keys},
             )
-            outcome = ActionOutcome(
-                action_kind="experiment",
-                action_payload=action.payload,
-                samples=SamplesBatch(items=samples_list),
-                feedback=None,
-            )
-            observation = Observation(
-                kind=StepKind.DATASET_BATCH.value,
-                payload={
-                    "rows": [s.n for s in samples_list],
-                    "cols": list(samples_list[0].data.keys()) if samples_list else [],
-                    "intervention_keys": intervention_keys,
-                    "approx_bytes": total_bytes,
-                },
-            )
-            return action, outcome, observation, total_rows, total_bytes
 
-        if decision.is_answer:
-            payload = agent.answer()
-            validated = self.mission_validate_submit(payload, trusted=trusted)
-            action = Action(kind=StepKind.ACTION_SUBMIT_FINAL.value, payload={})
-            outcome = ActionOutcome(
-                action_kind="answer",
-                action_payload={},
-                samples=None,
-                feedback=None,  # metrics/feedback handled post-loop
-            )
-            observation = Observation(
-                kind=StepKind.FEEDBACK.value,
-                payload={"accepted": True, "deliverable": bool(validated)},
-            )
-            return action, outcome, observation, 0, 0
+        return SamplesCollection(collection)
 
-        action = Action(kind=StepKind.ACTION_UNKNOWN.value, payload={})
-        outcome = ActionOutcome(
-            action_kind="unknown", action_payload={}, samples=None, feedback=None
-        )
-        observation = Observation(
-            kind=StepKind.STATUS.value, payload={"warning": "unknown-decision"}
-        )
-        return action, outcome, observation, 0, 0
+    def _validate_experiment(self, experiment: ExperimentSpec) -> bool:
+        for treatment in experiment.treatment.items():
+            # Vairable name and value
+            name, value = treatment
+            # Check controllability
+            if self.scm.nodes[name].accessibility != "controllable":
+                raise ValueError
+            # Check domain
+            low, high = self.scm.nodes[name].domain
+            if value < low or value > high:
+                raise ValueError
+        return True
 
-    # -------------------- memory estimation --------------------
-
-    def _estimate_dataset_bytes(self, ds: Mapping[str, list[Any]] | Any) -> int:
-        """Best-effort, fast approximation of a columnar dataset's memory footprint.
-
-        For numpy/pandas outputs, override this method and use `.nbytes` or
-        `df.memory_usage(deep=True).sum()`.
-        """
-        try:
-            if not isinstance(ds, Mapping):
-                return 0
-            seen_ids: set[int] = set()
-            total = 0
-
-            def _sizeof(obj: Any) -> int:
-                oid = id(obj)
-                if oid in seen_ids:
-                    return 0
-                seen_ids.add(oid)
-                try:
-                    return sys.getsizeof(obj)
-                except Exception:
-                    return 0
-
-            total += _sizeof(ds)
-            for col, values in ds.items():
-                total += _sizeof(col)
-                total += _sizeof(values)
-                if isinstance(values, list):
-                    for v in values:
-                        if isinstance(v, (int, float, bool, str)):
-                            total += _sizeof(v)
-                        else:
-                            # conservative small constant for uncommon types
-                            total += 16
-            return total
-        except Exception:
-            return 0
+    def _get_feedback(self, transcript: Transcript) -> Feedback:
+        feedback = Feedback()
+        # Mission metrics
+        behavior_score, result_score = self.mission.evaluate(Transcript)
+        feedback.behavior = behavior_score
+        feedback.result = result_score
+        # Get current answer
+        answer = transcript.entries[-1].answer
+        # Custom metrics
+        custom_metrics_scores: dict[str, float] = {}
+        for metric in self.custom_metrics:
+            # Check if metric is behavioral or result
+            if isinstance(metric, BehaviorMetric):
+                score = metric.evaluate(transcript)
+            elif isinstance(metric, ResultMetric):
+                score = metric.evaluate(answer)
+            else:
+                raise ValueError(f"Unknown metric type: {type(metric)}")
+            # Add score to results
+            custom_metrics_scores[metric.name] = score
+        feedback.custom_metrics = custom_metrics_scores
+        return feedback

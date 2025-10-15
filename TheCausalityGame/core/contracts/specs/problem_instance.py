@@ -1,14 +1,13 @@
-from pydantic import BaseModel, ConfigDict
-
 from TheCausalityGame.core.contracts.specs.agent import AgentSpec
-from TheCausalityGame.core.contracts.specs.hook import HookSpec
-from TheCausalityGame.core.contracts.specs.metric import MetricSpec, MetricSpecs
+from TheCausalityGame.core.contracts.specs.common import CommonSpec
+from TheCausalityGame.core.contracts.specs.metric import MetricsSpec
+from TheCausalityGame.core.contracts.specs.mission import MissionSpec
 from TheCausalityGame.core.contracts.specs.run import RunPlanSpec
+from TheCausalityGame.core.contracts.specs.scm import SCMSpec
 from TheCausalityGame.core.contracts.specs.settings import RuntimeSettingsSpec
-from TheCausalityGame.core.contracts.types.common import JsonDict
 
 
-class ProblemInstanceSpec(BaseModel):
+class ProblemInstanceSpec(CommonSpec):
     """Top-level manifest describing a benchmark run.
 
     Attributes
@@ -26,21 +25,18 @@ class ProblemInstanceSpec(BaseModel):
         artifacts_policy: Global artifact toggles/policies.
     """
 
-    model_config = ConfigDict(extra="forbid")
+    # TODO: Update the docstring above to match the actual attributes.
 
-    schema_version: str = "1.0.0"
     id: str
+    schema_version: str = "1.0.0"
 
-    scm_spec: JsonDict
-    mission_spec: JsonDict
-    agent_specs: list[AgentSpec]
+    agents: list[AgentSpec]
 
-    metric_specs: MetricSpecs
-    custom_metric_specs: list[MetricSpec] = []
+    scm: SCMSpec
+    mission: MissionSpec
+    custom_metrics: list[MetricsSpec] = []
 
     run_plan: RunPlanSpec
 
-    seeds: JsonDict = {}
-    hook_plan: list[HookSpec] = []
-    artifacts_policy: JsonDict = {}
+    seeds: dict[str, int] = {}
     runtime: RuntimeSettingsSpec = RuntimeSettingsSpec()

@@ -10,13 +10,8 @@ class HookEvent(str, Enum):
     ROUND_END = "round_end"
     BEFORE_ACT = "before_act"
     AFTER_ACT = "after_act"
-    SUBMIT_FINAL = "submit_final"
-
-
-class StepKind(str, Enum):
-    STATUS = "status"
-    DATASET_BATCH = "dataset_batch"
-    FEEDBACK = "feedback"
-    ACTION_EXPERIMENT = "experiment"
-    ACTION_SUBMIT_FINAL = "submit_final"
-    ACTION_UNKNOWN = "unknown"
+    BEFORE_EVAL = "before_eval"
+    AFTER_EVAL = "after_eval"
+    BEFORE_INFORM = "before_inform"
+    AFTER_INFORM = "after_inform"
+    NEW_SNAPSHOT = "new_snapshot"

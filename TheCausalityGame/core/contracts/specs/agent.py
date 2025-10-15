@@ -3,9 +3,10 @@
 from pydantic import BaseModel, ConfigDict, Field
 
 from TheCausalityGame.core.contracts.types.common import JsonDict
+from TheCausalityGame.core.contracts.specs.common import CommonSpec
 
 
-class AgentSpec(BaseModel):
+class AgentSpec(CommonSpec):
     """Specification for constructing an agent.
 
     Attributes
@@ -14,10 +15,4 @@ class AgentSpec(BaseModel):
         params: Optional agent configuration payload.
     """
 
-    model_config = ConfigDict(extra="forbid", frozen=True)
-
-    class_: str = Field(alias="class")
-    params: JsonDict = Field(
-        default_factory=dict,
-        description="Optional agent configuration payload.",
-    )
+    id: str = Field(..., description="Unique identifier for the agent.")

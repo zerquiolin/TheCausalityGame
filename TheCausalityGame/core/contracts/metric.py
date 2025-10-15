@@ -13,6 +13,11 @@ from TheCausalityGame.core.contracts.serializable import Serializable
 class Metric(Serializable):
     """Metric contract + serializable base."""
 
+    name: str
+    description: str
+
+    is_mounted = False
+
     @abstractmethod
     def mount(self, scm: SCM) -> None:
         """Perform any setup required before evaluation.
@@ -55,8 +60,10 @@ class BehaviorMetric(Metric):
 class ResultMetric(Metric):
     """Result Metric contract + serializable base."""
 
+    kinds: list[str]
+
     @abstractmethod
-    def evaluate(self, result: Any) -> float:
+    def evaluate(self, kind: str, result: Any) -> float:
         """Compute a score for this run.
 
         Returns

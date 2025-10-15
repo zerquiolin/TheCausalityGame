@@ -2,49 +2,42 @@ from __future__ import annotations
 
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import ConfigDict, Field
 
-from .actions import Action, Observation
-
-
-class TranscriptEntry(BaseModel):
-    """Canonical transcript unit written by the Environment per step.
-
-    A 'step' is one atomic record in the round loop (e.g., status, dataset batch,
-    experiment action, final submission). We attach run-scoped metadata and a
-    single Step (kind + payload).
-    """
-
-    round_index: int
-    step_index: int
-    agent_id: str
-    mission_id: str
-    step: StepRecord
-    done: bool = False
-    # TODO: This requires to have the feedback in the transcript to know the reward at that point of time.
+from TheCausalityGame.core.contracts.decisions import Decision
+from TheCausalityGame.core.contracts.dto.common import CommonDTO
+from TheCausalityGame.core.contracts.dto.environment import (
+    BudgetSnapshot,
+    Feedback,
+    SamplesCollection,
+)
 
 
-class StepRecord(BaseModel):
-    """One micro-step record in the run transcript."""
+class TranscriptEntry(CommonDTO):
+    """Canonical transcript unit written by the Environment per step."""
 
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="allow", frozen=False, arbitrary_types_allowed=True)
 
-    action: Action | None = None
-    observation: Observation | None = None
+    round: int
 
-    budgets_consumed: dict[str, float | int] = {}
-    error: str | None = None
+    decision: Decision | None = None  # TODO: Update scripts (serialization)
+    answer: Any | None = None  # TODO: Update scripts (serialization)
+    samples_collection: SamplesCollection | None = (
+        None  # TODO: Update scripts (serialization)
+    )
+
+    budget_snapshot: BudgetSnapshot | None = None
+    feedback: Feedback | None = None
+
+    error: str | None = None  # TODO: Not sure if this is still usefull
+    done: bool = False  # TODO: Not sure if this is still usefull
 
 
-class Transcript(BaseModel):
+class Transcript(CommonDTO):
     """Full transcript of a run, including metadata and all steps."""
 
-    model_config = ConfigDict(extra="forbid")
-
-    run_id: str
     agent_id: str
     mission_id: str
+    manifest_id: str
 
-    metadata: dict[str, Any] = Field(default_factory=dict)
-
-    steps: list[TranscriptEntry] = Field(default_factory=list)
+    entries: list[TranscriptEntry] = Field(default=list)

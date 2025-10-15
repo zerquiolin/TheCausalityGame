@@ -1,13 +1,14 @@
-"""The Causality Game - Agent Spec."""
+"""The Causality Game - Result Validator contract."""
 
 from TheCausalityGame.core.contracts.specs.common import CommonSpec
 
 
-class NoiseDistributionSpec(CommonSpec):
+class ResultValidatorSpec(CommonSpec):
     """Specification for constructing an agent.
 
     Attributes
     ----------
         class_: Import path 'module:Class' (aliased from 'class' in JSON).
+        spec_: Import path 'module:Class' (aliased from 'spec' in JSON).
         params: Optional agent configuration payload.
     """

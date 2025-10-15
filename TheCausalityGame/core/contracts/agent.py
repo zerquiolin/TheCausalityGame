@@ -7,10 +7,12 @@ from dataclasses import dataclass
 from typing import Any, Mapping  # noqa: UP035
 
 from TheCausalityGame.core.contracts.decisions import Decision
-from TheCausalityGame.core.contracts.dto.outcome import ActionOutcome
-from TheCausalityGame.core.contracts.dto.rounds import RoundInfo
-from TheCausalityGame.core.contracts.dto.availability import AvailableActions
-
+from TheCausalityGame.core.contracts.dto.environment import (
+    AvailableActions,
+    Feedback,
+    RoundInfo,
+    SamplesCollection,
+)
 from TheCausalityGame.core.contracts.serializable import Serializable
 
 
@@ -20,9 +22,6 @@ class AgentContext:
 
     Attributes
     ----------
-        agent_id: Id of the running agent.
-        config: Agent configuration (immutable view).
-        manifest_id: Id of the current ProblemInstance.
         base_seed: Optional global seed used as root for deterministic derivations.
         game_scenario: Hints about mission and constraints (max rounds, budgets, etc.).
             Recommended keys:
@@ -33,11 +32,11 @@ class AgentContext:
 
     """
 
-    agent_id: str
-    config: Mapping[str, Any]
-    manifest_id: str
-    base_seed: int | None = None
-    game_scenario: Mapping[str, Any] | None = None
+    mission: Mapping[str, str]
+    behavior_metric: Mapping[str, str]
+    result_metric: Mapping[str, str]
+    custom_metrics: list[Mapping[str, str]]
+    seed: int
 
 
 class Agent(Serializable):
@@ -49,10 +48,12 @@ class Agent(Serializable):
       - answer() -> Any
     """
 
+    id: str
     _context: AgentContext | None = None
 
     # -------- context management --------
 
+    @abstractmethod
     def set_context(self, ctx: AgentContext) -> None:
         """Inject the runtime context exactly once per agent instance."""
         if self._context is None:
@@ -75,7 +76,7 @@ class Agent(Serializable):
         raise NotImplementedError
 
     @abstractmethod
-    def inform(self, outcome: ActionOutcome) -> None:
+    def inform(self, samples_collection: SamplesCollection, feedback: Feedback) -> None:
         """Receive the result of the previously executed action (samples/feedback)."""
         raise NotImplementedError
 

@@ -1,117 +1,102 @@
-from __future__ import annotations
-
-import importlib
-from collections.abc import Callable
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any
-
-from TheCausalityGame.core.contracts.agent import BaseAgent
-from TheCausalityGame.core.engine.evaluator import (
-    MetricsEvaluator,
-)
-from TheCausalityGame.core.engine.evaluator import (
-    MetricsSpec as MetricsBundle,
-)
-from TheCausalityGame.core.runtime.game_instance import (
-    AgentSpecModel,
-    ComponentSpec,
-    GameInstance,
-    MetricsSpecModel,
-)
-from TheCausalityGame.core.runtime.orchestrator import Orchestrator, RunMode
+from TheCausalityGame.core.contracts.agent import Agent, AgentContext
+from TheCausalityGame.core.contracts.dto.transcript import Transcript
+from TheCausalityGame.core.contracts.enum.hooks import HookEvent
+from TheCausalityGame.core.contracts.metric import Metric
+from TheCausalityGame.core.contracts.mission import Mission
+from TheCausalityGame.core.contracts.scm import SCM
+from TheCausalityGame.core.contracts.specs.agent import AgentSpec
+from TheCausalityGame.core.contracts.specs.budget import BudgetSpec
+from TheCausalityGame.core.contracts.specs.mission import MissionSpec
+from TheCausalityGame.core.contracts.specs.scm import SCMSpec
+from TheCausalityGame.core.engine.environment import Environment
+from TheCausalityGame.core.infra.registry import build_from_spec
+from TheCausalityGame.core.managers.hook import HookManager
+from TheCausalityGame.core.managers.plot import PlotManager
 
 
-# TODO: This method already exists in the registry module.
-def _import_class(path: str) -> type:
-    """Import 'pkg.mod:Class' or 'pkg.mod.Class'."""
-    if ":" in path:
-        mod, cls = path.split(":", 1)
-    elif "." in path:
-        mod, cls = path.rsplit(".", 1)
-    else:
-        raise ValueError(f"Invalid class path: {path}")
-    return getattr(importlib.import_module(mod), cls)
-
-
-def _instantiate(spec: ComponentSpec) -> Any:
-    """Instantiate a component from a ComponentSpec."""
-    return _import_class(spec.cls)(**spec.params)
-
-
-# TODO: This is also a requirement in the metric classes, should implement an abstract class like 'from_spec" or similar.
-def _make_metrics(m: MetricsSpecModel | None) -> MetricsEvaluator | None:
-    if not m:
-        return None
-    behavior = _instantiate(m.behavior)
-    result = _instantiate(m.result)
-    custom = tuple(_instantiate(x) for x in m.custom)
-    return MetricsEvaluator(
-        spec=MetricsBundle(behavior=behavior, result=result, custom=custom)
-    )
-
-
-# TODO: This method is not necessary, that is what the extend of the serialization class methosd are used for.
-def _agent_factory_from_spec(
-    s: AgentSpecModel,
-) -> tuple[str, Callable[[dict[str, Any]], BaseAgent]]:
-    cls = _import_class(s.component.cls)
-    params = dict(s.component.params)
-
-    def factory(_cfg: dict[str, Any]) -> BaseAgent:
-        return cls(**params)  # type: ignore[return-value]
-
-    return s.id, factory
-
-
-@dataclass(slots=True)
 class Game:
-    """A thin façade over Orchestrator for running a GameInstance."""
-
-    instance: GameInstance
-    run_dir: Path
-
-    def _make_orchestrator(self) -> Orchestrator:
-        mi = self.instance
-
-        def build_scm(_manifest: dict[str, Any]) -> Any:
-            return _instantiate(mi.scm)
-
-        def build_mission(_manifest: dict[str, Any]) -> Any:
-            return _instantiate(mi.mission)
-
-        def build_metrics(_manifest: dict[str, Any]) -> MetricsEvaluator | None:
-            return _make_metrics(mi.metrics)
-
-        return Orchestrator(
-            run_dir=self.run_dir,
-            build_scm=build_scm,
-            build_mission=build_mission,
-            build_metrics=build_metrics,
-            max_parallel_workers=mi.run_plan.max_parallel_workers,
+    def __init__(
+        self,
+        manifest_id: str,
+        agent_spec: AgentSpec,
+        scm_spec: SCMSpec,
+        mission_spec: MissionSpec,
+        custom_metrics_specs: list[MissionSpec],
+        budget_spec: BudgetSpec,
+        hook_manager: HookManager,
+        plot_manager: PlotManager,
+        logger,
+    ) -> None:
+        # Manifest ID
+        self.manifest_id = manifest_id
+        # Build Agent
+        self.agent: Agent = build_from_spec(agent_spec)
+        # Build SCM
+        self.scm: SCM = build_from_spec(scm_spec)
+        # Build Mission
+        self.mission: Mission = build_from_spec(mission_spec)
+        # Build Custom Metrics
+        self.custom_metrics: list[Metric] = [
+            build_from_spec(m) for m in custom_metrics_specs
+        ]
+        # Agent Context
+        agent_ctx = AgentContext(
+            mission={
+                "name": self.mission.name,
+                "description": self.mission.description,
+            },
+            behavior_metric={
+                "name": self.mission.behavior_metric.name,
+                "description": self.mission.behavior_metric.description,
+            },
+            result_metric={
+                "name": self.mission.result_metric.name,
+                "description": self.mission.result_metric.description,
+            },
+            custom_metrics=[
+                {"name": m.name, "description": m.description}
+                for m in self.custom_metrics
+            ],
+            seed=911,
         )
-
-    def run(self) -> dict[str, dict[str, Any]]:
-        """Run all agents per the instance's RunPlan and return summaries per agent."""
-        orch = self._make_orchestrator()
-        agents = tuple(_agent_factory_from_spec(a) for a in self.instance.agents)
-        run_mode = (
-            RunMode(self.instance.run_plan.mode)
-            if self.instance.run_plan.mode in RunMode._value2member_map_
-            else RunMode.SEQUENTIAL
+        self.agent.set_context(agent_ctx)
+        # Build Environment
+        self.environment = Environment(
+            self.agent,
+            self.scm,
+            self.mission,
+            self.custom_metrics,
+            budget_spec,
+            hook_manager,
+            plot_manager,
+            logger,
         )
+        # Hook Manager
+        self.hook_manager = hook_manager
+        # Plot Manager
+        self.plot_manager = plot_manager
+        # Logger
+        self.logger = logger
 
-        return orch.run_many(
-            run_mode=run_mode,
-            manifest={
-                "id": self.instance.id,
-                "base_seed": self.instance.base_seed,
-            },  # light context
-            agents=agents,
-            rounds=self.instance.run_plan.rounds,
-            time_limit_s=self.instance.run_plan.budgets.time_s,
-            sample_limit=self.instance.run_plan.budgets.samples,
-            memory_mb_limit=self.instance.run_plan.budgets.memory_mb,
-            trusted=True,
-            base_seed=self.instance.base_seed,
-        )
+    def run(self) -> Transcript:
+        # Log start
+        self.logger.info(f"Starting game run for agent {self.agent.id}.")
+        # Flag start
+        self.hook_manager.execute(HookEvent.RUN_START)
+        # Run Environment
+        transcript_entries = self.environment.run()
+        # Build Transcript
+        self.transcript = Transcript(
+            manifest_id=self.manifest_id,
+            agent_id=self.agent.id,
+            mission_id=1,  # TODO: Add mission id to MissionSpec
+            mission_name=self.mission.name,
+            entries=transcript_entries,
+        )  # TODO: Pass in the transcript in the hook start
+        # Flag end
+        self.hook_manager.execute(HookEvent.RUN_END)
+        # Log end
+        self.logger.info(f"Game run for agent {self.agent.id} completed.")
+        # Plot End
+        self.plot_manager.trigger_end(self.transcript)
+        return self.transcript

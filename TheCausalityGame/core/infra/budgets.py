@@ -3,6 +3,9 @@ from __future__ import annotations
 import time
 from dataclasses import dataclass, field
 
+from TheCausalityGame.core.contracts.dto.environment import BudgetSnapshot
+from TheCausalityGame.core.contracts.specs.budget import BudgetSpec
+
 
 @dataclass(slots=True)
 class BudgetState:
@@ -20,7 +23,7 @@ class BudgetState:
         memory_used_mb: Running total of memory (in MB) charged against the budget.
     """
 
-    hard_round_limit: int
+    rounds_limit: int
     time_limit_s: float | None = None
     sample_limit: int | None = None
     memory_mb_limit: float | None = None
@@ -32,11 +35,36 @@ class BudgetState:
 
     # timing
     _t0: float = field(default_factory=time.perf_counter, init=False, repr=False)
+    _t1: float | None = field(default=None, init=False, repr=False)
+    _t2: float | None = field(default=None, init=False, repr=False)
+    _paused_s: float = 0.0
+
+    def start_time(self) -> None:
+        """Reset the internal timer to now."""
+        self._t0 = time.perf_counter()
+
+    def pause_time(self) -> None:
+        """Pause the internal timer."""
+        self._t1 = time.perf_counter()
+
+    def resume_time(self) -> None:
+        """Resume the internal timer."""
+        if self._t1 is not None:
+            self._paused_s += time.perf_counter() - self._t1
+            self._t1 = None
 
     # ---- derived views ----
     def seconds_elapsed(self) -> float:
         """Return seconds elapsed since state creation."""
-        return time.perf_counter() - self._t0
+        return (
+            time.perf_counter()
+            - self._t0
+            - (
+                self._paused_s
+                if self._t1 is None
+                else (self._paused_s + (time.perf_counter() - self._t1))
+            )
+        )
 
     def seconds_left(self) -> float | None:
         """Return seconds left (None if unlimited)."""
@@ -46,7 +74,7 @@ class BudgetState:
 
     def rounds_left(self) -> int:
         """Return remaining rounds (non-negative)."""
-        return max(0, self.hard_round_limit - self.rounds_used)
+        return max(0, self.rounds_limit - self.rounds_used)
 
     def samples_left(self) -> int | None:
         """Return remaining sample allowance (None if unlimited)."""
@@ -77,13 +105,31 @@ class BudgetEnforcer:
 
     BYTES_PER_MB = 1024.0 * 1024.0
 
-    def __init__(self, state: BudgetState) -> None:
-        self._s = state
+    def __init__(self, budget_spec: BudgetSpec) -> None:
+        self._s = BudgetState(
+            rounds_limit=budget_spec.rounds,
+            time_limit_s=budget_spec.time_s,
+            sample_limit=budget_spec.samples,
+            memory_mb_limit=budget_spec.memory_mb,
+        )
 
     @property
-    def state(self) -> BudgetState:
-        """Return underlying mutable state (for snapshots)."""
-        return self._s
+    def rounds_limit(self) -> int:
+        """Return the hard round limit."""
+        return self._s.rounds_limit
+
+    # ---- resets ----
+    def start_time(self) -> None:
+        """Reset the internal timer to now."""
+        self._s.start_time()
+
+    def pause_time(self) -> None:
+        """Pause the internal timer."""
+        self._s.pause_time()
+
+    def resume_time(self) -> None:
+        """Resume the internal timer."""
+        self._s.resume_time()
 
     # ---- checks & charges ----
     def check_time(self) -> None:
@@ -96,7 +142,7 @@ class BudgetEnforcer:
     def tick_round(self) -> None:
         """Consume one round; raise if beyond limit."""
         self._s.rounds_used += 1
-        if self._s.rounds_used > self._s.hard_round_limit:
+        if self._s.rounds_used > self._s.rounds_limit:
             raise BudgetExceededError("Round budget exhausted")
 
     def charge_samples(self, n: int) -> None:
@@ -122,18 +168,11 @@ class BudgetEnforcer:
             raise BudgetExceededError("Memory budget exhausted")
 
     # ---- snapshots ----
-    def snapshot(self) -> dict:
+    def snapshot(self) -> BudgetSnapshot:
         """Return a JSON-safe snapshot for RoundInfo/bindings."""
-        return {
-            "hard_round_limit": self._s.hard_round_limit,
-            "rounds_used": self._s.rounds_used,
-            "rounds_left": self._s.rounds_left(),
-            "time_limit_s": self._s.time_limit_s,
-            "seconds_left": self._s.seconds_left(),
-            "sample_limit": self._s.sample_limit,
-            "samples_used": self._s.samples_used,
-            "samples_left": self._s.samples_left(),
-            "memory_mb_limit": self._s.memory_mb_limit,
-            "memory_used_mb": self._s.memory_used_mb,
-            "memory_mb_left": self._s.memory_mb_left(),
-        }
+        return BudgetSnapshot(
+            rounds_left=self._s.rounds_left(),
+            time_s_left=self._s.seconds_left(),
+            samples_left=self._s.samples_left(),
+            memory_mb_left=self._s.memory_mb_left(),
+        )
