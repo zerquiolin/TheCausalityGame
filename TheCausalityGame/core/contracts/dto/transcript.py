@@ -4,13 +4,13 @@ from typing import Any
 
 from pydantic import ConfigDict, Field
 
-from TheCausalityGame.core.dto.common import CommonDTO
-from TheCausalityGame.core.dto.environment import (
+from TheCausalityGame.core.contracts.dto.common import CommonDTO
+from TheCausalityGame.core.contracts.dto.environment import (
     BudgetSnapshot,
     Feedback,
     SamplesCollection,
 )
-from TheCausalityGame.core.infraestructure.decisions import Decision
+from TheCausalityGame.core.infrastructure.decisions import Decision
 
 
 class TranscriptEntry(CommonDTO):
@@ -20,17 +20,12 @@ class TranscriptEntry(CommonDTO):
 
     round: int
 
-    decision: Decision | None = None  # TODO: Update scripts (serialization)
-    answer: Any | None = None  # TODO: Update scripts (serialization)
-    samples_collection: SamplesCollection | None = (
-        None  # TODO: Update scripts (serialization)
-    )
+    decision: Decision | None = None
+    result: Any | None = None
+    samples_collection: SamplesCollection | None = None
 
     budget_snapshot: BudgetSnapshot | None = None
     feedback: Feedback | None = None
-
-    error: str | None = None  # TODO: Not sure if this is still usefull
-    done: bool = False  # TODO: Not sure if this is still usefull
 
 
 class Transcript(CommonDTO):

@@ -3,14 +3,18 @@ from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_compl
 from multiprocessing import cpu_count
 from pathlib import Path
 
+from tqdm import tqdm
+
 from TheCausalityGame.core.contracts.agent import Agent
 from TheCausalityGame.core.contracts.dto.transcript import Transcript
 from TheCausalityGame.core.contracts.problem_instance import ProblemInstance
-from TheCausalityGame.core.infraestructure.artifacts import ArtifactWriter
+from TheCausalityGame.core.infrastructure.artifacts import ArtifactWriter
 
 # logger
-from TheCausalityGame.core.infraestructure.logger import Logger
-from TheCausalityGame.core.infraestructure.registry import build_from_spec
+from TheCausalityGame.core.infrastructure.logger import Logger
+from TheCausalityGame.core.infrastructure.registry import build_from_spec
+from TheCausalityGame.core.lib.enum.runplan import RunPlanParallelBackEnd
+from TheCausalityGame.core.lib.enum.runtime import RuntimeMode
 from TheCausalityGame.core.managers.hook import HookManager
 from TheCausalityGame.core.managers.plot import PlotManager
 from TheCausalityGame.core.runtime.game import Game
@@ -24,6 +28,11 @@ class Runner:
         problem_instance: ProblemInstance | str | dict,
     ) -> None:
         # Build problem instance
+        if not isinstance(problem_instance, ProblemInstance | dict | str):
+            raise ValueError(
+                "problem_instance must be a ProblemInstance, a dict spec, or a path to a JSON file"
+            )
+
         if isinstance(problem_instance, str):
             with open(problem_instance, "r") as f:
                 problem_instance = json.load(f)
@@ -32,6 +41,9 @@ class Runner:
             problem_instance = problem_instance.to_spec()
 
         self.problem_instance = problem_instance
+
+        # Problem Instance attributes (simplified)
+        self.is_dev = self.problem_instance.runtime.mode == RuntimeMode.DEV
 
         # Validate problem instance
         # TODO: Add a proper validation step
@@ -48,48 +60,58 @@ class Runner:
         self.run_dir = Path(run_dir / self.problem_instance.id)
 
         # Build artifact writer
-        self.artifact_writer = ArtifactWriter(run_dir=self.run_dir)
+        self.artifact_writer = ArtifactWriter(run_dir=self.run_dir, is_dev=self.is_dev)
+        self.artifact_writer.write_provenance()
 
-        # Logger (General)
-        self.logger = Logger(name="Runner", log_dir=self.artifact_writer.logs_dir)
+        # Loggers
+        self.logger = self._generate_logger("Runner", self.artifact_writer.logs_dir)
+        self.game_logger = self._generate_logger("Game", self.artifact_writer.logs_dir)
+        self.environment_logger = self._generate_logger(
+            "Environment", self.artifact_writer.logs_dir
+        )
 
         self.logger.info(
-            f"Starting run for problem instance '{self.problem_instance.id}'"
+            f"Starting run for problem instance '{self.problem_instance.id}'."
+        )
+
+        # Cache to avoid running the same agent multiple times
+        self.agents_cached: set[str] = set()
+
+    def _generate_logger(self, name: str, log_dir: Path) -> Logger:
+        return Logger(
+            name=name,
+            log_dir=log_dir if self.is_dev else None,
+            log_to_console=self.is_dev,
+            level=self.problem_instance.runtime.debug_level,
         )
 
     def run(self) -> None:
         # Hooks Manager
-        self.hook_manager = HookManager(
-            hooks=[
-                build_from_spec(hook_spec)
-                for hook_spec in self.problem_instance.run_plan.hook_plan
-            ]
-        )
+        self.hook_manager = HookManager(hooks=self.problem_instance.run_plan.hook_plan)
         self.logger.info(
-            f"Initialized Hook Manager with hooks: {[hook.id for hook in self.hook_manager.hooks]}"
+            f"Initialized Hook Manager with hooks: {[hook.id for hook in self.hook_manager.hooks]}."
         )
         # Plot Manager
-        self.plot_manager = PlotManager(
-            plots=[
-                build_from_spec(plot_spec)
-                for plot_spec in self.problem_instance.run_plan.plot_plan
-            ]
-        )
+        self.plot_manager = PlotManager(plots=self.problem_instance.run_plan.plot_plan)
         self.logger.info(
-            f"Initialized Plot Manager with plots: {[plot.id for plot in [*self.plot_manager.round_plots, *self.plot_manager.end_plots, *self.plot_manager.benchmark_plots]]}"
+            f"Initialized Plot Manager with plots: {[plot.id for plot in [*self.plot_manager.round_plots, *self.plot_manager.end_plots, *self.plot_manager.benchmark_plots]]}."
         )
         # Check Runtime Plan
         if self.problem_instance.run_plan.execution == "sequential":
-            self.logger.info("Running agents sequentially")
+            self.logger.info("Running agents sequentially.")
             transcripts = self._sequential_run()
         else:
             self.logger.info(
-                f"Running agents in parallel using {self.problem_instance.run_plan.parallel_backend} with max workers: {self.workers}"
+                f"Running agents in parallel using {self.problem_instance.run_plan.parallel_backend} with max workers: {self.workers}."
             )
             transcripts = self._parallel_run()
 
         # Handle plots after all agents have run
-        self.plot_manager.trigger_benchmark_end(transcripts)
+        benchmark_figures = self.plot_manager.trigger_benchmark_end(transcripts)
+        for i, fig in enumerate(benchmark_figures):
+            fig_path = self.artifact_writer.plots_dir / f"benchmark_plot_{i}.png"
+            fig.savefig(fig_path)
+            self.logger.info(f"Saved benchmark plot to {fig_path}.")
 
     def _run_agent(self, agent: Agent) -> Transcript:
         if agent.id in self.agents_cached:
@@ -98,14 +120,14 @@ class Runner:
             )
             return
 
-        self.logger.info(f"Running agent '{agent.id}'")
-        # Create agent directory
-        self.artifact_writer.create_agent_dirs(agent.id)
-        # Create logger for the agent
-        agent_logger = Logger(
-            name=f"Runner.{agent.id}",
-            log_dir=self.artifact_writer.runs_dir / agent.id / "logs",
+        # (Log) Start running agent
+        self.logger.info(f"Running agent '{agent.id}'.")
+
+        # Create agent logger
+        agent_logger = self._generate_logger(
+            f"Agent {agent.id}", self.artifact_writer.logs_dir
         )
+
         # Create game
         game = Game(
             manifest_id=self.problem_instance.id,
@@ -115,35 +137,56 @@ class Runner:
             custom_metrics_specs=self.problem_instance.custom_metrics,
             budget_spec=self.problem_instance.run_plan.budget,
             hook_manager=self.hook_manager,
-            logger=agent_logger,
+            agent_logger=agent_logger,
+            game_logger=self.game_logger,
+            environment_logger=self.environment_logger,
         )
         # Run game
         transcript = game.run()
+
+        self.logger.info(
+            f"Agent '{agent.id}' completed with feedback: {transcript.entries[-1].feedback}"
+        )
+
+        # (Log) Save transcript
+        self.logger.info(f"Agent '{agent.id}' finished running.")
+
         return transcript
 
     def _sequential_run(self) -> dict[str, Transcript]:
         transcripts: dict[str, Transcript] = {}
-        for agent in self.problem_instance.agents:
+        agents = self.problem_instance.agents
+        for agent in tqdm(
+            agents, desc="Running agents (sequential)", unit="agent", leave=False
+        ):
             transcript = self._run_agent(agent)
             if transcript:
                 transcripts[agent.id] = transcript
         return transcripts
 
     def _parallel_run(self) -> dict[str, Transcript]:
-        Executor = (
+        executor = (
             ThreadPoolExecutor
-            if self.problem_instance.run_plan.parallel_backend == "thread"
+            if self.problem_instance.run_plan.parallel_backend
+            == RunPlanParallelBackEnd.THREAD
             else ProcessPoolExecutor
         )
 
         transcripts: dict[str, Transcript] = {}
 
-        with Executor(max_workers=self.workers) as ex:
+        with executor(max_workers=self.workers) as ex:
             futures = {
                 ex.submit(self._run_agent, agent): agent.id
                 for agent in self.problem_instance.agents
             }
-            for future in as_completed(futures):
-                transcripts[futures[future]] = future.result()
+            with tqdm(
+                total=len(futures),
+                desc=f"Running agents ({self.problem_instance.run_plan.parallel_backend.value})",
+                unit="agent",
+                leave=False,
+            ) as pbar:
+                for future in as_completed(futures):
+                    transcripts[futures[future]] = future.result()
+                    pbar.update(1)
 
         return transcripts

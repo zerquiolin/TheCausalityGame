@@ -8,7 +8,7 @@ specs.
 from __future__ import annotations
 
 from importlib import import_module
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 __all__ = [
     "AgentSpec",
@@ -29,34 +29,84 @@ __all__ = [
 ]
 
 _EXPORTS: dict[str, tuple[str, str]] = {
-    "AgentSpec": ("TheCausalityGame.core.specs.agent", "AgentSpec"),
-    "BudgetSpec": ("TheCausalityGame.core.specs.budget", "BudgetSpec"),
-    "DAGSpec": ("TheCausalityGame.core.specs.dag", "DAGSpec"),
-    "HookEvent": ("TheCausalityGame.core.specs.hook", "HookEvent"),
-    "HookSpec": ("TheCausalityGame.core.specs.hook", "HookSpec"),
-    "MetricSpec": ("TheCausalityGame.core.specs.metric", "MetricSpec"),
-    "MissionSpec": ("TheCausalityGame.core.specs.mission", "MissionSpec"),
+    "AgentSpec": ("TheCausalityGame.core.contracts.specs.agent", "AgentSpec"),
+    "BudgetSpec": ("TheCausalityGame.core.contracts.specs.budget", "BudgetSpec"),
+    "DAGSpec": ("TheCausalityGame.core.contracts.specs.dag", "DAGSpec"),
+    "HookEvent": ("TheCausalityGame.core.contracts.specs.hook", "HookEvent"),
+    "HookSpec": ("TheCausalityGame.core.contracts.specs.hook", "HookSpec"),
+    "MetricSpec": ("TheCausalityGame.core.contracts.specs.metric", "MetricSpec"),
+    "MissionSpec": ("TheCausalityGame.core.contracts.specs.mission", "MissionSpec"),
     "NoiseDistributionSpec": (
-        "TheCausalityGame.core.specs.noise",
+        "TheCausalityGame.core.contracts.specs.noise",
         "NoiseDistributionSpec",
     ),
-    "PlotSpec": ("TheCausalityGame.core.specs.plot", "PlotSpec"),
+    "PlotSpec": ("TheCausalityGame.core.contracts.specs.plot", "PlotSpec"),
     "ProblemInstanceSpec": (
-        "TheCausalityGame.core.specs.problem_instance",
+        "TheCausalityGame.core.contracts.specs.problem_instance",
         "ProblemInstanceSpec",
     ),
     "ResultValidatorSpec": (
-        "TheCausalityGame.core.specs.result_validator",
+        "TheCausalityGame.core.contracts.specs.result_validator",
         "ResultValidatorSpec",
     ),
-    "RunPlanSpec": ("TheCausalityGame.core.specs.run", "RunPlanSpec"),
+    "RunPlanSpec": ("TheCausalityGame.core.contracts.specs.run", "RunPlanSpec"),
     "RuntimeSettingsSpec": (
-        "TheCausalityGame.core.specs.settings",
+        "TheCausalityGame.core.contracts.specs.settings",
         "RuntimeSettingsSpec",
     ),
-    "SCMNodeSpec": ("TheCausalityGame.core.specs.scm_node", "SCMNodeSpec"),
-    "SCMSpec": ("TheCausalityGame.core.specs.scm", "SCMSpec"),
+    "SCMNodeSpec": ("TheCausalityGame.core.contracts.specs.scm_node", "SCMNodeSpec"),
+    "SCMSpec": ("TheCausalityGame.core.contracts.specs.scm", "SCMSpec"),
 }
+
+if TYPE_CHECKING:
+    from TheCausalityGame.core.contracts.specs.agent import AgentSpec as _AgentSpec
+    from TheCausalityGame.core.contracts.specs.budget import BudgetSpec as _BudgetSpec
+    from TheCausalityGame.core.contracts.specs.dag import DAGSpec as _DAGSpec
+    from TheCausalityGame.core.contracts.specs.hook import (
+        HookEvent as _HookEvent,
+        HookSpec as _HookSpec,
+    )
+    from TheCausalityGame.core.contracts.specs.metric import (
+        MetricSpec as _MetricSpec,
+        MetricsSpec as _MetricsSpec,
+    )
+    from TheCausalityGame.core.contracts.specs.mission import MissionSpec as _MissionSpec
+    from TheCausalityGame.core.contracts.specs.noise import (
+        NoiseDistributionSpec as _NoiseDistributionSpec,
+    )
+    from TheCausalityGame.core.contracts.specs.plot import PlotSpec as _PlotSpec
+    from TheCausalityGame.core.contracts.specs.problem_instance import (
+        ProblemInstanceSpec as _ProblemInstanceSpec,
+    )
+    from TheCausalityGame.core.contracts.specs.result_validator import (
+        ResultValidatorSpec as _ResultValidatorSpec,
+    )
+    from TheCausalityGame.core.contracts.specs.run import RunPlanSpec as _RunPlanSpec
+    from TheCausalityGame.core.contracts.specs.scm import SCMSpec as _SCMSpec
+    from TheCausalityGame.core.contracts.specs.scm_node import (
+        SCMNodeSpec as _SCMNodeSpec,
+    )
+    from TheCausalityGame.core.contracts.specs.settings import (
+        RuntimeSettingsSpec as _RuntimeSettingsSpec,
+    )
+
+    # Re-exported names for static analyzers.
+    AgentSpec = _AgentSpec
+    BudgetSpec = _BudgetSpec
+    DAGSpec = _DAGSpec
+    HookEvent = _HookEvent
+    HookSpec = _HookSpec
+    MetricSpec = _MetricSpec
+    MetricsSpec = _MetricsSpec
+    MissionSpec = _MissionSpec
+    NoiseDistributionSpec = _NoiseDistributionSpec
+    PlotSpec = _PlotSpec
+    ProblemInstanceSpec = _ProblemInstanceSpec
+    ResultValidatorSpec = _ResultValidatorSpec
+    RunPlanSpec = _RunPlanSpec
+    RuntimeSettingsSpec = _RuntimeSettingsSpec
+    SCMNodeSpec = _SCMNodeSpec
+    SCMSpec = _SCMSpec
 
 
 def __getattr__(name: str) -> Any:

@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 from TheCausalityGame.agent.dummy_agent import DummyAgent
-from TheCausalityGame.core.infraestructure.registry import (
+from TheCausalityGame.core.infrastructure.registry import (
     build_from_spec,
     get_class_path,
     load_class,

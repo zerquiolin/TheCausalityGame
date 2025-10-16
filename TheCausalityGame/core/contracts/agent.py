@@ -13,7 +13,8 @@ from TheCausalityGame.core.contracts.dto.environment import (
     SamplesCollection,
 )
 from TheCausalityGame.core.contracts.serializable import Serializable
-from TheCausalityGame.core.infraestructure.decisions import Decision
+from TheCausalityGame.core.infrastructure.decisions import Decision
+from TheCausalityGame.core.infrastructure.logger import Logger
 
 
 @dataclass(frozen=True, slots=True)
@@ -50,10 +51,10 @@ class Agent(Serializable):
 
     id: str
     _context: AgentContext | None = None
+    _logger: Logger | None = None
 
     # -------- context management --------
 
-    @abstractmethod
     def set_context(self, ctx: AgentContext) -> None:
         """Inject the runtime context exactly once per agent instance."""
         if self._context is None:
@@ -65,6 +66,20 @@ class Agent(Serializable):
         if self._context is None:
             raise RuntimeError("Agent context not set")
         return self._context
+
+    # -------- logger management --------
+
+    def set_logger(self, logger: Logger) -> None:
+        """Inject the logger exactly once per agent instance."""
+        if self._logger is None:
+            self._logger = logger
+
+    @property
+    def logger(self) -> Logger:
+        """Return the injected Logger."""
+        if self._logger is None:
+            raise RuntimeError("Agent logger not set")
+        return self._logger
 
     # -------- required public API --------
 

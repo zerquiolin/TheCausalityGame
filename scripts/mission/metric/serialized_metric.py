@@ -1,7 +1,7 @@
 """The Causality Game - Test Serialized DAGs."""
 
 # Registry
-from TheCausalityGame.core.infraestructure.registry import build_from_spec
+from TheCausalityGame.core.infrastructure.registry import build_from_spec
 
 # Metrics
 from TheCausalityGame.mission.metric.behavior.rounds import RoundsBehaviorMetric

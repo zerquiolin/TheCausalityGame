@@ -13,7 +13,7 @@ from TheCausalityGame.core.contracts.serializable import Serializable
 
 # Spec
 from TheCausalityGame.core.contracts.specs.scm_node import SCMNodeSpec
-from TheCausalityGame.core.infraestructure.registry import get_class_path
+from TheCausalityGame.core.infrastructure.registry import get_class_path
 from TheCausalityGame.core.lib.constants.nodes import (
     ACCESSIBILITY_CONTROLLABLE,
 )

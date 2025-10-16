@@ -5,9 +5,9 @@ from __future__ import annotations
 from abc import abstractmethod
 from typing import Any
 
+from TheCausalityGame.core.contracts.dto.transcript import Transcript
 from TheCausalityGame.core.contracts.scm import SCM
 from TheCausalityGame.core.contracts.serializable import Serializable
-from TheCausalityGame.core.dto.transcript import Transcript
 
 
 class Metric(Serializable):

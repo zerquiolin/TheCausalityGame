@@ -2,7 +2,8 @@ from TheCausalityGame.core.contracts.dto.transcript import Transcript
 from TheCausalityGame.core.contracts.metric import BehaviorMetric
 from TheCausalityGame.core.contracts.scm import SCM
 from TheCausalityGame.core.contracts.specs.metric import MetricSpec
-from TheCausalityGame.core.infraestructure.registry import get_class_path
+from TheCausalityGame.core.infrastructure.registry import get_class_path
+from TheCausalityGame.core.lib.enum.environment import ActionKind
 from TheCausalityGame.core.lib.utils.metrics import log_penalty
 
 
@@ -54,7 +55,7 @@ class RoundsBehaviorMetric(BehaviorMetric):
                     KeyError: If the 'action' column is missing from the DataFrame.
         """
         # Check if the last action is 'asnwer'
-        if transcript.entries[-1].action == "answer":
+        if transcript.entries[-1].decision == ActionKind.ANSWER:
             return log_penalty(len(transcript.entries) - 1, alpha=self.alpha)
 
         return log_penalty(len(transcript.entries), alpha=self.alpha)

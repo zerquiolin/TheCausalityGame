@@ -2,17 +2,16 @@
 import numpy as np
 import pandas as pd
 
-from causalitygame.lib.utils.random_state_serialization import (
-    random_state_from_json,
-    random_state_to_json,
-)
-
-
 # Abstract Base Class
 from causalitygame.scm.nodes.abstract import (
     BaseCategoricSCMNode,
 )
-from causalitygame.lib.constants.nodes import ACCESSIBILITY_OBSERVABLE
+
+from TheCausalityGame.core.lib.constants.nodes import ACCESSIBILITY_OBSERVABLE
+from TheCausalityGame.core.lib.utils.random_state_serialization import (
+    random_state_from_json,
+    random_state_to_json,
+)
 
 
 class BayesianNetworkSCMNode(BaseCategoricSCMNode):

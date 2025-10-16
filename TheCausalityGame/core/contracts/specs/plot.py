@@ -1,8 +1,8 @@
-from typing import Literal
-
-from TheCausalityGame.core.specs.common import CommonSpec
+from TheCausalityGame.core.contracts.specs.common import CommonSpec
+from TheCausalityGame.core.lib.enum.plots import PlotKind
 
 
 class PlotSpec(CommonSpec):
 
-    trigger: Literal["game_end", "round_end", "benchmark_end"] = "game_end"
+    id: str = "plot"
+    kind: PlotKind = "game_end"

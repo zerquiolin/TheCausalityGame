@@ -5,6 +5,8 @@ from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field, replace
 from typing import Any, Literal, Union
 
+from TheCausalityGame.core.lib.enum.environment import ActionKind
+
 __all__ = ["Decision", "ExperimentLike", "ExperimentSpec"]
 
 
@@ -37,7 +39,7 @@ ExperimentTuple = tuple[Mapping[str, Any] | None, int]
 ExperimentLike = Union[ExperimentSpec, ExperimentTuple]
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(slots=True)
 class Decision:
     """Agent decision with a two-action surface.
 
@@ -51,7 +53,7 @@ class Decision:
         - Immutable by design for safety & reproducibility.
     """
 
-    kind: Literal["experiment", "answer"]
+    kind: ActionKind
     experiments: tuple[ExperimentSpec, ...] = field(default_factory=tuple)
 
     # ---------- factories ----------
@@ -106,7 +108,7 @@ class Decision:
         if self.kind != "experiment":
             raise ValueError("Can only add experiments when kind='experiment'")
         new_spec = ExperimentSpec(treatment=treatment, n=n)
-        return replace(self, experiments=self.experiments + (new_spec,))
+        self.experiments += (new_spec,)
 
     def extend(self, more: Iterable[ExperimentLike]) -> Decision:
         """Return a *new* decision with multiple experiments appended."""

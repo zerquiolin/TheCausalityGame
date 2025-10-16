@@ -22,7 +22,7 @@ class ExperimentVariable(BaseModel):
 
 class AvailableActions(BaseModel):
     experiments: list[ExperimentVariable]
-    answer: Literal["submit"] = "submit"
+    answer: Literal["submit"] = "submit"  # TODO: Hardcoded for now, only one action
 
 
 # === Samples ===
@@ -56,4 +56,4 @@ class BudgetSnapshot(BaseModel):
     rounds_left: int | None = None
     time_s_left: float | None = None
     samples_left: int | None = None
-    memory_mb_left: int | None = None
+    memory_mb_left: float | None = None

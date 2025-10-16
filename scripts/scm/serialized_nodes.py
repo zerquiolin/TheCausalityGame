@@ -7,7 +7,7 @@ import pandas as pd
 import sympy as sp
 
 # Registry
-from TheCausalityGame.core.infraestructure.registry import build_from_spec
+from TheCausalityGame.core.infrastructure.registry import build_from_spec
 
 # Nodes
 from TheCausalityGame.scm.nodes.sympy import (

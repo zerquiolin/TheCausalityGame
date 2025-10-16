@@ -1,10 +1,10 @@
-from TheCausalityGame.core.specs.agent import AgentSpec
-from TheCausalityGame.core.specs.common import CommonSpec
-from TheCausalityGame.core.specs.metric import MetricsSpec
-from TheCausalityGame.core.specs.mission import MissionSpec
-from TheCausalityGame.core.specs.run import RunPlanSpec
-from TheCausalityGame.core.specs.scm import SCMSpec
-from TheCausalityGame.core.specs.settings import RuntimeSettingsSpec
+from TheCausalityGame.core.contracts.specs.agent import AgentSpec
+from TheCausalityGame.core.contracts.specs.common import CommonSpec
+from TheCausalityGame.core.contracts.specs.metric import MetricsSpec
+from TheCausalityGame.core.contracts.specs.mission import MissionSpec
+from TheCausalityGame.core.contracts.specs.run import RunPlanSpec
+from TheCausalityGame.core.contracts.specs.scm import SCMSpec
+from TheCausalityGame.core.contracts.specs.settings import RuntimeSettingsSpec
 
 
 class ProblemInstanceSpec(CommonSpec):

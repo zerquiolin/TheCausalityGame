@@ -1,6 +1,6 @@
 import json
 
-from TheCausalityGame.core.infraestructure.registry import build_from_spec
+from TheCausalityGame.core.infrastructure.registry import build_from_spec
 from TheCausalityGame.core.runtime.runner import Runner
 
 # Get problem instance

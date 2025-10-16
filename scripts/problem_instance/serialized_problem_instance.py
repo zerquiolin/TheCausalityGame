@@ -9,7 +9,9 @@ from TheCausalityGame.core.contracts.problem_instance import ProblemInstance
 from TheCausalityGame.core.contracts.specs.budget import BudgetSpec
 from TheCausalityGame.core.contracts.specs.run import RunPlanSpec
 from TheCausalityGame.core.contracts.specs.settings import RuntimeSettingsSpec
-from TheCausalityGame.core.infraestructure.registry import build_from_spec
+from TheCausalityGame.core.infrastructure.registry import build_from_spec
+from TheCausalityGame.core.lib.enum.nodes import NodeAccessibility
+from TheCausalityGame.core.lib.enum.runtime import RuntimeDebugLevel, RuntimeMode
 from TheCausalityGame.mission.conditional_average_treatment_effect import (
     ConditionalAverageTreatmentEffectMission,
 )
@@ -34,7 +36,7 @@ Z = EquationBasedNumericalSCMNode(
     evaluation=None,
     domain=[1, 5],
     noise_distribution=UniformNoiseDistribution(),
-    accessibility="controllable",
+    accessibility=NodeAccessibility.CONTROLLABLE,
     parents=None,
     parent_mappings=None,
 )
@@ -43,7 +45,7 @@ X = EquationBasedNumericalSCMNode(
     evaluation=sp.sympify("2*Z"),
     domain=[2, 10],
     noise_distribution=UniformNoiseDistribution(),
-    accessibility="observable",
+    accessibility=NodeAccessibility.MEASURABLE,
     parents=["Z"],
     parent_mappings=None,
 )
@@ -52,7 +54,7 @@ Y = EquationBasedNumericalSCMNode(
     evaluation=sp.sympify("X+2*Z"),
     domain=[3, 15],
     noise_distribution=UniformNoiseDistribution(),
-    accessibility="observable",
+    accessibility=NodeAccessibility.MEASURABLE,
     parents=["Z", "X"],
     parent_mappings=None,
 )
@@ -94,9 +96,8 @@ run_plan = RunPlanSpec(
 
 # Create Runtime Settings
 runtime_settings = RuntimeSettingsSpec(
-    mode="dev",
-    debug=True,
-    trusted=True,
+    mode=RuntimeMode.DEV,
+    debug_level=RuntimeDebugLevel.DEBUG,
 )
 
 # Create Problem Instance

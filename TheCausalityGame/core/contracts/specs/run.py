@@ -2,8 +2,12 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from TheCausalityGame.core.specs.hook import HookSpec
-from TheCausalityGame.core.specs.plot import PlotSpec
+from TheCausalityGame.core.contracts.specs.hook import HookSpec
+from TheCausalityGame.core.contracts.specs.plot import PlotSpec
+from TheCausalityGame.core.lib.enum.runplan import (
+    RunPlanExecution,
+    RunPlanParallelBackEnd,
+)
 
 from .budget import BudgetSpec
 
@@ -25,11 +29,12 @@ class RunPlanSpec(BaseModel):
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    execution: Literal["sequential", "parallel"] = Field(
-        default="sequential", description="Execution strategy for multiple agents."
+    execution: RunPlanExecution = Field(
+        default=RunPlanExecution.PARALLEL,
+        description="Execution strategy for multiple agents.",
     )
-    parallel_backend: Literal["thread", "process"] = Field(
-        default="thread",
+    parallel_backend: RunPlanParallelBackEnd = Field(
+        default=RunPlanParallelBackEnd.THREAD,
         description="Parallel backend for parallel execution strategy.",
     )
     max_workers: int | None = Field(

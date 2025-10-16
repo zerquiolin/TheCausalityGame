@@ -6,7 +6,7 @@ from TheCausalityGame.core.contracts.serializable import Serializable
 from TheCausalityGame.core.contracts.specs.problem_instance import ProblemInstanceSpec
 from TheCausalityGame.core.contracts.specs.run import RunPlanSpec
 from TheCausalityGame.core.contracts.specs.settings import RuntimeSettingsSpec
-from TheCausalityGame.core.infraestructure.registry import (
+from TheCausalityGame.core.infrastructure.registry import (
     build_from_spec,
     get_class_path,
 )

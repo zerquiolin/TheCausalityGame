@@ -1,8 +1,10 @@
 """The Causality Game - Agent Spec."""
 
-from TheCausalityGame.core.specs.common import CommonSpec
-from TheCausalityGame.core.specs.metric import MetricSpec
-from TheCausalityGame.core.specs.result_validator import ResultValidatorSpec
+from pydantic import Field
+
+from TheCausalityGame.core.contracts.specs.common import CommonSpec
+from TheCausalityGame.core.contracts.specs.metric import MetricSpec
+from TheCausalityGame.core.contracts.specs.result_validator import ResultValidatorSpec
 
 
 class MissionSpec(CommonSpec):
@@ -14,6 +16,7 @@ class MissionSpec(CommonSpec):
         params: Optional agent configuration payload.
     """
 
+    id: str = Field(..., description="Unique identifier for the Mission.")
     behavior_metric: MetricSpec
     result_metric: MetricSpec
     result_validator: ResultValidatorSpec

@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from TheCausalityGame.core.contracts.agent import Agent, AgentContext
 from TheCausalityGame.core.contracts.dto.transcript import Transcript
 from TheCausalityGame.core.contracts.metric import Metric
@@ -7,8 +9,8 @@ from TheCausalityGame.core.contracts.specs.agent import AgentSpec
 from TheCausalityGame.core.contracts.specs.budget import BudgetSpec
 from TheCausalityGame.core.contracts.specs.mission import MissionSpec
 from TheCausalityGame.core.contracts.specs.scm import SCMSpec
-from TheCausalityGame.core.infraestructure.logger import Logger
-from TheCausalityGame.core.infraestructure.registry import build_from_spec
+from TheCausalityGame.core.infrastructure.logger import Logger
+from TheCausalityGame.core.infrastructure.registry import build_from_spec
 from TheCausalityGame.core.lib.enum.hooks import HookEvent
 from TheCausalityGame.core.managers.hook import HookManager
 from TheCausalityGame.core.runtime.environment import Environment
@@ -24,7 +26,9 @@ class Game:
         custom_metrics_specs: list[MissionSpec],
         budget_spec: BudgetSpec,
         hook_manager: HookManager,
-        logger: Logger,
+        agent_logger: Logger,
+        game_logger: Logger,
+        environment_logger: Logger,
     ) -> None:
         # Manifest ID
         self.manifest_id = manifest_id
@@ -59,38 +63,41 @@ class Game:
             seed=911,
         )
         self.agent.set_context(agent_ctx)
+        # Agent Logger
+        self.agent.set_logger(agent_logger)
+        # Build Transcript
+        self.transcript = Transcript(
+            agent_id=self.agent.id,
+            mission_id=self.mission.id,
+            manifest_id=self.manifest_id,
+            mission_name=self.mission.name,
+            entries=[],
+        )
         # Build Environment
         self.environment = Environment(
             self.agent,
             self.scm,
             self.mission,
             self.custom_metrics,
+            self.transcript,
             budget_spec,
             hook_manager,
-            logger,
+            environment_logger,
         )
         # Hook Manager
         self.hook_manager = hook_manager
         # Logger
-        self.logger: Logger = logger
+        self.logger: Logger = game_logger
 
     def run(self) -> Transcript:
         # Log start
-        self.logger.info(f"Starting game run. {self.agent.id}")
+        self.logger.info(f"Starting game run for agent {self.agent.id}.")
         # Flag start
-        self.hook_manager.trigger(HookEvent.RUN_START)
+        self.hook_manager.trigger(HookEvent.GAME_START)
         # Run Environment
-        transcript_entries = self.environment.run()
-        # Build Transcript
-        self.transcript = Transcript(
-            manifest_id=self.manifest_id,
-            agent_id=self.agent.id,
-            mission_id=1,  # TODO: Add mission id to MissionSpec
-            mission_name=self.mission.name,
-            entries=transcript_entries,
-        )  # TODO: Pass in the transcript in the hook start
+        self.environment.run()
         # Flag end
-        self.hook_manager.trigger(HookEvent.RUN_END)
+        self.hook_manager.trigger(HookEvent.GAME_END)
         # Log end
-        self.logger.info(f"Game run ended. {self.agent.id}")
+        self.logger.info(f"Game run ended for agent {self.agent.id}.")
         return self.transcript

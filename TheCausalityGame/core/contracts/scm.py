@@ -15,7 +15,7 @@ from TheCausalityGame.core.contracts.scm_node import (
 )
 from TheCausalityGame.core.contracts.serializable import Serializable
 from TheCausalityGame.core.contracts.specs.scm import SCMSpec
-from TheCausalityGame.core.infraestructure.registry import (
+from TheCausalityGame.core.infrastructure.registry import (
     build_from_spec,
     get_class_path,
 )

@@ -4,16 +4,17 @@ from __future__ import annotations
 
 from abc import abstractmethod
 
+from TheCausalityGame.core.contracts.dto.transcript import Transcript
 from TheCausalityGame.core.contracts.metric import BehaviorMetric, ResultMetric
 from TheCausalityGame.core.contracts.result_validator import ResultValidator
 from TheCausalityGame.core.contracts.scm import SCM
 from TheCausalityGame.core.contracts.serializable import Serializable
-from TheCausalityGame.core.dto.transcript import Transcript
 
 
 class Mission(Serializable):
     """Mission contract."""
 
+    id: str
     name: str
     description: str
 

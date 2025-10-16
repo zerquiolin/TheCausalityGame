@@ -2,7 +2,7 @@
 
 from pydantic import Field
 
-from TheCausalityGame.core.specs.common import CommonSpec
+from TheCausalityGame.core.contracts.specs.common import CommonSpec
 
 
 class DAGSpec(CommonSpec):

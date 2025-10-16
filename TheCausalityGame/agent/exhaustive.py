@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import SGDRegressor
 
 from TheCausalityGame.core.contracts.agent import Agent
@@ -10,8 +11,8 @@ from TheCausalityGame.core.contracts.dto.environment import (
     SamplesCollection,
 )
 from TheCausalityGame.core.contracts.specs.agent import AgentSpec
-from TheCausalityGame.core.infraestructure.decisions import Decision
-from TheCausalityGame.core.infraestructure.registry import get_class_path
+from TheCausalityGame.core.infrastructure.decisions import Decision
+from TheCausalityGame.core.infrastructure.registry import get_class_path
 
 
 class ExhaustiveAgent(Agent):
@@ -28,16 +29,13 @@ class ExhaustiveAgent(Agent):
         self._num_obs = num_obs
         self._num_inter = num_inter
         self._model = None
-
-    def set_context(self, ctx):
-        self._context = ctx
-        # TODO: Configure the task based on the game scenario
+        self._last = None
 
     def act(self, round_info: RoundInfo, available_actions: AvailableActions):
         # Create Decision
         decision = Decision.experiment()
         # Check available actions
-        for experiment in available_actions.experiment:
+        for experiment in available_actions.experiments:
             # Add observational data
             decision.add_experiment(treatment=None, n=self._num_obs)
 
@@ -51,14 +49,14 @@ class ExhaustiveAgent(Agent):
                     )
             else:  # Numerical domain
                 self._is_numeric = True
-                for i in np.linspace(low, high, 10):  # 10 values uniformly spaced
+                for i in np.linspace(low, high, 5):  # 10 values uniformly spaced
                     decision.add_experiment(
                         treatment={experiment.name: i}, n=self._num_inter
                     )
+
         return decision
 
     def inform(self, samples_collection: SamplesCollection, feedback: Feedback) -> None:
-        # Update samples / model
         # Update model
         if self._model is None:
             self._last = samples_collection
@@ -73,11 +71,22 @@ class ExhaustiveAgent(Agent):
             self._model.partial_fit(X_train, y_train)
 
     def answer(self):
+        if self._last is None:
+
+            def dummy(X, treatment, outcome, covariate_values):
+                return pd.DataFrame(
+                    np.zeros(len(covariate_values)),
+                    columns=["treatment_effect"],
+                    dtype=float,
+                )
+
+            return dummy
+
         if self._model is None:
 
             def before(X, treatment, outcome, covariate_values):
                 # Define features and target variable
-                features = [treatment] + X
+                features = [treatment, *X]
                 target = outcome
                 # Save the data
                 self._features = features
@@ -87,8 +96,9 @@ class ExhaustiveAgent(Agent):
                 X_non_treated, X_treated = covariate_values
 
                 # Define the training and prediction dataframes
-                X_train = self._last[features]
-                y_train = self._last[target]
+                data = pd.concat([samples.data for samples in self._last])
+                X_train = data[features]
+                y_train = data[target]
                 X_non_treated_pred = X_non_treated[features]
                 X_treated_pred = X_treated[features]
 
@@ -100,8 +110,18 @@ class ExhaustiveAgent(Agent):
                 ), "Column order mismatch!"
 
                 # Generate model
-                # model = RandomForestRegressor(n_estimators=100, random_state=911)
-                model = SGDRegressor(max_iter=1000, tol=1e-3)
+                # model = RandomForestRegressor(
+                #     n_estimators=100, warm_start=True, random_state=911
+                # )
+                model = SGDRegressor(
+                    warm_start=True,
+                    learning_rate="optimal",
+                    random_state=911,
+                    max_iter=1000,
+                    tol=1e-3,
+                    penalty="l2",
+                    alpha=0.01,
+                )
                 # Train the model
                 model.partial_fit(X_train, y_train)
                 # Save the model

@@ -16,4 +16,4 @@ class BudgetSpec(BaseModel):
     rounds: int | None = Field(default=None, ge=0)
     time_s: float | None = Field(default=None, ge=0)
     samples: int | None = Field(default=None, ge=0)
-    memory_mb: int | None = Field(default=None, ge=0)
+    memory_mb: float | None = Field(default=None, ge=0)

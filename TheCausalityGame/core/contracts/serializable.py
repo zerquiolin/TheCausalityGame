@@ -5,7 +5,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, TypeVar
 
-from TheCausalityGame.core.infraestructure.serialization import dumps, loads
+from TheCausalityGame.core.infrastructure.serialization import dumps, loads
 
 T = TypeVar("T", bound="Serializable")
 

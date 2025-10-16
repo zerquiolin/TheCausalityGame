@@ -15,8 +15,6 @@ class Hook(Protocol):
     The runtime event bus discovers and calls matching methods.
     """
 
-    # TODO: Add a setup, what was it?
-
     id: str
 
     def handles(self) -> list[HookEvent]:

@@ -6,7 +6,7 @@ from TheCausalityGame.core.contracts.mission import ResultMetric
 # Types
 from TheCausalityGame.core.contracts.scm import SCM
 from TheCausalityGame.core.contracts.specs.metric import MetricSpec
-from TheCausalityGame.core.infraestructure.registry import get_class_path
+from TheCausalityGame.core.infrastructure.registry import get_class_path
 
 # Constants
 from TheCausalityGame.core.lib.constants.nodes import (

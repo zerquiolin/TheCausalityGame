@@ -1,7 +1,7 @@
 """_summary_."""
 
 from TheCausalityGame.agents.dummy_agent import DummyAgent
-from TheCausalityGame.core.infraestructure.serialization import get_class_path
+from TheCausalityGame.core.infrastructure.serialization import get_class_path
 
 print(
     get_class_path(DummyAgent)

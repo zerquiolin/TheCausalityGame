@@ -4,7 +4,7 @@
 # networkx
 import networkx as nx
 
-from TheCausalityGame.core.infraestructure.registry import build_from_spec
+from TheCausalityGame.core.infrastructure.registry import build_from_spec
 
 # DAG
 from TheCausalityGame.scm.dag.core import CoreDAG
@@ -13,9 +13,10 @@ from TheCausalityGame.scm.dag.core import CoreDAG
 graph = nx.DiGraph()
 graph.add_edges_from([("Z", "X"), ("X", "Y"), ("Z", "Y")])
 dag = CoreDAG(graph=graph)
-dag.plot()
+# dag.plot()
 
 
+print(dag.to_spec())
 # Serialize noise distribution to JSON
 dag_json = dag.to_json()
 

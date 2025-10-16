@@ -2,7 +2,7 @@
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from TheCausalityGame.core.infraestructure.registry import (
+from TheCausalityGame.core.infrastructure.registry import (
     get_class_path,
 )
 
@@ -21,10 +21,7 @@ class CommonSpec(BaseModel):
 
     class_: str = Field(alias="class")
     spec_: str | None = Field(default=None, description="Spec class path.")
-    params: dict | None = Field(
-        default=None,
-        description="Optional class configuration payload.",
-    )
+    params: dict = Field(default_factory=dict, description="Optional configuration.")
 
     @model_validator(mode="after")
     def _set_spec_default(cls, values):  # type: ignore[override]

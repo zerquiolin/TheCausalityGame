@@ -13,7 +13,7 @@ import sympy as sp
 from TheCausalityGame.core.contracts.noise import NoiseDistribution
 from TheCausalityGame.core.contracts.scm_node import CategoricSCMNode, NumericSCMNode
 from TheCausalityGame.core.contracts.specs.scm_node import SCMNodeSpec
-from TheCausalityGame.core.infraestructure.registry import build_from_spec
+from TheCausalityGame.core.infrastructure.registry import build_from_spec
 
 # Constants
 from TheCausalityGame.core.lib.constants.nodes import ACCESSIBILITY_OBSERVABLE

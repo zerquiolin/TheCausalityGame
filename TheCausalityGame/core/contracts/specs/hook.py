@@ -1,7 +1,5 @@
-from typing import Literal
-
+from TheCausalityGame.core.contracts.specs.common import CommonSpec
 from TheCausalityGame.core.lib.enum.hooks import HookEvent
-from TheCausalityGame.core.specs.common import CommonSpec
 
 
 class HookSpec(CommonSpec):
@@ -17,6 +15,6 @@ class HookSpec(CommonSpec):
         Behavior when an error occurs in the hook. Default is "warn".
     """
 
-    events: list[HookEvent]
+    id: str
+    step: HookEvent
     priority: int = 1
-    on_error: Literal["ignore", "warn", "fail"] = "warn"

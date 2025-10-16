@@ -7,7 +7,7 @@ import networkx as nx
 import numpy as np
 import sympy as sp
 
-from TheCausalityGame.core.infraestructure.registry import build_from_spec
+from TheCausalityGame.core.infrastructure.registry import build_from_spec
 
 # Noises
 from TheCausalityGame.scm.core import CoreSCM

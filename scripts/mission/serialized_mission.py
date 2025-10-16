@@ -1,7 +1,7 @@
 """The Causality Game - Test Serialized DAGs."""
 
 # Registry
-from TheCausalityGame.core.infraestructure.registry import build_from_spec
+from TheCausalityGame.core.infrastructure.registry import build_from_spec
 
 # Mission
 from TheCausalityGame.mission.conditional_average_treatment_effect import (
