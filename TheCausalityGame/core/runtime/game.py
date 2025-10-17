@@ -10,7 +10,7 @@ from TheCausalityGame.core.contracts.specs.mission import MissionSpec
 from TheCausalityGame.core.contracts.specs.scm import SCMSpec
 from TheCausalityGame.core.infrastructure.logger import Logger
 from TheCausalityGame.core.infrastructure.registry import build_from_spec
-from TheCausalityGame.core.lib.enum.hooks import HookEvent
+from TheCausalityGame.core.lib.enum.hook import HookEvent
 from TheCausalityGame.core.managers.hook import HookManager
 from TheCausalityGame.core.runtime.environment import Environment
 

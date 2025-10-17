@@ -1,7 +1,7 @@
 import matplotlib.figure
 
 from TheCausalityGame.core.contracts.dto.transcript import Transcript, TranscriptEntry
-from TheCausalityGame.core.contracts.plots import Plot
+from TheCausalityGame.core.contracts.plot import Plot
 from TheCausalityGame.core.contracts.specs.plot import PlotSpec
 from TheCausalityGame.core.infrastructure.registry import build_from_spec
 from TheCausalityGame.core.lib.enum.plots import PlotKind

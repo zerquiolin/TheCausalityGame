@@ -28,7 +28,7 @@ from TheCausalityGame.core.infrastructure.budgets import (
 from TheCausalityGame.core.infrastructure.decisions import Decision, ExperimentSpec
 from TheCausalityGame.core.infrastructure.logger import Logger
 from TheCausalityGame.core.lib.enum.environment import ActionKind
-from TheCausalityGame.core.lib.enum.hooks import HookEvent
+from TheCausalityGame.core.lib.enum.hook import HookEvent
 from TheCausalityGame.core.lib.enum.nodes import NodeAccessibility
 from TheCausalityGame.core.managers.hook import HookManager
 

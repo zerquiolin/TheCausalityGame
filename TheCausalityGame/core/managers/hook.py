@@ -1,10 +1,10 @@
 from collections import defaultdict
 from typing import Any
 
-from TheCausalityGame.core.contracts.hooks import Hook
+from TheCausalityGame.core.contracts.hook import Hook
 from TheCausalityGame.core.contracts.specs.hook import HookSpec
 from TheCausalityGame.core.infrastructure.registry import build_from_spec
-from TheCausalityGame.core.lib.enum.hooks import HookEvent
+from TheCausalityGame.core.lib.enum.hook import HookEvent
 
 
 class HookManager:

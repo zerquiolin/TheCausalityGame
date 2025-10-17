@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 from TheCausalityGame.core.contracts.dto.transcript import Transcript
-from TheCausalityGame.core.contracts.plots import Plot
+from TheCausalityGame.core.contracts.plot import Plot
 from TheCausalityGame.core.contracts.specs.plot import PlotSpec
 from TheCausalityGame.core.lib.enum.plots import PlotKind
 

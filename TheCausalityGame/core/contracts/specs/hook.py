@@ -5,7 +5,7 @@ from typing import Literal
 from pydantic import Field
 
 from TheCausalityGame.core.contracts.specs.common import CommonSpec
-from TheCausalityGame.core.lib.enum.hooks import HookEvent
+from TheCausalityGame.core.lib.enum.hook import HookEvent
 
 
 class HookSpec(CommonSpec):
