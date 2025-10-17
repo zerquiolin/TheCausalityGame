@@ -1,7 +1,8 @@
 import logging
 import os
-from datetime import datetime
 from logging.handlers import RotatingFileHandler
+from pathlib import Path
+from typing import Any
 
 
 class Logger:
@@ -19,7 +20,7 @@ class Logger:
     def __init__(
         self,
         name: str = "app",
-        log_dir: str | None = None,
+        log_dir: Path | None = None,
         log_to_console: bool = True,
         level: int = logging.INFO,
         max_bytes: int = 5 * 1024 * 1024,  # 5 MB per file
@@ -87,7 +88,7 @@ class Logger:
         reset = "\033[0m"
 
         class SafeColorFormatter(logging.Formatter):
-            def format(self, record):
+            def format(self, record: logging.LogRecord) -> str:
                 # Make a shallow copy to avoid mutating shared record
                 record_copy = logging.LogRecord(
                     name=record.name,
@@ -114,20 +115,19 @@ class Logger:
 
         return SafeColorFormatter(base_format, datefmt)
 
-    # ----------------------------------------------------
-    def info(self, msg: str, *args, **kwargs) -> None:
+    def info(self, msg: str, *args: Any, **kwargs: Any) -> None:
         self.logger.info(msg, *args, **kwargs)
 
-    def debug(self, msg: str, *args, **kwargs) -> None:
+    def debug(self, msg: str, *args: Any, **kwargs: Any) -> None:
         self.logger.debug(msg, *args, **kwargs)
 
-    def warning(self, msg: str, *args, **kwargs) -> None:
+    def warning(self, msg: str, *args: Any, **kwargs: Any) -> None:
         self.logger.warning(msg, *args, **kwargs)
 
-    def error(self, msg: str, *args, **kwargs) -> None:
+    def error(self, msg: str, *args: Any, **kwargs: Any) -> None:
         self.logger.error(msg, *args, **kwargs)
 
-    def critical(self, msg: str, *args, **kwargs) -> None:
+    def critical(self, msg: str, *args: Any, **kwargs: Any) -> None:
         self.logger.critical(msg, *args, **kwargs)
 
     # ----------------------------------------------------

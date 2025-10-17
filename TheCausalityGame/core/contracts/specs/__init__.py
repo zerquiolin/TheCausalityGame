@@ -68,9 +68,10 @@ if TYPE_CHECKING:
     )
     from TheCausalityGame.core.contracts.specs.metric import (
         MetricSpec as _MetricSpec,
-        MetricsSpec as _MetricsSpec,
     )
-    from TheCausalityGame.core.contracts.specs.mission import MissionSpec as _MissionSpec
+    from TheCausalityGame.core.contracts.specs.mission import (
+        MissionSpec as _MissionSpec,
+    )
     from TheCausalityGame.core.contracts.specs.noise import (
         NoiseDistributionSpec as _NoiseDistributionSpec,
     )
@@ -97,7 +98,6 @@ if TYPE_CHECKING:
     HookEvent = _HookEvent
     HookSpec = _HookSpec
     MetricSpec = _MetricSpec
-    MetricsSpec = _MetricsSpec
     MissionSpec = _MissionSpec
     NoiseDistributionSpec = _NoiseDistributionSpec
     PlotSpec = _PlotSpec

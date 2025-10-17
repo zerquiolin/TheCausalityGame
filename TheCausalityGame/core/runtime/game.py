@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from TheCausalityGame.core.contracts.agent import Agent, AgentContext
 from TheCausalityGame.core.contracts.dto.transcript import Transcript
 from TheCausalityGame.core.contracts.metric import Metric
@@ -7,6 +5,7 @@ from TheCausalityGame.core.contracts.mission import Mission
 from TheCausalityGame.core.contracts.scm import SCM
 from TheCausalityGame.core.contracts.specs.agent import AgentSpec
 from TheCausalityGame.core.contracts.specs.budget import BudgetSpec
+from TheCausalityGame.core.contracts.specs.metric import MetricSpec
 from TheCausalityGame.core.contracts.specs.mission import MissionSpec
 from TheCausalityGame.core.contracts.specs.scm import SCMSpec
 from TheCausalityGame.core.infrastructure.logger import Logger
@@ -23,7 +22,7 @@ class Game:
         agent_spec: AgentSpec,
         scm_spec: SCMSpec,
         mission_spec: MissionSpec,
-        custom_metrics_specs: list[MissionSpec],
+        custom_metrics_specs: list[MetricSpec],
         budget_spec: BudgetSpec,
         hook_manager: HookManager,
         agent_logger: Logger,
@@ -33,13 +32,13 @@ class Game:
         # Manifest ID
         self.manifest_id = manifest_id
         # Build Agent
-        self.agent: Agent = build_from_spec(agent_spec)
+        self.agent: Agent = build_from_spec(agent_spec)  # type: ignore
         # Build SCM
-        self.scm: SCM = build_from_spec(scm_spec)
+        self.scm: SCM = build_from_spec(scm_spec)  # type: ignore
         # Build Mission
-        self.mission: Mission = build_from_spec(mission_spec)
+        self.mission: Mission = build_from_spec(mission_spec)  # type: ignore
         # Build Custom Metrics
-        self.custom_metrics: list[Metric] = [
+        self.custom_metrics: list[Metric] = [  # type: ignore
             build_from_spec(m) for m in custom_metrics_specs
         ]
         # Agent Context
@@ -70,7 +69,6 @@ class Game:
             agent_id=self.agent.id,
             mission_id=self.mission.id,
             manifest_id=self.manifest_id,
-            mission_name=self.mission.name,
             entries=[],
         )
         # Build Environment

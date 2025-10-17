@@ -1,18 +1,17 @@
-import json
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 from multiprocessing import cpu_count
 from pathlib import Path
 
 from tqdm import tqdm
 
-from TheCausalityGame.core.contracts.agent import Agent
 from TheCausalityGame.core.contracts.dto.transcript import Transcript
 from TheCausalityGame.core.contracts.problem_instance import ProblemInstance
+from TheCausalityGame.core.contracts.specs import ProblemInstanceSpec
+from TheCausalityGame.core.contracts.specs.agent import AgentSpec
 from TheCausalityGame.core.infrastructure.artifacts import ArtifactWriter
 
 # logger
 from TheCausalityGame.core.infrastructure.logger import Logger
-from TheCausalityGame.core.infrastructure.registry import build_from_spec
 from TheCausalityGame.core.lib.enum.runplan import RunPlanParallelBackEnd
 from TheCausalityGame.core.lib.enum.runtime import RuntimeMode
 from TheCausalityGame.core.managers.hook import HookManager
@@ -25,22 +24,12 @@ class Runner:
         self,
         *,
         run_dir: Path = Path("runs"),
-        problem_instance: ProblemInstance | str | dict,
+        problem_instance: ProblemInstance | ProblemInstanceSpec,
     ) -> None:
-        # Build problem instance
-        if not isinstance(problem_instance, ProblemInstance | dict | str):
-            raise ValueError(
-                "problem_instance must be a ProblemInstance, a dict spec, or a path to a JSON file"
-            )
-
-        if isinstance(problem_instance, str):
-            with open(problem_instance, "r") as f:
-                problem_instance = json.load(f)
-
         if isinstance(problem_instance, ProblemInstance):
             problem_instance = problem_instance.to_spec()
 
-        self.problem_instance = problem_instance
+        self.problem_instance: ProblemInstanceSpec = problem_instance
 
         # Problem Instance attributes (simplified)
         self.is_dev = self.problem_instance.runtime.mode == RuntimeMode.DEV
@@ -53,7 +42,7 @@ class Runner:
             self.problem_instance.run_plan.max_workers or 1
         ) > 0, "max_workers must be non-negative"
         self.workers = self.problem_instance.run_plan.max_workers or max(
-            1, min(4, cpu_count() - 1)
+            1, cpu_count() - 3
         )
 
         # Run directory
@@ -86,11 +75,6 @@ class Runner:
         )
 
     def run(self) -> None:
-        # Hooks Manager
-        self.hook_manager = HookManager(hooks=self.problem_instance.run_plan.hook_plan)
-        self.logger.info(
-            f"Initialized Hook Manager with hooks: {[hook.id for hook in self.hook_manager.hooks]}."
-        )
         # Plot Manager
         self.plot_manager = PlotManager(plots=self.problem_instance.run_plan.plot_plan)
         self.logger.info(
@@ -110,15 +94,23 @@ class Runner:
         benchmark_figures = self.plot_manager.trigger_benchmark_end(transcripts)
         for i, fig in enumerate(benchmark_figures):
             fig_path = self.artifact_writer.plots_dir / f"benchmark_plot_{i}.png"
-            fig.savefig(fig_path)
+            fig.set_constrained_layout(True)  # type: ignore
+            fig.tight_layout()
+            fig.savefig(fig_path, bbox_inches="tight", dpi=300)  # type: ignore
             self.logger.info(f"Saved benchmark plot to {fig_path}.")
 
-    def _run_agent(self, agent: Agent) -> Transcript:
+    def _run_agent(self, agent: AgentSpec) -> Transcript | None:
         if agent.id in self.agents_cached:
             self.logger.warning(
                 f"Agent with id '{agent.id}' has already been run. Skipping duplicate."
             )
             return
+
+        # Hooks Manager, here to ensure fresh hooks for each agent
+        self.hook_manager = HookManager(hooks=self.problem_instance.run_plan.hook_plan)
+        self.logger.info(
+            f"Initialized Hook Manager with hooks: {[hook.id for hook in self.hook_manager.hooks]}."
+        )
 
         # (Log) Start running agent
         self.logger.info(f"Running agent '{agent.id}'.")
@@ -186,7 +178,9 @@ class Runner:
                 leave=False,
             ) as pbar:
                 for future in as_completed(futures):
-                    transcripts[futures[future]] = future.result()
+                    result = future.result()
+                    if result is not None:
+                        transcripts[futures[future]] = result
                     pbar.update(1)
 
         return transcripts

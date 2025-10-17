@@ -24,7 +24,6 @@ from TheCausalityGame.core.contracts.scm import SCM
 from TheCausalityGame.core.contracts.specs.budget import BudgetSpec
 from TheCausalityGame.core.infrastructure.budgets import (
     BudgetEnforcer,
-    BudgetExceededError,
 )
 from TheCausalityGame.core.infrastructure.decisions import Decision, ExperimentSpec
 from TheCausalityGame.core.infrastructure.logger import Logger

@@ -1,6 +1,6 @@
 from TheCausalityGame.core.contracts.specs.agent import AgentSpec
 from TheCausalityGame.core.contracts.specs.common import CommonSpec
-from TheCausalityGame.core.contracts.specs.metric import MetricsSpec
+from TheCausalityGame.core.contracts.specs.metric import MetricSpec
 from TheCausalityGame.core.contracts.specs.mission import MissionSpec
 from TheCausalityGame.core.contracts.specs.run import RunPlanSpec
 from TheCausalityGame.core.contracts.specs.scm import SCMSpec
@@ -34,7 +34,7 @@ class ProblemInstanceSpec(CommonSpec):
 
     scm: SCMSpec
     mission: MissionSpec
-    custom_metrics: list[MetricsSpec] = []
+    custom_metrics: list[MetricSpec] = []
 
     run_plan: RunPlanSpec
 

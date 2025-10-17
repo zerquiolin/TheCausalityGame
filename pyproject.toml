@@ -37,7 +37,7 @@ where = ["TheCausalityGame"]
 line-length = 100
 target-version = "py310"
 select = ["RUF","ARG","C4","BLE","TRY","ANN","N","D","E","F","I","B","UP","SIM","PL","PERF", "NPY"]
-ignore = ["D104","D105","D107","E501"]
+ignore = ["D104","D105","D107"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
@@ -45,6 +45,11 @@ convention = "numpy"
 [tool.mypy]
 python_version = "3.10"
 strict = true
+# Extra rules beyond `strict`
+disallow_untyped_calls = true  # Prevent calling untyped functions
+disallow_any_unimported = true  # Prevent `Any` from missing stubs
+warn_unused_configs = true
+warn_unreachable = true  # Detect dead code
 warn_unused_ignores = true
 warn_return_any = true
 exclude = ["^tests/data/"]
