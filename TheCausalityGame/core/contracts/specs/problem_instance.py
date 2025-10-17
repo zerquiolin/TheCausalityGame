@@ -1,3 +1,5 @@
+"""The Causality Game - Problem Instance Specification."""
+
 from TheCausalityGame.core.contracts.specs.agent import AgentSpec
 from TheCausalityGame.core.contracts.specs.common import CommonSpec
 from TheCausalityGame.core.contracts.specs.metric import MetricSpec
@@ -8,24 +10,35 @@ from TheCausalityGame.core.contracts.specs.settings import RuntimeSettingsSpec
 
 
 class ProblemInstanceSpec(CommonSpec):
-    """Top-level manifest describing a benchmark run.
+    """
+    Specification for constructing a problem instance.
+
+    A problem instance defines the complete configuration required to
+    simulate and evaluate agents in a specific causal environment.
+
+    Inherits from `CommonSpec` to support dynamic loading and configuration.
 
     Attributes
     ----------
-        schema_version: Manifest schema version string.
-        id: Run identifier (used as folder name under runs/).
-        scm_spec: SCM specification {'class','config'}.
-        mission_spec: Mission specification {'class','config'}.
-        agent_specs: List of AgentSpec-like dicts (validated here).
-        metric_specs: Pair of primary metrics (behavior & result).
-        custom_metric_specs: Optional list of additional metrics.
-        run_plan: Execution policy for the run.
-        seeds: Seed hierarchy for determinism (global/scm/mission/agents).
-        hook_plan: Hook subscriptions for lifecycle events.
-        artifacts_policy: Global artifact toggles/policies.
+    id : str
+        Unique identifier for the problem instance.
+    schema_version : str, default='1.0.0'
+        Version of the schema used to encode this spec.
+    agents : list[AgentSpec]
+        List of agent specifications to evaluate.
+    scm : SCMSpec
+        Specification for the Structural Causal Model (SCM).
+    mission : MissionSpec
+        Specification of the mission, including metrics and evaluation logic.
+    custom_metrics : list[MetricSpec], optional
+        Additional metrics for evaluation, beyond those required by the mission.
+    run_plan : RunPlanSpec
+        Description of the evaluation protocol
+    seeds : dict[str, int], optional
+        Dictionary of fixed random seeds for reproducibility.
+    runtime : RuntimeSettingsSpec, optional
+        Configuration for runtime behavior
     """
-
-    # TODO: Update the docstring above to match the actual attributes.
 
     id: str
     schema_version: str = "1.0.0"
@@ -34,9 +47,9 @@ class ProblemInstanceSpec(CommonSpec):
 
     scm: SCMSpec
     mission: MissionSpec
-    custom_metrics: list[MetricSpec] = []
+    custom_metrics: list[MetricSpec] = []  # noqa: RUF012
 
     run_plan: RunPlanSpec
 
-    seeds: dict[str, int] = {}
+    seeds: dict[str, int] = {}  # noqa: RUF012
     runtime: RuntimeSettingsSpec = RuntimeSettingsSpec()

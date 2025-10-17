@@ -1,6 +1,6 @@
-from __future__ import annotations
+"""The Causality Game - Runtime Settings Specification."""
 
-from typing import Literal
+from __future__ import annotations
 
 from pydantic import BaseModel, Field
 
@@ -8,11 +8,27 @@ from TheCausalityGame.core.lib.enum.runtime import RuntimeDebugLevel, RuntimeMod
 
 
 class RuntimeSettingsSpec(BaseModel):
+    """
+    Specification for runtime execution settings.
+
+    Attributes
+    ----------
+    mode : RuntimeMode
+        Execution mode. When set to 'PROD', disables debug logging and features.
+        When 'DEV', enables verbose logging and debug tooling.
+    debug_level : RuntimeDebugLevel
+        Level of debug information to capture (e.g., INFO, DEBUG).
+        Controls verbosity of logs, output capture, and diagnostics.
+    """
+
     mode: RuntimeMode = Field(
         default=RuntimeMode.PROD,
-        description="Enables logging on console and debug features.",
+        description="Execution mode for runtime: production (PROD) or development (DEV).",
     )
     debug_level: RuntimeDebugLevel = Field(
         default=RuntimeDebugLevel.INFO,
-        description="Enables saving all ",
+        description=(
+            "Granularity of debug information to capture. Higher levels include more logs "
+            "and internal diagnostic data (e.g., DEBUG, TRACE)."
+        ),
     )

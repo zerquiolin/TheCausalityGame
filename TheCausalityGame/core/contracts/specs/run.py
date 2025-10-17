@@ -1,7 +1,8 @@
-from typing import Literal
+"""The Causality Game - Run Plan Specification."""
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from TheCausalityGame.core.contracts.specs.budget import BudgetSpec
 from TheCausalityGame.core.contracts.specs.hook import HookSpec
 from TheCausalityGame.core.contracts.specs.plot import PlotSpec
 from TheCausalityGame.core.lib.enum.runplan import (
@@ -9,22 +10,31 @@ from TheCausalityGame.core.lib.enum.runplan import (
     RunPlanParallelBackEnd,
 )
 
-from .budget import BudgetSpec
-
 
 class RunPlanSpec(BaseModel):
-    """Execution policy for agent runs.
+    """
+    Execution policy for agent runs.
 
-    Runs are performed in isolated environments per agent. Execution can be
-    sequential (one agent after the other) or parallel (concurrently).
+    Defines how agents are executed during a run—either sequentially or in parallel—
+    including resource budgets, hook integrations, and plotting options.
+
+    Inherits from `CommonSpec` to support dynamic loading and configuration.
 
     Attributes
     ----------
-        rounds: Number of rounds per agent.
-        execution: 'sequential' or 'parallel'.
-        parallel_backend: 'thread' for I/O-bound or 'process' for CPU-bound runs.
-        max_workers: Optional cap on parallel workers; None → auto.
-        budgets: Resource budgets enforced per agent run.
+    execution : RunPlanExecution
+        Execution mode: either 'sequential' or 'parallel'.
+    parallel_backend : RunPlanParallelBackEnd
+        Backend for parallel execution: 'thread' (for I/O-bound tasks) or
+        'process' (for CPU-bound tasks).
+    max_workers : int or None
+        Maximum number of parallel workers. `None` means auto-detect.
+    budget : BudgetSpec
+        Resource constraints per agent run (e.g., time, memory, samples).
+    hook_plan : list[HookSpec]
+        Optional hooks to trigger on lifecycle events.
+    plot_plan : list[PlotSpec]
+        Optional plot definitions for runtime visualization.
     """
 
     model_config = ConfigDict(extra="forbid", frozen=True)
@@ -43,7 +53,8 @@ class RunPlanSpec(BaseModel):
         description="Maximum number of parallel workers; None for auto.",
     )
     budget: BudgetSpec = Field(
-        default_factory=BudgetSpec, description="Resource budgets per agent run."
+        default_factory=BudgetSpec,
+        description="Resource budgets per agent run.",
     )
     hook_plan: list[HookSpec] = Field(
         default_factory=list,

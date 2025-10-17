@@ -4,7 +4,7 @@ from TheCausalityGame.core.infrastructure.registry import build_from_spec
 from TheCausalityGame.core.runtime.runner import Runner
 
 # Get problem instance
-problem_instance_path = "test_problem_instance.json"
+problem_instance_path = "cate.json"
 # REad problem instance
 with open(problem_instance_path, "r") as f:
     problem_instance_spec = json.load(f)
