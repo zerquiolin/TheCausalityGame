@@ -1,35 +1,51 @@
 """The Causality Game - Result Validator contract."""
 
 from abc import abstractmethod
+from typing import Any
 
 from TheCausalityGame.core.contracts.serializable import Serializable
 
 
 class ResultValidator(Serializable):
-    """Abstract base for noise distributions."""
+    """
+    Abstract base class for validating agent results.
+
+    Used to enforce constraints or canonical formats for outputs
+    returned by the agent's `answer()` method.
+    """
 
     _kind: str
 
     @property
     def kind(self) -> str:
-        """Get the kind of the noise distribution."""
-        return self._kind
-
-    @abstractmethod
-    def validate(self, result: any) -> any:
-        """Validate and process the result.
-
-        Args:
-            result (any): The result to validate.
+        """
+        Return the kind identifier for the result validator.
 
         Returns
         -------
-            any | None: The processed result if valid, else None.
+        str
+            The type of result this validator accepts (used to match against metrics).
+        """
+        return self._kind
+
+    @abstractmethod
+    def validate(self, result: Any) -> Any:  # noqa :ANN401
+        """
+        Validate and optionally transform the agent's result.
+
+        Parameters
+        ----------
+        result : Any
+            The raw result returned by the agent.
+
+        Returns
+        -------
+        Any or None
+            A cleaned/standardized result, or None if validation fails.
 
         Raises
         ------
-            NotImplementedError: If the method is not implemented.
-            ValueError: If the result is invalid.
-
+        ValueError
+            If the result is invalid or incompatible.
         """
         raise NotImplementedError

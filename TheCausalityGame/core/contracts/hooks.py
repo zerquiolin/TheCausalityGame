@@ -1,4 +1,4 @@
-"""Hook contracts and canonical event names."""
+"""The Causality Game - Hook Contract."""
 
 from __future__ import annotations
 
@@ -8,19 +8,39 @@ from TheCausalityGame.core.lib.enum.hooks import HookEvent
 
 
 class Hook(Protocol):
-    """A hook implementation that subscribes to canonical events.
+    """
+    Base protocol for hook implementations that subscribe to game events.
 
-    Implementers may expose methods named after the events, e.g.:
-    `def on_round_start(self, **payload) -> None: ...`
-    The runtime event bus discovers and calls matching methods.
+    Hook implementations must define which events they respond to, and may
+    optionally implement methods named after the events (e.g., `on_round_start`).
+    The runtime will automatically call matching methods when those events occur.
+
+    Attributes
+    ----------
+    id : str
+        Unique identifier for the hook instance.
     """
 
     id: str
 
     def handles(self) -> list[HookEvent]:
-        """Return the list of events this hook wants to receive."""
+        """
+        Return the list of events this hook should be notified about.
+
+        Returns
+        -------
+        list of HookEvent
+            The events this hook subscribes to.
+        """
         ...
 
     def configure(self, config: dict[str, Any]) -> None:
-        """Receive configuration values after construction."""
+        """
+        Receive configuration data after hook construction.
+
+        Parameters
+        ----------
+        config : dict[str, Any]
+            Key-value configuration dictionary.
+        """
         ...

@@ -76,7 +76,7 @@ class BayesianNetworkSCMNode(BaseCategoricSCMNode):
         distributions = self.get_distributions(parent_values)
 
         # draw samples from each distribution
-        self._init_random_state()
+        self._init_random_state()  # TODO: I think this is not needed since the constructor of the node already does it
         rs = random_state if random_state else self.random_state
         return [rs.choice(self.domain, p=dist) for dist in distributions]
 

@@ -3,20 +3,16 @@
 import logging
 from abc import abstractmethod
 from collections.abc import Callable
-from typing import TypeVar
+from typing import Any, TypeVar
 
 import numpy as np
 import pandas as pd
 
 from TheCausalityGame.core.contracts.noise import NoiseDistribution
 from TheCausalityGame.core.contracts.serializable import Serializable
-
-# Spec
 from TheCausalityGame.core.contracts.specs.scm_node import SCMNodeSpec
 from TheCausalityGame.core.infrastructure.registry import get_class_path
-from TheCausalityGame.core.lib.constants.nodes import (
-    ACCESSIBILITY_CONTROLLABLE,
-)
+from TheCausalityGame.core.lib.constants.nodes import ACCESSIBILITY_CONTROLLABLE
 from TheCausalityGame.core.lib.utils.random_state_serialization import (
     random_state_to_json,
 )
@@ -25,97 +21,127 @@ T = TypeVar("T", bound="Serializable")
 
 
 class SCMNode(Serializable):
-    def __init__(
+    """
+    Base class for a Structural Causal Model (SCM) node.
+
+    Each node encapsulates its name, domain, parent nodes, evaluation logic, noise,
+    and configuration options such as accessibility.
+
+    Parameters
+    ----------
+    name : str
+        Node identifier.
+    evaluation : Callable | None
+        Evaluation function used to compute values (if applicable).
+    domain : list[float | str]
+        Possible values the node can take.
+    noise_distribution : NoiseDistribution
+        Source of noise for the node.
+    accessibility : str
+        Level of agent access (e.g., controllable, observable, latent).
+    parents : list[str] | None
+        Names of parent nodes in the SCM graph.
+    parent_mappings : dict[str, int | float] | None
+        Optional transformation or mapping of parent values.
+    random_state : np.random.RandomState
+        Random state used for reproducibility.
+    logger : logging.Logger | None
+        Optional logger instance.
+    """
+
+    def __init__(  # noqa: PLR0913
         self,
         name: str,
-        evaluation: Callable | None,
+        evaluation: Callable[[pd.DataFrame], float | str] | None,
         domain: list[float | str],
         noise_distribution: NoiseDistribution,
         accessibility: str = ACCESSIBILITY_CONTROLLABLE,
         parents: list[str] | None = None,
         parent_mappings: dict[str, int | float] | None = None,
-        random_state: np.random.RandomState = np.random.RandomState(911),
-        logger: logging.Logger = None,
-    ):
-        """
-        SCMNode is class representing a node in a Structural Causal Model (SCM).
-        It encapsulates the node's name, evaluation function, domain of possible values,
-        parent nodes, and a random state for generating random values.
-
-        Args:
-            name (str): The name of the node.
-            accessibility (str): accessibility of this variable by the agent (latent, observable, or controllable)
-            evaluation (Callable): A function to evaluate the node's value based on its parents.
-            domain (List[float | str]): The domain of possible values for the node.
-            parents (List[str]): A list of parent node names.
-            random_state (np.random.RandomState): Random state for generating random values.
-        """
+        random_state: np.random.RandomState | None = None,
+        logger: logging.Logger | None = None,
+    ) -> None:
+        """Initialize the SCM node."""
         self.name = name
         self.accessibility = accessibility
         self.evaluation = evaluation
         self.domain = domain
-        if not isinstance(domain, list):
-            self.domain = list(self.domain)
         self.noise_distribution = noise_distribution
         self.parents = parents
         self.parent_mappings = parent_mappings
-        self.random_state = random_state
-        self.logger = (
-            logger
-            if logger is not None
-            else logging.getLogger(f"{self.__module__}.{self.__class__.__name__}")
+        self.random_state = random_state or np.random.RandomState(911)
+        self.logger = logger or logging.getLogger(
+            f"{self.__module__}.{self.__class__.__name__}"
         )
-
-        # this is just to not break the MRO
         super().__init__()
 
-    def _init_random_state(self):
-        if self.random_state is None:
-            self.random_state = np.random.RandomState()
+    # def _init_random_state(self):
+    #     """Ensure the node has a valid random state."""
+    #     if self.random_state is None:
+    #         self.random_state = np.random.RandomState()
 
-    def prepare_new_random_state_structure(self, random_state):
+    def prepare_new_random_state_structure(
+        self, random_state: np.random.RandomState
+    ) -> np.random.RandomState:
         """
-            Generates a random structure that is required by this node. By default, this is just a simple RandomState.
-            However, if need be and keeping in mind reproducibility, it can be useful to generate several such objects
-            so that several random things can be determined for multiple sampled instances in parallel, e.g., noise and category or so.
+        Prepare a new random state structure for multi-sample generation.
 
-        Args:
-            random_state (_type_): _description_
+        Parameters
+        ----------
+        random_state : np.random.RandomState
+            Source random generator.
 
         Returns
         -------
-            _type_: _description_
+        np.random.RandomState
+            A new reproducible random state.
         """
         return np.random.RandomState(random_state.randint(0, 10**5))
 
     @abstractmethod
     def generate_values(
-        self, parent_values: pd.DataFrame, random_state: np.random.RandomState
-    ) -> float | str:
+        self,
+        parent_values: pd.DataFrame,
+        random_state: np.random.RandomState,
+        cancel_noise: bool = False,
+    ) -> list[int | float | str]:
         """
-        Generates a value for the node based on its parents and noise.
+        Generate the node's value using its parents and internal noise.
 
-        Args:
-            parent_values (dict): A dictionary of parent node values.
-            random_state (np.random.RandomState): Random state for generating random values.
+        Parameters
+        ----------
+        parent_values : pd.DataFrame
+            Values of the parent nodes.
+        random_state : np.random.RandomState
+            Source of randomness.
 
         Returns
         -------
-            float | str: The generated value for the node.
+        list of int | float | str
+            Generated values for the node.
         """
         raise NotImplementedError("Subclasses must implement this method.")
 
-    def _to_dict(self) -> dict:
+    def _to_dict(self) -> dict[str, Any]:
+        """Subclass hook to add custom fields to the spec."""
         return {}
 
     def to_spec(self) -> SCMNodeSpec:
+        """
+        Convert the node into a serializable specification.
+
+        Returns
+        -------
+        SCMNodeSpec
+            The structured specification of the SCM node.
+        """
         d = {
             "class_": get_class_path(self.__class__),
             "name": self.name,
             "accessibility": self.accessibility,
             "domain": self.domain,
-            "parents": self.parents,
-            "parent_mappings": self.parent_mappings if self.parent_mappings else None,
+            "parents": self.parents if self.parents else None,
+            "parent_mappings": self.parent_mappings or None,
             "noise_distribution": self.noise_distribution.to_dict(),
             "random_state": (
                 random_state_to_json(self.random_state) if self.random_state else None
@@ -123,14 +149,16 @@ class SCMNode(Serializable):
         }
         d.update(self._to_dict())
         assert "class" in d or "class_" in d, f"Serialized node has no class entry: {d}"
-
-        node = SCMNodeSpec(**d)
-        return node
+        return SCMNodeSpec(**d)  # type: ignore
 
 
 class NumericSCMNode(SCMNode):
+    """Marker class for numeric SCM nodes."""
+
     pass
 
 
 class CategoricSCMNode(SCMNode):
+    """Marker class for categorical SCM nodes."""
+
     pass

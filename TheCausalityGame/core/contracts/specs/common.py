@@ -19,7 +19,7 @@ class CommonSpec(BaseModel):
 
     model_config = ConfigDict(extra="ignore", frozen=True, populate_by_name=True)
 
-    class_: str = Field(alias="class")
+    class_: str
     spec_: str | None = Field(default=None, description="Spec class path.")
     params: dict = Field(default_factory=dict, description="Optional configuration.")
 

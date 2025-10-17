@@ -18,12 +18,12 @@ class Serializable(ABC):
     """
 
     @abstractmethod
-    def to_spec(self) -> dict[str, Any]:
+    def to_spec(self) -> Any:  # noqa :ANN401
         """Return a canonical spec for this instance."""
 
     @classmethod
     @abstractmethod
-    def from_spec(cls: type[T], spec: dict[str, Any]) -> T:
+    def from_spec(cls, spec: Any) -> Any:  # noqa :ANN401
         """Create an instance from a canonical spec."""
 
     # ----- JSON helpers (backed by strict JSON) -----
@@ -40,6 +40,4 @@ class Serializable(ABC):
     def from_json(cls: type[T], s: str) -> T:
         """Strict JSON load (for persistence/sharing)."""
         spec = loads(s)
-        if not isinstance(spec, dict):
-            raise TypeError("JSON must represent an object/spec (dict).")
         return cls.from_spec(spec)

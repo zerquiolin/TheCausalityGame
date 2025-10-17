@@ -13,24 +13,30 @@ from TheCausalityGame.core.contracts.dto.environment import (
     SamplesCollection,
 )
 from TheCausalityGame.core.contracts.serializable import Serializable
+from TheCausalityGame.core.errors.agent import (
+    AgentContextNotSetError,
+    AgentLoggerNotSetError,
+)
 from TheCausalityGame.core.infrastructure.decisions import Decision
 from TheCausalityGame.core.infrastructure.logger import Logger
 
 
 @dataclass(frozen=True, slots=True)
 class AgentContext:
-    """Execution context stored on an agent instance.
+    """Execution context provided to an agent during runtime.
 
     Attributes
     ----------
-        base_seed: Optional global seed used as root for deterministic derivations.
-        game_scenario: Hints about mission and constraints (max rounds, budgets, etc.).
-            Recommended keys:
-              - mission_id: str
-              - max_rounds: int
-              - budgets: {time_s: float|None, samples: int|None, memory_mb: int|None}
-              - constraints: Mapping[str, Any]
-
+    mission : Mapping[str, str]
+        Information about the mission, such as name and description.
+    behavior_metric : Mapping[str, str]
+        Details of the metric evaluating agent behavior.
+    result_metric : Mapping[str, str]
+        Details of the metric evaluating agent performance.
+    custom_metrics : list[Mapping[str, str]]
+        Additional custom metrics associated with the mission.
+    seed : int
+        Global seed used for deterministic operations.
     """
 
     mission: Mapping[str, str]
@@ -41,61 +47,100 @@ class AgentContext:
 
 
 class Agent(Serializable):
-    """Serializable agent base with an explicit, minimal surface.
+    """
+    Base class for all agents in The Causality Game.
 
-    Agents MUST implement:
-      - act(round_info, available_actions) -> Decision
-      - inform(outcome) -> None
-      - answer() -> Any
+    Agents must implement three core methods:
+      - `act(round_info, available_actions)`: choose an experiment or answer.
+      - `inform(samples_collection, feedback)`: process observed outcomes.
+      - `answer()`: return the current best estimate.
+
+    Agents are serializable and can be reconstructed from specifications.
     """
 
     id: str
     _context: AgentContext | None = None
     _logger: Logger | None = None
 
-    # -------- context management --------
+    # ---------------- Context Management ---------------- #
 
     def set_context(self, ctx: AgentContext) -> None:
-        """Inject the runtime context exactly once per agent instance."""
+        """Assign the runtime context to the agent (only once)."""
         if self._context is None:
             self._context = ctx
 
     @property
     def context(self) -> AgentContext:
-        """Return the injected runtime context."""
+        """Return the agent's runtime context."""
         if self._context is None:
-            raise RuntimeError("Agent context not set")
+            raise AgentContextNotSetError()
         return self._context
 
-    # -------- logger management --------
+    # ---------------- Logger Management ---------------- #
 
     def set_logger(self, logger: Logger) -> None:
-        """Inject the logger exactly once per agent instance."""
+        """Assign a logger to the agent (only once)."""
         if self._logger is None:
             self._logger = logger
 
     @property
     def logger(self) -> Logger:
-        """Return the injected Logger."""
+        """Return the assigned logger instance."""
         if self._logger is None:
-            raise RuntimeError("Agent logger not set")
+            raise AgentLoggerNotSetError()
         return self._logger
 
-    # -------- required public API --------
+    # ---------------- Required Public API ---------------- #
 
     @abstractmethod
     def act(
-        self, round_info: RoundInfo, available_actions: AvailableActions
+        self,
+        round_info: RoundInfo,
+        available_actions: AvailableActions,
     ) -> Decision:
-        """Select and return a Decision for this round."""
+        """
+        Select and return a decision based on the current round state.
+
+        Parameters
+        ----------
+        round_info : RoundInfo
+            Information about the current round of interaction.
+        available_actions : AvailableActions
+            Valid actions the agent may take at this step.
+
+        Returns
+        -------
+        Decision
+            The agent's selected decision.
+        """
         raise NotImplementedError
 
     @abstractmethod
-    def inform(self, samples_collection: SamplesCollection, feedback: Feedback) -> None:
-        """Receive the result of the previously executed action (samples/feedback)."""
+    def inform(
+        self,
+        samples_collection: SamplesCollection,
+        feedback: Feedback,
+    ) -> None:
+        """
+        Receive and process feedback from the environment after an action.
+
+        Parameters
+        ----------
+        samples_collection : SamplesCollection
+            The observational data resulting from the action.
+        feedback : Feedback
+            Metadata about rewards, penalties, or mission-specific signals.
+        """
         raise NotImplementedError
 
     @abstractmethod
-    def answer(self) -> Any:
-        """Return the agent's current best result/estimate (pure query)."""
+    def answer(self) -> Any:  # noqa :ANN401
+        """
+        Return the agent's current best causal estimate.
+
+        Returns
+        -------
+        Any
+            The agent's prediction or structured output.
+        """
         raise NotImplementedError

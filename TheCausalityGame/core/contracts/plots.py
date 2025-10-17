@@ -1,4 +1,4 @@
-"""Hook contracts and canonical event names."""
+"""The Causality Game - Plot Contract."""
 
 from __future__ import annotations
 
@@ -10,17 +10,41 @@ from TheCausalityGame.core.lib.enum.plots import PlotKind
 
 
 class Plot(Serializable):
-    """A plot hook.
+    """
+    Base class for plot hooks in The Causality Game.
 
-    This is a hook that can be used to generate plots at different stages of the game.
-    The `generate` method must be implemented by subclasses to create the desired plot.
-    The `id` attribute is a unique identifier for the plot.
+    Plot hooks are used to visualize different stages or outputs of the game.
+    Each subclass must implement `generate`, which produces the figure.
+
+    Attributes
+    ----------
+    id : str
+        Unique identifier for the plot instance.
+    kind : PlotKind
+        Canonical type identifier (e.g., "round_end", "benchmark_end").
     """
 
     id: str
     kind: PlotKind
 
     @abstractmethod
-    def generate(self, arg: Any) -> Any:
-        """Return the figure object created by the plot."""
+    def generate(self, arg: Any) -> Any:  # noqa: ANN401
+        """
+        Generate and return a figure based on game data.
+
+        Parameters
+        ----------
+        arg : Any
+            Input data for generating the plot (varies by plot kind).
+
+        Returns
+        -------
+        Any
+            The generated figure (typically a matplotlib or plotly object).
+
+        Raises
+        ------
+        NotImplementedError
+            Must be implemented by subclasses.
+        """
         raise NotImplementedError()
