@@ -6,7 +6,7 @@ from typing import Any
 import networkx as nx
 
 from TheCausalityGame.core.contracts.serializable import Serializable
-from TheCausalityGame.core.errors.dag import DAGCycleError
+from TheCausalityGame.core.lib.errors.dag import DAGCycleError
 
 
 class DAG(Serializable):

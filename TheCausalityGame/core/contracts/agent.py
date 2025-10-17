@@ -13,12 +13,12 @@ from TheCausalityGame.core.contracts.dto.environment import (
     SamplesCollection,
 )
 from TheCausalityGame.core.contracts.serializable import Serializable
-from TheCausalityGame.core.errors.agent import (
+from TheCausalityGame.core.infrastructure.decisions import Decision
+from TheCausalityGame.core.infrastructure.logger import Logger
+from TheCausalityGame.core.lib.errors.agent import (
     AgentContextNotSetError,
     AgentLoggerNotSetError,
 )
-from TheCausalityGame.core.infrastructure.decisions import Decision
-from TheCausalityGame.core.infrastructure.logger import Logger
 
 
 @dataclass(frozen=True, slots=True)

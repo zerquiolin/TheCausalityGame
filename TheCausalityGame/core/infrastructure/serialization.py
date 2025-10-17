@@ -12,7 +12,7 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from TheCausalityGame.core.errors.serialization import (
+from TheCausalityGame.core.lib.errors.serialization import (
     ObjectNotDeserializableError,
     ObjectNotSerializableError,
 )
