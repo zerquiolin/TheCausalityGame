@@ -1,4 +1,4 @@
-"""Utility functions for serializing and deserializing NumPy RandomState."""
+"""The Causality Game - Functions for serializing and deserializing NumPy RandomState."""
 
 import json
 from typing import Any

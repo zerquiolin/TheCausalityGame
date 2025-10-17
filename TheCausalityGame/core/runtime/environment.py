@@ -7,6 +7,7 @@ from TheCausalityGame.core.contracts.agent import Agent
 # DTO
 from TheCausalityGame.core.contracts.dto.environment import (
     AvailableActions,
+    Experiment,
     ExperimentVariable,
     Feedback,
     RoundInfo,
@@ -22,14 +23,16 @@ from TheCausalityGame.core.contracts.mission import (
 )
 from TheCausalityGame.core.contracts.scm import SCM
 from TheCausalityGame.core.contracts.specs.budget import BudgetSpec
-from TheCausalityGame.core.infrastructure.budgets import (
-    BudgetEnforcer,
-)
-from TheCausalityGame.core.infrastructure.decisions import Decision, ExperimentSpec
+from TheCausalityGame.core.infrastructure.decisions import Decision
 from TheCausalityGame.core.infrastructure.logger import Logger
 from TheCausalityGame.core.lib.enum.environment import ActionKind
 from TheCausalityGame.core.lib.enum.hook import HookEvent
 from TheCausalityGame.core.lib.enum.nodes import NodeAccessibility
+
+# from TheCausalityGame.core.infrastructure.budgets import (
+#     BudgetEnforcer,
+# )
+from TheCausalityGame.core.managers.budget import BudgetManager
 from TheCausalityGame.core.managers.hook import HookManager
 
 
@@ -56,7 +59,7 @@ class Environment:
         # Transcript
         self.transcript = transcript
         # Budget Enforcer
-        self.budget = BudgetEnforcer(budget_spec)
+        self.budget = BudgetManager(budget_spec)
         # Hook Manager
         self.hook_manager = hook_manager
         # Logger
@@ -99,20 +102,20 @@ class Environment:
                 HookEvent.TRANSCRIPTION_START, context=transcript_entry
             )
             # (Hook) Round start
-            self.hook_manager.trigger(HookEvent.ROUND_START)
+            self.hook_manager.trigger(HookEvent.ROUND_START, context=transcript_entry)
 
             # (Budget) Pause timer while triggering hooks
             self.budget.pause_time()
 
             # (Hook) Before act
-            self.hook_manager.trigger(HookEvent.BEFORE_ACT)
+            self.hook_manager.trigger(HookEvent.BEFORE_ACT, context=transcript_entry)
 
             # (Budget) Resume timer before asking agent for action
             self.budget.resume_time()
 
             # Ask agent for action
             decision: Decision = self.agent.act(
-                round_info=RoundInfo(round=r, budget_state=self.budget.snapshot()),
+                round_info=RoundInfo(round=r, budget_snapshot=self.budget.snapshot()),
                 available_actions=self.available_actions,
             )
 
@@ -129,9 +132,9 @@ class Environment:
             self.budget.pause_time()
 
             # (Hook) After act
-            self.hook_manager.trigger(HookEvent.AFTER_ACT)
+            self.hook_manager.trigger(HookEvent.AFTER_ACT, context=transcript_entry)
             # (Hook) Before eval
-            self.hook_manager.trigger(HookEvent.BEFORE_EVAL)
+            self.hook_manager.trigger(HookEvent.BEFORE_EVAL, context=transcript_entry)
 
             # Apply decision
             samples_collection = self._apply_decision(decision)
@@ -144,10 +147,10 @@ class Environment:
             transcript_entry.feedback = feedback
 
             # (Hook) After eval
-            self.hook_manager.trigger(HookEvent.AFTER_EVAL)
+            self.hook_manager.trigger(HookEvent.AFTER_EVAL, context=transcript_entry)
 
             # (Hook) Before inform
-            self.hook_manager.trigger(HookEvent.BEFORE_INFORM)
+            self.hook_manager.trigger(HookEvent.BEFORE_INFORM, context=transcript_entry)
 
             # (Budget) Resume timer before informing agent
             self.budget.resume_time()
@@ -171,14 +174,16 @@ class Environment:
             self.budget.pause_time()
 
             # (Hook) After inform
-            self.hook_manager.trigger(HookEvent.AFTER_INFORM)
+            self.hook_manager.trigger(HookEvent.AFTER_INFORM, context=transcript_entry)
 
             # (Budget) Charge round
             self.budget.tick_round()
-            # (Budget) Charge samples used
-            self.budget.charge_samples(samples_collection.total_n())
-            # (Budget) Charge memory used
-            self.budget.charge_memory(samples_collection.total_bytes())
+
+            if samples_collection is not None:
+                # (Budget) Charge samples used
+                self.budget.charge_samples(samples_collection.total_n())
+                # (Budget) Charge memory used
+                self.budget.charge_memory(samples_collection.total_bytes())
 
             # (Transcript) Add budget snapshot
             transcript_entry.budget_snapshot = self.budget.snapshot()
@@ -186,16 +191,18 @@ class Environment:
             # self.logger.warning(f"Budget Snapshot: {transcript_entry.budget_snapshot}")
 
             # (Hook) New budget snapshot
-            self.hook_manager.trigger(HookEvent.BUDGET_SNAPSHOT)
+            self.hook_manager.trigger(
+                HookEvent.BUDGET_SNAPSHOT, context=transcript_entry
+            )
 
             # (Hook) Round end
-            self.hook_manager.trigger(HookEvent.ROUND_END)
+            self.hook_manager.trigger(HookEvent.ROUND_END, context=transcript_entry)
 
             # Check if done
             if decision.kind == ActionKind.ANSWER:
                 break
 
-        self.hook_manager.trigger(HookEvent.ROUND_END)
+            self.hook_manager.trigger(HookEvent.ROUND_END, context=transcript_entry)
 
     def _apply_decision(self, decision: Decision) -> SamplesCollection | None:
         if decision.kind == ActionKind.ANSWER:
@@ -238,7 +245,7 @@ class Environment:
 
         return SamplesCollection(collection)
 
-    def _validate_experiment(self, experiment: ExperimentSpec) -> bool:
+    def _validate_experiment(self, experiment: Experiment) -> bool:
         if experiment.treatment is None:
             return True  # Observational study
 

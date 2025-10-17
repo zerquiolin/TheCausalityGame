@@ -87,30 +87,27 @@ class Logger:
                 if not color:
                     return output
                 token = f"[{level}]"
-                colored = f"{color}{token}{reset}"
+                colored = f"[{color}{level}{reset}]"
                 return output.replace(token, colored, 1)
 
         return ColorFormatter(base_format, datefmt)
 
     def debug(self, msg: str, *args: Any, **kwargs: Any) -> None:  # noqa: ANN401
+        """Log a debug message."""
         self.logger.debug(msg, *args, **kwargs)
 
     def info(self, msg: str, *args: Any, **kwargs: Any) -> None:  # noqa: ANN401
+        """Log an info message."""
         self.logger.info(msg, *args, **kwargs)
 
     def warning(self, msg: str, *args: Any, **kwargs: Any) -> None:  # noqa: ANN401
+        """Log a warning message."""
         self.logger.warning(msg, *args, **kwargs)
 
     def error(self, msg: str, *args: Any, **kwargs: Any) -> None:  # noqa: ANN401
+        """Log an error message."""
         self.logger.error(msg, *args, **kwargs)
 
     def critical(self, msg: str, *args: Any, **kwargs: Any) -> None:  # noqa: ANN401
+        """Log a critical message."""
         self.logger.critical(msg, *args, **kwargs)
-
-    def set_level(self, level: int) -> None:
-        self.logger.setLevel(level)
-        for handler in self.logger.handlers:
-            handler.setLevel(level)
-
-    def get_logger(self) -> logging.Logger:
-        return self.logger

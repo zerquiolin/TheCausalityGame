@@ -13,3 +13,13 @@ class BudgetExceededError(Exception):
 
     def __init__(self, message: str = "The budget has been exceeded.") -> None:
         super().__init__(message)
+
+
+class DecisionMismatchError(Exception):
+    """The decision does not match the environment's expectations."""
+
+    def __init__(
+        self,
+        message: str = "The decision kind does not match the environment's expectations.",
+    ) -> None:
+        super().__init__(message)

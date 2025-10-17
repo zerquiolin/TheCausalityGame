@@ -23,9 +23,7 @@ class BudgetSpec(BaseModel):
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    rounds: int | None = Field(
-        default=None, ge=0, description="Maximum number of rounds."
-    )
+    rounds: int = Field(default=100, ge=0, description="Maximum number of rounds.")
     time_s: float | None = Field(
         default=None, ge=0, description="Time budget in seconds."
     )

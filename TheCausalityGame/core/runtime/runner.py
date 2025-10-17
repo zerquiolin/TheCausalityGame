@@ -62,6 +62,15 @@ class Runner:
         self.logger.info(
             f"Starting run for problem instance '{self.problem_instance.id}'."
         )
+        self.logger.warning(
+            f"Runtime mode: {'Development' if self.is_dev else 'Production'}."
+        )
+        self.logger.error(
+            f"Number of agents to run: {len(self.problem_instance.agents)}."
+        )
+        self.logger.critical(
+            f"Run plan execution: {self.problem_instance.run_plan.execution}."
+        )
 
         # Cache to avoid running the same agent multiple times
         self.agents_cached: set[str] = set()
@@ -89,6 +98,8 @@ class Runner:
                 f"Running agents in parallel using {self.problem_instance.run_plan.parallel_backend} with max workers: {self.workers}."
             )
             transcripts = self._parallel_run()
+
+        # TODO: Create a separate funciton to handle plots. (Only run game/round plots for DEV mode)
 
         # Handle plots after all agents have run
         benchmark_figures = self.plot_manager.trigger_benchmark_end(transcripts)

@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Any, Protocol
+from typing import Protocol
 
+from TheCausalityGame.core.contracts.dto.transcript import TranscriptEntry
 from TheCausalityGame.core.lib.enum.hook import HookEvent
 
 
@@ -23,24 +24,18 @@ class Hook(Protocol):
 
     id: str
 
-    def handles(self) -> list[HookEvent]:
+    def run(self, context: TranscriptEntry | None) -> list[HookEvent]:
         """
         Return the list of events this hook should be notified about.
+
+        Parameters
+        ----------
+        context : TranscriptEntry | None
+            The current context of the game transcript.
 
         Returns
         -------
         list of HookEvent
             The events this hook subscribes to.
-        """
-        ...
-
-    def configure(self, config: dict[str, Any]) -> None:
-        """
-        Receive configuration data after hook construction.
-
-        Parameters
-        ----------
-        config : dict[str, Any]
-            Key-value configuration dictionary.
         """
         ...

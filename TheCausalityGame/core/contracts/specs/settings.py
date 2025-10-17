@@ -23,7 +23,7 @@ class RuntimeSettingsSpec(BaseModel):
 
     mode: RuntimeMode = Field(
         default=RuntimeMode.PROD,
-        description="Execution mode for runtime: production (PROD) or development (DEV).",
+        description="Runtime execution mode: PROD (production) or DEV (development), where DEV enables console logging and game/round plots.",  # noqa: E501
     )
     debug_level: RuntimeDebugLevel = Field(
         default=RuntimeDebugLevel.INFO,

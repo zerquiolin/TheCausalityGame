@@ -1,30 +1,30 @@
-// {
-//     "typeCheckingMode": "strict",
-//     "reportMissingParameterType": true,
-//     "reportMissingReturnType": true,
-//     "reportUnknownArgumentType": true,
-//     "reportUnknownMemberType": true,
-//     "reportUnknownVariableType": true,
-//     "reportUnknownParameterType": true,
-//     "reportUnknownLambdaType": true,
-//     "reportUntypedFunctionDecorator": true,
-//     "reportUnnecessaryTypeIgnoreComment": true,
-//     "reportImportCycles": true,
-//     "reportPrivateUsage": false,
-//     "include": [
-//         "TheCausalityGame"
-//     ],
-//     "exclude": [
-//         "tests/data",
-//         "build",
-//         "scripts"
-//     ],
-//     "ignore": [
-//         "**/__init__.py"
-//     ],
-//     "extraPaths": [
-//         "TheCausalityGame"
-//     ],
-//     "useLibraryCodeForTypes": true,
-//     "reportMissingTypeStubs": true
-// }
+{
+    "typeCheckingMode": "strict",
+    "reportMissingParameterType": true,
+    "reportMissingReturnType": true,
+    "reportUnknownArgumentType": true,
+    "reportUnknownMemberType": true,
+    "reportUnknownVariableType": true,
+    "reportUnknownParameterType": true,
+    "reportUnknownLambdaType": true,
+    "reportUntypedFunctionDecorator": true,
+    "reportUnnecessaryTypeIgnoreComment": true,
+    "reportImportCycles": true,
+    "reportPrivateUsage": false,
+    "include": [
+        "TheCausalityGame"
+    ],
+    "exclude": [
+        "tests/data",
+        "build",
+        "scripts"
+    ],
+    "ignore": [
+        "**/__init__.py"
+    ],
+    "extraPaths": [
+        "TheCausalityGame"
+    ],
+    "useLibraryCodeForTypes": true,
+    "reportMissingTypeStubs": true
+}

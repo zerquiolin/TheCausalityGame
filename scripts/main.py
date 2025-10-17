@@ -1,6 +1,6 @@
 import json
 
-from TheCausalityGame.core.infrastructure.registry import build_from_spec
+from TheCausalityGame.core.contracts.specs.problem_instance import ProblemInstanceSpec
 from TheCausalityGame.core.runtime.runner import Runner
 
 # Get problem instance
@@ -8,11 +8,10 @@ problem_instance_path = "cate.json"
 # REad problem instance
 with open(problem_instance_path, "r") as f:
     problem_instance_spec = json.load(f)
-# Build problem instance
-problem_instance = build_from_spec(problem_instance_spec)
+    problem_instance_spec = ProblemInstanceSpec(**problem_instance_spec)
 
 # Create orchestrator
-orchestrator = Runner(problem_instance=problem_instance)
+orchestrator = Runner(problem_instance=problem_instance_spec)
 
 # Run
 orchestrator.run()

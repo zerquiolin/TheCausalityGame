@@ -18,6 +18,28 @@ from TheCausalityGame.core.lib.errors.serialization import (
 )
 
 
+def is_serializable(obj: Any) -> bool:  # noqa :ANN401
+    """
+    Check if an object is serializable to JSON.
+
+    Parameters
+    ----------
+    obj : Any
+        Object to check.
+
+    Returns
+    -------
+    bool
+        True if the object is serializable, False otherwise.
+    """
+    try:
+        json.dumps(obj)
+    except ObjectNotSerializableError:
+        return False
+    else:
+        return True
+
+
 def _is_dataclass_instance(obj: Any) -> bool:  # noqa :ANN401
     """Check if the object is a dataclass instance (not a class itself)."""
     return _dc.is_dataclass(obj) and not isinstance(obj, type)
