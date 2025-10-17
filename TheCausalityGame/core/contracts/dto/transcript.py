@@ -1,3 +1,5 @@
+"""The Causality Game - Run Transcript DTOs."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -14,25 +16,42 @@ from TheCausalityGame.core.infrastructure.decisions import Decision
 
 
 class TranscriptEntry(CommonDTO):
-    """Canonical transcript unit written by the Environment per step."""
+    """
+    Canonical transcript unit representing a single step in the game.
 
-    model_config = ConfigDict(extra="allow", frozen=False, arbitrary_types_allowed=True)
+    Captures all agent-environment interactions per round, including:
+      - the round index,
+      - the agent's decision,
+      - resulting outcome or estimate,
+      - feedback from the environment,
+      - and budget snapshot after action execution.
+    """
+
+    model_config = ConfigDict(
+        extra="allow",  # Allow dynamic/extra fields (e.g., future extensions)
+        frozen=False,  # Mutable if runtime updates are needed
+        arbitrary_types_allowed=True,  # Permit complex types like Decision
+    )
 
     round: int
-
     decision: Decision | None = None
     result: Any | None = None
     samples_collection: SamplesCollection | None = None
-
     budget_snapshot: BudgetSnapshot | None = None
     feedback: Feedback | None = None
 
 
 class Transcript(CommonDTO):
-    """Full transcript of a run, including metadata and all steps."""
+    """
+    Full transcript for a single agent's run.
+
+    Stores the complete sequence of interactions along with metadata identifying the run.
+    """
 
     agent_id: str
     mission_id: str
     manifest_id: str
 
-    entries: list[TranscriptEntry] = Field(default=list)
+    entries: list[TranscriptEntry] = Field(
+        default_factory=list, description="Chronological list of transcript entries."
+    )

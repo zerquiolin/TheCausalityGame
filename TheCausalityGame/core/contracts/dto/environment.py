@@ -1,58 +1,83 @@
+"""The Causality Game - Environment DTOs."""
+
 from __future__ import annotations
 
 from typing import Any, Literal
 
 import pandas as pd
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import ConfigDict
 
-# TODO: Create a common base class for DTOs
+from TheCausalityGame.core.contracts.dto.common import CommonDTO
 
 
 # === Round Info ===
-class RoundInfo(BaseModel):
+class RoundInfo(CommonDTO):
+    """Information about the current round state."""
+
     round: int
     budget_snapshot: BudgetSnapshot | None = None
 
 
 # === Availability of Actions ===
-class ExperimentVariable(BaseModel):
+class ExperimentVariable(CommonDTO):
+    """Describes a single experiment variable (intervention target)."""
+
     name: str
     domain: list[int | float]
 
 
-class AvailableActions(BaseModel):
+class AvailableActions(CommonDTO):
+    """Actions available to the agent in a given round."""
+
     experiments: list[ExperimentVariable]
-    answer: Literal["submit"] = "submit"  # TODO: Hardcoded for now, only one action
+    answer: Literal["submit"] = "submit"  # Currently hardcoded
 
 
 # === Samples ===
-class Samples(BaseModel):
+class Samples(CommonDTO):
+    """A batch of observational or interventional data."""
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
-    kind: str  # "observational" | "interventional"
+
+    kind: str  # Either "observational" or "interventional"
     n: int
     data: pd.DataFrame
     interventions: dict[str, Any] | None = None
 
 
 class SamplesCollection(list[Samples]):
+    """A collection of samples gathered across multiple rounds."""
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     def total_n(self) -> int:
+        """Return the total number of samples collected."""
         return sum(s.n for s in self)
 
     def total_bytes(self) -> float:
-        return sum(s.data.memory_usage(deep=True).sum() for s in self)  # Bytes
+        """Return the total memory usage (in bytes) of all sample data."""
+        return sum(s.data.memory_usage(deep=True).sum() for s in self)
 
 
-# === Metric Scores ===
-class Feedback(BaseModel):
+# === Metric Feedback ===
+class Feedback(CommonDTO):
+    """Metric scores returned by the environment after each round."""
+
+    model_config = ConfigDict(
+        extra="forbid",  # No extra fields allowed
+        frozen=False,  # Mutable if sscore updates are needed
+        arbitrary_types_allowed=False,  # Only standard types allowed
+    )
+
     result: float | None = None
     behavior: float | None = None
-    custom_metrics: dict[str, float] | None = Field(default=None)
+    custom_metrics: dict[str, float] | None = None
 
 
 # === Budgets ===
-class BudgetSnapshot(BaseModel):
+class BudgetSnapshot(CommonDTO):
+    """Snapshot of resource budgets remaining in the current round."""
+
     rounds_left: int | None = None
     time_s_left: float | None = None
     samples_left: int | None = None
