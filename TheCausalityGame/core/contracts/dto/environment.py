@@ -23,7 +23,7 @@ class ExperimentVariable(CommonDTO):
     """Describes a single experiment variable (intervention target)."""
 
     name: str
-    domain: list[int | float]
+    domain: list[int | float | str]
 
 
 class AvailableActions(CommonDTO):

@@ -28,10 +28,6 @@ from TheCausalityGame.core.infrastructure.logger import Logger
 from TheCausalityGame.core.lib.enum.environment import ActionKind
 from TheCausalityGame.core.lib.enum.hook import HookEvent
 from TheCausalityGame.core.lib.enum.nodes import NodeAccessibility
-
-# from TheCausalityGame.core.infrastructure.budgets import (
-#     BudgetEnforcer,
-# )
 from TheCausalityGame.core.managers.budget import BudgetManager
 from TheCausalityGame.core.managers.hook import HookManager
 
@@ -82,7 +78,10 @@ class Environment:
             in (NodeAccessibility.MEASURABLE, NodeAccessibility.CONTROLLABLE)
         ]
         # Random States for experiments
-        self.random_states: dict[str | tuple, np.random.RandomState] = {}
+        self.random_states: dict[
+            str | tuple[tuple[str, int | float | str], ...],
+            np.random.RandomState | dict[str, np.random.RandomState],
+        ] = {}
 
         # Mount mission
         self.mission.mount(self.scm)
@@ -256,7 +255,9 @@ class Environment:
             assert self.scm.nodes[name].accessibility == NodeAccessibility.CONTROLLABLE
             # Check domain
             low, high = self.scm.nodes[name].domain
-            if value < low or value > high:
+            if isinstance(value, int | float) and (
+                float(value) < float(low) or float(value) > float(high)
+            ):
                 raise ValueError
         return True
 
@@ -273,9 +274,11 @@ class Environment:
         for metric in self.custom_metrics:
             # Check if metric is behavioral or result
             if isinstance(metric, BehaviorMetric):
-                score = metric.evaluate(transcript)
+                score: float = metric.evaluate(transcript)
             elif isinstance(metric, ResultMetric):
-                score = metric.evaluate(result)
+                score: float = metric.evaluate(
+                    kind=self.mission.result_validator.kind, result=result
+                )
             else:
                 raise ValueError(f"Unknown metric type: {type(metric)}")
             # Add score to results

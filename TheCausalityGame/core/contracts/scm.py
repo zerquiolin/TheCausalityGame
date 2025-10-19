@@ -140,10 +140,12 @@ class SCM(Serializable):
 
     def generate_samples(
         self,
-        interventions: dict[str, float] | None = None,
+        interventions: dict[str, float | str] | None = None,
         num_samples: int = 1,
         cancel_noise: bool = False,
-        random_state: dict[str, np.random.RandomState] | None = None,
+        random_state: (
+            dict[str, np.random.RandomState] | np.random.RandomState | None
+        ) = None,
     ) -> pd.DataFrame:
         """Generate samples from the SCM given optional interventions.
 

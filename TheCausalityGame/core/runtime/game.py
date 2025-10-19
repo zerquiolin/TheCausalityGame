@@ -1,3 +1,5 @@
+"""The Causality Game - Game Orchestration Module."""
+
 from TheCausalityGame.core.contracts.agent import Agent, AgentContext
 from TheCausalityGame.core.contracts.dto.transcript import Transcript
 from TheCausalityGame.core.contracts.metric import Metric
@@ -16,7 +18,39 @@ from TheCausalityGame.core.runtime.environment import Environment
 
 
 class Game:
-    def __init__(
+    """
+    Represents a single run of the Causality Game for one agent.
+
+    Responsible for:
+    - Constructing environment components (SCM, Mission, Agent, Metrics)
+    - Initializing the agent context and logger
+    - Executing the game via the Environment runner
+
+    Parameters
+    ----------
+    manifest_id : str
+        ID of the overarching run (benchmark/experiment).
+    agent_spec : AgentSpec
+        Specification for the agent to run.
+    scm_spec : SCMSpec
+        Specification of the structural causal model (SCM).
+    mission_spec : MissionSpec
+        Specification for the task/goal to solve.
+    custom_metrics_specs : list[MetricSpec]
+        Optional custom evaluation metrics.
+    budget_spec : BudgetSpec
+        Resource constraints for the run.
+    hook_manager : HookManager
+        Manager responsible for runtime hooks.
+    agent_logger : Logger
+        Logger scoped to the agent.
+    game_logger : Logger
+        Logger scoped to the game.
+    environment_logger : Logger
+        Logger scoped to the environment.
+    """
+
+    def __init__(  # noqa: PLR0913
         self,
         manifest_id: str,
         agent_spec: AgentSpec,
@@ -29,19 +63,18 @@ class Game:
         game_logger: Logger,
         environment_logger: Logger,
     ) -> None:
-        # Manifest ID
+        # Store manifest
         self.manifest_id = manifest_id
-        # Build Agent
-        self.agent: Agent = build_from_spec(agent_spec)  # type: ignore
-        # Build SCM
-        self.scm: SCM = build_from_spec(scm_spec)  # type: ignore
-        # Build Mission
-        self.mission: Mission = build_from_spec(mission_spec)  # type: ignore
-        # Build Custom Metrics
-        self.custom_metrics: list[Metric] = [  # type: ignore
+
+        # Build components from specs
+        self.agent: Agent = build_from_spec(agent_spec)
+        self.scm: SCM = build_from_spec(scm_spec)
+        self.mission: Mission = build_from_spec(mission_spec)
+        self.custom_metrics: list[Metric] = [
             build_from_spec(m) for m in custom_metrics_specs
         ]
-        # Agent Context
+
+        # Set agent context
         agent_ctx = AgentContext(
             mission={
                 "name": self.mission.name,
@@ -59,43 +92,49 @@ class Game:
                 {"name": m.name, "description": m.description}
                 for m in self.custom_metrics
             ],
-            seed=911,
+            seed=911,  # TODO: Make seed configurable?
         )
         self.agent.set_context(agent_ctx)
-        # Agent Logger
         self.agent.set_logger(agent_logger)
-        # Build Transcript
+
+        # Create transcript to record game
         self.transcript = Transcript(
             agent_id=self.agent.id,
             mission_id=self.mission.id,
             manifest_id=self.manifest_id,
             entries=[],
         )
-        # Build Environment
+
+        # Environment
         self.environment = Environment(
-            self.agent,
-            self.scm,
-            self.mission,
-            self.custom_metrics,
-            self.transcript,
-            budget_spec,
-            hook_manager,
-            environment_logger,
+            agent=self.agent,
+            scm=self.scm,
+            mission=self.mission,
+            custom_metrics=self.custom_metrics,
+            transcript=self.transcript,
+            budget_spec=budget_spec,
+            hook_manager=hook_manager,
+            logger=environment_logger,
         )
-        # Hook Manager
+
         self.hook_manager = hook_manager
-        # Logger
-        self.logger: Logger = game_logger
+        self.logger = game_logger
 
     def run(self) -> Transcript:
-        # Log start
+        """
+        Execute the full game run for this agent.
+
+        Returns
+        -------
+        Transcript
+            The full recorded transcript of the run.
+        """
         self.logger.info(f"Starting game run for agent {self.agent.id}.")
-        # Flag start
         self.hook_manager.trigger(HookEvent.GAME_START)
-        # Run Environment
+
         self.environment.run()
-        # Flag end
+
         self.hook_manager.trigger(HookEvent.GAME_END)
-        # Log end
         self.logger.info(f"Game run ended for agent {self.agent.id}.")
+
         return self.transcript

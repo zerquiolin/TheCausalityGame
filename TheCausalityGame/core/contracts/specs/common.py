@@ -31,9 +31,7 @@ class CommonSpec(BaseModel):
         populate_by_name=True,  # Allow aliasing (e.g., `class_` -> `class`)
     )
 
-    class_: str = Field(
-        ..., alias="class", description="Class import path (module:Class)."
-    )
+    class_: str = Field(..., description="Class import path (module:Class).")
     spec_: str | None = Field(
         default=None,
         description="Optional spec class import path. Auto-populated if not provided.",
