@@ -10,8 +10,8 @@ from tqdm import tqdm
 
 from TheCausalityGame.core.contracts.dto.transcript import Transcript
 from TheCausalityGame.core.contracts.problem_instance import ProblemInstance
-from TheCausalityGame.core.contracts.specs import ProblemInstanceSpec
 from TheCausalityGame.core.contracts.specs.agent import AgentSpec
+from TheCausalityGame.core.contracts.specs.problem_instance import ProblemInstanceSpec
 from TheCausalityGame.core.infrastructure.artifacts import ArtifactWriter
 from TheCausalityGame.core.infrastructure.logger import Logger
 from TheCausalityGame.core.lib.enum.runplan import RunPlanParallelBackEnd
