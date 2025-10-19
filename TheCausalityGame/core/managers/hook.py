@@ -40,7 +40,8 @@ class HookManager:
 
         # Ensure hook directory exists
         self.hook_dir = hook_dir
-        self.hook_dir.mkdir(parents=True, exist_ok=True)
+        if len(hooks) > 0:
+            self.hook_dir.mkdir(parents=True, exist_ok=True)
 
     def trigger(self, step: HookEvent, context: TranscriptEntry | None = None) -> None:
         """

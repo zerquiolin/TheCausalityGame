@@ -58,7 +58,11 @@ class PlotManager:
         list[tuple[matplotlib.figure.Figure]]
             A tuple of plot id and the generated plot figure.
         """
-        return [(plot.id, plot.generate(transcript_entry)) for plot in self.round_plots]
+        return [
+            (plot.id, fig)
+            for plot in self.round_plots
+            if (fig := plot.generate(transcript_entry))
+        ]
 
     def trigger_rounds(
         self, transcript: Transcript
@@ -76,7 +80,11 @@ class PlotManager:
         list[list[tuple[str, matplotlib.figure.Figure]]]
             A list of lists containing tuples of plot id and the generated plot figure for each round.
         """  # noqa: E501
-        return [self.trigger_round(entry) for entry in transcript.entries]
+        return [
+            result
+            for entry in transcript.entries
+            if (result := self.trigger_round(entry))
+        ]
 
     def trigger_end(
         self, transcript: Transcript
@@ -94,7 +102,11 @@ class PlotManager:
         list[tuple[str, matplotlib.figure.Figure]]
             A tuple of plot id and the generated plot figure.
         """
-        return [(plot.id, plot.generate(transcript)) for plot in self.end_plots]
+        return [
+            (plot.id, fig)
+            for plot in self.end_plots
+            if (fig := plot.generate(transcript))
+        ]
 
     def trigger_benchmark_end(
         self, transcript: dict[str, Transcript]
@@ -112,4 +124,8 @@ class PlotManager:
         list[tuple[str, matplotlib.figure.Figure]]
             A tuple of plot id and the generated plot figure.
         """
-        return [(plot.id, plot.generate(transcript)) for plot in self.benchmark_plots]
+        return [
+            (plot.id, fig)
+            for plot in self.benchmark_plots
+            if (fig := plot.generate(transcript))
+        ]

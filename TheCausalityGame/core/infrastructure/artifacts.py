@@ -103,20 +103,18 @@ class ArtifactWriter:
         cached_ids: set[str] = set()
 
         def _save_figure(path: Path, fig: matplotlib.figure.Figure) -> None:
-            # Ensure directory exists
-            os.makedirs(path.parent, exist_ok=True)
             fig.set_constrained_layout(True)  # type: ignore
             fig.tight_layout()
-            fig.savefig(path, bbox_inches="tight", dpi=300)  # type: ignore
+            fig.savefig(  # type: ignore
+                path,
+                bbox_inches="tight",
+                dpi=300,
+            )
 
         for folder, content in transcripts.items():
-            # Create folder
-            os.makedirs(self.plots_dir / folder, exist_ok=True)
             # Check if nested
             if isinstance(content, dict):
                 for sub_folder, plot_lists in content.items():
-                    # Create nested folder
-                    os.makedirs(self.plots_dir / folder / sub_folder, exist_ok=True)
                     # Check if 2D list
                     if len(plot_lists) > 0 and isinstance(plot_lists[0], list):
                         # Save figures
@@ -128,13 +126,17 @@ class ArtifactWriter:
                                             f"Plot {id} already exists. Skipping."
                                         )
                                     continue
-                                _save_figure(
-                                    path=self.agents_dir
+                                # Ensure directory
+                                base_path = (
+                                    self.agents_dir
                                     / folder
                                     / "plots"
                                     / sub_folder
                                     / str(i)
-                                    / f"{id}.png",
+                                )
+                                os.makedirs(base_path, exist_ok=True)
+                                _save_figure(
+                                    path=base_path / f"{id}.png",
                                     fig=fig,  # type: ignore
                                 )
                                 cached_ids.add(id)  # type: ignore
@@ -146,12 +148,11 @@ class ArtifactWriter:
                                         f"Plot {id} already exists. Skipping."
                                     )
                                 continue
+                            # Ensure directory
+                            base_path = self.agents_dir / folder / "plots" / sub_folder
+                            os.makedirs(base_path, exist_ok=True)
                             _save_figure(
-                                path=self.agents_dir
-                                / folder
-                                / "plots"
-                                / sub_folder
-                                / f"{id}.png",
+                                path=base_path / f"{id}.png",
                                 fig=fig,  # type: ignore
                             )
                             cached_ids.add(id)  # type: ignore

@@ -219,12 +219,24 @@ class Runner:
         ] = {}
 
         for agent_id, transcript in transcripts.items():
+            round = self.plot_manager.trigger_rounds(transcript)
+            end = self.plot_manager.trigger_end(transcript)
+
+            if round or end:
+                plots[agent_id] = {
+                    k: v for k, v in [("round", round), ("end", end)] if v
+                }
+
             plots[agent_id] = {
                 "round": self.plot_manager.trigger_rounds(transcript),
                 "end": self.plot_manager.trigger_end(transcript),
             }
 
         # Benchmark-level plots
-        plots["benchmark"] = self.plot_manager.trigger_benchmark_end(transcripts)
+        benchmark = self.plot_manager.trigger_benchmark_end(transcripts)
+        if benchmark:
+            plots["benchmark"] = benchmark
+
+        self.logger.info("Generated all plots, exporting via Artifact Writer.")
 
         self.artifact_writer.write_plots(plots)
