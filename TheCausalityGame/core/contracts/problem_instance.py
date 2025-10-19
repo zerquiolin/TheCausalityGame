@@ -116,10 +116,10 @@ class ProblemInstance(Serializable):
         return cls(
             schema_version=spec.schema_version,
             id=spec.id,
-            scm=scm,  # type: ignore
-            mission=mission,  # type: ignore
-            agents=agents,  # type: ignore
-            custom_metrics=custom_metrics,  # type: ignore
+            scm=scm,
+            mission=mission,
+            agents=agents,
+            custom_metrics=custom_metrics,
             run_plan=spec.run_plan,
             seeds=spec.seeds,
             runtime=spec.runtime,

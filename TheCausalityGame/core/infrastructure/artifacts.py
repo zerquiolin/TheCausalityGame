@@ -102,71 +102,42 @@ class ArtifactWriter:
         """
         cached_ids: set[str] = set()
 
-        def _save_figure(path: Path, fig: matplotlib.figure.Figure) -> None:
+        def _save_safe(path: Path, fig: matplotlib.figure.Figure) -> None:
+            """Ensure folder and save figure."""
+            path.parent.mkdir(parents=True, exist_ok=True)
             fig.set_constrained_layout(True)  # type: ignore
             fig.tight_layout()
-            fig.savefig(  # type: ignore
-                path,
-                bbox_inches="tight",
-                dpi=300,
-            )
+            fig.savefig(path, bbox_inches="tight", dpi=300)  # type: ignore
 
-        for folder, content in transcripts.items():
-            # Check if nested
-            if isinstance(content, dict):
-                for sub_folder, plot_lists in content.items():
-                    # Check if 2D list
-                    if len(plot_lists) > 0 and isinstance(plot_lists[0], list):
-                        # Save figures
-                        for i, plots in enumerate(plot_lists):
-                            for id, fig in plots:  # type: ignore
-                                if id in cached_ids:
-                                    if self.logger:
-                                        self.logger.warning(
-                                            f"Plot {id} already exists. Skipping."
-                                        )
-                                    continue
-                                # Ensure directory
-                                base_path = (
-                                    self.agents_dir
-                                    / folder
-                                    / "plots"
-                                    / sub_folder
-                                    / str(i)
-                                )
-                                os.makedirs(base_path, exist_ok=True)
-                                _save_figure(
-                                    path=base_path / f"{id}.png",
-                                    fig=fig,  # type: ignore
-                                )
-                                cached_ids.add(id)  # type: ignore
-                    else:
-                        for id, fig in plot_lists:
-                            if id in cached_ids:
-                                if self.logger:
-                                    self.logger.warning(
-                                        f"Plot {id} already exists. Skipping."
-                                    )
-                                continue
-                            # Ensure directory
-                            base_path = self.agents_dir / folder / "plots" / sub_folder
-                            os.makedirs(base_path, exist_ok=True)
-                            _save_figure(
-                                path=base_path / f"{id}.png",
-                                fig=fig,  # type: ignore
-                            )
-                            cached_ids.add(id)  # type: ignore
-            else:
-                for id, fig in content:
-                    if id in cached_ids:
-                        if self.logger:
-                            self.logger.warning(f"Plot {id} already exists. Skipping.")
-                        continue
-                    _save_figure(
-                        path=self.plots_dir / f"{id}.png",
-                        fig=fig,
-                    )
-                    cached_ids.add(id)
+        def _save_if_new(
+            fig_id: str, fig: matplotlib.figure.Figure, path: Path
+        ) -> None:
+            """Save only if not already saved."""
+            if fig_id in cached_ids:
+                if self.logger:
+                    self.logger.warning(f"Plot {fig_id} already exists. Skipping.")
+                return
+            _save_safe(path, fig)
+            cached_ids.add(fig_id)
+
+        for agent_id, content in transcripts.items():
+            if not isinstance(content, dict):  # Simple flat case
+                for fig_id, fig in content:
+                    _save_if_new(fig_id, fig, self.plots_dir / f"{fig_id}.png")
+                continue
+
+            # Nested agent structure
+            for sub_folder, plot_lists in content.items():
+                base = self.agents_dir / agent_id / "plots" / sub_folder
+
+                # Detect if 2D list
+                if plot_lists and isinstance(plot_lists[0], list):
+                    for i, plots in enumerate(plot_lists):
+                        for fig_id, fig in plots:  # type: ignore
+                            _save_if_new(fig_id, fig, base / str(i) / f"{fig_id}.png")  # type: ignore
+                else:
+                    for fig_id, fig in plot_lists:
+                        _save_if_new(fig_id, fig, base / f"{fig_id}.png")  # type: ignore
 
     def _clean_transcript_entry_for_serialization(
         self, entry: TranscriptEntry

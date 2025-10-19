@@ -115,8 +115,8 @@ class PEHEResultMetric(ResultMetric):
                     or self.scm.nodes[var].accessibility == ACCESSIBILITY_OBSERVABLE
                 )
             ],
-            outcome=self.te_node,  # TODO: Change to outcome
-            treatment=self.treatment_node,  # TODO: Change to treatment
+            outcome=self.te_node,
+            treatment=self.treatment_node,
             covariate_values=(
                 self.treatment_samples[0].drop(columns=[self.te_node]),
                 self.treatment_samples[1].drop(columns=[self.te_node]),

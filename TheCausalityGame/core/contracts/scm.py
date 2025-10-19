@@ -224,7 +224,7 @@ class SCM(Serializable):
         SCM
             Deserialized SCM instance.
         """
-        dag: DAG = build_from_spec(spec.dag)  # type: ignore
+        dag: DAG = build_from_spec(spec.dag)
         topological_order: list[str] = list(nx.topological_sort(dag.graph))  # type: ignore
         nodes: list[SCMNode] = []
 
@@ -253,7 +253,7 @@ class SCM(Serializable):
             updated_spec = node_spec.model_copy(
                 update={"parents": parents, "parent_mappings": parent_mappings}
             )
-            nodes.append(build_from_spec(updated_spec))  # type: ignore
+            nodes.append(build_from_spec(updated_spec))
 
         random_state = (
             random_state_from_json(spec.random_state) if spec.random_state else None

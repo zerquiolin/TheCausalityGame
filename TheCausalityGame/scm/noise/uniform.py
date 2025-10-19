@@ -28,4 +28,4 @@ class UniformNoiseDistribution(NoiseDistribution):
 
     @classmethod
     def from_spec(cls, spec: NoiseDistributionSpec) -> "UniformNoiseDistribution":
-        return cls(**spec.params)  # TODO: This might raise an error is params is None
+        return cls(**spec.params)

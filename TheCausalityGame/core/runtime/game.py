@@ -92,7 +92,6 @@ class Game:
                 {"name": m.name, "description": m.description}
                 for m in self.custom_metrics
             ],
-            seed=911,  # TODO: Make seed configurable?
         )
         self.agent.set_context(agent_ctx)
         self.agent.set_logger(agent_logger)

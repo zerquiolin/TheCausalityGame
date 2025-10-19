@@ -43,7 +43,6 @@ class AgentContext:
     behavior_metric: Mapping[str, str]
     result_metric: Mapping[str, str]
     custom_metrics: list[Mapping[str, str]]
-    seed: int
 
 
 class Agent(Serializable):
