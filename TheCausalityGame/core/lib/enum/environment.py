@@ -11,3 +11,13 @@ class ActionKind(str, Enum):
 
     ANSWER = "answer"
     """Provide a final answer to the mission."""
+
+
+class SamplesKind(str, Enum):
+    """Type of samples generated in the environment."""
+
+    OBSERVATIONAL = "observational"
+    """Samples generated without interventions."""
+
+    INTERVENTIONAL = "interventional"
+    """Samples generated with interventions."""

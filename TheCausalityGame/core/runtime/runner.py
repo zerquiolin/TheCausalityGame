@@ -111,7 +111,10 @@ class Runner:
             return
 
         # Hooks (fresh per agent)
-        self.hook_manager = HookManager(self.problem_instance.run_plan.hook_plan)
+        self.hook_manager = HookManager(
+            self.problem_instance.run_plan.hook_plan,
+            self.artifact_writer.agents_dir / agent.id / "hooks",
+        )
         self.logger.info(
             f"Hook Manager initialized with {[h.id for h in self.hook_manager.hooks]}."
         )

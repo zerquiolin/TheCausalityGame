@@ -1,6 +1,7 @@
 """The Causality Game - Hook Manager."""
 
 from collections import defaultdict
+from pathlib import Path
 
 from TheCausalityGame.core.contracts.dto.transcript import TranscriptEntry
 from TheCausalityGame.core.contracts.hook import Hook
@@ -21,7 +22,7 @@ class HookManager:
         Grouped hook instances mapped by the step (event) they subscribe to.
     """
 
-    def __init__(self, hooks: list[HookSpec]) -> None:
+    def __init__(self, hooks: list[HookSpec], hook_dir: Path) -> None:
         """
         Initialize the HookManager with hook specs.
 
@@ -37,6 +38,10 @@ class HookManager:
             hook = build_from_spec(hook_spec)
             self.hooks_by_step[hook_spec.step].append(hook)
 
+        # Ensure hook directory exists
+        self.hook_dir = hook_dir
+        self.hook_dir.mkdir(parents=True, exist_ok=True)
+
     def trigger(self, step: HookEvent, context: TranscriptEntry | None = None) -> None:
         """
         Trigger all hooks subscribed to the specified lifecycle event.
@@ -49,4 +54,4 @@ class HookManager:
             Runtime context passed into each hook's `run` method.
         """
         for hook in self.hooks_by_step.get(step, []):
-            hook.run(context)
+            hook.run(self.hook_dir, context)

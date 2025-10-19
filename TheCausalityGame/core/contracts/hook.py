@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Protocol
 
 from TheCausalityGame.core.contracts.dto.transcript import TranscriptEntry
@@ -24,12 +25,14 @@ class Hook(Protocol):
 
     id: str
 
-    def run(self, context: TranscriptEntry | None) -> list[HookEvent]:
+    def run(self, hooks_dir: Path, context: TranscriptEntry | None) -> list[HookEvent]:
         """
         Return the list of events this hook should be notified about.
 
         Parameters
         ----------
+        hooks_dir : Path
+            Directory where hook-related artifacts can be stored.
         context : TranscriptEntry | None
             The current context of the game transcript.
 
