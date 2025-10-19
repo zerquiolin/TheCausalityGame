@@ -12,11 +12,11 @@ from TheCausalityGame.core.contracts.specs.settings import RuntimeSettingsSpec
 from TheCausalityGame.core.infrastructure.registry import build_from_spec
 from TheCausalityGame.core.lib.enum.nodes import NodeAccessibility
 from TheCausalityGame.core.lib.enum.runtime import RuntimeDebugLevel, RuntimeMode
+from TheCausalityGame.metric.behavior.rounds import RoundsBehaviorMetric
+from TheCausalityGame.metric.result.pehe import PEHEResultMetric
 from TheCausalityGame.mission.conditional_average_treatment_effect import (
     ConditionalAverageTreatmentEffectMission,
 )
-from TheCausalityGame.mission.metric.behavior.rounds import RoundsBehaviorMetric
-from TheCausalityGame.mission.metric.result.pehe import PEHEResultMetric
 from TheCausalityGame.mission.result_validator.tef_validator import (
     TreatmentEffectFunctionValidator,
 )

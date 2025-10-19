@@ -34,7 +34,7 @@ def is_serializable(obj: Any) -> bool:  # noqa :ANN401
     """
     try:
         json.dumps(obj)
-    except ObjectNotSerializableError:
+    except TypeError:
         return False
     else:
         return True

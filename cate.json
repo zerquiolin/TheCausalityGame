@@ -122,14 +122,14 @@
         "params": {},
         "id": "conditional_average_treatment_effect",
         "behavior_metric": {
-            "class_": "TheCausalityGame.mission.metric.behavior.rounds:RoundsBehaviorMetric",
+            "class_": "TheCausalityGame.metric.behavior.rounds:RoundsBehaviorMetric",
             "spec_": "TheCausalityGame.core.contracts.specs.metric:MetricSpec",
             "params": {
                 "alpha": 0.1
             }
         },
         "result_metric": {
-            "class_": "TheCausalityGame.mission.metric.result.pehe:PEHEResultMetric",
+            "class_": "TheCausalityGame.metric.result.pehe:PEHEResultMetric",
             "spec_": "TheCausalityGame.core.contracts.specs.metric:MetricSpec",
             "params": {}
         },

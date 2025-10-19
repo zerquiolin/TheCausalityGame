@@ -44,7 +44,7 @@ class PlotManager:
 
     def trigger_round(
         self, transcript_entry: TranscriptEntry
-    ) -> list[matplotlib.figure.Figure]:
+    ) -> list[tuple[str, matplotlib.figure.Figure]]:
         """
         Generate all plots configured for round-end.
 
@@ -55,12 +55,32 @@ class PlotManager:
 
         Returns
         -------
-        list[matplotlib.figure.Figure]
-            The generated plot figures.
+        list[tuple[matplotlib.figure.Figure]]
+            A tuple of plot id and the generated plot figure.
         """
-        return [plot.generate(transcript_entry) for plot in self.round_plots]
+        return [(plot.id, plot.generate(transcript_entry)) for plot in self.round_plots]
 
-    def trigger_end(self, transcript: Transcript) -> list[matplotlib.figure.Figure]:
+    def trigger_rounds(
+        self, transcript: Transcript
+    ) -> list[list[tuple[str, matplotlib.figure.Figure]]]:
+        """
+        Generate all plots configured for round-end over all rounds.
+
+        Parameters
+        ----------
+        transcript : Transcript
+            The full transcript of the agent run.
+
+        Returns
+        -------
+        list[list[tuple[str, matplotlib.figure.Figure]]]
+            A list of lists containing tuples of plot id and the generated plot figure for each round.
+        """  # noqa: E501
+        return [self.trigger_round(entry) for entry in transcript.entries]
+
+    def trigger_end(
+        self, transcript: Transcript
+    ) -> list[tuple[str, matplotlib.figure.Figure]]:
         """
         Generate all plots configured for game-end.
 
@@ -71,14 +91,14 @@ class PlotManager:
 
         Returns
         -------
-        list[matplotlib.figure.Figure]
-            The generated plot figures.
+        list[tuple[str, matplotlib.figure.Figure]]
+            A tuple of plot id and the generated plot figure.
         """
-        return [plot.generate(transcript) for plot in self.end_plots]
+        return [(plot.id, plot.generate(transcript)) for plot in self.end_plots]
 
     def trigger_benchmark_end(
         self, transcript: dict[str, Transcript]
-    ) -> list[matplotlib.figure.Figure]:
+    ) -> list[tuple[str, matplotlib.figure.Figure]]:
         """
         Generate all plots configured for benchmark-end.
 
@@ -89,7 +109,7 @@ class PlotManager:
 
         Returns
         -------
-        list[matplotlib.figure.Figure]
-            The generated plot figures.
+        list[tuple[str, matplotlib.figure.Figure]]
+            A tuple of plot id and the generated plot figure.
         """
-        return [plot.generate(transcript) for plot in self.benchmark_plots]
+        return [(plot.id, plot.generate(transcript)) for plot in self.benchmark_plots]

@@ -40,6 +40,12 @@ class TranscriptEntry(CommonDTO):
     budget_snapshot: BudgetSnapshot | None = None
     feedback: Feedback | None = None
 
+    # Custom attributes for extensibility
+    custom_attributes: dict[str, Any] = Field(
+        default_factory=dict,
+        description="Additional attributes for custom extensibility and hooks integration.",
+    )
+
 
 class Transcript(CommonDTO):
     """

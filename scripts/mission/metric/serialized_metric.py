@@ -4,8 +4,8 @@
 from TheCausalityGame.core.infrastructure.registry import build_from_spec
 
 # Metrics
-from TheCausalityGame.mission.metric.behavior.rounds import RoundsBehaviorMetric
-from TheCausalityGame.mission.metric.result.pehe import PEHEResultMetric
+from TheCausalityGame.metric.behavior.rounds import RoundsBehaviorMetric
+from TheCausalityGame.metric.result.pehe import PEHEResultMetric
 
 # Create Behavior and Result Metrics
 behavior = RoundsBehaviorMetric()

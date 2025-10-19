@@ -153,5 +153,21 @@ class Decision:
         """
         return self.kind == ActionKind.ANSWER
 
+    def to_dict(self) -> dict[str, Any]:
+        """
+        Serialize the Decision to a dictionary.
+
+        Returns
+        -------
+        dict[str, Any]
+            Dictionary representation of the Decision.
+        """
+        return {
+            "kind": self.kind.value,
+            "experiments": [
+                {"treatment": exp.treatment, "n": exp.n} for exp in self.experiments
+            ],
+        }
+
     def __repr__(self) -> str:
         return f"<Decision kind={self.kind!r}, experiments={len(self.experiments)}>"

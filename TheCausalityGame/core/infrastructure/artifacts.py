@@ -5,11 +5,13 @@ import platform
 import sys
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 import matplotlib
 import matplotlib.figure
 
 from TheCausalityGame.core.contracts.dto.transcript import Transcript, TranscriptEntry
+from TheCausalityGame.core.infrastructure.logger import Logger
 from TheCausalityGame.core.infrastructure.serialization import dump, is_serializable
 
 
@@ -25,7 +27,9 @@ class ArtifactWriter:
         Enables extended logging and artifact output in development mode.
     """
 
-    def __init__(self, run_dir: Path, is_dev: bool) -> None:
+    def __init__(
+        self, run_dir: Path, is_dev: bool, logger: Logger | None = None
+    ) -> None:
         """
         Initialize the artifact writer and create required directories.
 
@@ -38,63 +42,184 @@ class ArtifactWriter:
         """
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.run_dir = run_dir / timestamp
-        self.runs_dir = self.run_dir / "runs"
+        self.agents_dir = self.run_dir / "agents"
         self.plots_dir = self.run_dir / "plots"
         self.logs_dir = self.run_dir / "logs"
         self.is_dev = is_dev
+        self.logger = logger
 
+        # Post Init
         self.create_dirs()
+        self.write_provenance()
+
+    def set_logger(self, logger: Logger) -> None:
+        """
+        Set the logger for the artifact writer.
+
+        Parameters
+        ----------
+        logger : Logger
+            Logger instance to be used by the artifact writer.
+        """
+        self.logger = logger
 
     def create_dirs(self) -> None:
         """Create base artifact directories."""
-        os.makedirs(self.run_dir, exist_ok=True)
-        os.makedirs(self.plots_dir, exist_ok=True)
-        os.makedirs(self.runs_dir, exist_ok=True)
+        os.makedirs(self.run_dir, exist_ok=True)  # Core run directory
+        os.makedirs(self.plots_dir, exist_ok=True)  # Directory for plots
         if self.is_dev:
-            os.makedirs(self.logs_dir, exist_ok=True)
+            os.makedirs(self.agents_dir, exist_ok=True)  # Directory for agents
 
-    def create_agent_dirs(self, agent_id: str) -> None:
-        """
-        Create directories for a specific agent.
+            os.makedirs(self.logs_dir, exist_ok=True)  # Directory for logs
 
-        Parameters
-        ----------
-        agent_id : str
-            Unique identifier of the agent.
-        """
-        agent_dir = self.runs_dir / agent_id
-        os.makedirs(agent_dir, exist_ok=True)
-        os.makedirs(agent_dir / "plots", exist_ok=True)
-
-    def write_plot(
+    def write_plots(
         self,
-        run_dir: str,
-        fig: matplotlib.figure.Figure,
-        plot_id: str,
-        round_id: int | None = None,
+        transcripts: dict[
+            str,
+            dict[
+                str,
+                list[list[tuple[str, matplotlib.figure.Figure]]]
+                | list[tuple[str, matplotlib.figure.Figure]],
+            ]
+            | list[tuple[str, matplotlib.figure.Figure]],
+        ],
     ) -> None:
         """
-        Save a matplotlib figure as PNG to the specified agent run directory.
+        Write plots to disk.
 
         Parameters
         ----------
-        run_dir : str
-            Path to the agent's run directory.
-        fig : matplotlib.figure.Figure
-            Matplotlib-like figure object with `.savefig()`.
-        plot_id : str
-            ID of the plot (used as filename prefix).
-        round_id : int, optional
-            Optional round number to append to filename.
+        transcripts : dict[
+            str,
+            dict[
+                str,
+                list[list[tuple[str, matplotlib.figure.Figure]]]
+                | list[tuple[str, matplotlib.figure.Figure]],
+            ]
+            | list[tuple[str, matplotlib.figure.Figure]],
+        ]
+            Dictionary containing plots organized by agent and type.
         """
-        filename = f"plots/{plot_id}"
-        if round_id is not None:
-            filename += f"_round{round_id}"
-        path = os.path.join(run_dir, f"{filename}.png")
-        try:
-            fig.savefig(path)  # type: ignore
-        except OSError as e:
-            print(f"[WARNING] Failed to save figure at {path}: {e}")
+        cached_ids: set[str] = set()
+
+        def _save_figure(path: Path, fig: matplotlib.figure.Figure) -> None:
+            # Ensure directory exists
+            os.makedirs(path.parent, exist_ok=True)
+            fig.set_constrained_layout(True)  # type: ignore
+            fig.tight_layout()
+            fig.savefig(path, bbox_inches="tight", dpi=300)  # type: ignore
+
+        for folder, content in transcripts.items():
+            # Create folder
+            os.makedirs(self.plots_dir / folder, exist_ok=True)
+            # Check if nested
+            if isinstance(content, dict):
+                for sub_folder, plot_lists in content.items():
+                    # Create nested folder
+                    os.makedirs(self.plots_dir / folder / sub_folder, exist_ok=True)
+                    # Check if 2D list
+                    if len(plot_lists) > 0 and isinstance(plot_lists[0], list):
+                        # Save figures
+                        for i, plots in enumerate(plot_lists):
+                            for id, fig in plots:  # type: ignore
+                                if id in cached_ids:
+                                    if self.logger:
+                                        self.logger.warning(
+                                            f"Plot {id} already exists. Skipping."
+                                        )
+                                    continue
+                                _save_figure(
+                                    path=self.agents_dir
+                                    / folder
+                                    / "plots"
+                                    / sub_folder
+                                    / str(i)
+                                    / f"{id}.png",
+                                    fig=fig,  # type: ignore
+                                )
+                                cached_ids.add(id)  # type: ignore
+                    else:
+                        for id, fig in plot_lists:
+                            if id in cached_ids:
+                                if self.logger:
+                                    self.logger.warning(
+                                        f"Plot {id} already exists. Skipping."
+                                    )
+                                continue
+                            _save_figure(
+                                path=self.agents_dir
+                                / folder
+                                / "plots"
+                                / sub_folder
+                                / f"{id}.png",
+                                fig=fig,  # type: ignore
+                            )
+                            cached_ids.add(id)  # type: ignore
+            else:
+                for id, fig in content:
+                    if id in cached_ids:
+                        if self.logger:
+                            self.logger.warning(f"Plot {id} already exists. Skipping.")
+                        continue
+                    _save_figure(
+                        path=self.plots_dir / f"{id}.png",
+                        fig=fig,
+                    )
+                    cached_ids.add(id)
+
+    def _clean_transcript_entry_for_serialization(
+        self, entry: TranscriptEntry
+    ) -> dict[str, Any]:
+        """
+        Clean a transcript entry.
+
+        Extracts serializable attributes and removes unserializable objects.
+
+        Parameters
+        ----------
+        entry : TranscriptEntry
+            The transcript entry to clean.
+
+        Returns
+        -------
+        dict[str, Any]
+            A dictionary representation of the cleaned transcript entry.
+        """
+        clean_entry: dict[str, Any] = {}
+        # Core attributes
+        clean_entry["round"] = entry.round
+        clean_entry["decision"] = entry.decision.to_dict() if entry.decision else None
+        clean_entry["result"] = (
+            entry.result if is_serializable(entry.result) else "Not Serializable"
+        )
+        clean_entry["samples_collection"] = (
+            [
+                {
+                    "kind": sample.kind,
+                    "n": sample.n,
+                    "data": sample.data.to_dict(orient="records"),  # type: ignore
+                    "interventions": sample.interventions,
+                }
+                for sample in entry.samples_collection
+                if sample
+            ]
+            if entry.samples_collection
+            else None
+        )
+        clean_entry["budget_snapshot"] = (
+            entry.budget_snapshot.model_dump() if entry.budget_snapshot else None
+        )
+        clean_entry["feedback"] = (
+            entry.feedback.model_dump() if entry.feedback else None
+        )
+        # Custom attributes
+        for key, value in entry.custom_attributes.items():
+            if is_serializable(value):
+                clean_entry[key] = value
+            else:
+                clean_entry[key] = "Not Serializable"
+
+        return clean_entry
 
     def write_transcript(self, agent_id: str, transcript: Transcript) -> None:
         """
@@ -110,26 +235,32 @@ class ArtifactWriter:
         if not self.is_dev:
             return
 
-        transcript_path = self.runs_dir / agent_id / "transcript.json"
-        sanitized_entries: list[TranscriptEntry] = []
+        clean_transcript = {
+            "agent_id": transcript.agent_id,
+            "mission_id": transcript.mission_id,
+            "manifest_id": transcript.manifest_id,
+            "entries": [
+                self._clean_transcript_entry_for_serialization(entry)
+                for entry in transcript.entries
+            ],
+        }
 
-        for entry in transcript.entries:
-            filtered_data = {
-                key: value
-                for key, value in entry.model_dump().items()
-                if is_serializable(value)
-            }
-            sanitized_entry = TranscriptEntry.model_validate(filtered_data)
-            sanitized_entries.append(sanitized_entry)
+        dump(path=self.agents_dir / agent_id / "transcript.json", obj=clean_transcript)
 
-        clean_transcript = Transcript(
-            agent_id=transcript.agent_id,
-            mission_id=transcript.mission_id,
-            manifest_id=transcript.manifest_id,
-            entries=sanitized_entries,
-        )
+    def write_transcripts(self, transcripts: dict[str, Transcript]) -> None:
+        """
+        Write a sanitized version of the transcripts (removes unserializable fields).
 
-        dump(path=transcript_path, obj=clean_transcript)
+        Parameters
+        ----------
+        transcripts : dict[str, Transcript]
+            Full run transcripts for all agents.
+        """
+        if not self.is_dev:
+            return
+
+        for agent_id, transcript in transcripts.items():
+            self.write_transcript(agent_id, transcript)
 
     def write_provenance(self) -> None:
         """Save a JSON file with environment and system-level metadata."""

@@ -3,14 +3,14 @@
 # Registry
 from TheCausalityGame.core.infrastructure.registry import build_from_spec
 
+# Metrics
+from TheCausalityGame.metric.behavior.rounds import RoundsBehaviorMetric
+from TheCausalityGame.metric.result.pehe import PEHEResultMetric
+
 # Mission
 from TheCausalityGame.mission.conditional_average_treatment_effect import (
     ConditionalAverageTreatmentEffectMission,
 )
-
-# Metrics
-from TheCausalityGame.mission.metric.behavior.rounds import RoundsBehaviorMetric
-from TheCausalityGame.mission.metric.result.pehe import PEHEResultMetric
 
 # Result Validator
 from TheCausalityGame.mission.result_validator.tef_validator import (

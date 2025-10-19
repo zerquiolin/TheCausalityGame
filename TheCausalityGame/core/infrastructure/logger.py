@@ -60,7 +60,11 @@ class Logger:
 
         if self.log_dir:
             os.makedirs(self.log_dir, exist_ok=True)
-            log_path = self.log_dir / f"{self.name}.log"
+            log_path = (
+                self.log_dir / f"{self.name}.log"
+                if ".log" not in str(self.log_dir)
+                else self.log_dir
+            )
             file_handler = RotatingFileHandler(
                 log_path, maxBytes=max_bytes, backupCount=backup_count, encoding="utf-8"
             )

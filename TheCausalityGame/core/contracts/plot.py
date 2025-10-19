@@ -5,6 +5,9 @@ from __future__ import annotations
 from abc import abstractmethod
 from typing import Any
 
+import matplotlib
+import matplotlib.figure
+
 from TheCausalityGame.core.contracts.serializable import Serializable
 from TheCausalityGame.core.lib.enum.plots import PlotKind
 
@@ -28,7 +31,7 @@ class Plot(Serializable):
     kind: PlotKind
 
     @abstractmethod
-    def generate(self, arg: Any) -> Any:  # noqa: ANN401
+    def generate(self, arg: Any) -> matplotlib.figure.Figure:  # noqa: ANN401
         """
         Generate and return a figure based on game data.
 
