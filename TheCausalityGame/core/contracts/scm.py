@@ -17,11 +17,7 @@ from TheCausalityGame.core.infrastructure.registry import (
     build_from_spec,
     get_class_path,
 )
-from TheCausalityGame.core.lib.constants.nodes import (
-    ACCESSIBILITY_CONTROLLABLE,
-    ACCESSIBILITY_LATENT,
-    ACCESSIBILITY_OBSERVABLE,
-)
+from TheCausalityGame.core.lib.enum.nodes import NodeAccessibility
 from TheCausalityGame.core.lib.utils.random_state_serialization import (
     random_state_from_json,
     random_state_to_json,
@@ -77,7 +73,7 @@ class SCM(Serializable):
         return [
             n
             for n in self.vars
-            if self.nodes[n].accessibility == ACCESSIBILITY_CONTROLLABLE
+            if self.nodes[n].accessibility == NodeAccessibility.CONTROLLABLE
         ]
 
     @property
@@ -87,14 +83,16 @@ class SCM(Serializable):
             n
             for n in self.vars
             if self.nodes[n].accessibility
-            in [ACCESSIBILITY_CONTROLLABLE, ACCESSIBILITY_OBSERVABLE]
+            in [NodeAccessibility.CONTROLLABLE, NodeAccessibility.MEASURABLE]
         ]
 
     @property
     def latent_vars(self) -> list[str]:
         """Return variables that are latent (not observable or controllable)."""
         return [
-            n for n in self.vars if self.nodes[n].accessibility == ACCESSIBILITY_LATENT
+            n
+            for n in self.vars
+            if self.nodes[n].accessibility == NodeAccessibility.LATENT
         ]
 
     @property
@@ -104,7 +102,7 @@ class SCM(Serializable):
             n
             for n in self.vars
             if self.nodes[n].accessibility
-            in [ACCESSIBILITY_CONTROLLABLE, ACCESSIBILITY_OBSERVABLE]
+            in [NodeAccessibility.CONTROLLABLE, NodeAccessibility.MEASURABLE]
             and not self.nodes[n].parents
         ]
 

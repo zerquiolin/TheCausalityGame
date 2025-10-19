@@ -12,7 +12,7 @@ from TheCausalityGame.core.contracts.noise import NoiseDistribution
 from TheCausalityGame.core.contracts.serializable import Serializable
 from TheCausalityGame.core.contracts.specs.scm_node import SCMNodeSpec
 from TheCausalityGame.core.infrastructure.registry import get_class_path
-from TheCausalityGame.core.lib.constants.nodes import ACCESSIBILITY_CONTROLLABLE
+from TheCausalityGame.core.lib.enum.nodes import NodeAccessibility
 from TheCausalityGame.core.lib.utils.random_state_serialization import (
     random_state_to_json,
 )
@@ -55,7 +55,7 @@ class SCMNode(Serializable):
         evaluation: Callable[[pd.DataFrame], float | str] | None,
         domain: list[float | str],
         noise_distribution: NoiseDistribution,
-        accessibility: str = ACCESSIBILITY_CONTROLLABLE,
+        accessibility: NodeAccessibility = NodeAccessibility.CONTROLLABLE,
         parents: list[str] | None = None,
         parent_mappings: dict[str, int | float] | None = None,
         random_state: np.random.RandomState | None = None,

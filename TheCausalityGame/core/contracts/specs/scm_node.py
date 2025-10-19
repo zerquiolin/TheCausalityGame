@@ -6,7 +6,7 @@ from pydantic import Field
 
 from TheCausalityGame.core.contracts.specs.common import CommonSpec
 from TheCausalityGame.core.contracts.specs.noise import NoiseDistributionSpec
-from TheCausalityGame.core.lib.constants.nodes import ACCESSIBILITY_CONTROLLABLE
+from TheCausalityGame.core.lib.enum.nodes import NodeAccessibility
 
 
 class SCMNodeSpec(CommonSpec):
@@ -40,8 +40,8 @@ class SCMNodeSpec(CommonSpec):
     """
 
     name: str
-    accessibility: str = Field(
-        default=ACCESSIBILITY_CONTROLLABLE,
+    accessibility: NodeAccessibility = Field(
+        default=NodeAccessibility.CONTROLLABLE,
         description=(
             "Accessibility of the node. Must be one of: 'controllable', 'observable', or 'latent'."
         ),

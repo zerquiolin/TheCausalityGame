@@ -13,7 +13,7 @@ class NodeAccessibility(str, Enum):
     """The variable is hidden and cannot be observed or controlled."""
 
     MEASURABLE = "measurable"
-    """The variable can be observed but not manipulated."""
+    """The variable can be measured but not manipulated."""
 
     CONTROLLABLE = "controllable"
     """The variable can be directly manipulated by the agent."""
