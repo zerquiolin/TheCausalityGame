@@ -5,26 +5,18 @@ from __future__ import annotations
 from typing import override
 
 import numpy as np
-from scipy.stats import uniform  # type: ignore
 
 from TheCausalityGame.core.contracts.noise import NoiseDistribution
 from TheCausalityGame.core.contracts.specs.noise import NoiseDistributionSpec
 from TheCausalityGame.core.infrastructure.registry import get_class_path
 
 
-class UniformNoiseDistribution(NoiseDistribution):
+class NoNoiseDistribution(NoiseDistribution):
     """
     Uniform noise distribution implementation.
 
-    This class generates random noise from a uniform distribution within the
-    interval [low, high). Useful for SCM stochasticity or synthetic data generation.
-
-    Parameters
-    ----------
-    low : float, optional
-        Lower bound of the distribution (inclusive). Default is -1.0.
-    high : float, optional
-        Upper bound of the distribution (exclusive). Default is 1.0.
+    This class generates no noise.
+    Useful for testing purposes.
     """
 
     def __init__(self, low: float = -1.0, high: float = 1.0) -> None:
@@ -34,7 +26,7 @@ class UniformNoiseDistribution(NoiseDistribution):
     @override
     def generate(self, size: int, random_state: int | None = 911) -> np.ndarray:
         """
-        Generate uniform noise samples.
+        Zeros noise generation.
 
         Parameters
         ----------
@@ -46,23 +38,18 @@ class UniformNoiseDistribution(NoiseDistribution):
         Returns
         -------
         float | np.ndarray
-            Array of sampled noise values from Uniform[low, high).
+            Array of sampled noise values from zeros.
         """
-        return uniform.rvs(  # type: ignore
-            loc=self.low,
-            scale=self.high - self.low,
-            size=size,
-            random_state=random_state,
-        )
+        return np.zeros(size)
 
     @override
     def to_spec(self) -> NoiseDistributionSpec:
         return NoiseDistributionSpec(
             class_=get_class_path(self.__class__),
-            params={"low": self.low, "high": self.high},
+            params={},
         )
 
     @classmethod
     @override
-    def from_spec(cls, spec: NoiseDistributionSpec) -> UniformNoiseDistribution:
+    def from_spec(cls, spec: NoiseDistributionSpec) -> NoNoiseDistribution:
         return cls(**spec.params)
