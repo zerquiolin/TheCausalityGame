@@ -9,10 +9,7 @@ from TheCausalityGame.core.contracts.mission import ResultMetric
 from TheCausalityGame.core.contracts.scm import SCM
 from TheCausalityGame.core.contracts.specs.metric import MetricSpec
 from TheCausalityGame.core.infrastructure.registry import get_class_path
-from TheCausalityGame.core.lib.constants.nodes import (
-    ACCESSIBILITY_CONTROLLABLE,
-    ACCESSIBILITY_OBSERVABLE,
-)
+from TheCausalityGame.core.lib.enum.nodes import NodeAccessibility
 from TheCausalityGame.core.lib.errors.metric import (
     NotInitializedError,
     UnsupportedMetricTypeError,
@@ -66,7 +63,7 @@ class PEHEResultMetric(ResultMetric):
         possible_treatments = [
             node.name
             for node in scm.nodes.values()
-            if node.accessibility == ACCESSIBILITY_CONTROLLABLE
+            if node.accessibility == NodeAccessibility.CONTROLLABLE
         ]
         if not possible_treatments:
             raise NoControllableNodeError()
@@ -141,7 +138,7 @@ class PEHEResultMetric(ResultMetric):
             for var in self.scm.vars
             if var not in (self.te_node, self.treatment_node)
             and self.scm.nodes[var].accessibility
-            in {ACCESSIBILITY_CONTROLLABLE, ACCESSIBILITY_OBSERVABLE}
+            in {NodeAccessibility.CONTROLLABLE, NodeAccessibility.MEASURABLE}
         ]
 
         # Prepare covariate test samples

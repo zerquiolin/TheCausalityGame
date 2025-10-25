@@ -54,7 +54,7 @@ class SCMNode(Serializable):
         name: str,
         evaluation: Callable[[pd.DataFrame], float | str] | None,
         domain: list[float | str],
-        noise_distribution: NoiseDistribution,
+        noise_distribution: NoiseDistribution | None = None,
         accessibility: NodeAccessibility = NodeAccessibility.CONTROLLABLE,
         parents: list[str] | None = None,
         parent_mappings: dict[str, int | float] | None = None,
@@ -142,7 +142,9 @@ class SCMNode(Serializable):
             "domain": self.domain,
             "parents": self.parents if self.parents else None,
             "parent_mappings": self.parent_mappings or None,
-            "noise_distribution": self.noise_distribution.to_dict(),
+            "noise_distribution": (
+                self.noise_distribution.to_spec() if self.noise_distribution else None
+            ),
             "random_state": (
                 random_state_to_json(self.random_state) if self.random_state else None
             ),
@@ -152,13 +154,13 @@ class SCMNode(Serializable):
         return SCMNodeSpec(**d)  # type: ignore
 
 
-class NumericSCMNode(SCMNode):
+class NumericalSCMNode(SCMNode):
     """Marker class for numeric SCM nodes."""
 
     pass
 
 
-class CategoricSCMNode(SCMNode):
+class CategoricalSCMNode(SCMNode):
     """Marker class for categorical SCM nodes."""
 
     pass

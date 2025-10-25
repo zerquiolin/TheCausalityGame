@@ -53,7 +53,7 @@ class SCMNodeSpec(CommonSpec):
         default=None,
         description="List of parent node names. `None` if no parents.",
     )
-    parent_mappings: dict[str, int | float] | None = Field(
+    parent_mappings: dict[str, dict[str, int | float]] | None = Field(
         default=None,
         description=(
             "Optional index mapping for categorical parent values. "
@@ -78,7 +78,19 @@ class SCMNodeSpec(CommonSpec):
         default=None,
         description="Optional domain-level probability distribution.",
     )
+    probability_distribution: dict[str, list[float]] | list[float] | None = Field(
+        default=None,
+        description=(
+            "Probability distribution for categorical variable generation. "
+            "If a list, then it is assumed to be a uniform distribution. "
+            "If a dict, then it is assumed to be a categorical distribution."
+        ),
+    )
     noise_distribution: NoiseDistributionSpec | None = Field(
         default=None,
         description="Optional noise distribution specification.",
+    )
+    value_computer: dict[str, Any] | None = Field(
+        default=None,
+        description="Optional value computer specification.",
     )

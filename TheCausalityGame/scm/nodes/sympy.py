@@ -8,10 +8,13 @@ import pandas as pd
 import sympy as sp
 
 from TheCausalityGame.core.contracts.noise import NoiseDistribution
-from TheCausalityGame.core.contracts.scm_node import CategoricSCMNode, NumericSCMNode
+from TheCausalityGame.core.contracts.scm_node import (
+    CategoricalSCMNode,
+    NumericalSCMNode,
+)
 from TheCausalityGame.core.contracts.specs.scm_node import SCMNodeSpec
 from TheCausalityGame.core.infrastructure.registry import build_from_spec
-from TheCausalityGame.core.lib.constants.nodes import ACCESSIBILITY_OBSERVABLE
+from TheCausalityGame.core.lib.enum.nodes import NodeAccessibility
 from TheCausalityGame.core.lib.utils.random_state_serialization import (
     random_state_from_json,
 )
@@ -61,7 +64,7 @@ class EquationBasedSCMNode:
             )
 
 
-class EquationBasedNumericalSCMNode(NumericSCMNode, EquationBasedSCMNode):
+class EquationBasedNumericalSCMNode(NumericalSCMNode, EquationBasedSCMNode):
     def generate_values(
         self,
         parent_values: pd.DataFrame,
@@ -116,7 +119,7 @@ class EquationBasedNumericalSCMNode(NumericSCMNode, EquationBasedSCMNode):
         }
 
     @classmethod
-    def from_spec(cls, spec: SCMNodeSpec) -> "EquationBasedNumericalSCMNode":
+    def from_spec(cls, spec: SCMNodeSpec) -> EquationBasedNumericalSCMNode:
         """
         Deserializes the node from a dictionary representation.
 
@@ -161,7 +164,7 @@ class EquationBasedNumericalSCMNode(NumericSCMNode, EquationBasedSCMNode):
         return cla
 
 
-class EquationBasedCategoricalSCMNode(CategoricSCMNode, EquationBasedSCMNode):
+class EquationBasedCategoricalSCMNode(CategoricalSCMNode, EquationBasedSCMNode):
     def __init__(
         self,
         name: str,
@@ -169,7 +172,7 @@ class EquationBasedCategoricalSCMNode(CategoricSCMNode, EquationBasedSCMNode):
         domain: List[Union[float, str]],
         noise_distribution: NoiseDistribution,
         cdfs: Optional[Dict[str, "SerializableCDF"]] = None,
-        accessibility: str = ACCESSIBILITY_OBSERVABLE,
+        accessibility: NodeAccessibility = NodeAccessibility.CONTROLLABLE,
         parents: Optional[List[str]] = None,
         parent_mappings: Optional[Dict[str, Union[int, float]]] = None,
         domain_distribution: Optional[Dict[str, float]] = None,
@@ -279,7 +282,9 @@ class EquationBasedCategoricalSCMNode(CategoricSCMNode, EquationBasedSCMNode):
             raise ValueError(msg)
 
         if self.cdfs is None:
-            msg = f"Cannot generate values for {self.name} because no CDFs were provided."
+            msg = (
+                f"Cannot generate values for {self.name} because no CDFs were provided."
+            )
             raise ValueError(msg)
 
         if self.symbols_needed_for_evaluation is None:
@@ -296,7 +301,9 @@ class EquationBasedCategoricalSCMNode(CategoricSCMNode, EquationBasedSCMNode):
         # Check that all parent values are provided
         symbols = set()
         for eq_name, eq in self.evaluation.items():
-            missing_values = symbol_requirements[eq_name].difference(parent_values.keys())
+            missing_values = symbol_requirements[eq_name].difference(
+                parent_values.keys()
+            )
             assert (
                 not missing_values
             ), f"Cannot evaluate formula {eq} of variable {self.name} because no values are provided for parent {missing_values}"
@@ -373,7 +380,7 @@ class EquationBasedCategoricalSCMNode(CategoricSCMNode, EquationBasedSCMNode):
         return representation
 
     @classmethod
-    def from_spec(cls, spec: SCMNodeSpec) -> "EquationBasedCategoricalSCMNode":
+    def from_spec(cls, spec: SCMNodeSpec) -> EquationBasedCategoricalSCMNode:
         """
         Deserializes the node from a dictionary representation.
 
