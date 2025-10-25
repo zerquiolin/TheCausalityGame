@@ -27,7 +27,7 @@ from TheCausalityGame.scm.noise.uniform import UniformNoiseDistribution
 
 # Create DAG
 graph = nx.DiGraph()
-graph.add_edges_from([("Z", "X"), ("X", "Y"), ("Z", "Y")])
+graph.add_edges_from([("Z", "X"), ("X", "Y"), ("Z", "Y")])  # type: ignore
 dag = CoreDAG(graph=graph)
 
 # Create Nodes
@@ -42,7 +42,7 @@ Z = EquationBasedNumericalSCMNode(
 )
 X = EquationBasedNumericalSCMNode(
     name="X",
-    evaluation=sp.sympify("2*Z"),
+    evaluation=sp.sympify("2*Z"),  # type: ignore
     domain=[2, 10],
     noise_distribution=UniformNoiseDistribution(),
     accessibility=NodeAccessibility.MEASURABLE,
@@ -51,7 +51,7 @@ X = EquationBasedNumericalSCMNode(
 )
 Y = EquationBasedNumericalSCMNode(
     name="Y",
-    evaluation=sp.sympify("X+2*Z"),
+    evaluation=sp.sympify("X+2*Z"),  # type: ignore
     domain=[3, 15],
     noise_distribution=UniformNoiseDistribution(),
     accessibility=NodeAccessibility.MEASURABLE,
@@ -75,9 +75,9 @@ validator = TreatmentEffectFunctionValidator()
 
 # Create Mission
 mission = ConditionalAverageTreatmentEffectMission(
-    behavior_metric=behavior,
-    result_metric=result,
-    result_validator=validator,
+    behavior_metric=behavior,  # type: ignore
+    result_metric=result,  # type: ignore
+    result_validator=validator,  # type: ignore
 )
 
 # Create Agent
@@ -88,8 +88,8 @@ budget = BudgetSpec(rounds=100, time_s=60.0, samples=100, memory_mb=512)
 
 # Create Run Plan
 run_plan = RunPlanSpec(
-    execution="parallel",
-    parallel_backend="thread",
+    execution="parallel",  # type: ignore
+    parallel_backend="thread",  # type: ignore
     max_workers=None,
     budget=budget,
 )

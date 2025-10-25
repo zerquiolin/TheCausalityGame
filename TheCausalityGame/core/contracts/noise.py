@@ -1,5 +1,7 @@
 """The Causality Game - Noise contract."""
 
+import numpy as np
+
 from TheCausalityGame.core.contracts.serializable import Serializable
 
 
@@ -11,7 +13,7 @@ class NoiseDistribution(Serializable):
     typically used in structural causal models.
     """
 
-    def generate(self, size: int, random_state: int | None = 911) -> float:
+    def generate(self, size: int, random_state: int | None = 911) -> np.ndarray:
         """
         Generate a noise value using the given size and random seed.
 

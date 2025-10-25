@@ -1,35 +1,54 @@
+"""The Causality Game - Conditional Average Treatment Effect (CATE) Mission."""
+
+from typing import override
+
 from TheCausalityGame.core.contracts.dto.transcript import Transcript
+from TheCausalityGame.core.contracts.metric import BehaviorMetric, ResultMetric
 from TheCausalityGame.core.contracts.mission import Mission
+from TheCausalityGame.core.contracts.result_validator import ResultValidator
 from TheCausalityGame.core.contracts.scm import SCM
 from TheCausalityGame.core.contracts.specs.mission import MissionSpec
 from TheCausalityGame.core.infrastructure.registry import (
     build_from_spec,
     get_class_path,
 )
-
-# Identify specific metric classes
+from TheCausalityGame.core.lib.errors.mission import NotMountedError
 
 
 class ConditionalAverageTreatmentEffectMission(Mission):
     """
-    A mission that focuses on inferring the structure of a Directed Acyclic Graph (DAG).
-    This mission is designed to evaluate the performance of agents in inferring the
-    underlying causal structure from observational data.
+    Mission for estimating conditional average treatment effects (CATE).
+
+    This mission evaluates how well an agent estimates the treatment effect of a
+    controllable variable on an outcome, possibly conditioned on covariates.
+    The deliverable is expected to be a function that computes these effects.
+
+    Attributes
+    ----------
+    id : str
+        Unique identifier of the mission.
+    name : str
+        Human-readable name of the mission.
+    description : str
+        Description of the mission's goal and setup.
     """
 
     id: str
     name: str
     description: str
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
-        behavior_metric: Mission,
-        result_metric: Mission,
-        result_validator: Mission,
+        behavior_metric: BehaviorMetric,
+        result_metric: ResultMetric,
+        result_validator: ResultValidator,
         id: str = "conditional_average_treatment_effect",
         name: str = "Conditional Average Treatment Effect Mission",
-        description: str = "This mission evaluates the ability to infer the treatment effects in a causal graph given a intervention Z, covariates X, and outcome Y.",
-    ):
+        description: str = (
+            "This mission evaluates the ability to estimate treatment effects in a "
+            "causal graph given an intervention Z, covariates X, and outcome Y."
+        ),
+    ) -> None:
         super().__init__(
             behavior_metric=behavior_metric,
             result_metric=result_metric,
@@ -39,38 +58,49 @@ class ConditionalAverageTreatmentEffectMission(Mission):
         self.name = name
         self.description = description
 
-    def mount(self, scm: SCM):
-        """
-        Mount the mission to the given SCM.
-
-        Args:
-            scm (SCM): Structural Causal Model to mount the mission to.
-        """
-        # Mount Behavior Metric
+    @override
+    def mount(self, scm: SCM) -> None:
         self.behavior_metric.mount(scm)
-        # Mount Deliverable Metric
         self.result_metric.mount(scm)
-        # Update the is_mounted flag
         self.is_mounted = True
 
-    def evaluate(self, transcript: Transcript):
-        # Check if the mission is mounted
-        if not self.is_mounted:
-            raise ValueError("Mission is not mounted")
+    @override
+    def evaluate(self, transcript: Transcript) -> tuple[float, float]:
+        """
+        Evaluate the agent's performance using both behavior and result metrics.
 
-        # Output validations
-        user_output = transcript.entries[-1].result
-        # Validate user output
-        validated_output = self.result_validator.validate(user_output)
-        # Evaluate Behavior & Result scores
-        behavior_score = self.behavior_metric.evaluate(transcript=transcript)
-        deliverable_score = self.result_metric.evaluate(
+        Parameters
+        ----------
+        transcript : Transcript
+            The full run history and submitted answer from the agent.
+
+        Returns
+        -------
+        tuple[float, float]
+            A tuple of (behavior_score, deliverable_score).
+
+        Raises
+        ------
+        NotMountedError
+            If the mission hasn't been mounted with an SCM.
+        """
+        if not self.is_mounted:
+            raise NotMountedError()
+
+        # Validate output
+        raw_result = transcript.entries[-1].result
+        validated_result = self.result_validator.validate(raw_result)
+
+        # Evaluate metrics
+        behavior_score = self.behavior_metric.evaluate(transcript)
+        result_score = self.result_metric.evaluate(
             kind=self.result_validator.kind,
-            result=validated_output,
+            result=validated_result,
         )
 
-        return behavior_score, deliverable_score
+        return behavior_score, result_score
 
+    @override
     def to_spec(self) -> MissionSpec:
         return MissionSpec(
             id=self.id,
@@ -81,8 +111,9 @@ class ConditionalAverageTreatmentEffectMission(Mission):
         )
 
     @classmethod
+    @override
     def from_spec(cls, spec: MissionSpec) -> "ConditionalAverageTreatmentEffectMission":
-        return ConditionalAverageTreatmentEffectMission(
+        return cls(
             id=spec.id,
             behavior_metric=build_from_spec(spec.behavior_metric),
             result_metric=build_from_spec(spec.result_metric),

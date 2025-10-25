@@ -3,6 +3,8 @@
 from abc import abstractmethod
 from typing import Any
 
+import matplotlib
+import matplotlib.figure
 import networkx as nx
 
 from TheCausalityGame.core.contracts.serializable import Serializable
@@ -111,12 +113,37 @@ class DAG(Serializable):
         return {node: self.get_parents(node) for node in self.nodes}
 
     @abstractmethod
-    def plot(self, spacing_factor: float = 2.0) -> None:
+    def generate_figure(
+        self, title: str = "Directed Acyclic Graph (DAG)", spacing_factor: float = 2.0
+    ) -> matplotlib.figure.Figure:
+        """
+        Generate a Matplotlib figure visualizing the DAG structure.
+
+        Parameters
+        ----------
+        title : str, optional
+            Title of the figure, by default "Directed Acyclic Graph (DAG)"
+        spacing_factor : float, optional
+            Spacing factor for the figure, by default 2.0
+
+        Returns
+        -------
+        matplotlib.figure.Figure
+            A Matplotlib figure representing the DAG.
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def plot(
+        self, title: str = "Directed Acyclic Graph (DAG)", spacing_factor: float = 2.0
+    ) -> None:
         """
         Visualize the DAG structure.
 
         Parameters
         ----------
+        title : str, optional
+            Title of the plot, by default "Directed Acyclic Graph (DAG)"
         spacing_factor : float, optional
             Factor to control spacing between nodes in the plot, by default 2.0
 
@@ -125,4 +152,4 @@ class DAG(Serializable):
         NotImplementedError
             If the method is not implemented by a subclass.
         """
-        raise NotImplementedError("Subclasses must implement this method.")
+        raise NotImplementedError()

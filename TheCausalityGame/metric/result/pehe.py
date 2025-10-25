@@ -1,135 +1,170 @@
-# Science
+"""The Causality Game - PEHE Result Metric."""
+
+from typing import Any, override
+
 import numpy as np
+import pandas as pd
 
 from TheCausalityGame.core.contracts.mission import ResultMetric
-
-# Types
 from TheCausalityGame.core.contracts.scm import SCM
 from TheCausalityGame.core.contracts.specs.metric import MetricSpec
 from TheCausalityGame.core.infrastructure.registry import get_class_path
-
-# Constants
 from TheCausalityGame.core.lib.constants.nodes import (
     ACCESSIBILITY_CONTROLLABLE,
     ACCESSIBILITY_OBSERVABLE,
 )
+from TheCausalityGame.core.lib.errors.metric import (
+    NotInitializedError,
+    UnsupportedMetricTypeError,
+)
+from TheCausalityGame.core.lib.errors.scm import (
+    NoControllableNodeError,
+    NoNumericLeafNodeError,
+)
 
 
 class PEHEResultMetric(ResultMetric):
-    """Computes the PEHE metric.
+    """
+    Computes the Precision in Estimation of Heterogeneous Effect (PEHE).
 
-    PEHE = sqrt(mean((true_effects - predicted_effects)^2)).
+    This metric compares the true Conditional Average Treatment Effect (CATE)
+    to the one estimated by the agent.
 
-    Attributes:
-        name (str): Human-readable name for the metric.
-        output_processor (BaseOutputProcessor): Output processor class for this metric.
-
+    Attributes
+    ----------
+    name : str
+        Human-readable name for the metric.
+    description : str
+        Description of the metric's purpose.
+    kinds : list of str
+        Types of expected answers this metric is compatible with.
     """
 
-    # Attributes
     name = "PEHE"
     description = (
         "Computes the Precision in Estimation of Heterogeneous Effect (PEHE) "
         "between the true and estimated Conditional Average Treatment Effect (CATE)."
     )
-    kinds = ["Treatment Effect Function"]
+    kinds = ["Treatment Effect Function"]  # noqa: RUF012
 
+    @override
     def mount(self, scm: SCM) -> None:
-        # Define a random state for reproducibility
         rs = np.random.RandomState(911)
-        # Select the predictive node
+
+        # Pick an outcome node with numeric domain
         possible_outcomes = [
-            var for var in scm.leaf_vars if type(scm.nodes[var].domain[0]) is not str
+            var
+            for var in scm.leaf_vars
+            if isinstance(scm.nodes[var].domain[0], int | float)
         ]
-        assert len(possible_outcomes) > 0, "No measurable nodes found for TE"
-        te_node = rs.choice(possible_outcomes)
-        # Select the treatment node
+        if not possible_outcomes:
+            raise NoNumericLeafNodeError()
+
+        self.te_node = rs.choice(possible_outcomes)
+
+        # Pick a treatment node with controllable access
         possible_treatments = [
             node.name
             for node in scm.nodes.values()
             if node.accessibility == ACCESSIBILITY_CONTROLLABLE
         ]
-        assert len(possible_treatments) > 0, "No controllable nodes found for TE"
-        treatment_node = rs.choice(possible_treatments)
-        # Generate values for the covariant nodes
+        if not possible_treatments:
+            raise NoControllableNodeError()
+
+        self.treatment_node = rs.choice(possible_treatments)
+
+        # Generate a random covariate configuration (excluding treatment/outcome)
         conditional_samples = scm.generate_samples(
             num_samples=100,
             cancel_noise=True,
             random_state=rs,
-        )
-        # Drop columns that are either the treatment node or the outcome node
-        conditional_samples = conditional_samples.drop(
-            columns=[te_node, treatment_node]
-        )
-        # Convert the result to a Dict
-        conditional_samples = conditional_samples.to_dict(orient="records")[
-            rs.choice(range(100))
-        ]
-        # Generate samples for each treatment value
+        ).drop(columns=[self.te_node, self.treatment_node])
+
+        covariates = conditional_samples.to_dict(orient="records")[rs.choice(100)]  # type: ignore
+
+        # Generate interventional data for both treatment states
+        domain_values = scm.nodes[self.treatment_node].domain
         non_treated_samples, treated_samples = [
             scm.generate_samples(
-                interventions={treatment_node: value, **conditional_samples},
+                interventions={
+                    self.treatment_node: val,
+                    **{str(k): v for k, v in covariates.items()},
+                },
                 num_samples=100,
                 cancel_noise=True,
                 random_state=rs,
             )
-            for value in scm.nodes[treatment_node].domain
+            for val in domain_values
         ]
 
-        # Extract the outcome variable Y
-        true_cate = treated_samples[te_node] - non_treated_samples[te_node]
-        # Save the treatment node
-        self.treatment_node = treatment_node
-        # Save the treatment effect node
-        self.te_node = te_node
-        # Save the treatment samples
+        # Ground truth CATE: average effect on outcome node
+        self.true_cate: float = (
+            treated_samples[self.te_node] - non_treated_samples[self.te_node]
+        )[0]
         self.treatment_samples = (non_treated_samples, treated_samples)
-        # Save the true CATE
-        self.true_cate = true_cate[0]
-        # Update the is_mounted flag
-        self.is_mounted = True
-        # Save the scm
         self.scm = scm
+        self.is_mounted = True
 
-    def evaluate(self, kind: str, result: any) -> float:
-        # Check if the mission is mounted
+    @override
+    def evaluate(self, kind: str, result: Any) -> float:
+        """
+        Evaluate agent's estimated treatment effect against true CATE using PEHE.
+
+        Parameters
+        ----------
+        kind : str
+            The kind of result provided (must match supported kind).
+        result : Any
+            The callable object returned by the agent that estimates treatment effects.
+
+        Returns
+        -------
+        float
+            The PEHE score between true and estimated effects.
+
+        Raises
+        ------
+        RuntimeError
+            If `mount()` was not called before evaluating.
+        ValueError
+            If the provided kind is unsupported or if result is not callable.
+        """
         if not self.is_mounted:
-            raise RuntimeError("Mission is not mounted. Call mount() first.")
+            raise NotInitializedError(self.name)
 
-        # Check kind
         if kind != "Treatment Effect Function":
-            raise ValueError(f"Unsupported kind: {kind}")
+            raise UnsupportedMetricTypeError(kind)
 
-        # Extract the agent's answer
-        answer = result
+        # Prepare the input features (exclude treatment/outcome)
+        input_features = [
+            var
+            for var in self.scm.vars
+            if var not in (self.te_node, self.treatment_node)
+            and self.scm.nodes[var].accessibility
+            in {ACCESSIBILITY_CONTROLLABLE, ACCESSIBILITY_OBSERVABLE}
+        ]
 
-        # Compute the estimated agent's CATE
-        estimated = answer(
-            X=[
-                var
-                for var in self.scm.vars
-                if var != self.te_node
-                and var != self.treatment_node
-                and (
-                    self.scm.nodes[var].accessibility == ACCESSIBILITY_CONTROLLABLE
-                    or self.scm.nodes[var].accessibility == ACCESSIBILITY_OBSERVABLE
-                )
-            ],
-            outcome=self.te_node,
+        # Prepare covariate test samples
+        non_treated = self.treatment_samples[0].drop(columns=[self.te_node])
+        treated = self.treatment_samples[1].drop(columns=[self.te_node])
+
+        # Get agent's estimated treatment effect
+        estimated_df: pd.DataFrame = result(
+            X=input_features,
             treatment=self.treatment_node,
-            covariate_values=(
-                self.treatment_samples[0].drop(columns=[self.te_node]),
-                self.treatment_samples[1].drop(columns=[self.te_node]),
-            ),
+            outcome=self.te_node,
+            covariate_values=(non_treated, treated),
         )
 
-        # Compute the difference
-        difference = self.true_cate - estimated["treatment_effect"]
+        estimated = estimated_df["treatment_effect"].to_numpy()
 
-        # Compute the PEHE
+        # Compute PEHE: sqrt(mean squared error)
+        difference = self.true_cate - estimated
         pehe = np.sqrt(np.mean(difference**2))
+
         return pehe
 
+    @override
     def to_spec(self) -> MetricSpec:
         return MetricSpec(
             class_=get_class_path(self.__class__),
@@ -137,5 +172,6 @@ class PEHEResultMetric(ResultMetric):
         )
 
     @classmethod
+    @override
     def from_spec(cls, spec: MetricSpec) -> "PEHEResultMetric":
-        return PEHEResultMetric(**spec.params)
+        return cls(**spec.params)

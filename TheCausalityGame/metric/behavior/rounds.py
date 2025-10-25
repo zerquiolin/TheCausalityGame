@@ -1,65 +1,80 @@
+"""The Causality Game - Rounds Behavior Metric."""
+
+from typing import override
+
 from TheCausalityGame.core.contracts.dto.transcript import Transcript
 from TheCausalityGame.core.contracts.metric import BehaviorMetric
 from TheCausalityGame.core.contracts.scm import SCM
 from TheCausalityGame.core.contracts.specs.metric import MetricSpec
 from TheCausalityGame.core.infrastructure.registry import get_class_path
 from TheCausalityGame.core.lib.enum.environment import ActionKind
+from TheCausalityGame.core.lib.errors.metric import AttributeOutOfBoundsError
 from TheCausalityGame.core.lib.utils.metrics import log_penalty
 
 
 class RoundsBehaviorMetric(BehaviorMetric):
     """
-    Compute a penalty based on the number of rounds taken before stopping with an answer.
+    A behavior metric that penalizes the number of rounds taken before submitting an answer.
 
-    This metric counts all actions except the final 'stop_with_answer' and applies a logarithmic
-    penalty function to the count.
+    This metric applies a logarithmic penalty to the number of rounds in which the agent
+    has not submitted a final answer. The final round is excluded from the penalty if it ends
+    with an `ActionKind.ANSWER`.
     """
 
     name: str = "Rounds Metric"
     description: str = (
-        "A behavior metric that penalizes the number of rounds taken before stopping with an answer."
-        "It counts all actions except the final 'stop_with_answer' and applies a logarithmic penalty."
+        "Behavior metric that penalizes the number of rounds taken before stopping with an answer."
+        "It applies a logarithmic penalty to the number of non-terminal rounds."
     )
 
     def __init__(self, alpha: float = 0.10) -> None:
         """
-        Initialize the metric with a penalty decay parameter.
+        Initialize the metric with a decay parameter for the penalty.
 
-        Args:
-            alpha (float): Decay rate for the log_penalty function; must be in (0, 1).
+        Parameters
+        ----------
+        alpha : float
+            Decay rate for the log penalty function. Must be between 0 and 1.
 
-        Raises:
-            ValueError: If alpha is not between 0 and 1 (exclusive).
+        Raises
+        ------
+        ValueError
+            If alpha is not in the open interval (0, 1).
         """
         if not 0.0 < alpha < 1.0:
-            raise ValueError(f"alpha must be between 0 and 1, got {alpha}")
+            raise AttributeOutOfBoundsError(
+                attribute_name="alpha", value=alpha, domain=[0.0, 1.0]
+            )
         self.alpha = alpha
 
-    def mount(self, scm: SCM) -> None:  # unused
+    @override
+    def mount(self, scm: SCM) -> None:
         pass
 
+    @override
     def evaluate(self, transcript: Transcript) -> float:
         """
-                Calculate the behavior metric for a given interaction history.
-        This method counts the number of rounds in which the action was not 'stop_with_answer',
-                excluding the final round, and applies the log_penalty function.
+        Compute the behavior penalty from the transcript.
 
-                Args:
-                    transcript (Transcript): The transcript containing the interaction history.
+        Parameters
+        ----------
+        transcript : Transcript
+            The transcript containing all round entries.
 
-                Returns:
-                    float: The computed penalty metric.
-
-                Raises:
-                    TypeError: If history is not a pandas DataFrame.
-                    KeyError: If the 'action' column is missing from the DataFrame.
+        Returns
+        -------
+        float
+            Logarithmic penalty based on the number of rounds before submitting an answer.
         """
-        # Check if the last action is 'asnwer'
-        if transcript.entries[-1].decision == ActionKind.ANSWER:
-            return log_penalty(len(transcript.entries) - 1, alpha=self.alpha)
+        # If the final action is ANSWER, exclude that round from the penalty
+        n_rounds = len(transcript.entries)
+        decision = transcript.entries[-1].decision
+        if decision and decision.kind == ActionKind.ANSWER:
+            n_rounds -= 1
 
-        return log_penalty(len(transcript.entries), alpha=self.alpha)
+        return log_penalty(n_rounds, alpha=self.alpha)
 
+    @override
     def to_spec(self) -> MetricSpec:
         return MetricSpec(
             class_=get_class_path(self.__class__),
@@ -67,5 +82,6 @@ class RoundsBehaviorMetric(BehaviorMetric):
         )
 
     @classmethod
+    @override
     def from_spec(cls, spec: MetricSpec) -> "RoundsBehaviorMetric":
-        return RoundsBehaviorMetric(**spec.params)
+        return cls(**spec.params)

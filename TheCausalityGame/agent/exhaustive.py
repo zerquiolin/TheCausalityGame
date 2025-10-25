@@ -1,9 +1,12 @@
+"""The Causality Game - Exhaustive Agent with multiple strategies."""
+
+from typing import Any, override
+
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import SGDRegressor
 
-from TheCausalityGame.core.contracts.agent import Agent
+from TheCausalityGame.core.contracts.agent import Agent, AgentContext
 from TheCausalityGame.core.contracts.dto.environment import (
     AvailableActions,
     Feedback,
@@ -13,69 +16,136 @@ from TheCausalityGame.core.contracts.dto.environment import (
 from TheCausalityGame.core.contracts.specs.agent import AgentSpec
 from TheCausalityGame.core.infrastructure.decisions import Decision
 from TheCausalityGame.core.infrastructure.registry import get_class_path
+from TheCausalityGame.core.infrastructure.strategy import Strategy
 
 
 class ExhaustiveAgent(Agent):
     """
-    An agent that enumerates all possible interventions exhaustively
-    and then computes the requested causal or treatment‐effect task.
+    Agent that performs exhaustive experimentation and learns conditional treatment effects.
+
+    Parameters
+    ----------
+    id : str
+        Unique identifier for the agent.
+    num_obs : int, optional
+        Number of observational samples to collect, by default 1.
+    num_inter : int, optional
+        Number of interventional samples per treatment value, by default 1.
     """
 
-    def __init__(self, id: str, num_obs: int = 1, num_inter: int = 1):
+    def __init__(self, id: str, num_obs: int = 1, num_inter: int = 1) -> None:
         super().__init__()
         self.id = id
-        self.data: pd.DataFrame = pd.DataFrame()
-        self._is_numeric = False
         self._num_obs = num_obs
         self._num_inter = num_inter
-        self._model = None
-        self._last = None
 
-    def act(self, round_info: RoundInfo, available_actions: AvailableActions):
-        # Create Decision
+    @override
+    def set_context(self, ctx: AgentContext) -> None:
+        self._context = ctx
+
+        strategies: dict[str, Strategy] = {
+            "Conditional Average Treatment Effect Mission": CATEStrategy()
+        }
+
+        self.strategy = strategies[self._context.mission["name"]]
+        self.strategy.initialize()
+
+    @override
+    def act(
+        self, round_info: RoundInfo, available_actions: AvailableActions
+    ) -> Decision:
         decision = Decision.experiment()
-        # Check available actions
-        for experiment in available_actions.experiments:
-            # Add observational data
+
+        for var in available_actions.experiments:
             decision.add_experiment(treatment=None, n=self._num_obs)
 
-            # Domain
-            low, high = experiment.domain
-            # Check domain type
-            if type(low) is str:  # Categorical domain
-                for value in experiment.domain:
-                    decision.add_experiment(
-                        treatment={experiment.name: value}, n=self._num_inter
-                    )
-            else:  # Numerical domain
-                self._is_numeric = True
-                for i in np.linspace(low, high, 5):  # 10 values uniformly spaced
-                    decision.add_experiment(
-                        treatment={experiment.name: i}, n=self._num_inter
-                    )
+            low, high = var.domain
+            if isinstance(low, str):  # Categorical variable
+                for val in var.domain:
+                    decision.add_experiment({var.name: val}, n=self._num_inter)
+            else:  # Numerical variable
+                for val in np.linspace(float(low), float(high), num=5):
+                    decision.add_experiment({var.name: val}, n=self._num_inter)
 
         return decision
 
+    @override
     def inform(self, samples_collection: SamplesCollection, feedback: Feedback) -> None:
-        # Update model
+        self.strategy.learn(samples_collection, feedback)
+
+    @override
+    def answer(self) -> Any:
+        return self.strategy.answer()
+
+    @override
+    def to_spec(self) -> AgentSpec:
+        return AgentSpec(
+            id=self.id,
+            class_=get_class_path(self.__class__),
+            params={"num_obs": self._num_obs, "num_inter": self._num_inter},
+        )
+
+    @classmethod
+    @override
+    def from_spec(cls, spec: AgentSpec) -> "ExhaustiveAgent":
+        return cls(
+            id=spec.id,
+            num_obs=spec.params["num_obs"],
+            num_inter=spec.params["num_inter"],
+        )
+
+
+class CATEStrategy(Strategy):
+    """Conditional Average Treatment Effect (CATE) strategy."""
+
+    @override
+    def initialize(self) -> None:
+        self._model: SGDRegressor | None = None
+        self._last: SamplesCollection | None = None
+        self._features: list[str]
+        self._target: str
+
+    @override
+    def learn(self, samples: SamplesCollection, feedback: Feedback) -> None:
+        """
+        Learn from new samples using partial fit.
+
+        Parameters
+        ----------
+        samples : SamplesCollection
+            Collection of observed/intervened data.
+        feedback : Feedback
+            Performance metrics (not used in this strategy).
+        """
         if self._model is None:
-            self._last = samples_collection
+            self._last = samples
             return
 
-        # Update the model
-        for samples in samples_collection:
-            data = samples.data
-            X_train = data[self._features]
-            y_train = data[self._target]
-            # Partial Fit
-            self._model.partial_fit(X_train, y_train)
+        for sample in samples:
+            X = sample.data[self._features]
+            y: pd.Series[int | float | str] = sample.data[self._target]
+            self._model.partial_fit(X, y)
 
-    def answer(self):
+    @override
+    def answer(self) -> Any:
+        """
+        Return callable that computes treatment effect from counterfactual pairs.
+
+        Returns
+        -------
+        Callable
+            A function that computes treatment effects on given data.
+        """
         if self._last is None:
 
-            def dummy(X, treatment, outcome, covariate_values):
+            def dummy(
+                X: list[str],
+                treatment: str,
+                outcome: str,
+                covariate_values: tuple[pd.DataFrame, pd.DataFrame],
+            ):
                 return pd.DataFrame(
-                    np.zeros(len(covariate_values)),
+                    np.zeros(len(covariate_values[0])),
                     columns=["treatment_effect"],
                     dtype=float,
                 )
@@ -84,35 +154,21 @@ class ExhaustiveAgent(Agent):
 
         if self._model is None:
 
-            def before(X, treatment, outcome, covariate_values):
-                # Define features and target variable
-                features = [treatment, *X]
-                target = outcome
-                # Save the data
-                self._features = features
-                self._target = target
+            def before(
+                X: list[str],
+                treatment: str,
+                outcome: str,
+                covariate_values: tuple[pd.DataFrame, pd.DataFrame],
+            ):
+                self._features = [treatment, *X]
+                self._target = outcome
 
-                # Define the treated and non-treated dataframes
-                X_non_treated, X_treated = covariate_values
+                x_non, x_treat = covariate_values
+                data = pd.concat([s.data for s in self._last] if self._last else [])
 
-                # Define the training and prediction dataframes
-                data = pd.concat([samples.data for samples in self._last])
-                X_train = data[features]
-                y_train = data[target]
-                X_non_treated_pred = X_non_treated[features]
-                X_treated_pred = X_treated[features]
+                X_train = data[self._features]
+                y_train: pd.Series[int | float | str] = data[self._target]
 
-                # Check both training and prediction dataframes have the same columns order
-                assert (
-                    list(X_train.columns)
-                    == list(X_treated_pred.columns)
-                    == list(X_non_treated_pred.columns)
-                ), "Column order mismatch!"
-
-                # Generate model
-                # model = RandomForestRegressor(
-                #     n_estimators=100, warm_start=True, random_state=911
-                # )
                 model = SGDRegressor(
                     warm_start=True,
                     learning_rate="optimal",
@@ -122,73 +178,30 @@ class ExhaustiveAgent(Agent):
                     penalty="l2",
                     alpha=0.01,
                 )
-                # Train the model
+                # Optional alternative:
+                # model = RandomForestRegressor(n_estimators=100, random_state=911)
+
                 model.partial_fit(X_train, y_train)
-                # Save the model
                 self._model = model
 
-                # Predict on the last two appended rows
-                Y_non_treated = model.predict(X_non_treated_pred)
-                Y_treated = model.predict(X_treated_pred)
+                y_non = model.predict(x_non[self._features])
+                y_treat = model.predict(x_treat[self._features])
 
-                # Calculate the difference for each pair of treated and non-treated
-                if len(Y_non_treated) != len(Y_treated):
-                    raise ValueError(
-                        "Treated and non-treated predictions must have the same length."
-                    )
-
-                differences = Y_treated - Y_non_treated
-
-                # Result
-                result = pd.DataFrame(
-                    differences, columns=["treatment_effect"], dtype=float
-                )
-                return result
+                return pd.DataFrame(y_treat - y_non, columns=["treatment_effect"])
 
             return before
 
-        def after(X, treatment, outcome, covariate_values):
-            # Define the treated and non-treated dataframes
-            X_non_treated, X_treated = covariate_values
+        def after(
+            X: list[str],
+            treatment: str,
+            outcome: str,
+            covariate_values: tuple[pd.DataFrame, pd.DataFrame],
+        ):
+            x_non, x_treat = covariate_values
 
-            # Define the prediction dataframes
-            X_non_treated_pred = X_non_treated[self._features]
-            X_treated_pred = X_treated[self._features]
+            y_non = self._model.predict(x_non[self._features])  # type: ignore
+            y_treat = self._model.predict(x_treat[self._features])  # type: ignore
 
-            # Predict on the last two appended rows
-            Y_non_treated = self._model.predict(X_non_treated_pred)
-            Y_treated = self._model.predict(X_treated_pred)
-
-            # Calculate the difference for each pair of treated and non-treated
-            if len(Y_non_treated) != len(Y_treated):
-                raise ValueError(
-                    "Treated and non-treated predictions must have the same length."
-                )
-
-            differences = Y_treated - Y_non_treated
-
-            # Result
-            result = pd.DataFrame(
-                differences, columns=["treatment_effect"], dtype=float
-            )
-            return result
+            return pd.DataFrame(y_treat - y_non, columns=["treatment_effect"])
 
         return after
-
-    def to_spec(self) -> AgentSpec:
-        return AgentSpec(
-            class_=get_class_path(self.__class__),
-            id=self.id,
-            params={
-                "num_obs": self._num_obs,
-                "num_inter": self._num_inter,
-            },
-        )
-
-    @classmethod
-    def from_spec(cls, spec: AgentSpec) -> "ExhaustiveAgent":
-        return cls(
-            id=spec.id,
-            num_obs=spec.params["num_obs"],
-            num_inter=spec.params["num_inter"],
-        )

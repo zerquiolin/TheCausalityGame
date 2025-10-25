@@ -1,11 +1,8 @@
-# Equations
-# Utils
+from __future__ import annotations
+
 from collections import Counter
+from typing import Any, Callable, Dict, List, Optional, Union, cast
 
-# Types
-from typing import Callable, Dict, List, Optional
-
-# Science
 import numpy as np
 import pandas as pd
 import sympy as sp
@@ -14,8 +11,6 @@ from TheCausalityGame.core.contracts.noise import NoiseDistribution
 from TheCausalityGame.core.contracts.scm_node import CategoricSCMNode, NumericSCMNode
 from TheCausalityGame.core.contracts.specs.scm_node import SCMNodeSpec
 from TheCausalityGame.core.infrastructure.registry import build_from_spec
-
-# Constants
 from TheCausalityGame.core.lib.constants.nodes import ACCESSIBILITY_OBSERVABLE
 from TheCausalityGame.core.lib.utils.random_state_serialization import (
     random_state_from_json,
@@ -24,16 +19,25 @@ from TheCausalityGame.scm.noise.uniform import UniformNoiseDistribution
 
 
 class EquationBasedSCMNode:
+    parents: Optional[List[str]]
+    evaluation: Any
+    random_state: np.random.RandomState
+    noise_distribution: NoiseDistribution
+    parent_mappings: Optional[Dict[str, Any]]
+    symbols_needed_for_evaluation: Union[Dict[str, set[str]], set[str], None]
 
-    def __init__(self):
-
+    def __init__(self) -> None:
         # check that equations and parents coincide and memorize required symbols per node
-        def get_symbols_for_formula_while_checking_that_those_are_declared(formula):
-            symbols = set([str(s) for s in formula.free_symbols])
+        def get_symbols_for_formula_while_checking_that_those_are_declared(
+            formula: sp.Basic,
+        ) -> set[str]:
+            symbols = {str(s) for s in formula.free_symbols}
             assert (
                 not symbols or self.parents is not None
             ), f"No parents are given (None) even though the formula has symbols: {symbols}"
-            undeclared_symbols = symbols.difference(self.parents)
+            undeclared_symbols = symbols.difference(
+                set(self.parents) if self.parents else set()
+            )
             assert (
                 not undeclared_symbols
             ), f"Formula {formula} has undeclared variables {undeclared_symbols} that occur in the formula but not in the parents, which are specified as {self.parents}."
@@ -63,7 +67,7 @@ class EquationBasedNumericalSCMNode(NumericSCMNode, EquationBasedSCMNode):
         parent_values: pd.DataFrame,
         cancel_noise: bool = False,
         random_state: Optional[np.random.RandomState] = None,
-    ):
+    ) -> np.ndarray:
         # Define random state
         rs = random_state if random_state else self.random_state
 
@@ -100,7 +104,7 @@ class EquationBasedNumericalSCMNode(NumericSCMNode, EquationBasedSCMNode):
         noise = self.noise_distribution.generate(size=len(evaluated), random_state=rs)
         return evaluated + noise
 
-    def _to_dict(self):
+    def _to_dict(self) -> Dict[str, Any]:
         """
         Converts the node to a dictionary representation.
 
@@ -117,7 +121,7 @@ class EquationBasedNumericalSCMNode(NumericSCMNode, EquationBasedSCMNode):
         Deserializes the node from a dictionary representation.
 
         Args:
-            data (Dict): Dictionary containing node data.
+            spec (SCMNodeSpec): Specification containing node data.
 
         Returns:
             EquationBasedNumericalSCMNode: An instance of the node.
@@ -161,21 +165,23 @@ class EquationBasedCategoricalSCMNode(CategoricSCMNode, EquationBasedSCMNode):
     def __init__(
         self,
         name: str,
-        evaluation: Optional[Callable],
-        domain: List[float | str],
+        evaluation: Optional[Dict[str, sp.Basic]],
+        domain: List[Union[float, str]],
         noise_distribution: NoiseDistribution,
-        cdfs: Optional[List[Callable]] = None,
+        cdfs: Optional[Dict[str, "SerializableCDF"]] = None,
         accessibility: str = ACCESSIBILITY_OBSERVABLE,
         parents: Optional[List[str]] = None,
-        parent_mappings: Optional[Dict[str, int | float]] = None,
+        parent_mappings: Optional[Dict[str, Union[int, float]]] = None,
         domain_distribution: Optional[Dict[str, float]] = None,
-        random_state: np.random.RandomState = np.random.RandomState(911),
-    ):
+        random_state: Optional[np.random.RandomState] = None,
+    ) -> None:
         # Superclass constructor
         super().__init__(
             name=name,
             accessibility=accessibility,
-            evaluation=evaluation,
+            evaluation=cast(
+                Optional[Callable[[pd.DataFrame], Union[float, str]]], evaluation
+            ),
             domain=domain,
             noise_distribution=noise_distribution,
             parents=parents,
@@ -191,7 +197,9 @@ class EquationBasedCategoricalSCMNode(CategoricSCMNode, EquationBasedSCMNode):
             else domain_distribution
         )
 
-    def prepare_new_random_state_structure(self, random_state):
+    def prepare_new_random_state_structure(
+        self, random_state: np.random.RandomState
+    ) -> Dict[str, np.random.RandomState]:
         return {
             "noise": np.random.RandomState(random_state.randint(0, 10**5)),
             "choice": np.random.RandomState(random_state.randint(0, 10**5)),
@@ -229,9 +237,11 @@ class EquationBasedCategoricalSCMNode(CategoricSCMNode, EquationBasedSCMNode):
     def generate_values(
         self,
         parent_values: pd.DataFrame,
-        random_state: Optional[dict] = None,
+        random_state: Optional[
+            Union[np.random.RandomState, Dict[str, np.random.RandomState]]
+        ] = None,
         cancel_noise: bool = False,
-    ):
+    ) -> List[Union[str, float]]:
 
         # Define random state
         if random_state is None:
@@ -252,26 +262,45 @@ class EquationBasedCategoricalSCMNode(CategoricSCMNode, EquationBasedSCMNode):
 
         # Check if the node has parents
         if not self.parents:
-            return rs_noise.choice(
-                list(self.domain_noise_distribution.keys()),
-                p=list(self.domain_noise_distribution.values()),
+            return [
+                rs_noise.choice(
+                    list(self.domain_noise_distribution.keys()),
+                    p=list(self.domain_noise_distribution.values()),
+                )
+            ]
+
+        missing_parents = set(self.parents).difference(set(parent_values.keys()))
+        assert (
+            not missing_parents
+        ), f"Cannot generate value for {self.name} as no values provided for some parents: {missing_parents}"
+
+        if self.evaluation is None:
+            msg = f"Cannot generate values for {self.name} because no evaluation was provided."
+            raise ValueError(msg)
+
+        if self.cdfs is None:
+            msg = f"Cannot generate values for {self.name} because no CDFs were provided."
+            raise ValueError(msg)
+
+        if self.symbols_needed_for_evaluation is None:
+            msg = (
+                f"Cannot generate values for {self.name} because symbol requirements "
+                "were not initialized."
             )
-        else:
-            missing_parents = set(self.parents).difference(set(parent_values.keys()))
-            assert (
-                not missing_parents
-            ), f"Cannot generate value for {self.name} as no values provided for some parents: {missing_parents}"
+            raise ValueError(msg)
+
+        symbol_requirements = cast(
+            Dict[str, set[str]], self.symbols_needed_for_evaluation
+        )
 
         # Check that all parent values are provided
         symbols = set()
         for eq_name, eq in self.evaluation.items():
-            missing_values = self.symbols_needed_for_evaluation[eq_name].difference(
-                parent_values.keys()
-            )
+            missing_values = symbol_requirements[eq_name].difference(parent_values.keys())
             assert (
                 not missing_values
             ), f"Cannot evaluate formula {eq} of variable {self.name} because no values are provided for parent {missing_values}"
-            symbols.update(self.symbols_needed_for_evaluation[eq_name])
+            symbols.update(symbol_requirements[eq_name])
         symbols = list(symbols)
 
         # Evaluate the expression
@@ -294,7 +323,10 @@ class EquationBasedCategoricalSCMNode(CategoricSCMNode, EquationBasedSCMNode):
             # Calculate the CDF for the evaluated value and category to obtain values normalized between 0 and 1
             if cancel_noise:
                 evaluations.append(self.cdfs[possible_category](evaluated))
-            evaluations.append(self.cdfs[possible_category](evaluated + noises[:, i]))
+            else:
+                evaluations.append(
+                    self.cdfs[possible_category](evaluated + noises[:, i])
+                )
 
         evaluations = np.array(evaluations).T
         expected_shape = (len(parent_values), len(self.domain))
@@ -318,7 +350,7 @@ class EquationBasedCategoricalSCMNode(CategoricSCMNode, EquationBasedSCMNode):
         # Sample from the categorical distribution
         return [rs_choice.choice(self.domain, p=dist) for dist in evaluations]
 
-    def _to_dict(self):
+    def _to_dict(self) -> Dict[str, Any]:
         """
         Converts the node to a dictionary representation.
 
@@ -341,12 +373,12 @@ class EquationBasedCategoricalSCMNode(CategoricSCMNode, EquationBasedSCMNode):
         return representation
 
     @classmethod
-    def from_dict(cls, spec: SCMNodeSpec) -> "EquationBasedCategoricalSCMNode":
+    def from_spec(cls, spec: SCMNodeSpec) -> "EquationBasedCategoricalSCMNode":
         """
         Deserializes the node from a dictionary representation.
 
         Args:
-            data (Dict): Dictionary containing node data.
+            spec (SCMNodeSpec): Specification containing node data.
 
         Returns:
             EquationBasedCategoricalSCMNode: An instance of the node.
@@ -396,20 +428,20 @@ class EquationBasedCategoricalSCMNode(CategoricSCMNode, EquationBasedSCMNode):
 
 
 class SerializableCDF:
-    def __init__(self, sorted_samples):
+    def __init__(self, sorted_samples: np.ndarray) -> None:
         self.sorted_samples = np.array(sorted_samples)
         assert (
             len(self.sorted_samples.shape) == 1
         ), "SerializableCDF needs a one-dimensional vector of values."
 
-    def __call__(self, x):
+    def __call__(self, x: np.ndarray) -> np.ndarray:
         return np.searchsorted(self.sorted_samples, x, side="right") / len(
             self.sorted_samples
         )
 
-    def to_list(self):
+    def to_list(self) -> List[float]:
         return self.sorted_samples.tolist()
 
     @classmethod
-    def from_list(cls, data):
+    def from_list(cls, data: List[float]) -> "SerializableCDF":
         return cls(np.array(data))

@@ -13,7 +13,7 @@ from TheCausalityGame.scm.dag.core import CoreDAG
 graph = nx.DiGraph()
 graph.add_edges_from([("Z", "X"), ("X", "Y"), ("Z", "Y")])
 dag = CoreDAG(graph=graph)
-# dag.plot()
+dag.plot()
 
 
 print(dag.to_spec())

@@ -1,3 +1,9 @@
+"""The Causlity Game - Dirac Noise Distribution."""
+
+from __future__ import annotations
+
+from typing import override
+
 import numpy as np
 
 from TheCausalityGame.core.contracts.noise import NoiseDistribution
@@ -6,19 +12,34 @@ from TheCausalityGame.core.infrastructure.registry import get_class_path
 
 
 class DiracNoiseDistribution(NoiseDistribution):
+    """
+    Dirac (deterministic) noise distribution.
 
-    def __init__(self, val: int | float):
+    This distribution always returns a constant value (i.e., zero variance),
+    effectively simulating a deterministic system. Useful for debugging,
+    ablations, or testing non-stochastic SCMs.
+
+    Parameters
+    ----------
+    val : int or float
+        Constant value to be returned by the distribution.
+    """
+
+    def __init__(self, val: int | float) -> None:
         self.val = val
 
-    def generate(self, size, random_state=911) -> float:
-        return self.val * np.ones(size)
+    @override
+    def generate(self, size: int, random_state: int | None = 911) -> np.ndarray:
+        return np.full(size, self.val)
 
-    def to_spec(self):
+    @override
+    def to_spec(self) -> NoiseDistributionSpec:
         return NoiseDistributionSpec(
             class_=get_class_path(self.__class__),
             params={"val": self.val},
         )
 
     @classmethod
-    def from_spec(cls, spec: NoiseDistributionSpec) -> "DiracNoiseDistribution":
-        return DiracNoiseDistribution(**spec.params)
+    @override
+    def from_spec(cls, spec: NoiseDistributionSpec) -> DiracNoiseDistribution:
+        return cls(**spec.params)

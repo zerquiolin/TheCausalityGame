@@ -134,7 +134,7 @@
             "params": {}
         },
         "result_validator": {
-            "class_": "TheCausalityGame.mission.result_validator.tef_validator:TreatmentEffectFunctionValidator",
+            "class_": "TheCausalityGame.metric.result.result_validator.cate_function_validator:ConditionalTreatmentEffectFunctionValidator",
             "spec_": "TheCausalityGame.core.contracts.specs.result_validator:ResultValidatorSpec",
             "params": {}
         }
