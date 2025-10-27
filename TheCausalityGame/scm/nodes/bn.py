@@ -59,7 +59,7 @@ class BayesianNetworkSCMNode(CategoricalSCMNode):
 
     def generate_values(
         self, parent_values: pd.DataFrame, random_state, cancel_noise=False
-    ) -> str:
+    ) -> np.ndarray:
         """
         Given a dictionary of parent values, returns a sampled value from the node's distribution.
 

@@ -1,4 +1,4 @@
-from __future__ import annotations
+"""The Causality Game - Infrastructure Serialization Tests."""
 
 from dataclasses import dataclass
 from enum import Enum

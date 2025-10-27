@@ -25,7 +25,7 @@ class DiracNoiseDistribution(NoiseDistribution):
         Constant value to be returned by the distribution.
     """
 
-    def __init__(self, val: int | float) -> None:
+    def __init__(self, val: int | float = 0.1) -> None:
         self.val = val
 
     @override

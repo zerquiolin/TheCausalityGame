@@ -46,7 +46,7 @@ class SCMNodeSpec(CommonSpec):
             "Accessibility of the node. Must be one of: 'controllable', 'observable', or 'latent'."
         ),
     )
-    domain: list[float | str] | tuple[float, int] = Field(
+    domain: list[int | float | str] | tuple[float, int] = Field(
         description="Set of possible values this node can take.",
     )
     parents: list[str] | None = Field(
@@ -74,7 +74,7 @@ class SCMNodeSpec(CommonSpec):
         default=None,
         description="Optional CDFs for categorical variable generation.",
     )
-    domain_distribution: dict[str, float] | None = Field(
+    domain_distribution: dict[int | float | str, float] | None = Field(
         default=None,
         description="Optional domain-level probability distribution.",
     )

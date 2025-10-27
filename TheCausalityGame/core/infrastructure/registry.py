@@ -3,7 +3,12 @@
 from __future__ import annotations
 
 import importlib
-from typing import Any
+import importlib.util
+import inspect
+import sys
+from pathlib import Path
+from types import ModuleType
+from typing import Any, TypeVar
 
 from pydantic import BaseModel
 
@@ -162,3 +167,47 @@ def build_from_spec(spec: BaseModel | dict[str, Any] | str) -> Any:  # noqa: ANN
     # Construct typed spec
     typed_spec = spec_cls(**spec)
     return from_spec(typed_spec)
+
+
+T = TypeVar("T")
+
+
+def load_subclasses_from_path(base_class: type[T], root_path: str) -> list[type[T]]:
+    """
+    Load subclasses from path.
+
+    Recursively loads all subclasses of `base_class` from .py files
+    located under `root_path` (including subfolders).
+    """
+    root = Path(root_path)
+    subclasses: list[type[T]] = []
+
+    for file in root.rglob("*.py"):
+        # Skip __init__.py or other irrelevant files if you want
+        module = _import_module_from_file(file)
+        if not module:
+            continue
+
+        for _, obj in inspect.getmembers(module, inspect.isclass):
+            module_name = module.__name__
+            if getattr(obj, "__module__", "") != module_name:
+                continue
+            if issubclass(obj, base_class) and obj is not base_class:
+                subclasses.append(obj)
+
+    return subclasses
+
+
+def _import_module_from_file(path: Path) -> ModuleType | None:
+    """Dynamically import a module directly from a file path."""
+    module_name = path.with_suffix("").as_posix().replace("/", ".")
+    if module_name.endswith(".__init__"):
+        module_name = module_name[: -len(".__init__")]
+
+    spec = importlib.util.spec_from_file_location(module_name, path)
+    if spec and spec.loader:
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[module_name] = module
+        spec.loader.exec_module(module)
+        return module
+    return None

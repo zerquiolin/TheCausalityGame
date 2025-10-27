@@ -56,4 +56,4 @@ exclude = ["^tests/data/"]
 plugins = ["pydantic.mypy"]
 
 [tool.pytest.ini_options]
-addopts = "-q --cov=TheCausalityGame --cov-report=term-missing"
+addopts = "-q -vv"

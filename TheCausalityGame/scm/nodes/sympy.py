@@ -265,12 +265,11 @@ class EquationBasedCategoricalSCMNode(CategoricalSCMNode, EquationBasedSCMNode):
 
         # Check if the node has parents
         if not self.parents:
-            return [
-                rs_noise.choice(
-                    list(self.domain_noise_distribution.keys()),
-                    p=list(self.domain_noise_distribution.values()),
-                )
-            ]
+            return rs_noise.choice(
+                list(self.domain_noise_distribution.keys()),
+                p=list(self.domain_noise_distribution.values()),
+                size=len(parent_values),
+            ).tolist()
 
         missing_parents = set(self.parents).difference(set(parent_values.keys()))
         assert (

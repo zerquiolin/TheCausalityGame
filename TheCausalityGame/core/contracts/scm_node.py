@@ -54,7 +54,7 @@ class SCMNode(Serializable):
         name: str,
         evaluation: Callable[[pd.DataFrame], float | str] | None,
         domain: list[float | str],
-        noise_distribution: NoiseDistribution | None = None,
+        noise_distribution: NoiseDistribution | None,
         accessibility: NodeAccessibility = NodeAccessibility.CONTROLLABLE,
         parents: list[str] | None = None,
         parent_mappings: dict[str, int | float] | None = None,

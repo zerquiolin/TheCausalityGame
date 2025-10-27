@@ -170,7 +170,7 @@ class SCM(Serializable):
             random_states = dict.fromkeys(self.vars, random_states)
 
         sample = pd.DataFrame(index=range(num_samples))
-        interventions = interventions or {}
+        interventions = interventions if interventions is not None else {}
 
         for node_name in self.vars:
             node = self.nodes[node_name]

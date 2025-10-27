@@ -12,7 +12,7 @@ from TheCausalityGame.core.lib.errors.result_validator import (
 )
 
 
-class ConditionalTreatmentEffectFunctionValidator(ResultValidator):
+class ConditionalAverageTreatmentEffectFunctionValidator(ResultValidator):
     """
     Validator for treatment effect estimation functions.
 
@@ -67,5 +67,5 @@ class ConditionalTreatmentEffectFunctionValidator(ResultValidator):
     @override
     def from_spec(
         cls, spec: ResultValidatorSpec
-    ) -> "ConditionalTreatmentEffectFunctionValidator":
+    ) -> "ConditionalAverageTreatmentEffectFunctionValidator":
         return cls(**spec.params)
