@@ -1,0 +1,130 @@
+\section{The Causality Game — Formal Framework}
+\label{sec:formaldefinition}
+\game is not a metaphor but a formal interactive system for causal discovery and reasoning grounded in structural causal models (SCMs). 
+It represents a controlled, turn-based environment in which an agent performs interventions, observes results, and progressively uncovers causal relationships among a finite set of variables.
+The following formulation describes the game as a mathematical object, providing the foundation upon which its software implementation is built.
+
+\subsection{Definition and Core Components}
+A single game instance is defined by the tuple
+\[
+    \langle 
+        \scm,\; \latentx \sqcup \measuredx \sqcup \controllablex,\;
+        \initstate,\; \phi,\;
+        \goal,\; \resultmetric,\; \behaviormetric
+    \rangle ,
+\]
+where:
+\begin{itemize}
+    \item $\scm$ is the underlying structural causal model that governs the world’s data-generating process.
+    \item $\latentx, \measuredx, \controllablex$ partition $\varset$, determining which variables are hidden, observable, or intervenable.
+    \item $\initstate \in \statespace$ represents the starting data context, typically empty or initialized with baseline observations under the null intervention $\bot$.
+    \item $\phi : \runs \to \{0,1\}$ is a stopping function that enforces runtime limits such as sample count, memory, or time budget.
+    \item $\goal$ defines the mission — the causal question to be solved.
+    \item $\resultmetric : \outputspace \to \mathbb{R}$ scores the correctness of the final answer.
+    \item $\behaviormetric : \runs \to \mathbb{R}$ measures the efficiency of the agent’s experimentation behavior.
+\end{itemize}
+
+The agent does not directly observe $\scm$ or any $\latentx$; instead, it interacts through interventions on $\controllablex$ and receives measured outcomes from $\measuredx \sqcup \controllablex$ .
+
+\subsection{Extended Structural Causal Model}
+Formally, the SCM as the foundation of the game, is defined as
+\[
+    \scm = \langle \varset, \{f_i\}, \{\eta_i\} \rangle,
+\]
+where $\varset$ is the set of variables, $f_i$ are deterministic structural functions, and $\eta_i$ are exogenous noise terms.
+In the context of \game, each variable also has a declared \emph{access mode}:
+\[
+    \latentx \sqcup \measuredx \sqcup \controllablex = \varset.
+\]
+This configuration explicitly controls which nodes the agent may observe or intervene upon.  
+The SCM thus defines both the ground-truth causal structure and the constraints under which agents can interact with it, reflecting real-world experimental limitations.
+
+\subsection{Environment and Experiment Execution}
+The environment is a deterministic causal oracle induced by the extended SCM. It does not maintain any mutable internal ``state.’’ Instead, it responds to each agent action by \emph{functionally generating new data} and returning it to the agent. All memory of past interactions is externalized into the \textbf{Transcript}, which is maintained by the \game orchestrator, not by the environment itself.
+
+\paragraph{Interventions.}
+An intervention is a partial assignment over controllable variables:
+\[
+    \intervention : X_i \in \controllablex \;\mapsto\; v \in domain(X_i) \;\cup\; \{\none\},
+\qquad
+\intervention \in \interventions,
+\]
+where $\intervention(X_i) = \none$ means that $X_i$ is left to follow its natural SCM equation. The empty intervention $\bot$ corresponds to purely observational sampling.
+
+\paragraph{Experiments.}
+Each \emph{environment action} is a finite experiment request:
+\[
+    e \;:\; \interventions \;\to\; \mathbb{N},
+\]
+meaning that for each intervention $\intervention$ with $e(\intervention) = n > 0$, the environment returns $n$ new i.i.d.\ samples generated under that interventional condition. There is no deferred scheduling: each experiment is executed immediately in the same round it is requested.
+
+\paragraph{Interaction Protocol (inform $\rightarrow$ act).}
+The agent never receives a raw environment state. Instead, the interaction in each round proceeds in two stages:
+\begin{enumerate}
+    \item \textbf{inform:} The agent is given the newly generated samples from its previous experiment, restricted to $\measuredx \cup \controllablex$, together with a structured feedback object (e.g.\ partial scoring about how well its current hypothesis aligns with the mission).
+    \item \textbf{act:} The agent is then given two structured DTOs:
+    \begin{itemize}
+        \item a \texttt{RoundInformation} object summarizing the current budget status, mission description, etc.,
+        \item an \texttt{AvailableActions} object enumerating all legal next experiment configurations plus the special terminal option \emph{stop with answer}.
+    \end{itemize}
+    It must then choose either another experiment $e \in \experiments$ or stop and submit a final answer.
+\end{enumerate}
+
+
+\subsection{Environment Determinism and Reproducibility}
+The agent’s experience is not merely stochastic — it is \emph{seed-deterministic}. The initialization seed fixes the entire sample-generation randomness of the environment. Thus, two independent agents that issue the same sequence of actions will observe \emph{bitwise identical outcomes}. This ensures \textbf{perfect fairness and reproducibility} across agents and research groups — a critical requirement for benchmark integrity.
+
+\subsection{Start and Stop Conditions}
+The temporal extent of a run is controlled by two mechanisms:
+
+\begin{itemize}
+    \item an explicit \textbf{initial state} $\initstate \in \statespace$, which determines what data (if any) the agent sees before taking its first action,
+    \item an external \textbf{stopping function} $\phi : \runs \to \{0,1\}$, which may forcibly terminate the game if resource constraints are exceeded (e.g.\ too many interventions or samples have been requested).
+\end{itemize}
+
+Crucially, the agent is always free to stop \emph{voluntarily} at any round by issuing a \emph{stop with answer} action, returning some $y \in \outputspace$. If $\phi$ triggers first, the game ends immediately \emph{without} returning an answer — resulting in a zero or penalty score under $\resultmetric$.
+
+\paragraph{Scientific motivation.}
+This design mirrors real experimental science:  
+if a researcher exhausts funding before returning a final conclusion, there is \emph{no result to evaluate}.  
+Thus, \game formalizes causal inference not only as a problem of correctness — but of disciplined experimental planning under pressure.
+
+
+This reflects real-world constraints: experimenters may choose to conclude early, but if they exceed allowable resources, the process is terminated before any formal conclusion can be submitted.
+
+\subsection{Capabilities and Limits}
+Within each run, the agent:
+\begin{itemize}
+    \item can perform any legal intervention $\intervention \in \interventions$ on $\controllablex$,
+    \item can request $n$ samples per intervention via experiments,
+    \item receives only observable outcomes $\measuredx$,
+    \item and may stop at any point with an answer submission.
+\end{itemize}
+It cannot:
+\begin{itemize}
+    \item access or view latent variables $\latentx$,
+    \item modify the true $\scm$ or observe its internal structure,
+    \item or bypass the stopping rule $\phi$ once triggered.
+\end{itemize}
+This strict separation between what the agent \emph{can} and \emph{cannot} know enforces an epistemically valid experimental process.
+
+\subsection{Objective}
+A \emph{player agent} interacts with the game instance by selecting actions in discrete turns to generate a run
+\[
+    r = (\initstate, a_0, s_1, a_1, \ldots, a_{T-1}, s_T),
+    \quad r \in \runs.
+\]
+Its goal is to produce a final answer $y \in \outputspace$, by issuing a \emph{stop with answer} action before termination, such that $\resultmetric(y)$ is maximized while incurring minimal cost under $\behaviormetric(r)$.
+
+Formally, a possible multi-objective evaluation to maximize and rank agents:
+\[
+    \text{score}(r) \;=\; 
+    \big( \resultmetric(y),\;\; -\behaviormetric(r) \big),
+\quad \text{Pareto-optimality is well-defined.}
+\]
+However. No scalarization is imposed at the framework level — users may rank agents by convex combination, lexicographic ordering, or full Pareto frontier analysis.
+
+\subsection{Narrative Summary}
+\game thus formalizes the process of causal discovery as an interactive and bounded experimentation problem.  
+At each round, the agent receives structured contextual information, selects from permissible actions, and shapes the data it will later use to infer causal structure.  
+Through this formulation, causal learning becomes a reproducible, quantitative, and comparable process — bridging the conceptual gap between theoretical causal reasoning and experimental design.

@@ -1,0 +1,48 @@
+\section{Mission Examples and Use Cases}
+\label{sec:missions_examples}
+We now illustrate how \game accommodates fundamentally different causal inference tasks — all under the same formal game interface.  
+Each task is encoded as a \textbf{MissionSpec}, which declares its objective and assigns appropriate \resultmetric and \behaviormetric.
+
+\subsection{Mission Class 1: Causal Graph (DAG) Discovery}
+The agent must infer the correct directed causal structure underlying the SCM.  
+The stopping action returns a predicted DAG $\hat{\DAG}$.  
+Typical result metrics include:
+\begin{itemize}
+    \item \textbf{Structural Hamming Distance (SHD)}: number of edge additions/removals/reversals.
+    \item \textbf{Edge-wise binary accuracy, F1, or AUROC} (directed or skeleton).
+\end{itemize}
+The behavioral metric may penalize number of rounds, interventions, or total sample count.
+
+\paragraph{Objective.} Minimize error in recovered structure at minimal interventional cost.
+
+\subsection{Mission Class 2: Treatment Effect Estimation (CATE / ATE / ITE)}
+The agent must estimate counterfactual treatment effects such as
+\[
+    \mathbb{E}[Y \mid \mathrm{do}(T\!=\!1), X = x] - \mathbb{E}[Y \mid \mathrm{do}(T\!=\!0), X = x].
+\]
+Metric options include:
+\begin{itemize}
+    \item \textbf{MSE, RMSE, PEHE},
+    \item \textbf{R\textsuperscript{2}}, 
+    \item possible binary accuracy if reduced to uplift sign estimation.
+\end{itemize}
+If the agent ends early (few samples) yet produces a correct estimate, it is rewarded accordingly by $\behaviormetric$.
+
+\paragraph{Objective.} Maximize treatment effect accuracy while minimizing interventional burden.
+
+\subsection{Mission Class 3: Full SCM Reconstruction}
+The agent must learn either (i) the full structural equations $f_i$ and noise distributions $\eta_i$, or (ii) sufficiently accurate approximations thereof for predictive equivalence.
+
+Possible result metrics:
+\begin{itemize}
+    \item \textbf{Functional similarity} via supervised regression metrics on held-out SCM samples,
+    \item \textbf{KL divergence} between estimated vs.\ true noise,
+    \item or their weighted convex combination.
+\end{itemize}
+
+\paragraph{Objective.} Achieve $f_i^\text{pred} \approx f_i^\text{true}$ with minimal experimentation cost.
+
+\medskip
+These examples illustrate that \game is not tied to any specific causal paradigm — it \textbf{generalizes across graph recovery, counterfactual estimation, structural discovery, and future tasks}.
+
+In the next section, we present \textbf{results and experimental findings} obtained via this protocol.

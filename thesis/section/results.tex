@@ -1,0 +1,47 @@
+\section{Results}
+\label{sec:results}
+This section presents representative experimental results obtained using the \game framework — demonstrating its ability to evaluate agents under \textbf{multiple causal inference missions}, \textbf{different SCM families}, and \textbf{explicit interventional cost constraints}.  
+Rather than committing to a single dataset or result type, we illustrate the breadth and rigor of the evaluation.
+
+\subsection{Evaluation Setting}
+Unless otherwise stated, each experiment consists of:
+\begin{itemize}
+    \item one SCM instance drawn from a chosen \textbf{SCM generation source},
+    \item two or more \textbf{agents} — e.g., RandomAgent, ExhaustiveAgent, Active-Learning Agent,
+    \item a fixed \textbf{mission type} (e.g., DAG recovery or CATE estimation),
+    \item a hard or soft \textbf{interventional budget},
+    \item metrics defined via $\resultmetric$ (accuracy) and $\behaviormetric$ (cost).
+\end{itemize}
+
+\subsection{Example 1 — DAG Inference on Physical SCM}
+On a physical law–based SCM (e.g., $P = \frac{nRT}{V}$), the goal is to recover the \emph{directed causal graph}.  
+Figure~\ref{fig:results_dag} (previously displayed in Sec.~1) depicts:
+\begin{itemize}
+    \item final \textbf{structural inference accuracy} vs.\ \textbf{total cost},
+    \item round-by-round \textbf{accuracy trajectory},
+    \item \textbf{Pareto-like tradeoff} among agents.
+\end{itemize}
+Active agents adaptively minimize cost; exhaustive agents maximize accuracy but spend more resources.
+
+\subsection{Example 2 — CATE Estimation under Limited Budget}
+In a semi-synthetic IHDP-derived SCM, the mission is to estimate CATE.  
+The best agents learn to trade sample efficiency for statistical stability — sometimes \textbf{stopping early but optimally} under tight budget constraints.  
+Figure~\ref{fig:results_cate} shows that budget-aware strategies achieve lower PEHE than naive baselines at comparable or lower intervention cost.
+
+\subsection{General Observations}
+Across all experiments:
+\begin{itemize}
+    \item \textbf{interactive causality is fundamentally cost-sensitive};
+    \item blindly maximizing data collection is not Pareto-optimal;
+    \item early stopping (with correct conclusions) is beneficial under \behaviormetric;
+    \item the \game framework reveals \textbf{agents' reasoning quality}, not merely offline inference performance.
+\end{itemize}
+
+\medskip
+These insights highlight the necessity of interactive causal benchmarking — something fundamentally \emph{not measured} in traditional static-dataset benchmarks.
+
+\bigskip
+We now discuss the broader implications of these findings, \textbf{limitations}, and promising \textbf{future research directions}.
+
+\section{Discussion, Limitations, and Future Work}
+\label{sec:discussion}

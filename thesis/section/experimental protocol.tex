@@ -1,0 +1,67 @@
+\section{Experimental Protocol}
+With the formal game and its system architecture fully defined, we now turn to how experiments are \textbf{systematically designed, executed, and evaluated} using \game.  
+This section establishes a \textbf{standardized scientific workflow} that enables fair, reproducible benchmarking of causal agents across missions, SCMs, and budget constraints.
+
+\subsection{Defining a Problem Instance}
+Every experiment begins by instantiating a \textbf{problem instance} via Specs (see Sec.~\ref{sec:specs}).  
+This consists of choosing:
+
+\begin{itemize}
+    \item a \textbf{mission specification} (e.g.\ DAG discovery, CATE estimation, SCM reconstruction),
+    \item a \textbf{ground-truth SCM} (from dataset, Bayesian network, or synthetic generator),
+    \item \textbf{initial conditions} (\initstate),
+    \item \textbf{stopping conditions} ($\phi$ — typically a resource budget),
+    \item one or more \textbf{evaluation metrics} $(\resultmetric, \behaviormetric)$.
+\end{itemize}
+
+This problem instance is fully declarative — once written, it may be executed indefinitely by any number of agents under \emph{identical conditions}.
+
+\subsection{Selecting and Configuring Agents}
+Agents are likewise instantiated via Specs under the \texttt{Agent} contract.  
+Each agent may have its own:
+\begin{itemize}
+    \item seed,
+    \item exploration strategy,
+    \item allowable internal memory or policy class,
+    \item explicit hyperparameters (e.g.\ max experiments per round).
+\end{itemize}
+
+\textbf{No agent may modify the problem instance or SCM at runtime}.  
+All causal interaction is exclusively mediated through the Environment and DTO system.
+
+\subsection{Running the Game}
+The experiment proceeds by calling:
+\[
+    \texttt{Game.run()} \;\;\longrightarrow\;\; \texttt{Transcript}.
+\]
+This produces a \textbf{sealed interaction log} with:
+\begin{itemize}
+    \item every action taken,
+    \item every sample observed,
+    \item the budget consumption trajectory,
+    \item and the final stop decision (or forced termination).
+\end{itemize}
+
+When multiple agents or SCM seeds are evaluated, this step is typically orchestrated via the \texttt{Runner} (see Sec.~\ref{sec:runner}).
+
+\subsection{Evaluating Performance}
+Evaluation is \textbf{post-hoc} — the agent is never influenced during runtime.  
+From the Transcript, the system computes
+\[
+    \big( \resultmetric(y),\ \behaviormetric(r) \big),
+\]
+which may be left separate (Pareto analysis) or aggregated by user choice.
+
+\subsection{Optional Post-Processing}
+Once evaluation is complete, the researcher may optionally:
+\begin{itemize}
+    \item generate plots (e.g.\ learning curve of accuracy vs.\ cost),
+    \item compare multiple agents via Pareto frontiers,
+    \item export transcripts for third-party analysis,
+    \item publish reproducible Spec + Transcript bundles as benchmark assets.
+\end{itemize}
+
+\medskip
+This protocol transforms \game from a formal object into a \textbf{repeatable scientific experimentation process}, enabling principled comparison of domain-agnostic causal agents under strict experimental control.
+
+In the next section, we instantiate this protocol with concrete \textbf{use cases and mission examples}.

@@ -1,0 +1,32 @@
+\section{Discussion}
+\game establishes a unified formalism for benchmarking \emph{interactive causal inference}, evaluating agents not only on their final inference quality but also on their \textbf{efficiency in actively acquiring information}.  
+This fundamentally departs from nearly all prior causal benchmarks, which provide agents with a fixed dataset and do not measure interventional strategy, adaptivity, or cost sensitivity.
+
+The framework makes three key contributions:
+\begin{enumerate}
+    \item It formalizes causal learning as a \textbf{resource-constrained, agent-driven game}.
+    \item It unifies diverse causal inference tasks (DAG recovery, CATE estimation, full SCM reconstruction) into a single abstraction.
+    \item It provides a fully seedable, serializable, and replayable environment — enabling fair, reproducible comparison of agents across research groups.
+\end{enumerate}
+
+\subsection{Current Limitations}
+Despite enabling a general and principled framework, \game currently does not yet aim to solve:
+\begin{itemize}
+    \item \textbf{task-specific algorithm curation} — we do not claim to ship the best agents for each mission;
+    \item \textbf{large-scale real-world SCM availability} — especially for domains where ground truth causality is unknowable or ethically inaccessible;
+    \item \textbf{temporal and partially observable environments} — this initial formulation assumes stateless or snapshot-based SCMs;
+    \item \textbf{domain realism guarantees} — although our framework supports realistic SCM injection (e.g.\ physical or dataset-based), we do not certify their real-world truthfulness.
+\end{itemize}
+
+\subsection{Future Research Directions}
+We envision several high-value extensions:
+\begin{itemize}
+    \item \textbf{Temporal and sequential SCMs} — incorporating dynamic causal processes and partially observable agents.
+    \item \textbf{Advanced causal policies from foundation models} — testing large reasoning agents capable of planning interventions with memory and priors.
+    \item \textbf{Shared curated benchmark suites} — collaborating with the research community to identify SCMs, datasets, or synthetic laws worthy of consensus benchmarking.
+    \item \textbf{Multi-agent causal competitions} — extending \game into adversarial or cooperative causal inference settings.
+    \item \textbf{Meta-learning and generalization tests} — ensuring agents generalize across families of SCMs, not just fit one.
+\end{itemize}
+
+\medskip
+\game provides the \emph{infrastructure and scientific formalism} needed for the next generation of causal learning benchmarks — those that evaluate not only inference quality but also active experimental reasoning.

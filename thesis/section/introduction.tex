@@ -1,0 +1,31 @@
+\section{Introduction}
+Causal inference has emerged as a central paradigm for understanding and influencing complex real-world systems in domains such as medicine \citep{Shi2022LearningCEA,Smith2023ApplicationOTA,Cai2017IdentificationOAA,Prosperi2020CausalIAA}, natural sciences \citep{Varghese2024CausalDTA,Zucker2021LeveragingSBA,Jiao2018BivariateCDA}, engineering \citep{Chadbourne2023ApplicationsOCA,Graham2022CausalIFA,Ji2022PerfcePDA,Li2024InferringHTA,Siebert2022ApplicationsOSA}, economics \citep{Abbring2025PhilipGWA,Demeter2025AssessingTIA,Athey2016TheSOA}, and education \citep{Nagai2024EducationalEIA,Chi2022APGA,weissman2021methods}. 
+Over the past decade, substantial progress has been made in \emph{static} causal estimation—learning causal effects or graph structures from a \emph{fixed}, passively observed dataset \citep{johansson2016learning,shalit2017estimating,alaa2017bayesian,alaa2018limits,yoon2018ganite,hassanpour2019counterfactual,zhang2020learning,hassanpour2019learning,assaad2021counterfactual,curth2021nonparametric,zheng2018dags,yu2019dag,annadani2023bayesdag,cundy2021bcd,kalainathan2022structural,lippe2021efficient,huang2020causal,shimizu2006linear,hoyer2008nonlinear,chickering2002optimal,chickering2015selective,zhu2019causal,buhlmann2014cam,spirtes2000causation,kaptanoglu2021pysindy,Brunton2015DiscoveringGEA,Shojaee2023TransformerbasedPFA,Valipour2021SymbolicGPTAGA,Petersen2019DeepSRA,Tegmark2019AIFAA,Udrescu2020AIF2A,Cranmer2020DiscoveringSMA,Biggio2021NeuralSRA}. 
+However, in many realistic settings, reliable inference is only possible through \emph{active intervention and experimentation}—the agent must decide \emph{what to observe next} rather than consume data passively \citep{von2019optimal,Seitzer2021CausalIDA,Mehrjou2020CausalCRA}. 
+This introduces a fundamentally different challenge: causal inference becomes a \emph{sequential decision process under resource constraints}, where experimental efficiency matters as much as correctness.
+
+A crucial activity in causal inference as a discipline is the active design of interventions \citep{von2019optimal,Seitzer2021CausalIDA,Mehrjou2020CausalCRA}.
+Without some exceptions, it is not generally possible to conclude on causal relationships without systematic interventions \citep{pearl2009causality}, e.g., in the form of treatments or systematic exploration of an environment.
+Since the execution of such experiments is often very costly in practice, properly designing and executing them is arguably just as important as the final inference activity.
+In fact, without sufficient information from well-design experiments, no inference might be possible.
+
+Despite its importance, this interactive dimension is almost entirely absent \me{We are aware of} from existing benchmarks. 
+Frameworks for causal graph discovery \citep{chengcausaltime,lawrence2021data,runge2019causality,chevalley2023causalbench}, symbolic regression \citep{olson2017pmlb,la2021contemporary,romano2021pmlb}, and treatment effect estimation \citep{CauseBox2021,ACCBench2024,CIPCaDBench2022,CausalDiscoveryFramework2024,RealCause2021,BayesianCausalDiscovery2023,CausalBench2024,EvaluationFramework2022,IBM2022,DoWhy2021,Framework2021} almost exclusively evaluate models on a fixed dataset, scoring only the final outcome rather than \emph{how the knowledge was acquired}. 
+The only known interactive benchmark, CausalWorld \citep{ahmed2020causalworld}, focuses on robotic control and does not \emph{explicitly} evaluate the correctness of causal reasoning itself. 
+Thus, there is currently no rigorous framework for benchmarking \emph{agent-based causal inference} as a problem of strategic experimental design.
+
+To close this gap, we introduce \game, a turn-based, agent-centric causal inference framework in which players actively select interventions, gather observations, and decide when to stop and return a causal conclusion. 
+As argued by \cite{BayesianCausalDiscovery2023}, the distinction between causal graph discovery and treatment effect estimation is artificial, in particular since advanced treatment effect estimation techniques might solve causal graph discovery as a sub-task.
+To \game, these are simply different \emph{missions} with respective \emph{result metrics}, e.g., F1 or SHD for graph discovery, and PEHE for treatment effect estimation.
+Unlike static benchmarks, \game jointly evaluates (i) the \emph{quality of causal conclusions} and (ii) the \emph{efficiency of the experimental strategy}. 
+The accompanying Python package \package provides a rigorously modular implementation, enabling pluggable agents, structural causal models (SCMs), behavior and result metrics, stopping functions, and fully seedable execution for reproducible comparison across agents and settings.
+
+\textbf{Contributions.} This work introduces:
+\begin{itemize}
+    \item A formalized \emph{agent-based causal inference game} that evaluates not only \emph{what} an agent concludes, but \emph{how intelligently} it gathers information.
+    \item A modular, extensible \emph{system architecture} implemented in \package, supporting dynamic SCM generation from datasets, Bayesian networks, and synthetic rules.
+    \item A principled framework for multi-mission evaluation, covering DAG recovery, CATE estimation, SCM reconstruction, and beyond.
+    \item A fully seedable execution model enabling \emph{fair, reproducible, and comparable} evaluation of heterogeneous causal agents.
+\end{itemize}
+
+By reframing causal inference as a strategic experimental process rather than a passive estimation task, \game enables evaluation of the next generation of \emph{interactive causal agents}—those that do not merely estimate causality, but \emph{actively learn it}.

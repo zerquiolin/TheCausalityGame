@@ -1,0 +1,79 @@
+\section{Structural Causal Model (SCM)}
+At the core of every \game instance is the \textbf{Structural Causal Model (SCM)}, which defines the causal laws of the environment.  
+The SCM is the \emph{only source of ground-truth causality} — every observation, every experiment outcome, and every causal dependency observed by the agent originates here.
+
+While its formal definition was introduced in Section~3.1, we now expand it from the viewpoint of the \textbf{runtime engine} — where it becomes an \emph{active, queryable data-generating process}.
+
+\paragraph{Executable SCM.}
+In the environment, the SCM is not a static object but a \emph{callable simulation oracle}:
+\[
+    \scm.\texttt{sample} : \intervention \longrightarrow \dataset,
+\]
+which generates samples from $\measuredx$ variables under a specified intervention on $\controllablex$ — always respecting the DAG and functional dependencies encoded in $\{f_i\}$.
+
+Formally:
+\[
+    \dataset = \Big\{ x^{(j)} \in \mathrm{dom}(\measuredx) \;|\; x^{(j)} \sim \scm \text{ under do}(\intervention) \Big\}.
+\]
+
+\paragraph{Strict purity.}
+The SCM is \textbf{stateless, reproducible, and seed-bound}.  
+Executing the same intervention twice yields identical outputs at the \emph{same positions in the random sample stream} — ensured via the initialization seed.  
+This enables \emph{perfect inter-agent comparability}, even across machines.
+
+\subsection{SCMs from Factual Datasets}
+Datasets do not induce unique SCMs but are \emph{one} ingredient for an SCM, complemented by other components.
+Importantly, different outcome generators or even the same outcome generator initialized with different random seeds will lead to different SCMs \citep{curth2021really}.
+
+\package ships three datasets from which SCMs can be derived, which are summarized in Table~\ref{tab:my_label}.
+These are the datasets IHDP \citep{hill2011bayesian}, Jobs \citep{lalonde1986evaluating}, and Twins \citep{almond2005costs} commonly used in causal inference papers.
+Despite the justified critics of some over-use of these datasets \citep{curth2021really}, they \emph{do} provided added value over merely observational datasets, which bears the chance to develop arguably more realistic outcome generators than those commonly considered.
+Then, on a more positive note, packages like \package can contribute to make such more realistic outcome generators available to a broad audience and help mitigate the problem of semantically flawed de-facto standard benchmarks.
+
+\begin{table}[h!]
+    \centering
+    \resizebox{\textwidth}{!}{
+        \input{scm_tables/dbs}
+    }
+    \caption{Properties of the three datasets shipped with \package to derive SCMs from data.}
+    \label{tab:my_label}
+\end{table}
+
+\subsection{SCMs from Standard Bayesian Networks}
+We compiled all 25 Bayesian networks provided by \cite{scutari_bnrepository} into SCMs.
+These networks range in complexity between only a hand full to over a thousand variables and different connection complexities between them.
+An overview of the SCM properties is shown in Tab.~\ref{tab:scms:bns}.
+All variables in these networks are categorical.
+
+\begin{table}[h!]
+    \centering
+    \resizebox{\textwidth}{!}{
+        \input{scm_tables/bns}
+    }
+    \caption{Properties of the SCMs derived from fully discrete Bayesian networks.}
+    \label{tab:scms:bns}
+\end{table}
+
+\subsection{SCMs from Physical Laws}
+Even though many recent benchmarks seek to compare performance on complex real world scenarios like traffic \citep{chengcausaltime}, climate change \citep{runge2019causality} or biological processes \citep{chevalley2023causalbench}, the problem of those is that ground truth SCMs are not available or arguably secured.
+Even though there is clearly an interest in assessing causal inference methods on highly complex problems at \emph{some} point, such methods should arguably first qualify by high performance on dozens or hundreds of much simpler problems where the ground truth is known.
+
+A specifically suitable type of task is to establish ``laws'' in physics from data  \citep{olson2017pmlb,la2021contemporary,romano2021pmlb}.
+The advantage of such laws is that, even though they usually come in the form of \emph{algebraic} equations without necessarily a direction of causation, many laws \emph{do} exhibit a direction of causation.
+For example, Ohm's law $V = IR$ actually poses a \emph{causal} connection that can be directly used in an SCM equation for $V$ (but not to rearrange for $R$).
+
+\package comes with 20 SCM definitions from the area of laws in physics, which are summarized in Table~\ref{tab:scms:physics}.
+These are basic equations with just a single equation, but they can be combined to form SCMs where the agent must learn multiple (possibly interacting) relationships. 
+However, we took care that the direction in all physical SCMs was compatible with a valid causal interpretation of the respective equation formula.
+While the number of tasks is still smaller than that in SRBench \citep{la2021contemporary}, in \package they can be addressed (i) interactively and (ii) for different tasks than only symbolic regression.
+The interactive part is very important since it enables an active learning environment in which players can compete on who needs less (intelligently chosen) observations to uncover the relationship in the equation; the above-mentioned benchmarks confront each player with the same (often quite large) amount of data.
+
+\begin{table}[h!]
+    \centering
+    \resizebox{\textwidth}{!}{
+        \input{scm_tables/physics}
+    }
+
+    \caption{The 20 causally interpreted laws in \package to define SCMs.}
+    \label{tab:scms:physics}
+\end{table}
