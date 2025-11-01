@@ -1,0 +1,103 @@
+% paper_macros.sty — cleaned & organized
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{paper_macros}[2025/10/26 Common macros for the Causality Game]
+\RequirePackage{amsmath,amssymb,amsfonts,mathtools}
+\RequirePackage{xspace}
+
+% Helper: math-or-text macro wrapper
+\newcommand{\sym}[1]{\ensuremath{#1}\xspace}
+
+% ----------------------------
+% Text identifiers (robust)
+% ----------------------------
+\DeclareRobustCommand{\game}{\textbf{The Causality Game}\xspace}
+\DeclareRobustCommand{\pkg}{\texttt{thecausalitygame}\xspace}
+
+% ----------------------------
+% Core objects / variables
+% ----------------------------
+\DeclareRobustCommand{\varname}{\sym{X}}      % a variable name
+\DeclareRobustCommand{\scm}{\sym{M}}          % structural causal model
+\DeclareRobustCommand{\goal}{\sym{g}}         % objective
+\DeclareRobustCommand{\performance}{\sym{p}}  % performance score
+\DeclareRobustCommand{\penalties}{\sym{\mathcal{P}}}
+
+% ----------------------------
+% MDP components (standardized)
+% ----------------------------
+% Sets
+\DeclareRobustCommand{\States}{\sym{\mathcal{S}}}
+\DeclareRobustCommand{\Actions}{\sym{\mathcal{A}}}
+\DeclareRobustCommand{\Outputs}{\sym{\mathcal{O}}}
+\DeclareRobustCommand{\Interventions}{\sym{\mathcal{I}}}
+\DeclareRobustCommand{\Trials}{\sym{\mathcal{T}}}     % renamed from "experiments" to avoid clash
+\DeclareRobustCommand{\Runs}{\sym{\mathcal{R}}}
+
+% Elements / kernels
+\DeclareRobustCommand{\state}{\sym{s}}
+\DeclareRobustCommand{\action}{\sym{a}}
+\DeclareRobustCommand{\intervention}{\sym{t}}
+\DeclareRobustCommand{\initstate}{\sym{s_0}}
+\DeclareRobustCommand{\terminalstate}{\sym{s_T}}
+\DeclareRobustCommand{\reward}{\sym{r}}
+\DeclareRobustCommand{\transitionkernel}{\sym{P}}     % transition kernel
+\DeclareRobustCommand{\transition}{\transitionkernel} % alias
+
+% ----------------------------
+% Data / graph structures
+% ----------------------------
+\DeclareRobustCommand{\dataset}{\sym{\mathcal{D}}}
+\DeclareRobustCommand{\varset}{\sym{\mathcal{X}}}     % all nodes/variables
+\DeclareRobustCommand{\DAG}{\sym{\mathcal{G}}}
+
+% Use standard graph E; reserve \mathcal{E} for edges and avoid reuse elsewhere
+\DeclareRobustCommand{\edgeset}{\sym{\mathcal{E}}}    % all edges
+
+% ----------------------------
+% DAG hyperparameters / proportions
+% ----------------------------
+\DeclareRobustCommand{\psource}{\sym{p_{\mathrm{source}}}}
+\DeclareRobustCommand{\pedges}{\sym{p_{\mathrm{edges}}}}
+\DeclareRobustCommand{\pleaf}{\sym{p_{\mathrm{leaf}}}}      % “leafs” -> “leaf”
+\DeclareRobustCommand{\dmax}{\sym{d_{\max}}}
+
+% Variable subsets
+\DeclareRobustCommand{\latentx}{\sym{\mathcal{X}_H}}       % latent
+\DeclareRobustCommand{\measuredx}{\sym{\mathcal{X}_M}}     % measured/observable
+\DeclareRobustCommand{\controllablex}{\sym{\mathcal{X}_C}} % controllable
+
+% Intervenable observable & exclusive-intervention sets (clearer names)
+\DeclareRobustCommand{\obsintvars}{\sym{\mathcal{X}_{\mathrm{obs,int}}}}
+\DeclareRobustCommand{\exintvars}{\sym{\mathcal{I}_{\mathrm{ex}}}}
+
+% Proportions of categories
+\DeclareRobustCommand{\pl}{\sym{p_L}}      % proportion latent
+\DeclareRobustCommand{\pt}{\sym{p_T}}      % proportion treatable
+\DeclareRobustCommand{\pc}{\sym{p_C}}      % proportion categorizable
+
+% ----------------------------
+% Metrics
+% ----------------------------
+\DeclareRobustCommand{\resultmetric}{\sym{p_r}}
+\DeclareRobustCommand{\behaviormetric}{\sym{p_b}}
+
+% ----------------------------
+% Misc
+% ----------------------------
+\DeclareRobustCommand{\None}{\texttt{None}\xspace}  % literal “None” token
+\DeclareRobustCommand{\Empty}{\sym{\varnothing}}     % mathematical empty set
+
+% ----------------------------
+% Backwards-compatible aliases
+% ----------------------------
+\let\statespace\States
+\let\actionspace\Actions
+\let\outputspace\Outputs
+\let\interventions\Interventions
+\let\experiments\Trials
+\let\runs\Runs
+\let\edgesset\edgeset
+\let\interobservablex\obsintvars
+\let\exintervenablex\exintvars
+\let\none\None
+\let\package\pkg

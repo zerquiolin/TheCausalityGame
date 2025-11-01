@@ -4,8 +4,6 @@ from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_compl
 from multiprocessing import cpu_count
 from pathlib import Path
 
-import matplotlib
-import matplotlib.figure
 from tqdm import tqdm
 
 from TheCausalityGame.core.contracts.dto.transcript import Transcript
@@ -14,10 +12,10 @@ from TheCausalityGame.core.contracts.specs.agent import AgentSpec
 from TheCausalityGame.core.contracts.specs.problem_instance import ProblemInstanceSpec
 from TheCausalityGame.core.infrastructure.artifacts import ArtifactWriter
 from TheCausalityGame.core.infrastructure.logger import Logger
+from TheCausalityGame.core.lib.enum.hook import HookEvent
 from TheCausalityGame.core.lib.enum.runplan import RunPlanParallelBackEnd
 from TheCausalityGame.core.lib.enum.runtime import RuntimeMode
 from TheCausalityGame.core.managers.hook import HookManager
-from TheCausalityGame.core.managers.plot import PlotManager
 from TheCausalityGame.core.runtime.game import Game
 
 
@@ -102,7 +100,17 @@ class Runner:
 
         # Save transcripts and plots
         self.artifact_writer.write_transcripts(transcripts)
-        self._run_plot_manager(transcripts)
+        # Run Hooks for benchmark end
+        filtered_hooks = [
+            hook
+            for hook in self.problem_instance.run_plan.hook_plan
+            if hook.step == HookEvent.BENCHMARK_END
+        ]
+        self.hook_manager = HookManager(
+            filtered_hooks,
+            self.artifact_writer.run_dir / "hooks",
+        )
+        self.hook_manager.finalize(transcripts)
 
     def _run_agent(self, agent: AgentSpec) -> Transcript | None:
         """Execute a single agent."""
@@ -188,55 +196,3 @@ class Runner:
                     pbar.update(1)
 
         return transcripts
-
-    def _run_plot_manager(self, transcripts: dict[str, Transcript]) -> None:
-        """
-        Run configured plots and export them via the artifact writer.
-
-        Parameters
-        ----------
-        transcripts : dict[str, Transcript]
-            Transcripts of each agent's execution.
-        """
-        self.plot_manager = PlotManager(self.problem_instance.run_plan.plot_plan)
-        all_plots = [
-            *self.plot_manager.round_plots,
-            *self.plot_manager.end_plots,
-            *self.plot_manager.benchmark_plots,
-        ]
-        self.logger.info(
-            f"Initialized Plot Manager with plots: {[p.id for p in all_plots]}."
-        )
-
-        plots: dict[
-            str,
-            dict[
-                str,
-                list[list[tuple[str, matplotlib.figure.Figure]]]
-                | list[tuple[str, matplotlib.figure.Figure]],
-            ]
-            | list[tuple[str, matplotlib.figure.Figure]],
-        ] = {}
-
-        for agent_id, transcript in transcripts.items():
-            round = self.plot_manager.trigger_rounds(transcript)
-            end = self.plot_manager.trigger_end(transcript)
-
-            if round or end:
-                plots[agent_id] = {
-                    k: v for k, v in [("round", round), ("end", end)] if v
-                }
-
-            plots[agent_id] = {
-                "round": self.plot_manager.trigger_rounds(transcript),
-                "end": self.plot_manager.trigger_end(transcript),
-            }
-
-        # Benchmark-level plots
-        benchmark = self.plot_manager.trigger_benchmark_end(transcripts)
-        if benchmark:
-            plots["benchmark"] = benchmark
-
-        self.logger.info("Generated all plots, exporting via Artifact Writer.")
-
-        self.artifact_writer.write_plots(plots)

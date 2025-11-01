@@ -1,0 +1,448 @@
+\appendix
+\section{Appendix A: Mathematical Foundations of the Game Formalism}
+\label{appendix:math_foundations}
+
+This appendix provides formal mathematical background and complete reference derivations behind the specifications introduced in the main text.
+
+\subsection{Run Semantics as an MDP over Intervention Spaces}
+As described in Sec.~\ref{sec:formaldefinition}, each game instance is a causal MDP:
+\[
+    \mathcal{M}
+    = \bigl(\statespace, \actionspace, \transition, \phi, \resultmetric, \behaviormetric \bigr),
+\]
+where $\statespace$ is a \textbf{history-valued} state space
+and each action $a \in \actionspace$ is either
+(i) a batch of interventions $(\intervention, n)$ or
+(ii) a final answer action.
+We emphasize that the environment is \emph{fully deterministic given the SCM and seed} — the only randomness comes from SCM sampling.
+
+The run $r \in \runs$ is thus defined as:
+\[
+    r = (s_0, a_0, s_1, a_1, \dots, s_T),
+    \qquad s_{t+1} = \transition(s_t, a_t),
+\]
+where $T$ is either agent-chosen (final action) or forced (via $\phi$).
+The transcript is the persistent serialization of $(r, \text{answer})$.
+
+\subsection{Pareto Interpretation of Dual Metrics}
+Unlike reward-maximizing MDPs, \game deliberately does not collapse to a single scalar reward.  
+Instead, final evaluation yields:
+\[
+    \Bigl( \resultmetric(\text{answer}),\ \behaviormetric(r) \Bigr)
+    \in \mathbb{R}^2,
+\]
+reflecting the \textbf{two fundamental desiderata} of causal cognition:
+\begin{itemize}
+    \item correctness of inference (judged externally via ground truth),
+    \item resource-efficiency or experimental prudence.
+\end{itemize}
+Whether or not these are later combined (e.g., for agent ranking) is left to the researcher.
+
+\bigskip
+Additional technical derivations, SCM generation proofs, hooks API, and DTO schemas may be found in the subsequent appendices.
+
+
+\section{Appendix B: DTO Schemas and Information-Theoretic Guarantees}
+\label{appendix:dtos}
+
+A key architectural principle of \game is the strict use of \textbf{Data Transfer Objects (DTOs)} — immutable, minimal, transportation-safe containers of game state.
+They enforce \textbf{type safety}, \textbf{role restriction}, and avoid accidental leakage of internal SCM information to the agent.
+
+\subsection{Core DTOs Exchanged During Runtime}
+
+\paragraph{TranscriptEntryDTO.}
+Represents a single round of interaction — contains only:
+\begin{itemize}
+    \item the intervention decision requested by the agent (as a typed, validated object),
+    \item the interventional samples returned by the environment (never more than allowed),
+    \item optional feedback or metadata (e.g.\ partial evaluation score, if mission allows),
+    \item a budget snapshot from the BudgetManager.
+\end{itemize}
+It is \textbf{impossible} for this DTO to accidentally contain or leak SCM internals such as $f_i$, $\eta_i$, or the true DAG.
+
+\paragraph{SamplesDTO.}
+Encodes interventional data as a \textbf{mapping from intervention $\intervention$ to sampled dataset}:
+\[
+    \texttt{SamplesDTO} \;:\;\;
+    \intervention \mapsto \{(x^{(j)}, y^{(j)})_{j=1}^n\}.
+\]
+All samples are drawn through the SCM equation engine under seed control.  
+No symbolic form of the SCM is ever exposed — only \textbf{realized outcomes}.
+
+\paragraph{AnswerDTO.}
+Returned only when the agent stops — contains:
+\begin{itemize}
+    \item predicted DAG $\,\hat{\DAG}$, or
+    \item estimated treatment-effect function, or
+    \item reconstructed SCM parameters — depending on the mission type.
+\end{itemize}
+This is the only node of communication explicitly judged by $\resultmetric$.
+
+\subsection{Security and Information Containment Guarantees}
+
+\begin{itemize}
+    \item DTOs enforce a \textbf{one-way visibility barrier} — the agent \emph{only sees data consistent with the contractual reality of the game}.
+    \item The agent \emph{cannot observe} latent variables, hidden SCM functions $f_i$, or the full universe of possible interventions, unless defined so in the Spec.
+    \item Every DTO crossing from environment to agent is automatically vetted for \textbf{leak safety}.
+\end{itemize}
+
+This ensures rigorous \textbf{causal identifiability testing} — agents must legitimately \textbf{infer causality from experimental evidence}, never from accidental metadata exposure.
+
+\bigskip
+Following this, Appendix C will detail the \textbf{Hook API and Budget Enforcement Mechanism}, which control the flow of time, stopping logic, and lifecycle events in \game.
+
+
+\section{Appendix C: Hooks, Lifecycle, and Budget Enforcement}
+\label{appendix:hooks_budget}
+
+In this section, we provide a precise specification of the event lifecycle within \game, emphasizing the role of \textbf{HookManager} and \textbf{BudgetManager} in controlling execution, termination, and observability.
+
+\subsection{Event Lifecycle and Hook Triggers}
+Hooks provide \emph{instrumentation without interference} — they can observe events but cannot alter decisions or leak SCM internals to the agent.
+
+\paragraph{Canonical Hook Events.}
+\begin{itemize}
+    \item \textbf{GAME\_START} — triggered before the first round.
+    \item \textbf{ROUND\_START} — triggered before agent observes the updated state.
+    \item \textbf{ROUND\_END} — after samples are returned but before stop check.
+    \item \textbf{GAME\_END} — after the agent stops or BudgetManager forces termination.
+\end{itemize}
+
+These hooks enable logging, plotting, telemetry, debugging, and human visualization — yet \textbf{never override agent or SCM decisions}.
+
+\subsection{Budget Enforcement}
+BudgetManager tracks consumption over time. Let $\beta_t$ represent current budget usage at round $t$.
+
+\begin{itemize}
+    \item Costs may be assigned per round, per intervention, per sample, or any combination.
+    \item A strict constraint $\beta_t \leq \beta_{\max}$ must hold at all times.
+    \item If $\beta_t > \beta_{\max}$, the game is \emph{immediately stopped} via forced termination.
+\end{itemize}
+
+\subsection{Forced vs.\ Voluntary Termination}
+The game ends in exactly one of two ways:
+\begin{itemize}
+    \item \textbf{Voluntary Stop} — the agent explicitly issues a valid stop action and returns an AnswerDTO.
+    \item \textbf{Forced Stop} — BudgetManager detects budget exhaustion before the agent stops.
+\end{itemize}
+
+In the forced case, no final answer is collected — $\resultmetric$ is applied to an “empty answer,” ensuring the agent is \textbf{penalized for overshooting resources}.
+
+\bigskip
+Having described DTO boundaries, lifecycle events, and budget rules, we now finalize the architecture with the exact \textbf{Spec Contracts and Registry Mechanism} used to dynamically instantiate all components of the game.
+
+
+\section{Appendix D: Specification Contracts and Dynamic Registry}
+\label{appendix:specs_registry}
+
+All components of \game — Agents, SCMs, Missions, Metrics, Hooks, etc. — are instantiated \textbf{declaratively} via \textbf{Spec objects}.
+
+\subsection{Spec Contract}
+Each Spec is a typed, schema-validated configuration object containing:
+\begin{itemize}
+    \item \texttt{class\_} — a string import path (e.g. \texttt{"cg.agents.RandomAgent"})
+    \item \texttt{id} — an informational label
+    \item \texttt{params} — a JSON-serializable dictionary of arguments
+\end{itemize}
+
+The Spec itself does not execute — it is \textbf{purely descriptive}.  
+This enables perfect static reproducibility independent of runtime environment.
+
+\subsection{Registry: From Spec to Runtime Instance}
+Upon calling \texttt{build(spec)}, the Registry:
+\begin{enumerate}
+    \item dynamically imports the Python class specified by \texttt{class\_},
+    \item validates the \texttt{params} against the Contract interface,
+    \item returns a live instance implementing the exact abstract \textbf{Contract}
+          (e.g.\ \texttt{Agent}, \texttt{SCM}, \texttt{Metric}).
+\end{enumerate}
+
+The Registry thus enforces:
+\begin{itemize}
+    \item \textbf{decoupling} between configuration and execution logic,
+    \item \textbf{pluggability} — arbitrary user code may be injected if it fulfills the interface,
+    \item \textbf{complete reproducibility} — behavior fully determined by Spec + seed.
+\end{itemize}
+
+\subsection{Safe Extensibility for Benchmark Standardization}
+Crucially, multiple researchers can share \textbf{identical Spec files} but supply different agent implementations —  
+or contribute official Specs to converge community consensus on:
+\begin{itemize}
+    \item standard benchmark missions,
+    \item official SCMs,
+    \item agreed-upon budget regimes.
+\end{itemize}
+
+This Spec–Contract–Registry system is the foundational mechanism that enables \textbf{benchmark standardization without code centralization}.
+
+\bigskip
+In Appendix~E we finalize with **reproducibility guarantees**, handling of random seeds, and practical execution guidelines.
+
+
+\section{Appendix E: Reproducibility, Seeding, and Execution Guarantees}
+\label{appendix:reproducibility}
+
+A central design principle of \game is that \textbf{every experiment is perfectly reproducible}, independent of machine, hardware, OS, or execution order — as long as the same \textbf{Spec + seed} are used.
+
+\subsection{Global Reproducibility Contract}
+Every official \game run is defined uniquely by:
+\[
+    \bigl(\texttt{Spec},\ \texttt{seed} \bigr).
+\]
+This includes the SCM choice, the agent configuration, mission metrics, start/stop rules, and hook definitions.
+
+The seed determines all stochasticity in:
+\begin{itemize}
+    \item SCM sampling (e.g.\ noise terms, categorical resolution),
+    \item environment transitions,
+    \item agent random exploration (if applicable).
+\end{itemize}
+
+\subsection{Seed Handling Strategy}
+\begin{itemize}
+    \item The \textbf{global seed} is fixed at game construction time.
+    \item All internal RNGs — SCM sampling, interventional resampling, agent decisions — derive from this seed in a controlled hierarchy.
+    \item Executing the same Spec + seed on different machines must produce bitwise identical Transcripts and evaluation scores.
+\end{itemize}
+
+\subsection{Determinism Across Parallel Execution}
+Even if many game instances are executed in parallel via the Runner, each one receives its own isolated seed context.  
+\textbf{Parallel execution does not alter execution order or outcomes} — it only accelerates the batch.
+
+\subsection{Official Benchmark Integrity}
+This guarantees that:
+\begin{itemize}
+    \item any officially shared result can be \textbf{exactly reproduced} by any other party,
+    \item no difference in hardware or multiprocessing backend can compromise fairness,
+    \item benchmark releases in \game may be treated as \textbf{permanent reference artifacts},
+    \item contributions from multiple institutions can be compared \textbf{without trust assumptions}.
+\end{itemize}
+
+\bigskip
+This concludes the reproducibility and execution guarantees.  
+Appendix~F will provide deeper details on configuration, resource management, and advanced customization for expert users.
+
+\section{Appendix F: Advanced Configuration and Customization}
+\label{appendix:advanced}
+
+This appendix is intended for expert users who wish to push \game beyond its default configuration,
+including advanced SCM construction, agent-side internal memory control, and highly customized mission definitions.
+
+\subsection{Fine-Grained SCM Configuration}
+In all three SCM generation pathways (dataset-based, Bayesian-network–derived, or fully synthetic), 
+\game supports advanced constraints — for example:
+\begin{itemize}
+    \item \textbf{topological depth control} (min/max causal path length),
+    \item \textbf{heterogeneous variable typing} (numerical vs.\ categorical),
+    \item \textbf{nonlinear functional syntax grammars with user-imposed limitations} (polynomial degree, trigonometric allowance),
+    \item \textbf{custom intervention availability schedules} (e.g., only certain variables become controllable after $t{=}5$).
+\end{itemize}
+Such parameters may be declared directly inside the SCMSpec, making SCM family inheritance and fine-grained experimental variation trivial.
+
+\subsection{Agent Memory and Internal State}
+While the Transcript only exposes limited observable information, \emph{agents are free to internally maintain arbitrary memory}, including:
+\begin{itemize}
+    \item Bayesian belief states,
+    \item learned causal graph hypotheses,
+    \item experimental design policies that adapt as evidence accumulates.
+\end{itemize}
+The only restriction is that this memory must be private — it may not influence the game’s external machinery (i.e., cannot bypass DTO boundaries).
+
+\subsection{Mission-Specific Customization}
+Beyond the standard missions (graph discovery, CATE estimation, SCM reconstruction), researchers may define:
+\begin{itemize}
+    \item novel \resultmetric{} with arbitrary semantic meaning,
+    \item multi-objective or lexicographically ordered dominance rules,
+    \item domain-restricted forms of counterfactual queries (e.g., multi-variable nested do-operations).
+\end{itemize}
+These extensions naturally integrate into the game, as long as the \textbf{Mission Contract} is implemented.
+
+\subsection{Controlled Environment Modifications}
+\game supports controlled configuration of environment behavior, such as:
+\begin{itemize}
+    \item \textbf{forced burn-in samples} before agent control begins,
+    \item \textbf{dynamic action availability} (actions appear/disappear across time),
+    \item \textbf{curriculum-style progressive complexity increase} across batched Runner calls.
+\end{itemize}
+
+\bigskip
+All such customization is possible \emph{without modifying the \game core}, validating its modularity and extensibility for research-grade experimentation.
+Researchers are encouraged to register official open benchmark variants via shared Spec repositories.
+
+Appending further, Appendix~G will contain fully worked example configurations and code-level usage templates.
+
+
+\section{Appendix G: Complete Example Configurations (Specs)}
+\label{appendix:example_specs}
+
+To make the abstract architecture concrete, this appendix provides example \textbf{fully executable Spec configurations}
+for different mission types — ready to be loaded directly via the Registry.
+
+Each Spec is a \textbf{declarative JSON-like structure} (pseudocode below, compatible with Pydantic or \texttt{BaseModel}-style construction).  
+These examples illustrate minimal but valid configurations that obey all Contract rules.
+
+\subsection{Example 1 — DAG Discovery Mission on a Physical Law SCM}
+```json
+{
+  "game_id": "ideal_gas_dag_inference",
+  "scm": {
+    "class_": "cg.scms.PhysicalLawSCM",
+    "id": "ideal_gas",
+    "params": { "law": "ideal_gas" }
+  },
+  "mission": {
+    "class_": "cg.missions.DAGInferenceMission",
+    "id": "dag_recovery",
+    "params": { "metric": "SHD" }
+  },
+  "stopping": {
+    "class_": "cg.stopping.RoundLimit",
+    "id": "round_cap_20",
+    "params": { "max_rounds": 20 }
+  },
+  "agents": [
+    { "class_": "cg.agents.RandomAgent", "id": "random_1", "params": { "seed": 101 } }
+  ]
+}
+```
+
+\section{Appendix H: Transcript Inspection and Post-Processing}
+\label{appendix:transcript_postprocessing}
+
+This appendix demonstrates how to \textbf{programmatically inspect, analyze, and extend} the outputs of a completed \game run — in particular the Transcript, which acts as the immutable record of all agent–environment interaction.
+
+\subsection{Loading a Run}
+After executing:
+\begin{minted}[fontsize=\small]{python}
+runs = game.run()
+\end{minted}
+the variable \texttt{runs} contains one Transcript per agent.  
+Then, for example:
+\begin{minted}[fontsize=\small]{python}
+r = runs[0]  # a single agent run
+print(r.summary())
+\end{minted}
+
+Typical fields include:
+\begin{itemize}
+    \item number of rounds executed,
+    \item total samples collected,
+    \item stop reason (voluntary vs.\ budget-forced),
+    \item final result (AnswerDTO) if agent stopped voluntarily.
+\end{itemize}
+
+\subsection{Round-by-Round Inspection}
+You may inspect the Transcript step-by-step:
+\begin{minted}[fontsize=\small]{python}
+for entry in r.entries:
+    print("Intervention:", entry.decision)
+    print("Samples returned:", entry.samples)
+    print("Budget snapshot:", entry.budget_snapshot)
+\end{minted}
+
+This is fully deterministic — guaranteed identical across machines given the same Spec + seed.
+
+\subsection{Custom Metric Post-Processing}
+Beyond the official \resultmetric{}, analysts can run custom evaluations:
+\begin{minted}[fontsize=\small]{python}
+custom_score = custom_evaluator(r)
+``\end{minted}
+
+Since the Transcript is immutable, this never affects the official evaluation, preserving benchmark fairness.
+
+\subsection{Optional Export}
+Transcripts can be safely exported to JSON for third-party plotting or statistical analysis:
+\begin{minted}[fontsize=\small]{python}
+r.to_json("experiment_run_01.json")
+\end{minted}
+
+\bigskip
+Transcript inspection is foundational to auditability, fairness, and interpretability.  
+In Appendix~I, we present demonstrative end-to-end workflows combining \game with external scientific tools (e.g.\ PyTorch, symbolic solvers, or LLM copilots).
+
+\section{Appendix J: Practical Implementation Notes and Contributor Guidance}
+\label{appendix:implementation_notes}
+
+This appendix summarizes pragmatic advice for researchers and contributors wishing to extend or maintain \game effectively.
+
+\subsection{Recommended Project Structure}
+When extending with new agents, missions, or SCMs, we recommend preserving the standard modular folder structure:
+\begin{itemize}
+    \item \texttt{contracts/} — defines core interfaces
+    \item \texttt{specs/} — declarative configurations only
+    \item \texttt{dto/} — strictly serialized data objects
+    \item \texttt{runtime/} — environment + orchestration logic
+    \item \texttt{agents/} — agent implementations
+    \item \texttt{metrics/} — behavior / result metric classes
+    \item \texttt{scms/} — SCM generators or wrappers
+    \item \texttt{hooks/} — optional logging / analysis utilities
+\end{itemize}
+
+\subsection{Contribution Best Practices}
+To preserve reproducibility and safety:
+\begin{itemize}
+    \item Always implement against the appropriate \textbf{Contract} (e.g.\ \texttt{Agent}, \texttt{SCM}, \texttt{Mission}).
+    \item Never bypass DTOs to expose internal state — all agent inputs must be mediated through the runtime.
+    \item Validate parameters at Spec instantiation time wherever possible.
+    \item Include minimal runnable examples for every new component.
+\end{itemize}
+
+\subsection{Testing and Validation}
+We recommend:
+\begin{itemize}
+    \item unit tests for contract compliance,
+    \item snapshot tests to confirm reproducibility under fixed seeds,
+    \item short parallelized runs to ensure no concurrency-induced non-determinism,
+    \item optional integration tests for cross-module compatibility.
+\end{itemize}
+
+\subsection{Migration Stability}
+The API is designed to remain stable — even as missions or agents evolve.  
+When modifying core contracts, ensure all changes are backward-compatible with existing Specs.
+If breaking changes are unavoidable:
+\begin{itemize}
+    \item Introduce versioned contracts (e.g., \texttt{AgentV2}),
+    \item Provide automated migration tools or adapters.
+\end{itemize}
+
+\bigskip
+This marks the end of the appendices.  
+The \game framework is built to sustain long-term, community-driven evolution of causal inference evaluation — rigorously, transparently, and reproducibly.
+
+
+\section{Appendix K: Table of Symbols and Notation}
+\label{appendix:table_of_symbols}
+
+\begin{table}[h!]
+\centering
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{ll}
+\toprule
+\textbf{Symbol} & \textbf{Meaning} \\
+\midrule
+$\scm$ & Underlying Structural Causal Model \\
+$\varset$ & Set of all variables in the SCM \\
+$\latentx$ & Set of latent (non-observable) variables \\
+$\measuredx$ & Set of observed (but not controllable) variables \\
+$\controllablex$ & Set of controllable (intervenable) variables \\
+$\interventions$ & Space of all admissible intervention assignments \\
+$\intervention$ & A specific intervention $\intervention : \varname \mapsto \text{value} \cup \{\none\}$ \\
+$\experiments$ & Set of batched intervention requests $e : \interventions \to \mathbb{N}$ \\
+$\dataset$ & Dataset associated with a particular intervention, i.e.\ observations \\
+$\statespace$ & Set of all environment states \\
+$\actionspace$ & All admissible agent actions (interventions or stop decision) \\
+$\transition$ & Environment transition function $\transition : \statespace \times \actionspace \to \statespace$ \\
+$\initstate$ & Initial state at the beginning of the game \\
+$\runs$ & Set of all possible state--action trajectories \\
+$\terminalstate$ & Terminal absorbing state after voluntary or forced stop \\
+$\goal$ & Mission statement / objective specification \\
+$\outputspace$ & Space of answer objects an agent may return at stop \\
+$\resultmetric$ & External metric evaluating correctness of the returned answer \\
+$\behaviormetric$ & External metric evaluating cost-efficiency / experimental behavior \\
+$\DAG$ & Directed acyclic graph induced by the SCM \\
+$\edgesset$ & Set of directed causal edges in the DAG \\
+$\none$ & Special symbol indicating no intervention on a variable \\
+\bottomrule
+\end{tabular}
+\caption{Canonical notation used throughout the \game formalism.}
+\end{table}

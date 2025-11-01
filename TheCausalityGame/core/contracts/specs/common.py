@@ -2,9 +2,7 @@
 
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
-
-from TheCausalityGame.core.infrastructure.registry import get_class_path
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class CommonSpec(BaseModel):
@@ -19,8 +17,6 @@ class CommonSpec(BaseModel):
     ----------
     class_ : str
         Full import path of the implementation class (e.g., "module.submodule:ClassName").
-    spec_ : str | None
-        Optional reference to the spec class (used during deserialization).
     params : dict[str, Any]
         Optional dictionary of parameters to configure the component.
     """
@@ -32,18 +28,7 @@ class CommonSpec(BaseModel):
     )
 
     class_: str = Field(..., description="Class import path (module:Class).")
-    spec_: str | None = Field(
+    params: dict[str, Any] | None = Field(
         default=None,
-        description="Optional spec class import path. Auto-populated if not provided.",
-    )
-    params: dict[str, Any] = Field(
-        default_factory=dict,
         description="Optional configuration parameters for the component.",
     )
-
-    @model_validator(mode="after")
-    def _set_spec_default(self) -> "CommonSpec":
-        """Automatically populate `spec_` with the current spec class path if not provided."""
-        if self.spec_ is None:
-            object.__setattr__(self, "spec_", get_class_path(self.__class__))
-        return self

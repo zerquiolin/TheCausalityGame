@@ -4,7 +4,6 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from TheCausalityGame.core.contracts.specs.budget import BudgetSpec
 from TheCausalityGame.core.contracts.specs.hook import HookSpec
-from TheCausalityGame.core.contracts.specs.plot import PlotSpec
 from TheCausalityGame.core.lib.enum.runplan import (
     RunPlanExecution,
     RunPlanParallelBackEnd,
@@ -33,8 +32,6 @@ class RunPlanSpec(BaseModel):
         Resource constraints per agent run (e.g., time, memory, samples).
     hook_plan : list[HookSpec]
         Optional hooks to trigger on lifecycle events.
-    plot_plan : list[PlotSpec]
-        Optional plot definitions for runtime visualization.
     """
 
     model_config = ConfigDict(extra="forbid", frozen=True)
@@ -59,8 +56,4 @@ class RunPlanSpec(BaseModel):
     hook_plan: list[HookSpec] = Field(
         default_factory=list,
         description="Hook subscriptions for lifecycle events.",
-    )
-    plot_plan: list[PlotSpec] = Field(
-        default_factory=list,
-        description="Plot specifications for visualizations.",
     )

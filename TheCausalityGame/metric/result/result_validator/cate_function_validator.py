@@ -60,7 +60,6 @@ class ConditionalAverageTreatmentEffectFunctionValidator(ResultValidator):
     def to_spec(self) -> ResultValidatorSpec:
         return ResultValidatorSpec(
             class_=get_class_path(self.__class__),
-            params={},
         )
 
     @classmethod
@@ -68,4 +67,4 @@ class ConditionalAverageTreatmentEffectFunctionValidator(ResultValidator):
     def from_spec(
         cls, spec: ResultValidatorSpec
     ) -> "ConditionalAverageTreatmentEffectFunctionValidator":
-        return cls(**spec.params)
+        return cls()

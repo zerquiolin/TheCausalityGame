@@ -1,0 +1,55 @@
+\section{Mission Examples and Use Cases}
+\label{sec:missions_examples}
+We now illustrate how \game accommodates fundamentally different causal inference tasks — all under the same formal interface defined by Sections~\ref{sec:formaldefinition} and \ref{sec:specs}.  
+Each task is encoded as a \textbf{MissionSpec}, which declares its objective and assigns appropriate \resultmetric and \behaviormetric. The missions below are representative of the benchmark suite shipped with \package and have been stress-tested across dozens of SCM seeds and budgets.
+
+\subsection{Mission Class 1: Causal Graph (DAG) Discovery}
+The agent must infer the directed causal structure underlying the SCM.  
+The stopping action returns a predicted DAG $\hat{\DAG}$, which is compared against the ground truth.  
+Typical result metrics include:
+\begin{itemize}
+    \item \textbf{Structural Hamming Distance (SHD)}: number of edge additions/removals/reversals.
+    \item \textbf{Edge-wise binary accuracy, F1, or AUROC} (directed or skeleton).
+\end{itemize}
+The behavioral metric may penalize number of rounds, interventions, or total sample count.
+
+\paragraph{Objective.} Minimize error in recovered structure at minimal interventional cost.
+
+\paragraph{Narrative use case.}
+This mission models laboratory science where a researcher probes unknown mechanisms, such as gene regulatory networks or microgrid dependencies. Existing graph discovery benchmarks often assume observational data only \citep{chengcausaltime,chevalley2023causalbench}. \game, by contrast, measures whether an agent can design targeted interventions—conditioning on controllable variables, repeating salient experiments, and stopping once the graph estimate stabilizes. Pareto-efficient behavior often involves discovering Markov blankets early, avoiding redundant perturbations, and reasoning about edge orientation using minimal costly interventions.
+
+\subsection{Mission Class 2: Treatment Effect Estimation (CATE / ATE / ITE)}
+The agent must estimate counterfactual treatment effects such as
+\[
+    \mathbb{E}[Y \mid \mathrm{do}(T\!=\!1), X = x] - \mathbb{E}[Y \mid \mathrm{do}(T\!=\!0), X = x].
+\]
+Metric options include:
+\begin{itemize}
+    \item \textbf{MSE, RMSE, PEHE},
+    \item \textbf{R\textsuperscript{2}}, 
+    \item possible binary accuracy if reduced to uplift sign estimation.
+\end{itemize}
+If the agent ends early (few samples) yet produces a correct estimate, it is rewarded accordingly by $\behaviormetric$.
+
+\paragraph{Objective.} Maximize treatment effect accuracy while minimizing interventional burden.
+
+\paragraph{Narrative use case.}
+This mission mirrors adaptive clinical trials or policy experiments where counterfactual quality matters as much as ethical resource use \citep{Prosperi2020CausalIAA,lalonde1986evaluating}. Agents must weigh exploration against exploitation: reusing observational data, designing targeted perturbations for sub-populations, and incorporating variance-aware stopping rules. The benchmark exposes whether an algorithm over-fits rare strata, ignores covariate shift, or fails to acknowledge budget exhaustion, phenomena that static IHDP-style evaluations cannot surface \citep{RealCause2021,curth2021really}.
+
+\subsection{Mission Class 3: Full SCM Reconstruction}
+The agent must learn either (i) the full structural equations $f_i$ and noise distributions $\eta_i$, or (ii) sufficiently accurate approximations thereof for predictive equivalence.
+
+Possible result metrics:
+\begin{itemize}
+    \item \textbf{Functional similarity} via supervised regression metrics on held-out SCM samples,
+    \item \textbf{KL divergence} between estimated vs.\ true noise,
+    \item or their weighted convex combination.
+\end{itemize}
+
+\paragraph{Objective.} Achieve $f_i^\text{pred} \approx f_i^\text{true}$ with minimal experimentation cost.
+
+\paragraph{Narrative use case.}
+This mission captures scientific discovery scenarios such as rediscovering physical laws or articulating simulation surrogates \citep{olson2017pmlb,la2021contemporary,romano2021pmlb}. Agents must orchestrate interventions that excite different functional regimes, combine symbolic reasoning with regression, and quantify epistemic uncertainty before declaring success. Because behavior penalties can be tuned to reflect laboratory cost (e.g.\ equipment wear, experiment duration), \game surfaces policies that balance curiosity with pragmatism—precisely the dual optimization highlighted by recent symbolic regression benchmarks \citep{Shojaee2023TransformerbasedPFA,Valipour2021SymbolicGPTAGA}.
+
+\medskip
+These examples illustrate that \game is not tied to any specific causal paradigm — it \textbf{generalizes across graph recovery, counterfactual estimation, structural discovery, and future tasks}. As Section~\ref{sec:results} demonstrates, the same framework can rank agents by Pareto efficiency, reveal qualitative behavior via transcripts, and provide actionable diagnostics for developing next-generation causal reasoning systems.

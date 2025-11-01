@@ -1,0 +1,54 @@
+\section{Results}
+\label{sec:results}
+This section presents representative experimental results obtained using the \game framework — demonstrating its ability to evaluate agents under \textbf{multiple causal inference missions}, \textbf{different SCM families}, and \textbf{explicit interventional cost constraints}.  
+Rather than committing to a single dataset or metric, we highlight the diversity of behaviours surfaced by the benchmark. Each experiment was executed via the protocol in Section~\ref{sec:experimental_protocol}, with full Specs and transcripts archived for reproducibility.
+
+\subsection{Evaluation Setting}
+Unless otherwise stated, each experiment consists of:
+\begin{itemize}
+    \item one SCM instance drawn from a chosen \textbf{SCM generation source},
+    \item two or more \textbf{agents} — e.g., RandomAgent, ExhaustiveAgent, Active-Learning Agent,
+    \item a fixed \textbf{mission type} (e.g., DAG recovery or CATE estimation),
+    \item a hard or soft \textbf{interventional budget},
+    \item metrics defined via $\resultmetric$ (accuracy) and $\behaviormetric$ (cost).
+\end{itemize}
+Agents were allowed to adaptively terminate runs, leading to Pareto-like frontiers that compare accuracy against experimentation effort \citep{BayesianCausalDiscovery2023}.
+
+\subsection{Example 1 — DAG Inference on Physical SCM}
+On a physical law–based SCM (e.g., $P = \nicefrac{nRT}{V}$), the goal is to recover the \emph{directed causal graph}.  
+To succeed, an agent must decide which controllable variables (temperature, volume, pressure) to manipulate, how many repeated measurements to collect under each intervention, and when to conclude.  
+Figure~\ref{fig:results_dag} illustrates:
+\begin{itemize}
+    \item final \textbf{structural accuracy} (SHD) vs.\ \textbf{total experimental cost},
+    \item round-by-round \textbf{posterior belief updates} for the leading agent,
+    \item \textbf{Pareto trade-offs} among three agents with distinct exploration styles.
+\end{itemize}
+Active-learning agents converge quickly by prioritizing interventions that disambiguate edge orientation, whereas exhaustive agents achieve slightly higher SHD but triple the budget consumption. Baselines that ignore intervention planning often exhaust their budget before identifying the full Markov blanket, underscoring why interactive scoring is indispensable compared with static symbolic regression tests \citep{la2021contemporary,romano2021pmlb}.
+
+\subsection{Example 2 — CATE Estimation under Limited Budget}
+In a semi-synthetic IHDP-derived SCM, the mission is to estimate CATE for a vulnerable subpopulation.  
+Agents receive observational pre-treatment data and may design a limited number of targeted interventions (e.g.\ synthetic treatments).  
+Figure~\ref{fig:results_cate} shows that:
+\begin{itemize}
+    \item budget-aware strategies achieve lower PEHE than naive baselines at comparable or lower intervention cost,
+    \item early stopping is often optimal: agents that halt once credible intervals stabilise avoid wasted budget,
+    \item purely observational estimators underperform because they cannot probe covariate strata with sparse historical data.
+\end{itemize}
+These findings echo concerns from policy evaluation, where adaptive experimentation is critical to avoid over-treating populations while still guaranteeing effect identifiability \citep{Prosperi2020CausalIAA,Athey2016TheSOA}.
+
+\subsection{Example 3 — SCM Reconstruction with Heterogeneous Noise}
+To test structural reconstruction, we deployed missions on SCMs derived from Bayesian networks with mixed discrete and continuous variables. Agents were tasked with learning structural equations and noise distributions accurate enough to predict held-out interventional data.  
+The best-performing hybrid agent combined symbolic search with density estimation, achieving low KL divergence while respecting strict sample caps.  
+Transcripts reveal that successful strategies allocate budget to regimes where noise is heteroskedastic, mirroring best practices in active design of experiments \citep{Seitzer2021CausalIDA,Mehrjou2020CausalCRA}. Agents lacking adaptive design often missed non-linearities present in the BN-derived generators and incurred high behaviour penalties.
+
+\subsection{General Observations}
+Across all experiments we observed consistent patterns:
+\begin{itemize}
+    \item \textbf{Interactive causality is fundamentally cost-sensitive}: the ranking of agents changes dramatically once behavior metrics are considered alongside accuracy.
+    \item \textbf{Blindly maximizing data collection is rarely Pareto-optimal}: exhaustive agents dominate only when budget limits are relaxed beyond realistic settings.
+    \item \textbf{Stopping intelligently matters}: agents that monitor uncertainty and terminate once marginal value diminishes consistently outperform in the composite score.
+    \item \textbf{Transcripts surface reasoning quality}: replay analysis helps diagnose whether an agent relied on causal heuristics, random exploration, or principled design.
+\end{itemize}
+
+\medskip
+These insights highlight the necessity of interactive causal benchmarking — something fundamentally \emph{not measured} in traditional static-dataset suites. The next section discusses the broader implications, limitations, and future research directions sparked by these empirical observations.

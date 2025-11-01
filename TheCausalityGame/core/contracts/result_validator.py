@@ -15,6 +15,9 @@ class ResultValidator(Serializable):
     """
 
     _kind: str
+    _spec: str = (
+        "TheCausalityGame.core.contracts.specs.result_validator:ResultValidatorSpec"
+    )
 
     @property
     def kind(self) -> str:

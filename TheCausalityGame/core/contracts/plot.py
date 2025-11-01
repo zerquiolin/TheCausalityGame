@@ -29,6 +29,7 @@ class Plot(Serializable):
 
     id: str
     kind: PlotKind
+    _spec: str = "TheCausalityGame.core.contracts.specs.plot:PlotSpec"
 
     @abstractmethod
     def generate(self, arg: Any) -> matplotlib.figure.Figure:  # noqa: ANN401

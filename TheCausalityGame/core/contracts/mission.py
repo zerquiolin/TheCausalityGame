@@ -41,6 +41,7 @@ class Mission(Serializable):
     id: str
     name: str
     description: str
+    _spec: str = "TheCausalityGame.core.contracts.specs.mission:MissionSpec"
 
     is_mounted: bool = False
 

@@ -44,7 +44,6 @@ class CoreDAG(DAG):
 
         return DAGSpec(
             class_=get_class_path(self.__class__),
-            nodes=[x["id"] for x in dag["nodes"]],  # type: ignore
             edges=[(e["source"], e["target"]) for e in dag["edges"]],  # type: ignore
         )
 
@@ -55,9 +54,15 @@ class CoreDAG(DAG):
             "directed": True,
             "multigraph": False,
             "graph": {},
-            "nodes": [{"id": x} for x in spec.nodes],
             "edges": [{"source": e[0], "target": e[1]} for e in spec.edges],
         }
+
+        if spec.nodes is None:
+            dag_description_for_nx["nodes"] = [
+                {"id": n} for edge in spec.edges for n in edge
+            ]
+        else:
+            dag_description_for_nx["nodes"] = [{"id": n} for n in spec.nodes]
 
         dag_graph = json_graph.node_link_graph(dag_description_for_nx, edges="edges")  # type: ignore
         return cls(dag_graph)  # type: ignore

@@ -13,6 +13,8 @@ class NoiseDistribution(Serializable):
     typically used in structural causal models.
     """
 
+    _spec: str = "TheCausalityGame.core.contracts.specs.noise:NoiseDistributionSpec"
+
     def generate(self, size: int, random_state: int | None = 911) -> np.ndarray:
         """
         Generate a noise value using the given size and random seed.

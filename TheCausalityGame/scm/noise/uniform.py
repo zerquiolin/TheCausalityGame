@@ -65,4 +65,6 @@ class UniformNoiseDistribution(NoiseDistribution):
     @classmethod
     @override
     def from_spec(cls, spec: NoiseDistributionSpec) -> UniformNoiseDistribution:
-        return cls(**spec.params)
+        if spec.params:
+            return cls(**spec.params)
+        return cls()

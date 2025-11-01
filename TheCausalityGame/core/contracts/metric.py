@@ -30,6 +30,7 @@ class Metric(Serializable):
     name: str
     description: str
     is_mounted = False
+    _spec: str = "TheCausalityGame.core.contracts.specs.metric:MetricSpec"
 
     @abstractmethod
     def mount(self, scm: SCM) -> None:

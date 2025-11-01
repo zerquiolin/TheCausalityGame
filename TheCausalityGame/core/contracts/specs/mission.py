@@ -19,8 +19,6 @@ class MissionSpec(CommonSpec):
     ----------
     class_ : str
         Fully qualified import path (aliased from 'class' in JSON).
-    spec_ : str | None
-        Optional override for the spec class path.
     params : dict
         Optional mission-specific configuration payload.
     id : str

@@ -15,8 +15,6 @@ class DAGSpec(CommonSpec):
     ----------
     class_ : str
         Fully qualified import path in the format 'module:Class'. (Aliased from 'class' in JSON.)
-    spec_ : str | None
-        Optional override for the spec class path. Defaults to this class path if not provided.
     params : dict
         Optional parameters passed during DAG instantiation.
 
@@ -26,8 +24,8 @@ class DAGSpec(CommonSpec):
         List of directed edges represented as (source, target) tuples.
     """
 
-    nodes: list[str] = Field(
-        default_factory=list,
+    nodes: list[str] | None = Field(
+        default=None,
         description="List of node identifiers in the DAG.",
     )
     edges: list[tuple[str, str]] = Field(

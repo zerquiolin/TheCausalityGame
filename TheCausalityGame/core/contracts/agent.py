@@ -60,6 +60,7 @@ class Agent(Serializable):
     id: str
     _context: AgentContext | None = None
     _logger: Logger | None = None
+    _spec: str = "TheCausalityGame.core.contracts.specs.agent:AgentSpec"
 
     # ---------------- Context Management ---------------- #
 

@@ -41,3 +41,6 @@ class HookEvent(str, Enum):
 
     AFTER_INFORM = "after_inform"
     """Triggered after the agent is informed of feedback."""
+
+    BENCHMARK_END = "benchmark_end"
+    """Triggered at the end of the benchmark run (all agents completed)."""

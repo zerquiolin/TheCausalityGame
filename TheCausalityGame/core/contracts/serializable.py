@@ -17,6 +17,8 @@ class Serializable(ABC):
         {"class": "<module>:<ClassName>", "config": {...}}
     """
 
+    _spec: str
+
     @abstractmethod
     def to_spec(self) -> Any:  # noqa :ANN401
         """Return a canonical spec for this instance."""

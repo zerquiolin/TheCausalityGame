@@ -103,14 +103,17 @@ class BayesianNetworkSCMNode(CategoricalSCMNode):
         return dists
 
     def _to_dict(self) -> dict[str, Any]:
-        return {
+        dict_repr = {
             "class": self.__class__.__name__,
             "name": self.name,
-            "parents": self.parents,
             "domain": self.domain,
-            "accessibility": self.accessibility,
             "probability_distribution": self.probability_distribution,
         }
+
+        if self.accessibility != NodeAccessibility.CONTROLLABLE:
+            dict_repr["accessibility"] = self.accessibility
+
+        return dict_repr
 
     @classmethod
     def from_spec(cls, spec: SCMNodeSpec) -> BayesianNetworkSCMNode:
@@ -128,7 +131,7 @@ class BayesianNetworkSCMNode(CategoricalSCMNode):
                     else [v for v in spec.probability_distribution]
                 )
             ),
-            accessibility=spec.accessibility,
+            accessibility=spec.accessibility or NodeAccessibility.CONTROLLABLE,
             random_state=(
                 random_state_from_json(spec.random_state)
                 if spec.random_state

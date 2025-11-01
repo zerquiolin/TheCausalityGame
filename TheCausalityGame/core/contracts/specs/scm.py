@@ -17,8 +17,6 @@ class SCMSpec(CommonSpec):
     ----------
     class_ : str
         Import path in the format 'module:Class' (aliased from 'class' in JSON).
-    spec_ : str or None
-        Path to the specification class. Automatically filled if not provided.
     params : dict
         Optional additional parameters for instantiating the SCM.
 

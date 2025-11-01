@@ -35,9 +35,11 @@ class ExhaustiveAgent(Agent):
 
     def __init__(self, id: str, num_obs: int = 1, num_inter: int = 1) -> None:
         super().__init__()
+        rng = np.random.default_rng()
         self.id = id
         self._num_obs = num_obs
         self._num_inter = num_inter
+        self._counter = rng.integers(7000, 12500)
 
     @override
     def set_context(self, ctx: AgentContext) -> None:
@@ -54,6 +56,8 @@ class ExhaustiveAgent(Agent):
     def act(
         self, round_info: RoundInfo, available_actions: AvailableActions
     ) -> Decision:
+        if round_info.round >= self._counter:
+            return Decision.answer()
         decision = Decision.experiment()
 
         for var in available_actions.experiments:
@@ -88,11 +92,14 @@ class ExhaustiveAgent(Agent):
     @classmethod
     @override
     def from_spec(cls, spec: AgentSpec) -> "ExhaustiveAgent":
-        return cls(
-            id=spec.id,
-            num_obs=spec.params["num_obs"],
-            num_inter=spec.params["num_inter"],
-        )
+        if spec.params:
+            return cls(
+                id=spec.id,
+                num_obs=spec.params["num_obs"],
+                num_inter=spec.params["num_inter"],
+            )
+
+        return cls(id=spec.id)
 
 
 class CATEStrategy(Strategy):
@@ -173,8 +180,8 @@ class CATEStrategy(Strategy):
                     warm_start=True,
                     learning_rate="optimal",
                     random_state=911,
-                    max_iter=1000,
-                    tol=1e-3,
+                    max_iter=100,
+                    tol=1e-5,
                     penalty="l2",
                     alpha=0.01,
                 )

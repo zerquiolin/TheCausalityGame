@@ -150,15 +150,12 @@ def build_from_spec(spec: BaseModel | dict[str, Any] | str) -> Any:  # noqa: ANN
         raise InvalidSpecFormatError()
 
     class_path = spec.get("class_") or spec.get("class")
-    spec_path = spec.get("spec_") or spec.get("spec")
 
     if not class_path:
         raise MissingAttributeError("class_")
-    if not spec_path:
-        raise MissingAttributeError("spec_")
 
     cls = load_class(class_path)
-    spec_cls = load_class(spec_path)
+    spec_cls = load_class(cls._spec)
 
     from_spec = getattr(cls, "from_spec", None)
     if not callable(from_spec):
