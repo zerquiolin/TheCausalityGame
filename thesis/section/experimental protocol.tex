@@ -1,67 +1,62 @@
 \section{Experimental Protocol}
+\label{sec:experimental_protocol}
 With the formal game and its system architecture fully defined, we now turn to how experiments are \textbf{systematically designed, executed, and evaluated} using \game.  
-This section establishes a \textbf{standardized scientific workflow} that enables fair, reproducible benchmarking of causal agents across missions, SCMs, and budget constraints.
+The protocol below is informed by best practices from causal benchmarking initiatives \citep{CauseBox2021,CausalBench2024,RealCause2021} and provides a reproducible workflow that any lab can adopt without reverse-engineering hidden scripts.
 
-\subsection{Defining a Problem Instance}
-Every experiment begins by instantiating a \textbf{problem instance} via Specs (see Sec.~\ref{sec:specs}).  
-This consists of choosing:
-
+\subsection{Step 1: Declare the Problem Instance}
+Every study begins by instantiating a \textbf{problem instance} via Specs (Sec.~\ref{sec:specs}).  
+Researchers document:
 \begin{itemize}
-    \item a \textbf{mission specification} (e.g.\ DAG discovery, CATE estimation, SCM reconstruction),
-    \item a \textbf{ground-truth SCM} (from dataset, Bayesian network, or synthetic generator),
-    \item \textbf{initial conditions} (\initstate),
-    \item \textbf{stopping conditions} ($\phi$ — typically a resource budget),
-    \item one or more \textbf{evaluation metrics} $(\resultmetric, \behaviormetric)$.
+    \item the \textbf{mission specification} (e.g.\ DAG discovery, CATE estimation, SCM reconstruction);
+    \item the \textbf{ground-truth SCM} (dataset-derived, Bayesian-network-based, or physics-inspired);
+    \item \textbf{initial conditions} $\initstate$ and background observations shared with the agent;
+    \item \textbf{stopping conditions} $\phi$ capturing sample, round, or time budgets;
+    \item one or more \textbf{evaluation metrics} $(\resultmetric, \behaviormetric)$;
+    \item optional \textbf{hooks} for logging or auditing.
 \end{itemize}
+Because Specs are plain text artefacts, the declaration can be pre-registered alongside a paper submission or shared as supplementary material—mirroring the transparency expected in clinical or social science trials \citep{Prosperi2020CausalIAA,Athey2016TheSOA}.
 
-This problem instance is fully declarative — once written, it may be executed indefinitely by any number of agents under \emph{identical conditions}.
-
-\subsection{Selecting and Configuring Agents}
-Agents are likewise instantiated via Specs under the \texttt{Agent} contract.  
-Each agent may have its own:
+\subsection{Step 2: Select and Configure Agents}
+Agents are instantiated via Specs under the \texttt{Agent} contract.  
+Each agent configuration explicitly captures:
 \begin{itemize}
-    \item seed,
-    \item exploration strategy,
-    \item allowable internal memory or policy class,
-    \item explicit hyperparameters (e.g.\ max experiments per round).
+    \item random seeds and exploration strategies,
+    \item algorithmic hyperparameters (e.g.\ maximum experiments per round, posterior update cadence),
+    \item optional prior knowledge modules or warm-start data.
 \end{itemize}
+No agent may modify the problem instance or SCM at runtime; all causal interaction is mediated through DTOs. This guarantees that a comparison between, say, a Bayesian design agent and a reinforcement-learning agent is fair, because both operate under identical environmental laws.
 
-\textbf{No agent may modify the problem instance or SCM at runtime}.  
-All causal interaction is exclusively mediated through the Environment and DTO system.
-
-\subsection{Running the Game}
-The experiment proceeds by calling:
+\subsection{Step 3: Execute the Game}
+Running the experiment is as simple as invoking
 \[
-    \texttt{Game.run()} \;\;\longrightarrow\;\; \texttt{Transcript}.
+    \texttt{Game.run()} \;\;\longrightarrow\;\; \texttt{Transcript},
 \]
-This produces a \textbf{sealed interaction log} with:
+yet the side effects are substantial. The runtime produces a \textbf{sealed interaction log} containing:
 \begin{itemize}
-    \item every action taken,
-    \item every sample observed,
-    \item the budget consumption trajectory,
-    \item and the final stop decision (or forced termination).
+    \item every action issued by the agent,
+    \item the associated interventional samples,
+    \item budget consumption trajectories and triggered penalties,
+    \item the final stop decision or forced termination event.
 \end{itemize}
+When multiple agents, SCMs, or random seeds must be evaluated, the \texttt{Runner} (Sec.~\ref{sec:runner}) orchestrates the grid and ensures isolation between runs.
 
-When multiple agents or SCM seeds are evaluated, this step is typically orchestrated via the \texttt{Runner} (see Sec.~\ref{sec:runner}).
-
-\subsection{Evaluating Performance}
-Evaluation is \textbf{post-hoc} — the agent is never influenced during runtime.  
-From the Transcript, the system computes
+\subsection{Step 4: Evaluate and Analyse}
+Evaluation is strictly \textbf{post-hoc}.  
+From the transcript and ground-truth SCM, the system computes
 \[
     \big( \resultmetric(y),\ \behaviormetric(r) \big),
 \]
-which may be left separate (Pareto analysis) or aggregated by user choice.
+which researchers may keep as a Pareto pair or aggregate using domain-specific preferences (lexicographic ordering, convex combinations, dominance filters). Annotated transcripts can be replayed to inspect intervention sequences, allowing diagnostic comparisons similar to those advocated in \cite{CausalDiscoveryFramework2024}.
 
-\subsection{Optional Post-Processing}
-Once evaluation is complete, the researcher may optionally:
+\subsection{Step 5: Disseminate Artefacts}
+The protocol encourages publishing the full experiment bundle:
 \begin{itemize}
-    \item generate plots (e.g.\ learning curve of accuracy vs.\ cost),
-    \item compare multiple agents via Pareto frontiers,
-    \item export transcripts for third-party analysis,
-    \item publish reproducible Spec + Transcript bundles as benchmark assets.
+    \item Spec files for problem instances, agents, missions, and metrics;
+    \item transcripts and summary statistics (accuracy vs.\ cost curves, Pareto frontiers);
+    \item optional plots and dashboards generated post-hoc;
+    \item verification scripts to re-run the complete study.
 \end{itemize}
+These artefacts enable third parties to reproduce results, stress-test agents under new budgets, or extend missions without re-implementing infrastructure—directly addressing reproducibility concerns raised by prior benchmark audits \citep{CIPCaDBench2022,EvaluationFramework2022}.
 
 \medskip
-This protocol transforms \game from a formal object into a \textbf{repeatable scientific experimentation process}, enabling principled comparison of domain-agnostic causal agents under strict experimental control.
-
-In the next section, we instantiate this protocol with concrete \textbf{use cases and mission examples}.
+Following this protocol transforms \game from a formal abstraction into a \textbf{repeatable scientific experimentation process}. In the next section we instantiate the workflow with concrete \textbf{mission examples} and practical lessons learned from running them at scale.

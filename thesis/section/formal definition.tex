@@ -1,8 +1,8 @@
 \section{The Causality Game — Formal Framework}
 \label{sec:formaldefinition}
-\game is not a metaphor but a formal interactive system for causal discovery and reasoning grounded in structural causal models (SCMs). 
-It represents a controlled, turn-based environment in which an agent performs interventions, observes results, and progressively uncovers causal relationships among a finite set of variables.
-The following formulation describes the game as a mathematical object, providing the foundation upon which its software implementation is built.
+\game is not a metaphor but a rigorously specified interactive system for causal discovery and reasoning grounded in structural causal models (SCMs) \citep{pearl2009causality}. 
+It represents a controlled, turn-based environment in which an agent performs interventions, observes results, and progressively uncovers causal relationships among a finite set of variables. 
+This section elevates that intuition into a mathematical object, so that every experiment discussed later inherits unambiguous semantics. We refer to Appendix~\ref{appendix:math_foundations} for a complete derivation of the run semantics and Pareto-based evaluation.
 
 \subsection{Definition and Core Components}
 A single game instance is defined by the tuple
@@ -24,7 +24,8 @@ where:
     \item $\behaviormetric : \runs \to \mathbb{R}$ measures the efficiency of the agent’s experimentation behavior.
 \end{itemize}
 
-The agent does not directly observe $\scm$ or any $\latentx$; instead, it interacts through interventions on $\controllablex$ and receives measured outcomes from $\measuredx \sqcup \controllablex$ .
+The agent never observes $\scm$ or any $\latentx$; instead, it interacts solely through interventions on $\controllablex$ and receives measured outcomes from $\measuredx \sqcup \controllablex$. 
+This information asymmetry mirrors scientific experimentation: one can manipulate controllable instruments and measure select sensors, yet the generative law remains latent.
 
 \subsection{Extended Structural Causal Model}
 Formally, the SCM as the foundation of the game, is defined as
@@ -38,9 +39,10 @@ In the context of \game, each variable also has a declared \emph{access mode}:
 \]
 This configuration explicitly controls which nodes the agent may observe or intervene upon.  
 The SCM thus defines both the ground-truth causal structure and the constraints under which agents can interact with it, reflecting real-world experimental limitations.
+Appendix~\ref{appendix:specs_registry} elaborates how these access modes are encoded declaratively through Specs.
 
 \subsection{Environment and Experiment Execution}
-The environment is a deterministic causal oracle induced by the extended SCM. It does not maintain any mutable internal ``state.’’ Instead, it responds to each agent action by \emph{functionally generating new data} and returning it to the agent. All memory of past interactions is externalized into the \textbf{Transcript}, which is maintained by the \game orchestrator, not by the environment itself.
+The environment is a deterministic causal oracle induced by the extended SCM. It does not maintain any mutable internal ``state’’ beyond the initialization seed. Instead, it responds to each agent action by \emph{functionally generating new data} and returning it to the agent. All memory of past interactions is externalized into the \textbf{Transcript}, which is maintained by the \game orchestrator, not by the environment itself. This separation simplifies theoretical analysis: the environment can be viewed as a pure structural simulator, while the transcript captures the Markovian history required for evaluation.
 
 \paragraph{Interventions.}
 An intervention is a partial assignment over controllable variables:
@@ -64,11 +66,12 @@ The agent never receives a raw environment state. Instead, the interaction in ea
     \item \textbf{inform:} The agent is given the newly generated samples from its previous experiment, restricted to $\measuredx \cup \controllablex$, together with a structured feedback object (e.g.\ partial scoring about how well its current hypothesis aligns with the mission).
     \item \textbf{act:} The agent is then given two structured DTOs:
     \begin{itemize}
-        \item a \texttt{RoundInformation} object summarizing the current budget status, mission description, etc.,
+        \item a \texttt{RoundInformation} object summarizing the current budget status, mission description, and other contractual metadata,
         \item an \texttt{AvailableActions} object enumerating all legal next experiment configurations plus the special terminal option \emph{stop with answer}.
     \end{itemize}
     It must then choose either another experiment $e \in \experiments$ or stop and submit a final answer.
 \end{enumerate}
+The inform–act cycle is intentionally reminiscent of reinforcement-learning turn taking, yet it differs fundamentally: the environment is not a reward-emitting MDP but a causal oracle that only yields samples consistent with $\scm$ \citep{von2019optimal,Seitzer2021CausalIDA,Mehrjou2020CausalCRA}.
 
 
 \subsection{Environment Determinism and Reproducibility}
@@ -88,9 +91,7 @@ Crucially, the agent is always free to stop \emph{voluntarily} at any round by i
 This design mirrors real experimental science:  
 if a researcher exhausts funding before returning a final conclusion, there is \emph{no result to evaluate}.  
 Thus, \game formalizes causal inference not only as a problem of correctness — but of disciplined experimental planning under pressure.
-
-
-This reflects real-world constraints: experimenters may choose to conclude early, but if they exceed allowable resources, the process is terminated before any formal conclusion can be submitted.
+In practical deployments—clinical trials, field experiments, or robotics platforms—such budget adherence is often a legal or safety obligation \citep{Prosperi2020CausalIAA,chengcausaltime}. The game codifies that constraint without privileging any algorithm.
 
 \subsection{Capabilities and Limits}
 Within each run, the agent:
@@ -119,10 +120,10 @@ Its goal is to produce a final answer $y \in \outputspace$, by issuing a \emph{s
 Formally, a possible multi-objective evaluation to maximize and rank agents:
 \[
     \text{score}(r) \;=\; 
-    \big( \resultmetric(y),\;\; -\behaviormetric(r) \big),
-\quad \text{Pareto-optimality is well-defined.}
+    \big( \resultmetric(y),\; -\behaviormetric(r) \big),
+\quad \text{with Pareto-optimality well-defined.}
 \]
-However. No scalarization is imposed at the framework level — users may rank agents by convex combination, lexicographic ordering, or full Pareto frontier analysis.
+However, no scalarization is imposed at the framework level — users may rank agents by convex combination, lexicographic ordering, or full Pareto frontier analysis. This preserves transparency about whether an agent succeeds through frugality, accuracy, or both.
 
 \subsection{Narrative Summary}
 \game thus formalizes the process of causal discovery as an interactive and bounded experimentation problem.  

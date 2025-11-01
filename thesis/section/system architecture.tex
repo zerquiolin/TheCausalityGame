@@ -2,6 +2,7 @@
 
 The formal game defined in the previous section \ref{sec:formaldefinition} is realized in \package as a principled causal experimentation protocol — not as a loose software project.  
 Its architecture is explicitly designed to preserve (i) the causal access restrictions, (ii) perfect reproducibility, and (iii) agent neutrality, while remaining fully modular and extensible.
+These goals emerged from repeated attempts to deploy causal benchmarks whose behavior depended on hidden configuration or bespoke scripts \citep{RealCause2021,EvaluationFramework2022}. \package codifies the full stack—from SCM construction to metric evaluation—so that any research group can rerun the same experiment without oral tradition or manual tuning.
 
 \subsection{Problem Instance as the Root Abstraction}
 In implementation, a \emph{problem instance} is the root-level object that binds all components of a game together.  
@@ -25,6 +26,7 @@ This ensures:
 
 \noindent
 Every execution of \game begins by \emph{loading a problem instance from Spec}, then passing it to the \textbf{Runtime}, which produces a \textbf{Transcript} — the immutable record of the agent’s interaction with the SCM.
+Because Specs are plain data, they can be version-controlled, shared, and peer-reviewed just like benchmark definitions for treatment-effect suites or graph challenges \citep{CauseBox2021,CausalBench2024}.
 
 \medskip
 What follows is a deep dive through each architectural layer — beginning with the role of Contracts, the foundation that makes \game not only a tool, but a \emph{scientific protocol}.
@@ -39,6 +41,7 @@ The agent contract, for example, can act and be informed, but cannot inspect the
 The SCM contract can generate interventional data but knows nothing about the agent’s beliefs.  
 Result metrics see the ground truth; agents never do.  
 This disciplines the entire system to respect causal epistemic validity — knowledge must be earned, not granted.
+By separating capability from implementation, \game enables community contributions without compromising scientific integrity: two teams can implement radically different agents while remaining confident that neither receives unintended privileges \citep{BayesianCausalDiscovery2023}.
 
 \subsection{Specs — Declarative Instantiation of a Game Instance}
 \label{sec:specs}
@@ -51,6 +54,7 @@ A centralized registry instantiates these Specs at runtime — deterministically
 This makes \game \emph{perfectly reproducible} and experiment definitions \emph{immutably declarative}:  
 a problem instance is not code, but data.  
 Replacing the agent or SCM requires no change to the runtime engine — only to the Spec.
+This declarative approach extends ideas from causal modeling libraries such as DoWhy \citep{DoWhy2021} but pushes them to benchmark scale: every executable element of the experiment can be reconstructed from a single YAML or JSON payload.
 
 \subsection{DTOs — Controlled Information Flow}
 
@@ -61,6 +65,7 @@ For example, an agent receives only observable samples and round metadata — ne
 Metrics and plots may later access the full transcript and ground truth — but only after the game has ended.
 
 DTOs thus preserve causal fairness even when evaluating extremely powerful or self-reflective agents.
+Their schemas, documented in Appendix~\ref{appendix:dtos}, have been engineered so that even large language model-based agents—prone to exploiting incidental metadata—cannot infer privileged information.
 
 \subsection{Managers — Instrumentation and Enforcement}
 Managers regulate the execution of \game without influencing its causal logic. They do not assist the agent or modify the SCM; instead, they enforce constraints and expose observability.
@@ -69,7 +74,9 @@ Managers regulate the execution of \game without influencing its causal logic. T
 
 \paragraph{HookManager} listens to lifecycle events (e.g.\ \texttt{GAME\_START}, \texttt{ROUND\_END}, \texttt{GAME\_END}) and triggers user-defined side-channel observers such as loggers or monitors. Hooks are strictly passive: they can record or visualize, but never intervene.
 
-\paragraph{PlotManager}  generates visual artifacts post-hoc (e.g.\ at game or benchmark end), never visible to the agent during play, ensuring causal purity.\me{This might be deleted.}[1]
+\paragraph{PlotManager} generates visual artifacts post-hoc (e.g.\ at game or benchmark end), never visible to the agent during play, ensuring causal purity while allowing researchers to analyse transcripts visually without contaminating the interactive loop.
+
+Together, these managers provide accountability, observability, and control — never assistance or information leakage. They make the latent constraints that govern real-world experimentation (budgets, safety audits, post-hoc reporting) explicit in software \citep{Prosperi2020CausalIAA,ACCBench2024}.
 
 In short, managers provide accountability, observability, and control — never assistance or information leakage.
 
@@ -138,6 +145,7 @@ A \textbf{Mission} is a declarative, contract-based specification that defines \
 In other words, missions do not compute scores — they define the rules of the scientific game. They specify the expected answer representation and the evaluative lenses through which agent performance will be interpreted. This makes them a purely semantic layer — strictly framing \emph{what “solving the task” means} without influencing the environment or agent logic.
 
 Because missions are declared via Specs, switching from “full DAG discovery” to “ATE estimation” requires no modification to the agent or SCM — only a change in mission configuration. Missions therefore serve as the \emph{semantic lens} through which causal inference is framed and evaluated in \game, keeping the system modular and scientifically expressive.
+Concrete mission archetypes and their evaluation hooks are detailed in Section~\ref{sec:missions_examples}.
 
 \subsection{The Agent Perspective — Action, Observation, and Learning}
 From the environment’s point of view, the SCM is the causal world. From the agent’s point of view, the world is experienced only as a sequence of DTO-restricted observations and permissible action opportunities. The agent operates entirely under partial observability, without privileged access to the true SCM, while navigating unknown ground truth and being subject to explicit resource constraints.

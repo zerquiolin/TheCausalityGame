@@ -1,8 +1,8 @@
 \section{Structural Causal Model (SCM)}
 At the core of every \game instance is the \textbf{Structural Causal Model (SCM)}, which defines the causal laws of the environment.  
-The SCM is the \emph{only source of ground-truth causality} — every observation, every experiment outcome, and every causal dependency observed by the agent originates here.
+The SCM is the \emph{only source of ground-truth causality} — every observation, every experiment outcome, and every dependency experienced by the agent originates here. Designing compelling benchmarks therefore requires curating SCMs whose provenance, expressiveness, and controllability reflect the challenges faced by practitioners \citep{pearl2009causality,reisach2021beware}.
 
-While its formal definition was introduced in Section~3.1, we now expand it from the viewpoint of the \textbf{runtime engine} — where it becomes an \emph{active, queryable data-generating process}.
+While its formal definition was provided in Section~\ref{sec:formaldefinition}, we now examine the SCM from the viewpoint of the \textbf{runtime engine}—where it becomes an \emph{active, queryable data-generating process}. We highlight three complementary sources that populate \package’s library: factual datasets, curated Bayesian networks, and physics-inspired structural laws.
 
 \paragraph{Executable SCM.}
 In the environment, the SCM is not a static object but a \emph{callable simulation oracle}:
@@ -15,6 +15,7 @@ Formally:
 \[
     \dataset = \Big\{ x^{(j)} \in \mathrm{dom}(\measuredx) \;|\; x^{(j)} \sim \scm \text{ under do}(\intervention) \Big\}.
 \]
+The implementation guarantees that sampling remains thread-safe and seed-deterministic, so that concurrent benchmark runs never interfere (see Appendix~\ref{appendix:reproducibility}).
 
 \paragraph{Strict purity.}
 The SCM is \textbf{stateless, reproducible, and seed-bound}.  
@@ -25,7 +26,7 @@ This enables \emph{perfect inter-agent comparability}, even across machines.
 Datasets do not induce unique SCMs but are \emph{one} ingredient for an SCM, complemented by other components.
 Importantly, different outcome generators or even the same outcome generator initialized with different random seeds will lead to different SCMs \citep{curth2021really}.
 
-\package ships three datasets from which SCMs can be derived, which are summarized in Table~\ref{tab:my_label}.
+\package ships three datasets from which SCMs can be derived, summarized in Table~\ref{tab:scm_datasets}.
 These are the datasets IHDP \citep{hill2011bayesian}, Jobs \citep{lalonde1986evaluating}, and Twins \citep{almond2005costs} commonly used in causal inference papers.
 Despite the justified critics of some over-use of these datasets \citep{curth2021really}, they \emph{do} provided added value over merely observational datasets, which bears the chance to develop arguably more realistic outcome generators than those commonly considered.
 Then, on a more positive note, packages like \package can contribute to make such more realistic outcome generators available to a broad audience and help mitigate the problem of semantically flawed de-facto standard benchmarks.
@@ -36,7 +37,7 @@ Then, on a more positive note, packages like \package can contribute to make suc
         \input{scm_tables/dbs}
     }
     \caption{Properties of the three datasets shipped with \package to derive SCMs from data.}
-    \label{tab:my_label}
+    \label{tab:scm_datasets}
 \end{table}
 
 \subsection{SCMs from Standard Bayesian Networks}
@@ -77,3 +78,6 @@ The interactive part is very important since it enables an active learning envir
     \caption{The 20 causally interpreted laws in \package to define SCMs.}
     \label{tab:scms:physics}
 \end{table}
+
+\paragraph{Synthesis.}
+Collectively, these sources give rise to dozens of SCM families whose topologies, functional forms, and noise processes vary widely—from low-dimensional binary systems to continuous networks with nonlinear interactions. Because each SCM is accompanied by an explicit access partition $(\latentx,\measuredx,\controllablex)$ and randomized seeds, researchers can reproduce community baselines, design ablation studies, or contribute new structural scenarios with confidence that they integrate seamlessly into the benchmark. This diversity is essential for evaluating agents that claim to generalize beyond a single domain \citep{RealCause2021,BayesianCausalDiscovery2023}.

@@ -4,5 +4,7 @@
     Since real-world interventions are costly, there is strong interest in agents that intelligently design and optimize interventions—such as experiments or treatments—balancing insight and experimental cost.
     Surprisingly, most benchmarks do not evaluate this ability. Instead, they score atomic agents that infer causality from a single dataset containing some interventions.
     We introduce \game, a benchmarking concept where agents actively choose interventions and are measured in both the quality of causal inferences and the efficiency of their discovery.
-    We provide a Python package, \package, which implements the framework in an extensible manner while including standard components to generate causal inference tasks of diverse types and over 50 built-in tasks for immediate use.
+    The accompanying Python package, \package, implements this protocol with declarative Specs, modular contracts, and libraries of structural causal models derived from datasets, Bayesian networks, and physical laws.
+    Empirical studies across DAG discovery, treatment-effect estimation, and SCM reconstruction reveal that interactive evaluation reshapes the Pareto frontier of causal agents: strategies that reason about budgeted experimentation dominate static baselines.
+    \game thus provides the methodological and software foundation required to compare next-generation causal discovery agents on equal, reproducible footing.
 \end{abstract}

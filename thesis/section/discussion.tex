@@ -1,12 +1,16 @@
 \section{Discussion}
 \game establishes a unified formalism for benchmarking \emph{interactive causal inference}, evaluating agents not only on their final inference quality but also on their \textbf{efficiency in actively acquiring information}.  
-This fundamentally departs from nearly all prior causal benchmarks, which provide agents with a fixed dataset and do not measure interventional strategy, adaptivity, or cost sensitivity.
+This fundamentally departs from nearly all prior causal benchmarks, which provide agents with a fixed dataset and do not measure interventional strategy, adaptivity, or cost sensitivity \citep{CauseBox2021,CausalBench2024,RealCause2021}.
 
-The framework makes three key contributions:
+\subsection{Key Insights from the Missions}
+The mission studies in Section~\ref{sec:results} reveal that interactive evaluation changes how we rank and diagnose causal agents. Active-learning policies dominate once behaviour metrics are considered, while exhaustive strategies only prevail under unrealistic budgets. Moreover, detailed transcripts expose whether an agent relied on principled experimental design or random exploration. These observations confirm the motivating narrative from the introduction: progress in causal inference hinges on marrying statistical correctness with disciplined experimentation.
+
+\subsection{Benchmark Contributions}
+The framework advances the state of causal benchmarking in three core ways:
 \begin{enumerate}
-    \item It formalizes causal learning as a \textbf{resource-constrained, agent-driven game}.
-    \item It unifies diverse causal inference tasks (DAG recovery, CATE estimation, full SCM reconstruction) into a single abstraction.
-    \item It provides a fully seedable, serializable, and replayable environment — enabling fair, reproducible comparison of agents across research groups.
+    \item It formalizes causal learning as a \textbf{resource-constrained, agent-driven game}, turning abstract notions of ``information acquisition'' into measurable behaviour.
+    \item It unifies diverse causal inference tasks (DAG recovery, CATE estimation, full SCM reconstruction) into a single abstraction that researchers can extend with new missions via Specs.
+    \item It provides a fully seedable, serializable, and replayable environment — enabling fair, reproducible comparison of agents across research groups and encouraging open benchmark artefacts.
 \end{enumerate}
 
 \subsection{Current Limitations}
@@ -17,6 +21,7 @@ Despite enabling a general and principled framework, \game currently does not ye
     \item \textbf{temporal and partially observable environments} — this initial formulation assumes stateless or snapshot-based SCMs;
     \item \textbf{domain realism guarantees} — although our framework supports realistic SCM injection (e.g.\ physical or dataset-based), we do not certify their real-world truthfulness.
 \end{itemize}
+These limitations mirror the challenges raised in recent benchmark audits \citep{EvaluationFramework2022,CIPCaDBench2022}: without community-wide curation and empirical diversity, even the best-designed infrastructure can be misused or misinterpreted.
 
 \subsection{Future Research Directions}
 We envision several high-value extensions:
@@ -27,6 +32,7 @@ We envision several high-value extensions:
     \item \textbf{Multi-agent causal competitions} — extending \game into adversarial or cooperative causal inference settings.
     \item \textbf{Meta-learning and generalization tests} — ensuring agents generalize across families of SCMs, not just fit one.
 \end{itemize}
+Progress on these fronts would align \game with broader movements towards autonomous scientific discovery and AI-powered experimentation \citep{annadani2023bayesdag,Shojaee2023TransformerbasedPFA}.
 
 \medskip
-\game provides the \emph{infrastructure and scientific formalism} needed for the next generation of causal learning benchmarks — those that evaluate not only inference quality but also active experimental reasoning.
+\game provides the \emph{infrastructure and scientific formalism} needed for the next generation of causal learning benchmarks — those that evaluate not only inference quality but also active experimental reasoning. By making experimental behaviour observable, comparable, and reproducible, the framework enables researchers to build agents that can safely operate in the high-stakes scenarios that motivated this thesis.
