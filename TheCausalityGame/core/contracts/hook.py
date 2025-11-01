@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Protocol
 
-from TheCausalityGame.core.contracts.dto.transcript import TranscriptEntry
+from TheCausalityGame.core.contracts.dto.transcript import Transcript, TranscriptEntry
+from TheCausalityGame.core.contracts.serializable import Serializable
 from TheCausalityGame.core.lib.enum.hook import HookEvent
 
 
-class Hook(Protocol):
+class Hook(Serializable):
     """
     Base protocol for hook implementations that subscribe to game events.
 
@@ -24,8 +24,12 @@ class Hook(Protocol):
     """
 
     id: str
+    step: HookEvent
+    _spec: str = "TheCausalityGame.core.contracts.specs.hook:HookSpec"
 
-    def run(self, hooks_dir: Path, context: TranscriptEntry | None) -> list[HookEvent]:
+    def run(
+        self, hooks_dir: Path, context: dict[str, Transcript] | TranscriptEntry | None
+    ) -> None:
         """
         Return the list of events this hook should be notified about.
 
@@ -35,10 +39,5 @@ class Hook(Protocol):
             Directory where hook-related artifacts can be stored.
         context : TranscriptEntry | None
             The current context of the game transcript.
-
-        Returns
-        -------
-        list of HookEvent
-            The events this hook subscribes to.
         """
-        ...
+        raise NotImplementedError

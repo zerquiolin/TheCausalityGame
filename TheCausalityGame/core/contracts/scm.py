@@ -44,6 +44,8 @@ class SCM(Serializable):
         Optional name for the SCM.
     """
 
+    _spec: str = "TheCausalityGame.core.contracts.specs.scm:SCMSpec"
+
     def __init__(
         self,
         dag: DAG,

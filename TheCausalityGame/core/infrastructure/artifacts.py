@@ -7,9 +7,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-import matplotlib
-import matplotlib.figure
-
 from TheCausalityGame.core.contracts.dto.transcript import Transcript, TranscriptEntry
 from TheCausalityGame.core.infrastructure.logger import Logger
 from TheCausalityGame.core.infrastructure.serialization import dump, is_serializable
@@ -43,7 +40,6 @@ class ArtifactWriter:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.run_dir = run_dir / timestamp
         self.agents_dir = self.run_dir / "agents"
-        self.plots_dir = self.run_dir / "plots"
         self.logs_dir = self.run_dir / "logs"
         self.is_dev = is_dev
         self.logger = logger
@@ -66,78 +62,10 @@ class ArtifactWriter:
     def create_dirs(self) -> None:
         """Create base artifact directories."""
         os.makedirs(self.run_dir, exist_ok=True)  # Core run directory
-        os.makedirs(self.plots_dir, exist_ok=True)  # Directory for plots
         if self.is_dev:
             os.makedirs(self.agents_dir, exist_ok=True)  # Directory for agents
 
             os.makedirs(self.logs_dir, exist_ok=True)  # Directory for logs
-
-    def write_plots(
-        self,
-        transcripts: dict[
-            str,
-            dict[
-                str,
-                list[list[tuple[str, matplotlib.figure.Figure]]]
-                | list[tuple[str, matplotlib.figure.Figure]],
-            ]
-            | list[tuple[str, matplotlib.figure.Figure]],
-        ],
-    ) -> None:
-        """
-        Write plots to disk.
-
-        Parameters
-        ----------
-        transcripts : dict[
-            str,
-            dict[
-                str,
-                list[list[tuple[str, matplotlib.figure.Figure]]]
-                | list[tuple[str, matplotlib.figure.Figure]],
-            ]
-            | list[tuple[str, matplotlib.figure.Figure]],
-        ]
-            Dictionary containing plots organized by agent and type.
-        """
-        cached_ids: set[str] = set()
-
-        def _save_safe(path: Path, fig: matplotlib.figure.Figure) -> None:
-            """Ensure folder and save figure."""
-            path.parent.mkdir(parents=True, exist_ok=True)
-            fig.set_constrained_layout(True)  # type: ignore
-            fig.tight_layout()
-            fig.savefig(path, bbox_inches="tight", dpi=300)  # type: ignore
-
-        def _save_if_new(
-            fig_id: str, fig: matplotlib.figure.Figure, path: Path
-        ) -> None:
-            """Save only if not already saved."""
-            if fig_id in cached_ids:
-                if self.logger:
-                    self.logger.warning(f"Plot {fig_id} already exists. Skipping.")
-                return
-            _save_safe(path, fig)
-            cached_ids.add(fig_id)
-
-        for agent_id, content in transcripts.items():
-            if not isinstance(content, dict):  # Simple flat case
-                for fig_id, fig in content:
-                    _save_if_new(fig_id, fig, self.plots_dir / f"{fig_id}.png")
-                continue
-
-            # Nested agent structure
-            for sub_folder, plot_lists in content.items():
-                base = self.agents_dir / agent_id / "plots" / sub_folder
-
-                # Detect if 2D list
-                if plot_lists and isinstance(plot_lists[0], list):
-                    for i, plots in enumerate(plot_lists):
-                        for fig_id, fig in plots:  # type: ignore
-                            _save_if_new(fig_id, fig, base / str(i) / f"{fig_id}.png")  # type: ignore
-                else:
-                    for fig_id, fig in plot_lists:
-                        _save_if_new(fig_id, fig, base / f"{fig_id}.png")  # type: ignore
 
     def _clean_transcript_entry_for_serialization(
         self, entry: TranscriptEntry

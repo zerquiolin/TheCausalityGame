@@ -15,8 +15,6 @@ class MetricSpec(CommonSpec):
     ----------
     class_ : str
         Fully qualified import path in the format 'module:Class'. (Aliased from 'class' in JSON.)
-    spec_ : str | None
-        Optional override for the spec class path. Defaults to the class path of this spec.
     params : dict
         Optional configuration parameters specific to the metric.
     """

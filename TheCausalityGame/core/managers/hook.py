@@ -3,7 +3,7 @@
 from collections import defaultdict
 from pathlib import Path
 
-from TheCausalityGame.core.contracts.dto.transcript import TranscriptEntry
+from TheCausalityGame.core.contracts.dto.transcript import Transcript, TranscriptEntry
 from TheCausalityGame.core.contracts.hook import Hook
 from TheCausalityGame.core.contracts.specs.hook import HookSpec
 from TheCausalityGame.core.infrastructure.registry import build_from_spec
@@ -56,3 +56,15 @@ class HookManager:
         """
         for hook in self.hooks_by_step.get(step, []):
             hook.run(self.hook_dir, context)
+
+    def finalize(self, transcripts: dict[str, Transcript]) -> None:
+        """
+        Finalize all hooks after the benchmark ends.
+
+        Parameters
+        ----------
+        transcripts : dict[str, Transcript]
+            The transcripts of all executed agents.
+        """
+        for hook in self.hooks_by_step.get(HookEvent.BENCHMARK_END, []):
+            hook.run(self.hook_dir, transcripts)

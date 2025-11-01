@@ -49,6 +49,8 @@ class SCMNode(Serializable):
         Optional logger instance.
     """
 
+    _spec: str = "TheCausalityGame.core.contracts.specs.scm_node:SCMNodeSpec"
+
     def __init__(  # noqa: PLR0913
         self,
         name: str,
@@ -138,9 +140,7 @@ class SCMNode(Serializable):
         d = {
             "class_": get_class_path(self.__class__),
             "name": self.name,
-            "accessibility": self.accessibility,
             "domain": self.domain,
-            "parents": self.parents if self.parents else None,
             "parent_mappings": self.parent_mappings or None,
             "noise_distribution": (
                 self.noise_distribution.to_spec() if self.noise_distribution else None
@@ -149,8 +149,11 @@ class SCMNode(Serializable):
                 random_state_to_json(self.random_state) if self.random_state else None
             ),
         }
+
+        if self.accessibility != NodeAccessibility.CONTROLLABLE:
+            d["accessibility"] = self.accessibility
+
         d.update(self._to_dict())
-        assert "class" in d or "class_" in d, f"Serialized node has no class entry: {d}"
         return SCMNodeSpec(**d)  # type: ignore
 
 

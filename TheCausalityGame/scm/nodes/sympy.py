@@ -143,6 +143,8 @@ class EquationBasedNumericalSCMNode(NumericalSCMNode, EquationBasedSCMNode):
             else UniformNoiseDistribution()
         )
 
+        # TODO: Calculate parents is not provided.
+
         # Return the new class
         cla = cls(
             **{

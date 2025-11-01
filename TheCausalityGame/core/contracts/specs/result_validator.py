@@ -17,8 +17,6 @@ class ResultValidatorSpec(CommonSpec):
     class_ : str
         Import path in the form 'module:Class' used to construct the validator.
         This field is aliased from 'class' in JSON/YAML configs.
-    spec_ : str, optional
-        Path to the specification class. Auto-filled if not provided.
     params : dict, optional
         Optional configuration parameters required by the validator.
     """

@@ -165,10 +165,9 @@ class PEHEResultMetric(ResultMetric):
     def to_spec(self) -> MetricSpec:
         return MetricSpec(
             class_=get_class_path(self.__class__),
-            params={},
         )
 
     @classmethod
     @override
     def from_spec(cls, spec: MetricSpec) -> "PEHEResultMetric":
-        return cls(**spec.params)
+        return cls()

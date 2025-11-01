@@ -15,8 +15,6 @@ class AgentSpec(CommonSpec):
     ----------
     class_ : str
         Import path of the agent class (e.g., "my_module.agent:MyAgent").
-    spec_ : str | None
-        Optional reference to the agent spec class.
     params : dict[str, Any]
         Optional configuration parameters for the agent.
     id : str

@@ -16,8 +16,6 @@ class NoiseDistributionSpec(CommonSpec):
     ----------
     class_ : str
         Fully qualified import path (aliased from 'class' in JSON).
-    spec_ : str | None
-        Optional override for the spec class path.
     params : dict
         Optional noise distribution configuration payload.
     """

@@ -46,6 +46,10 @@ class ProblemInstance(Serializable):
         Execution configuration (logging, debug mode, etc.).
     """
 
+    _spec: str = (
+        "TheCausalityGame.core.contracts.specs.problem_instance:ProblemInstanceSpec"
+    )
+
     def __init__(  # noqa: PLR0913
         self,
         schema_version: str,
