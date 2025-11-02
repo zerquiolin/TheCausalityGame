@@ -1,292 +1,251 @@
+# The Causality Game
 
-```cmd
-ruff check .      # docstring coverage if D-rules enabled
-mypy src          # type-check
-pytest            # tests
-```
+Foundation for designing, simulating, and benchmarking causal inference agents against richly configurable structural causal models (SCMs). The project provides a modular runtime, a contract-driven component model, and a CLI for executing fully specified problem instances end to end.
 
----
+## Table of Contents
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Architecture](#architecture)
+- [Installation](#installation)
+- [Quickstart](#quickstart)
+- [CLI Reference](#cli-reference)
+- [Problem Instance Specification](#problem-instance-specification)
+- [Extending the Game](#extending-the-game)
+- [Artifacts & Outputs](#artifacts--outputs)
+- [Testing & Quality](#testing--quality)
+- [Support & Further Reading](#support--further-reading)
 
-# Important
+## Overview
+The Causality Game models an interactive loop in which an **agent** explores an SCM, receives **feedback** from a **mission**, and iteratively improves its causal estimate before submitting a final answer. The system is purpose-built for reproducible experimentation:
 
----
+- Problem instances describe everything required to evaluate one or more agents: the SCM, mission, metrics, runtime budgets, hooks, and reproducibility settings.
+- Components are defined through strongly typed Pydantic specs and instantiated dynamically at runtime, allowing teams to plug in custom implementations without modifying the core.
+- The CLI (`tcg`) loads a manifest, orchestrates the run, and stores structured artifacts for later analysis.
 
-The environment loop:
+**Interaction loop:** Agent → Decision → Environment → Samples + Feedback → Agent. Feedback contains metric evaluations of the current answer before the agent informs its next action, ensuring it can adapt using the latest assessment.
 
-Agent -> Action -> Environment -> ActionOutcome -> Agent.
+## Key Features
+- Modular component contracts for agents, SCMs, missions, metrics, hooks, and validators.
+- Parallel or sequential execution of multiple agents with resource budgets enforced per run.
+- Deterministic replay via explicit seeding and serialized runtime settings.
+- Development versus production runtime modes with scoped logging and artifact generation.
+- Typer-based CLI with direct and subcommand usage for single-line execution of manifests.
+- Comprehensive serialization layer enabling manifests to stay readable while remaining strict and self-validating.
 
-And inside the ActionOutcome, there is a feedback field that contains the metrics and other information about the action taken by the agent.
+## Architecture
 
-But here is an important note: The feedback yields the evaluation of the metrics given by the answer method before even informing the agent about the outcome of its current action. This is to ensure that the agent knows the current state of his answer, the result of his actions, and improves its next action / answer based on that feedback.
+### Runtime flow
+- `tcg` CLI parses a manifest into `ProblemInstanceSpec`.
+- `Runner` bootstraps logging, artifact directories, and hook managers, then executes each agent either sequentially or via thread/process pools.
+- `Game` constructs the agent, SCM, mission, metrics, and orchestrates the environment loop.
+- `Environment` enforces budgets, triggers hooks, collects samples, evaluates answers, and records a transcript entry per round.
+- Metrics, hooks, and artifact writers post-process results for reporting.
 
----
+### Repository layout
+| Path | Description |
+| --- | --- |
+| `TheCausalityGame/core/contracts` | Pydantic specs and abstract base classes for all runtime components. |
+| `TheCausalityGame/core/runtime` | Runner, environment, and game orchestration logic. |
+| `TheCausalityGame/core/infrastructure` | Registry, serialization helpers, artifact writer, decision helpers, logging utilities. |
+| `TheCausalityGame/core/managers` | Budget and hook managers coordinating runtime policies. |
+| `TheCausalityGame/agent` | Reference agent implementations (e.g., `ExhaustiveAgent`). |
+| `TheCausalityGame/mission`, `scm`, `metric`, `hook` | Domain-specific implementations shipped with the game. |
+| `scripts/main.py` | Legacy helper replicating the CLI `run` command. |
+| `tests/` | Unit tests and fixtures. |
 
-# JSON Game Instances
+## Installation
 
-You’re thinking in exactly the right direction: keep the user-facing JSON simple, readable, and modular, and let code do the heavy lifting. Your sample is expressive but a bit “busy” for most users; the version below trims boilerplate while staying explicit where it matters (class to load + minimal config).
+### Prerequisites
+- Python ≥ 3.10
+- macOS, Linux, or Windows with POSIX-compatible shell
+- Optional: `make`, `pipx`, or your preferred virtual environment tooling
 
-Below are two complete, copy-pasteable game manifests that fit our current foundation:
- • a Minimal manifest (cleanest UX),
- • a Full manifest (budgets, hooks, multiple metrics, per-component seeds).
+### Steps
+1. Create and activate a virtual environment:
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
+   ```
+2. Install the project in editable mode along with runtime dependencies:
+   ```bash
+   pip install -e .
+   ```
+3. (Optional) Install development tooling:
+   ```bash
+   pip install -e .[dev]
+   ```
 
-They validate against our ProblemInstance Pydantic model and are friendly to tcg validate.
+After installation the `tcg` CLI is available on your PATH.
 
-⸻
+## Quickstart
+1. Prepare a problem instance manifest (see [Problem Instance Specification](#problem-instance-specification)). Save it, for example, as `examples/hill_demo.json`.
+2. Run the manifest through the CLI:
+   ```bash
+   tcg run examples/hill_demo.json --run-dir runs
+   ```
+   or use the shortcut form:
+   ```bash
+   tcg examples/hill_demo.json
+   ```
+3. Inspect the generated artifacts under `runs/<problem_id>/<timestamp>` when the manifest requests development-mode outputs.
 
-1) Minimal, clean manifest (great DX/UX)
-
+### Minimal manifest example
 ```json
 {
+  "class": "TheCausalityGame.core.contracts.problem_instance:ProblemInstance",
   "schema_version": "1.0.0",
-  "id": "bn_cate_tiny",
-  "scm_spec": {
-    "class": "TheCausalityGame.scm.bayes:BayesianNetworkSCM",
-    "config": {
-      "nodes": [
-        {
-          "class": "TheCausalityGame.scm.bayes:BNBinaryNode",
-          "name": "Z",
-          "role": "controllable",
-          "probs": [0.5, 0.5]
-        },
-        {
-          "class": "TheCausalityGame.scm.bayes:BNBinaryNode",
-          "name": "X",
-          "role": "observable",
-          "probs": [0.5, 0.5]
-        },
-        {
-          "class": "TheCausalityGame.scm.bayes:BNNumericalChild",
-          "name": "Y",
-          "role": "observable",
-          "parents": ["X", "Z"],
-          "equation": "1.0 *X + 2.0* Z",
-          "noise": {"class": "TheCausalityGame.scm.noise:Gaussian", "config": {"mean": 0, "std": 1}}
-        }
-      ],
-      "edges": [["Z","Y"], ["X","Y"]]
-    }
-  },
-  "mission_spec": {
-    "class": "TheCausalityGame.missions.example:GenericPredictionMission",
-    "config": {
-      "mission_kind": "pred_v1",
-      "accepted_deliverables": ["pred_grid_v1", "predict_fn_v1"],
-      "eval_grid": {"n": 128, "seed": 42}
-    }
-  },
-  "agent_specs": [
-    {
-      "id": "random_baseline",
-      "class": "TheCausalityGame.agents.random:RandomAgent",
-      "config": {"max_batch": 64}
-    }
-  ],
-  "metric_specs": {
-    "behavior": { "id": "rounds", "class": "TheCausalityGame.evaluators.behavior:RoundsUsed", "config": {} },
-    "result":   { "id": "mse",    "class": "TheCausalityGame.evaluators.regression:MSEMetric", "config": { "supported": [["pred_v1","pred_grid_v1"], ["pred_v1","predict_fn_v1"]] } }
-  },
-  "custom_metric_specs": [],
-  "run_plan": {
-    "rounds": 5,
-    "scheduler": "round_robin",
-    "concurrency": 1,
-    "budgets": { "time_s": 30, "samples": 5000, "memory_mb": 512 }
-  },
-  "seeds": {"global": 12345},
-  "hook_plan": [],
-  "artifacts_policy": {}
-}
-```
-
-Why this is nice
- • Every component is just {"class": "module:Class", "config": {...}}.
- • Mission specifies what kinds of deliverables it accepts (IDs like "pred_grid_v1" or "predict_fn_v1"), but the agent doesn’t need to put that into JSON—agents return typed Python decisions; the runtime normalizes for persistence.
- • SCM node definitions are short (role + minimal params).
-
-⸻
-
-2) Full manifest (budgets, multiple metrics, hooks, per-component seeds)
-
-```json
-{
-  "schema_version": "1.0.0",
-  "id": "physics_ate_benchmark_v2",
-  "scm_spec": {
-    "class": "TheCausalityGame.scm.physics:SpringMassDamperSCM",
-    "config": {
-      "params": {"k": 1.2, "c": 0.1, "m": 1.0},
-      "observable": ["x", "v"],
-      "controllable": ["u"]
-    }
-  },
-  "mission_spec": {
-    "class": "TheCausalityGame.missions.ate:ATEMission",
-    "config": {
-      "mission_kind": "ate_v1",
-      "accepted_deliverables": ["ate_scalar_v1", "ate_fn_v1"],
-      "estimation_window": [0.0, 10.0],
-      "seed": 2025
-    }
-  },
-  "agent_specs": [
+  "id": "demo_instance",
+  "agents": [
     {
       "id": "exhaustive",
-      "class": "TheCausalityGame.agents.exhaustive:ExhaustiveAgent",
-      "config": {"grid": [0.0, 0.5, 1.0], "per_round_limit": 500, "rng_seed": 7}
-    },
-    {
-      "id": "causal_rl",
-      "class": "TheCausalityGame.agents.rl:CausalRLAgent",
-      "config": {"hidden": 128, "lr": 0.0003, "max_steps": 2000, "rng_seed": 99}
+      "class": "TheCausalityGame.agent.exhaustive:ExhaustiveAgent",
+      "params": {"num_obs": 2, "num_inter": 2}
     }
   ],
-  "metric_specs": [
-    {
-      "id": "abs_err",
-      "class": "TheCausalityGame.evaluators.scalar:AbsoluteError",
-      "config": {"supported": [["ate_v1","ate_scalar_v1"], ["ate_v1","ate_fn_v1"]]}
-    },
-    {
-      "id": "sample_efficiency",
-      "class": "TheCausalityGame.evaluators.behavior:SamplesUsed",
-      "config": {"direction": "down"}
-    }
-  ],
-  "run_plan": {
-    "rounds": 20,
-    "scheduler": "round_robin",
-    "budgets": {"time_s": 120, "samples": 20000, "memory_mb": 1024}
-  },
-  "seeds": {
-    "global": 424242,
-    "agents": {"exhaustive": 7, "causal_rl": 99},
-    "mission": 2025,
-    "scm": 1337
-  },
-  "hook_plan": [
-    {
-      "id": "progress_bar",
-      "class_path": "TheCausalityGame.core.hooks.progress:ConsoleProgress",
-      "events": ["on_run_start", "on_round_finish", "on_run_finish"],
-      "priority": 90,
-      "config": {"show_eta": true}
-    },
-    {
-      "id": "dataset_indexer",
-      "class_path": "TheCausalityGame.core.hooks.datasets:IndexWriter",
-      "events": ["after_env_generate_samples"],
-      "priority": 80,
-      "config": {"write_sha256": true}
-    },
-    {
-      "id": "figures_after_scores",
-      "class_path": "TheCausalityGame.core.hooks.outputs:MaterializeOutputs",
-      "events": ["on_run_finish"],
-      "priority": 70,
-      "config": {
-        "outputs": [
-          {
-            "class": "TheCausalityGame.outputs.plots:ScoreRadar",
-            "config": {"out": "plots/score_radar.png"}
-          },
-          {
-            "class": "TheCausalityGame.outputs.tables:Leaderboard",
-            "config": {"out": "plots/leaderboard.md"}
-          }
-        ]
+  "scm": {
+    "class": "<SCM module path>:<SCMClass>",
+    "vars": [
+      {
+        "class": "<SCM node module>:<NodeClass>",
+        "name": "Z",
+        "accessibility": "controllable",
+        "domain": [0, 1],
+        "parents": null,
+        "noise_distribution": {
+          "class": "<Noise module>:<NoiseClass>",
+          "params": {"std": 1.0}
+        }
       }
+    ],
+    "dag": {
+      "class": "TheCausalityGame.scm.dag.core:CoreDAG",
+      "nodes": ["Z"],
+      "edges": []
     }
-  ],
-  "artifacts_policy": {
-    "datasets": {"gzip": true, "shard_rows": 5000},
-    "transcripts": {"gzip": false},
-    "log_level": "INFO"
+  },
+  "mission": {
+    "id": "cate_mission",
+    "class": "TheCausalityGame.mission.conditional_average_treatment_effect:ConditionalAverageTreatmentEffectMission",
+    "behavior_metric": {
+      "class": "TheCausalityGame.metric.behavior.rounds:RoundsBehaviorMetric",
+      "params": {"alpha": 0.1}
+    },
+    "result_metric": {
+      "class": "TheCausalityGame.metric.result.pehe:PEHEResultMetric"
+    },
+    "result_validator": {
+      "class": "TheCausalityGame.metric.result.result_validator.cate_function_validator:ConditionalAverageTreatmentEffectFunctionValidator"
+    }
+  },
+  "custom_metrics": [],
+  "run_plan": {
+    "execution": "sequential",
+    "parallel_backend": "thread",
+    "max_workers": 1,
+    "budget": {
+      "rounds": 50,
+      "samples": 5000
+    },
+    "hook_plan": []
+  },
+  "seeds": {"global": 12345},
+  "runtime": {
+    "mode": "dev",
+    "debug_level": 20
   }
 }
 ```
+> **Note:** Replace every placeholder wrapped in angle brackets with the concrete class paths and parameters that match your scenario (see [Extending the Game](#extending-the-game)). The structure above mirrors the required nesting and field names enforced by the specs.
 
-Notes
- • Multiple agents → round-robin scheduler by default.
- • Two metrics: one deliverable metric, one behavior metric.
- • Hooks:
- • console progress,
- • dataset sharding/indexing after sample generation,
- • outputs rendered on run finish (plots/tables).
- • Artifacts policy gives users control over compression and sizes.
+## CLI Reference
 
-⸻
+### `tcg`
+- Direct invocation without a subcommand defaults to running a manifest.
+- Global option `--run-dir / -o` controls the artifact root.
 
-Why this UX is good
- • Users only specify what they want (components + minimal config).
-They never have to construct framework-specific payloads.
- • Class paths are explicit (no magic). If they publish a new agent/mission, they just reference its import path.
- • Mission compatibility is clear: mission_kind and accepted_deliverables are declared in the mission config (the core uses this to validate metric compatibility and agent submissions).
- • No leakage of runtime details into the manifest:
- • No callable objects in JSON.
- • No episode subtleties — just rounds.
- • Budgets are simple and explicit.
+### `tcg run`
+```
+Usage: tcg run [OPTIONS] PROBLEM_PATH
 
-⸻
+  Execute a problem instance definition.
 
-CLI quick check
-
-# validate shape
-
-tcg validate examples/infra/manifest_template.json
-
-# run (Phase 2 runtime will provide)
-
-tcg run --manifest examples/infra/manifest_template.json --runs-dir runs/
-
-⸻
-
-Mapping to the runtime semantics
- • Agent API: Agents return typed decisions (Intervene, SubmitFinal(Deliverable)).
- • Normalize (internal): converts decision → Action (JSON-safe) + raw payload for mission validation.
- • Mission: validates the deliverable by type and/or schema/protocol id; returns a DeliverableHandle.
- • Metrics: declare support for (mission_kind, deliverable_kind); consume the handle, compute scores.
- • Artifacts:
- • transcripts.jsonl: JSON-only Actions/StepRecords
- • datasets/: gz JSONL shards from sampling
- • metrics_raw.jsonl + scores.json: per-metric results + aggregates
- • plots/: created by output plugins via hooks
-
-⸻
-
-If you want, I can also drop a tiny hello-world SCM/Mission/Agent/Metric set (10–20 lines each) so users can run a manifest end-to-end immediately.
-
-# Run Manifest
-
-## Usage examples
-
-```bash
- • Dev mode (verbose + callables allowed):
-
-tcg run examples/infra/manifest_template.json --mode dev --debug
+Options:
+  -o, --run-dir PATH  Directory where run artifacts will be stored.
+  --help              Show this message and exit.
 ```
 
-```bash
- • Restricted mode (quiet, benchmark-safe):
+Error handling includes clear diagnostics for missing files, unreadable JSON, and validation errors from `ProblemInstanceSpec`.
 
-tcg run examples/infra/manifest_template.json --mode restricted
-```
+## Problem Instance Specification
 
-# Usage of Decisions
+Problem instances are validated against `ProblemInstanceSpec`. JSON documents may supply `class` instead of `class_` thanks to field aliases. Key top-level fields:
 
-```python
-from TheCausalityGame.core.contracts.decisions import Decision, ExperimentSpec
+| Field | Description |
+| --- | --- |
+| `class` | Optional when using the spec-only workflow; set it to a `ProblemInstance` class path when you want `build_from_spec` to construct a concrete instance. |
+| `schema_version` | Schema identifier for compatibility management. |
+| `id` | Unique identifier for the run; used in artifact folder names. |
+| `agents` | List of [`AgentSpec`](TheCausalityGame/core/contracts/specs/agent.py) entries defining agent class paths and parameters. |
+| `scm` | [`SCMSpec`](TheCausalityGame/core/contracts/specs/scm.py) describing nodes, DAG structure, and implementation class. |
+| `mission` | [`MissionSpec`](TheCausalityGame/core/contracts/specs/mission.py) including behavior/result metrics and validators. |
+| `custom_metrics` | Optional list of [`MetricSpec`](TheCausalityGame/core/contracts/specs/metric.py) evaluated in addition to mission metrics. |
+| `run_plan` | [`RunPlanSpec`](TheCausalityGame/core/contracts/specs/run.py) covering execution mode, parallel backend, budgets, and hook plan. |
+| `seeds` | Mapping of component-specific seeds for reproducibility (`global`, `agents`, `mission`, `scm`, ...). |
+| `runtime` | [`RuntimeSettingsSpec`](TheCausalityGame/core/contracts/specs/settings.py) toggling DEV/PROD mode and debug verbosity. |
 
-# Build in one call with heterogeneous inputs
-d1 = Decision.experiment((None, 300), ExperimentSpec({'X': 1}, 200))
-# Add more experiments immutably
-d1 = d1.add_experiment({'Z': 0}, 100)
+### Budgets and hooks
+- Budgets (`run_plan.budget`) enforce per-agent limits on rounds, time (seconds), samples, and memory.
+- Hooks (`run_plan.hook_plan`) subscribe to lifecycle events enumerated in `HookEvent` (e.g., `before_act`, `after_eval`, `benchmark_end`), enabling custom logging, visualizations, or integrations.
 
-# Build incrementally from empty experiment decision
-d2 = Decision.experiment((None, 100))\
-             .add_experiment({'X': 1}, 50)\
-             .extend([({'Z': 1}, 25), (None, 25)])
+### Metrics and missions
+- Missions encapsulate evaluation logic and must expose an ID, description, behavior metric, result metric, and validator.
+- Metrics express support for mission deliverables, typically via `params` entries such as accepted deliverable kinds.
+- Feedback returned to agents carries the latest metric evaluations so they can adapt before answering.
 
-# Submit answer
-d3 = Decision.answer()
-```
+## Extending the Game
+
+### Implement a new agent
+1. Subclass `TheCausalityGame.core.contracts.agent.Agent`.
+2. Provide `act`, `inform`, and `answer` implementations; use `Decision` helpers from `core.infrastructure.decisions`.
+3. Implement `from_spec`/`to_spec` if additional configuration is required (see `TheCausalityGame/agent/exhaustive.py` for reference).
+4. Export the agent in a module under the `TheCausalityGame.` namespace so the registry allowlist accepts it.
+
+### Add a mission or metric
+- Missions inherit from `TheCausalityGame.core.contracts.mission.Mission` and must coordinate behavior/result metrics plus validation.
+- Metrics extend `TheCausalityGame.core.contracts.metric.Metric`, consuming mission deliverables to compute scores.
+- Register new components by referencing their `module:Class` path inside the manifest spec.
+
+### Create a new SCM
+- Derive from `TheCausalityGame.core.contracts.scm.SCM`, provide node definitions (`SCMNodeSpec`), and ensure deterministic sampling respecting `NodeAccessibility`.
+- Update the manifest’s `scm` spec with the new class path and parameters (e.g., structural equations, noise models).
+
+### Hook into runtime events
+- Implement a hook by inheriting from the appropriate hook base in `TheCausalityGame.hook`.
+- Add an entry to `run_plan.hook_plan` referencing the hook class path, events to subscribe to, and optional config.
+
+### Validate custom deliverables
+- Supply a `ResultValidator` class referenced by `mission.result_validator` to enforce schema-level or semantic checks before scoring.
+- Combine with custom metrics to produce leaderboard-ready outputs.
+
+## Artifacts & Outputs
+- Artifacts are written under `runs/<problem_id>/<timestamp>/`.
+- Development mode (`runtime.mode = "DEV"`) enables:
+  - Agent-specific transcripts (`agents/<agent_id>/transcript.json`) with sanitized decisions and samples.
+  - Structured provenance (`provenance.json`) describing the execution environment.
+  - Scoped log directories when loggers are configured.
+- Production mode minimizes disk usage by suppressing transcripts and extended logs.
+
+## Testing & Quality
+- Run unit tests: `pytest`
+- Static typing: `mypy`
+- Linting & formatting: `ruff check .`
+- Continuous integration can combine these commands to enforce quality gates.
+
+## Support & Further Reading
+- Explore the concrete implementations under `TheCausalityGame/` to see working examples of SCMs, missions, metrics, agents, and hooks.
+- The `scripts/main.py` helper mirrors `tcg run` for programmatic invocation inside notebooks or REPL sessions.
+- For academic context and practical case studies, refer to materials in the `thesis/` directory.
+
+---
+
+Licensed under Apache-2.0 — see `pyproject.toml` for attribution details.
