@@ -169,7 +169,7 @@ class Environment:
                         )
                     )
 
-            self.agent.inform(filtered_collection, feedback)
+            self.agent.inform(filtered_collection)
             self.budget.pause_time()
 
             self.hook_manager.trigger(HookEvent.AFTER_INFORM, transcript_entry)

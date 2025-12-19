@@ -9,7 +9,6 @@ from sklearn.linear_model import SGDRegressor
 from TheCausalityGame.core.contracts.agent import Agent, AgentContext
 from TheCausalityGame.core.contracts.dto.environment import (
     AvailableActions,
-    Feedback,
     RoundInfo,
     SamplesCollection,
 )
@@ -17,6 +16,9 @@ from TheCausalityGame.core.contracts.specs.agent import AgentSpec
 from TheCausalityGame.core.infrastructure.decisions import Decision
 from TheCausalityGame.core.infrastructure.registry import get_class_path
 from TheCausalityGame.core.infrastructure.strategy import Strategy
+
+from ._action_utils import normalize_treatment_value
+from ._stopping import StoppingPolicy
 
 
 class ExhaustiveAgent(Agent):
@@ -33,13 +35,31 @@ class ExhaustiveAgent(Agent):
         Number of interventional samples per treatment value, by default 1.
     """
 
-    def __init__(self, id: str, num_obs: int = 1, num_inter: int = 1) -> None:
+    def __init__(
+        self,
+        id: str,
+        num_obs: int = 1,
+        num_inter: int = 1,
+        *,
+        max_rounds: int | None = None,
+        target_result: float | None = None,
+        target_score: float | None = None,
+        patience: int | None = None,
+        tolerance: float = 1e-6,
+    ) -> None:
         super().__init__()
         rng = np.random.default_rng()
         self.id = id
         self._num_obs = num_obs
         self._num_inter = num_inter
         self._counter = rng.integers(7000, 12500)
+        self._stopping_policy = StoppingPolicy(
+            max_rounds=200000,
+            target_score=target_score if target_score is not None else target_result,
+            patience=patience,
+            tolerance=tolerance,
+        )
+        self._should_answer = False
 
     @override
     def set_context(self, ctx: AgentContext) -> None:
@@ -56,8 +76,15 @@ class ExhaustiveAgent(Agent):
     def act(
         self, round_info: RoundInfo, available_actions: AvailableActions
     ) -> Decision:
-        if round_info.round >= self._counter:
+        if self._stopping_policy.should_stop_on_round(round_info):
+            self._should_answer = True
+
+        if self._should_answer or (
+            self._stopping_policy.max_rounds is None
+            and round_info.round >= self._counter
+        ):
             return Decision.answer()
+
         decision = Decision.experiment()
 
         for var in available_actions.experiments:
@@ -66,37 +93,64 @@ class ExhaustiveAgent(Agent):
             low, high = var.domain
             if isinstance(low, str):  # Categorical variable
                 for val in var.domain:
-                    decision.add_experiment({var.name: val}, n=self._num_inter)
+                    decision.add_experiment(
+                        {var.name: normalize_treatment_value(val)}, n=self._num_inter
+                    )
             else:  # Numerical variable
                 for val in np.linspace(float(low), float(high), num=5):
-                    decision.add_experiment({var.name: val}, n=self._num_inter)
+                    decision.add_experiment(
+                        {var.name: normalize_treatment_value(val)}, n=self._num_inter
+                    )
 
         return decision
 
     @override
-    def inform(self, samples_collection: SamplesCollection, feedback: Feedback) -> None:
-        self.strategy.learn(samples_collection, feedback)
+    def inform(self, samples_collection: SamplesCollection) -> None:
+        self.strategy.learn(samples_collection)
+        score = self._progress_score(samples_collection)
+        if self._stopping_policy.register_progress(score):
+            self._should_answer = True
 
     @override
     def answer(self) -> Any:
         return self.strategy.answer()
 
+    def _progress_score(self, samples_collection: SamplesCollection) -> float | None:
+        """Derived classes may override to provide a scalar progress signal."""
+        return None
+
     @override
     def to_spec(self) -> AgentSpec:
+        params = {
+            "num_obs": self._num_obs,
+            "num_inter": self._num_inter,
+        }
+        for key, value in self._stopping_policy.to_params().items():
+            if value is not None:
+                params[key] = value
+
         return AgentSpec(
             id=self.id,
             class_=get_class_path(self.__class__),
-            params={"num_obs": self._num_obs, "num_inter": self._num_inter},
+            params=params,
         )
 
     @classmethod
     @override
     def from_spec(cls, spec: AgentSpec) -> "ExhaustiveAgent":
         if spec.params:
+            params = spec.params
+            target_score = params.get("target_score")
+            if target_score is None:
+                target_score = params.get("target_result")
             return cls(
                 id=spec.id,
-                num_obs=spec.params["num_obs"],
-                num_inter=spec.params["num_inter"],
+                num_obs=params.get("num_obs", 1),
+                num_inter=params.get("num_inter", 1),
+                max_rounds=params.get("max_rounds"),
+                target_score=target_score,
+                patience=params.get("patience"),
+                tolerance=params.get("tolerance", 1e-6),
             )
 
         return cls(id=spec.id)
@@ -113,7 +167,7 @@ class CATEStrategy(Strategy):
         self._target: str
 
     @override
-    def learn(self, samples: SamplesCollection, feedback: Feedback) -> None:
+    def learn(self, samples: SamplesCollection) -> None:
         """
         Learn from new samples using partial fit.
 
@@ -121,8 +175,6 @@ class CATEStrategy(Strategy):
         ----------
         samples : SamplesCollection
             Collection of observed/intervened data.
-        feedback : Feedback
-            Performance metrics (not used in this strategy).
         """
         if self._model is None:
             self._last = samples

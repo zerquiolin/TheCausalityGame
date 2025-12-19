@@ -75,6 +75,25 @@
             },
             {
                 "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+                "name": "W",
+                "accessibility": "measurable",
+                "domain": [
+                    2,
+                    3
+                ],
+                "parents": [
+                    "Z"
+                ],
+                "parent_mappings": {
+                    "Z": {
+                        "0": 0,
+                        "1": 1
+                    }
+                },
+                "equation": "Z + 2"
+            },
+            {
+                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
                 "name": "Y",
                 "accessibility": "measurable",
                 "domain": [
@@ -82,20 +101,40 @@
                     4
                 ],
                 "parents": [
-                    "X"
+                    "Z",
+                    "X",
+                    "W"
                 ],
-                "equation": "X"
+                "equation": "W + 0.5*X + 3*Z"
             }
         ],
         "dag": {
             "class_": "TheCausalityGame.scm.dag.core:CoreDAG",
+            "nodes": [
+                "Z",
+                "X",
+                "Y",
+                "W"
+            ],
             "edges": [
                 [
                     "Z",
                     "X"
                 ],
                 [
+                    "Z",
+                    "Y"
+                ],
+                [
+                    "Z",
+                    "W"
+                ],
+                [
                     "X",
+                    "Y"
+                ],
+                [
+                    "W",
                     "Y"
                 ]
             ]
@@ -119,7 +158,7 @@
         "execution": "parallel",
         "parallel_backend": "thread",
         "budget": {
-            "rounds": 100000,
+            "rounds": 250000,
             "time_s": 1500,
             "samples": 10000000,
             "memory_mb": 1024

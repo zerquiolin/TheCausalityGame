@@ -8,7 +8,6 @@ from typing import Any, Mapping  # noqa: UP035
 
 from TheCausalityGame.core.contracts.dto.environment import (
     AvailableActions,
-    Feedback,
     RoundInfo,
     SamplesCollection,
 )
@@ -119,7 +118,6 @@ class Agent(Serializable):
     def inform(
         self,
         samples_collection: SamplesCollection,
-        feedback: Feedback,
     ) -> None:
         """
         Receive and process feedback from the environment after an action.
@@ -128,8 +126,6 @@ class Agent(Serializable):
         ----------
         samples_collection : SamplesCollection
             The observational data resulting from the action.
-        feedback : Feedback
-            Metadata about rewards, penalties, or mission-specific signals.
         """
         raise NotImplementedError
 

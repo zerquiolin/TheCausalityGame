@@ -9,7 +9,8 @@ import numpy as np
 
 from TheCausalityGame.core.contracts.dto.environment import AvailableActions
 
-ActionKey = tuple[tuple[str, int | float | str], ...]
+TreatmentValue = int | float | str | tuple[Any, ...]
+ActionKey = tuple[tuple[str, TreatmentValue], ...]
 
 
 def _hashable_value(value: Any) -> Any:
@@ -24,19 +25,21 @@ def _hashable_value(value: Any) -> Any:
     return value
 
 
-def _treatment_value(value: Any) -> Any:
+def normalize_treatment_value(value: Any) -> Any:
     if isinstance(value, (np.integer, int)):
         return int(value)
     if isinstance(value, (np.floating, float)):
         return float(value)
     if isinstance(value, np.ndarray):
-        return tuple(_treatment_value(v) for v in value.tolist())
+        return tuple(normalize_treatment_value(v) for v in value.tolist())
     if isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
-        return tuple(_treatment_value(v) for v in value)
+        return tuple(normalize_treatment_value(v) for v in value)
     return value
 
 
-def _numeric_grid(domain: Iterable[int | float | np.integer | np.floating], num_points: int) -> list[float]:
+def _numeric_grid(
+    domain: Iterable[int | float | np.integer | np.floating], num_points: int
+) -> list[float]:
     numeric_values = [float(v) for v in domain]
     if not numeric_values:
         return []
@@ -48,16 +51,18 @@ def _numeric_grid(domain: Iterable[int | float | np.integer | np.floating], num_
     return [float(v) for v in np.linspace(low, high, num=points)]
 
 
-def make_action_key(treatment: dict[str, int | float | str]) -> ActionKey:
-    return tuple(sorted((name, _hashable_value(value)) for name, value in treatment.items()))
+def make_action_key(treatment: dict[str, TreatmentValue]) -> ActionKey:
+    return tuple(
+        sorted((name, _hashable_value(value)) for name, value in treatment.items())
+    )
 
 
 def collect_single_variable_candidates(
     available_actions: AvailableActions,
     *,
     grid_points: int = 5,
-) -> dict[ActionKey, dict[str, int | float | str]]:
-    candidates: dict[ActionKey, dict[str, int | float | str]] = {}
+) -> dict[ActionKey, dict[str, TreatmentValue]]:
+    candidates: dict[ActionKey, dict[str, TreatmentValue]] = {}
     for variable in available_actions.experiments:
         domain = variable.domain
         if not domain:
@@ -72,7 +77,7 @@ def collect_single_variable_candidates(
             values = domain
 
         for raw_value in values:
-            treatment_value = _treatment_value(raw_value)
+            treatment_value = normalize_treatment_value(raw_value)
             treatment = {variable.name: treatment_value}
             key = make_action_key(treatment)
             candidates[key] = treatment

@@ -1,4 +1,4 @@
-from TheCausalityGame.core.contracts.dto.environment import Feedback, SamplesCollection
+from TheCausalityGame.core.contracts.dto.environment import SamplesCollection
 
 
 class Strategy:
@@ -12,7 +12,7 @@ class Strategy:
     def initialize(self) -> None:
         raise NotImplementedError
 
-    def learn(self, samples: SamplesCollection, feedback: Feedback) -> None:
+    def learn(self, samples: SamplesCollection) -> None:
         raise NotImplementedError
 
     def answer(self) -> None:

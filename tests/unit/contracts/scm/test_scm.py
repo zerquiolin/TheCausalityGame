@@ -100,7 +100,5 @@ def test_data_generation(scm_instance: Any) -> None:  # noqa: ANN401
         df, num_samples=5, random_state=np.random.RandomState(911)
     )
 
-    print("First Result:\n", result)
-    print("Second Result:\n", result_second)
     # Compare
     assert result.equals(result_second)
