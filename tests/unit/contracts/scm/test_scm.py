@@ -7,7 +7,6 @@ import numpy as np
 import pandas as pd
 import pytest
 import sympy as sp
-from core.lib.enum.nodes import NodeAccessibility
 
 from TheCausalityGame.core.contracts.scm import SCM
 from TheCausalityGame.core.contracts.specs.scm import SCMSpec
@@ -15,6 +14,7 @@ from TheCausalityGame.core.infrastructure.registry import (
     build_from_spec,
     load_subclasses_from_path,
 )
+from TheCausalityGame.core.lib.enum.nodes import NodeAccessibility
 from TheCausalityGame.core.lib.utils.tests import (
     assert_dicts_equal,
 )
@@ -33,8 +33,8 @@ def scm_instance(request: Any) -> None:  # noqa: ANN401
     """Test class construction."""
     cls = request.param
     # Arguments for a simple SCM
-    graph = nx.DiGraph()
-    graph.add_edges_from([("a", "F"), ("m", "F")])  # type: ignore
+    graph: nx.DiGraph[str] = nx.DiGraph()
+    graph.add_edges_from([("a", "F"), ("m", "F")])
     dag = CoreDAG(graph=graph)
 
     # Create Nodes

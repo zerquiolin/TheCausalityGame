@@ -40,8 +40,8 @@ from TheCausalityGame.scm.noise.uniform import UniformNoiseDistribution
 def problem_instance(request: Any) -> None:  # noqa: ANN401
     """Test class construction."""
     # Arguments for a simple SCM
-    graph = nx.DiGraph()
-    graph.add_edges_from([("a", "F"), ("m", "F")])  # type: ignore
+    graph: nx.DiGraph[str] = nx.DiGraph()
+    graph.add_edges_from([("a", "F"), ("m", "F")])
     dag = CoreDAG(graph=graph)
 
     # Create Nodes

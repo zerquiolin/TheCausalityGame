@@ -4,9 +4,9 @@ from TheCausalityGame.core.contracts.specs.problem_instance import ProblemInstan
 from TheCausalityGame.core.runtime.runner import Runner
 
 # Get problem instance
-problem_instance_path = "hill.json"
+problem_instance_path = "scripts/problem_instances/cate.json"
 # REad problem instance
-with open(problem_instance_path, "r") as f:
+with open(problem_instance_path) as f:
     problem_instance_spec = json.load(f)
     problem_instance_spec = ProblemInstanceSpec(**problem_instance_spec)
 

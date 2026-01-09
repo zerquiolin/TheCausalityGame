@@ -6,36 +6,18 @@
         {
             "class_": "TheCausalityGame.agent.exhaustive:ExhaustiveAgent",
             "params": {
-                "num_obs": 2,
-                "num_inter": 2
+                "num_obs": 10,
+                "num_inter": 10
             },
             "id": "Exhaustive"
         },
         {
             "class_": "TheCausalityGame.agent.random_agent:RandomAgent",
             "params": {
-                "num_obs": 2,
-                "num_inter": 2
+                "num_obs": 10,
+                "num_inter": 1
             },
             "id": "Random"
-        },
-        {
-            "class_": "TheCausalityGame.agent.intelligent_agent:IntelligentAgent",
-            "params": {
-                "num_obs": 2,
-                "num_inter": 2,
-                "exploration_weight": 1.5
-            },
-            "id": "Intelligent"
-        },
-        {
-            "class_": "TheCausalityGame.agent.reinforcement_learning_agent:ReinforcementLearningAgent",
-            "params": {
-                "num_obs": 2,
-                "num_inter": 2,
-                "epsilon": 0.1
-            },
-            "id": "Reinforcement Learning"
         }
     ],
     "scm": {

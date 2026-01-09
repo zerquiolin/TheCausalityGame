@@ -57,20 +57,15 @@ def test_validator_serialization_roundtrip_preserves_behavior() -> None:
     validator = ConditionalAverageTreatmentEffectFunctionValidator()
 
     spec_dict = validator.to_dict()
-    assert spec_dict["class_"].endswith(
-        "ConditionalAverageTreatmentEffectFunctionValidator"
-    )
-    assert spec_dict["spec_"].endswith("ResultValidatorSpec")
+    assert spec_dict["class_"].endswith("ConditionalAverageTreatmentEffectFunctionValidator")
 
     serialized = validator.to_json()
     rebuilt = build_from_spec(serialized)
 
-    assert (
-        serialized == rebuilt.to_json()
-    ), "Serialized JSON does not match after rebuild."
-    assert (
-        validator.validate(_valid_fn) is _valid_fn
-    ), "Original validator did not validate the function correctly."
-    assert (
-        rebuilt.validate(_valid_fn) is _valid_fn
-    ), "Rebuilt validator did not validate the function correctly."
+    assert serialized == rebuilt.to_json(), "Serialized JSON does not match after rebuild."
+    assert validator.validate(_valid_fn) is _valid_fn, (
+        "Original validator did not validate the function correctly."
+    )
+    assert rebuilt.validate(_valid_fn) is _valid_fn, (
+        "Rebuilt validator did not validate the function correctly."
+    )

@@ -68,7 +68,7 @@ class SamplesCollection(list[Samples]):
 
     def total_bytes(self) -> float:
         """Return the total memory usage (in bytes) of all sample data."""
-        return sum(s.data.memory_usage(deep=True).sum() for s in self)  # type: ignore
+        return sum(s.data.memory_usage(deep=True).sum() for s in self)
 
 
 # === Metric Feedback ===

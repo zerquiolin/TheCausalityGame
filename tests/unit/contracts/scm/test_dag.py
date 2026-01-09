@@ -26,8 +26,8 @@ def dag_instance(request: Any) -> None:  # noqa: ANN401
     """Test class construction."""
     cls = request.param
     # Create simple graph
-    g = nx.DiGraph()
-    g.add_edges_from([("X", "Y"), ("Z", "Y")])  # type: ignore
+    g: nx.DiGraph[str] = nx.DiGraph()
+    g.add_edges_from([("X", "Y"), ("Z", "Y")])
     return cls(g)
 
 
@@ -55,7 +55,7 @@ def test_dag_serialization_roundtrip(dag_instance: Any) -> None:  # noqa: ANN401
 @pytest.mark.parametrize("cls", classes)
 def test_coredag_rejects_cycle(cls: Any) -> None:  # noqa: ANN401
     """Thest that CoreDAG rejects cycles."""
-    g = nx.DiGraph()
-    g.add_edges_from([("A", "B"), ("B", "A")])  # type: ignore
+    g: nx.DiGraph[str] = nx.DiGraph()
+    g.add_edges_from([("A", "B"), ("B", "A")])
     with pytest.raises(Exception):  # noqa: B017
         _ = cls(graph=g)
