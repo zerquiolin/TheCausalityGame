@@ -11,11 +11,10 @@ from TheCausalityGame.core.lib.enum.hook import HookEvent
 
 
 class AgentsComparisonPlotHook(Hook):
-
     id: str = "Agent Comparison"
     step: HookEvent = HookEvent.BENCHMARK_END
 
-    def _plot_scores(self, name: str, b_score: float, d_score: float, ax):
+    def _plot_scores(self, name: str, b_score: float, d_score: float, ax):  # type: ignore # noqa: ANN001
         """
         Scatter plot of final behavior vs. deliverable scores.
 
@@ -26,14 +25,14 @@ class AgentsComparisonPlotHook(Hook):
             ax (Axes): Matplotlib axes object.
         """
         # Plot point with a specific facecolor (e.g., for auto-colors by label)
-        point = ax.scatter(b_score, d_score, s=100, label=name)
+        point = ax.scatter(b_score, d_score, s=100, label=name)  # type: ignore
 
         # Use the facecolor of the point for the label text
-        ax.text(
+        ax.text(  # type: ignore
             b_score,
             d_score,
             f"({b_score:.2f}, {d_score:.2f})",
-            color=point.get_facecolor()[0],  # get the RGBA tuple
+            color=point.get_facecolor()[0],  # get the RGBA tuple # type: ignore
             fontsize=10,
             ha="left",
             va="center",
@@ -62,13 +61,11 @@ class AgentsComparisonPlotHook(Hook):
             va="center",
         )
         ax.set_ylabel(ylabel)
-        ax.set_yscale("log")
-        ax.set_xscale("log")
+        # ax.set_yscale("log")
+        # ax.set_xscale("log")
 
     @override
-    def run(
-        self, hooks_dir: Path, context: dict[str, Transcript] | TranscriptEntry | None
-    ) -> None:
+    def run(self, hooks_dir: Path, context: dict[str, Transcript] | TranscriptEntry | None) -> None:
         if context is None or not isinstance(context, dict):
             return
 
@@ -97,9 +94,7 @@ class AgentsComparisonPlotHook(Hook):
             )
 
         # Set common axis labels and formatting
-        for ax, xlabel in zip(
-            axes, ["Behavior Score", "Number of Rounds", "Number of Rounds"]
-        ):
+        for ax, xlabel in zip(axes, ["Behavior Score", "Number of Rounds", "Number of Rounds"]):
             ax.set_xlabel(xlabel)
             ax.grid(True, linestyle="--", alpha=0.7)
 

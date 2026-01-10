@@ -17,34 +17,44 @@
     "vars": [
         {
             "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-            "name": "P",
-            "equation": "R*T*n/V",
-            "domain": [0, 1e100]
-        },
-        {
-            "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-            "name": "n",
-            "domain": [0, 1e11]
+            "name": "V",
+            "domain": [-10e10, 10e10],
+            "accessibility": "controllable"
         },
         {
             "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
             "name": "R",
-            "domain": [0, 1e11]
+            "domain": [0.1, 10e10],
+            "accessibility": "controllable"
         },
         {
             "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-            "name": "T",
-            "domain": [0, 1e11]
+            "name": "C",
+            "domain": [0.1, 10e10],
+            "accessibility": "controllable"
         },
         {
             "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-            "name": "V",
-            "domain": [0.000001, 1e11]
+            "name": "q",
+            "domain": [-10e10, 10e10],
+            "accessibility": "controllable"
+        },
+        {
+            "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+            "name": "Vc",
+            "domain": [-10e10, 10e10],
+            "equation": "q/C"
+        },
+        {
+            "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+            "name": "I",
+            "domain": [-10e10, 10e10],
+            "equation": "(V - Vc)/R"
         }
     ],
     "dag": {
         "class_": "TheCausalityGame.scm.dag.core:CoreDAG",
-        "edges": [["V", "P"], ["T", "P"], ["R", "P"], ["n", "P"]]
+        "edges": [["C", "Vc"], ["q", "Vc"], ["V", "I"], ["Vc", "I"], ["R", "I"]]
     }
 },
     "mission": {

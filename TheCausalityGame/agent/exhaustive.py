@@ -7,6 +7,8 @@ from typing import Any, override
 import numpy as np
 
 from TheCausalityGame.agent.strategies.cate_strategy import CATEStrategy
+from TheCausalityGame.agent.strategies.dag_strategy import DAGDiscoveryStrategy
+from TheCausalityGame.agent.strategies.scm_strategy import SCMDiscoveryStrategy
 from TheCausalityGame.core.contracts.agent import Agent, AgentContext
 from TheCausalityGame.core.contracts.dto.environment import (
     AvailableActions,
@@ -51,7 +53,9 @@ class ExhaustiveAgent(Agent):
         self._context = ctx
 
         strategies: dict[str, Strategy] = {
-            "Conditional Average Treatment Effect Mission": CATEStrategy()
+            "Conditional Average Treatment Effect Mission": CATEStrategy(),
+            "DAG Discovery Mission": DAGDiscoveryStrategy(),
+            "SCM Estimation Mission": SCMDiscoveryStrategy(),
         }
 
         self.strategy = strategies[self._context.mission["name"]]

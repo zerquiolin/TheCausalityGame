@@ -17,47 +17,37 @@
     "vars": [
         {
             "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-            "name": "P",
-            "equation": "R*T*n/V",
-            "domain": [0, 1e100]
-        },
-        {
-            "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-            "name": "n",
+            "name": "m",
             "domain": [0, 1e11]
         },
         {
             "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-            "name": "R",
-            "domain": [0, 1e11]
+            "name": "a",
+            "domain": [-1e11, 1e11]
         },
         {
             "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-            "name": "T",
-            "domain": [0, 1e11]
-        },
-        {
-            "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-            "name": "V",
-            "domain": [0.000001, 1e11]
+            "name": "F",
+            "equation": "a*m",
+            "domain": [-1e11, 1e23]
         }
     ],
     "dag": {
         "class_": "TheCausalityGame.scm.dag.core:CoreDAG",
-        "edges": [["V", "P"], ["T", "P"], ["R", "P"], ["n", "P"]]
+        "edges": [["m", "F"], ["a", "F"]]
     }
 },
     "mission": {
-        "class_": "TheCausalityGame.mission.dag_discovery:DAGDiscoveryMission",
-        "id": "dag_discovery_mission",
+        "class_": "TheCausalityGame.mission.scm_estimation:SCMEstimationMission",
+        "id": "scm_estimation_mission",
         "behavior_metric": {
             "class_": "TheCausalityGame.metric.behavior.resource_usage:ResourceUsageBehaviorMetric"
         },
         "result_metric": {
-            "class_": "TheCausalityGame.metric.result.shd:SHDResultMetric"
+            "class_": "TheCausalityGame.metric.result.scm_combined_score:SCMCombinedScoreResultMetric"
         },
         "result_validator": {
-            "class_": "TheCausalityGame.metric.result.result_validator.dag_validator:DAGResultValidator"
+            "class_": "TheCausalityGame.metric.result.result_validator.scm_validator:SCMResultValidator"
         }
     },
     "custom_metrics": [],
@@ -65,7 +55,7 @@
         "execution": "parallel",
         "parallel_backend": "thread",
         "budget": {
-            "rounds": 10000,
+            "rounds": 1000,
             "time_s": 1500,
             "samples": 10000000,
             "memory_mb": 1024
@@ -73,10 +63,6 @@
         "hook_plan": [
             {
                 "class_": "TheCausalityGame.hook.plots.agent_comparison_plot:AgentsComparisonPlotHook",
-                "step": "benchmark_end"
-            },
-            {
-                "class_": "TheCausalityGame.hook.plots.final_dag_per_agent:FinalDAGPerAgent",
                 "step": "benchmark_end"
             }
         ]

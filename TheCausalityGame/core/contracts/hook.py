@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import override
 
 from TheCausalityGame.core.contracts.dto.transcript import Transcript, TranscriptEntry
 from TheCausalityGame.core.contracts.serializable import Serializable
+from TheCausalityGame.core.contracts.specs.hook import HookSpec
+from TheCausalityGame.core.infrastructure.registry import get_class_path
 from TheCausalityGame.core.lib.enum.hook import HookEvent
 
 
@@ -27,9 +30,7 @@ class Hook(Serializable):
     step: HookEvent
     _spec: str = "TheCausalityGame.core.contracts.specs.hook:HookSpec"
 
-    def run(
-        self, hooks_dir: Path, context: dict[str, Transcript] | TranscriptEntry | None
-    ) -> None:
+    def run(self, hooks_dir: Path, context: dict[str, Transcript] | TranscriptEntry | None) -> None:
         """
         Return the list of events this hook should be notified about.
 
@@ -41,3 +42,16 @@ class Hook(Serializable):
             The current context of the game transcript.
         """
         raise NotImplementedError
+
+    @override
+    def to_spec(self) -> HookSpec:
+        return HookSpec(
+            class_=get_class_path(self.__class__),
+            id=self.id,
+            step=self.step,
+        )
+
+    @classmethod
+    @override
+    def from_spec(cls, spec: HookSpec) -> Hook:
+        return cls()

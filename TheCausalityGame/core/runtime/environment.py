@@ -98,8 +98,7 @@ class Environment:
         self.measurable_nodes = [
             node.name
             for node in self.scm.nodes.values()
-            if node.accessibility
-            in {NodeAccessibility.MEASURABLE, NodeAccessibility.CONTROLLABLE}
+            if node.accessibility in {NodeAccessibility.MEASURABLE, NodeAccessibility.CONTROLLABLE}
         ]
 
         # Seeded random states per treatment
@@ -197,17 +196,11 @@ class Environment:
             treatment, n = experiment.treatment, experiment.n
             self._validate_experiment(experiment)
 
-            hashed = (
-                tuple(sorted(treatment.items()))
-                if treatment
-                else SamplesKind.OBSERVATIONAL
-            )
+            hashed = tuple(sorted(treatment.items())) if treatment else SamplesKind.OBSERVATIONAL
             if hashed not in self.random_states:
                 seed = zlib.crc32(str(hashed).encode())
                 base_rs = np.random.RandomState(seed)
-                self.random_states[hashed] = (
-                    self.scm.prepare_new_random_state_structure(base_rs)
-                )
+                self.random_states[hashed] = self.scm.prepare_new_random_state_structure(base_rs)
 
             samples = self.scm.generate_samples(
                 interventions=treatment,
@@ -242,9 +235,7 @@ class Environment:
             if node.accessibility != NodeAccessibility.CONTROLLABLE:
                 raise NonControllableVariableError(name)
             low, high = node.domain
-            if isinstance(value, int | float) and not (
-                float(low) <= float(value) <= float(high)
-            ):
+            if isinstance(value, int | float) and not (float(low) <= float(value) <= float(high)):
                 raise ExperimentOutOfDomainError(name, value, node.domain)
 
         return True
@@ -266,9 +257,7 @@ class Environment:
             if isinstance(metric, BehaviorMetric):
                 score = metric.evaluate(transcript)
             elif isinstance(metric, ResultMetric):
-                score = metric.evaluate(
-                    kind=self.mission.result_validator.kind, result=result
-                )
+                score = metric.evaluate(kind=self.mission.result_validator.kind, result=result)
             else:
                 raise UnsupportedMetricTypeError(metric_type=type(metric).__name__)
             custom_scores[metric.name] = score
