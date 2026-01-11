@@ -5,11 +5,17 @@
 import itertools
 import logging
 from collections.abc import Iterable
+from typing import Optional
 
 import networkx as nx
 import numpy as np
 import pandas as pd
 from scipy.stats import chi2_contingency, combine_pvalues, ks_2samp, pearsonr  # type: ignore
+
+# Optional: ML regressors for nonlinear conditional-independence testing
+from sklearn.ensemble import HistGradientBoostingRegressor
+
+_SKLEARN_AVAILABLE = True
 
 from TheCausalityGame.core.contracts.dto.environment import SamplesCollection
 from TheCausalityGame.core.infrastructure.strategy import Strategy  # adjust import if needed
@@ -18,36 +24,6 @@ from TheCausalityGame.core.infrastructure.strategy import Strategy  # adjust imp
 # ---------------------------------------------------------------------
 # Conditional independence tests
 # ---------------------------------------------------------------------
-# def ci_test_gaussian(df: pd.DataFrame, x: str, y: str, z: Iterable[str], alpha: float) -> bool:
-#     """
-#     Gaussian CI test via partial correlation using residualization (with intercept).
-
-#     Returns True if independent at level alpha.
-#     """
-#     z = list(z)
-#     sub = df[[x, y, *z]].dropna()
-#     if sub.shape[0] < 5:  # noqa: PLR2004
-#         return True  # not enough data -> treat as independent (conservative wrt edges)
-
-#     if len(z) == 0:
-#         _, p = pearsonr(sub[x].to_numpy(), sub[y].to_numpy())
-#         return p > alpha
-
-#     Z = sub[z].to_numpy()  # noqa: N806
-#     # Add intercept
-#     Z = np.column_stack([np.ones(Z.shape[0]), Z])
-
-#     def resid(target: str) -> np.ndarray:
-#         yv = sub[target].to_numpy()
-#         coef, _, _, _ = np.linalg.lstsq(Z, yv, rcond=None)
-#         return yv - Z @ coef
-
-#     rx = resid(x)
-#     ry = resid(y)
-#     _, p = pearsonr(rx, ry)
-#     return p > alpha
-
-
 def ci_test_gaussian(df: pd.DataFrame, x: str, y: str, z: Iterable[str], alpha: float) -> bool:
     """Gaussian CI test via partial correlation using residualization (defensive).
 
@@ -101,6 +77,131 @@ def ci_test_gaussian(df: pd.DataFrame, x: str, y: str, z: Iterable[str], alpha: 
     ry = _residuals(y)
 
     p = _pval_safe(rx, ry)
+    return p > alpha
+
+
+# ---------------------------------------------------------------------
+# Nonlinear conditional independence (CI) for continuous variables
+# ---------------------------------------------------------------------
+
+
+def _rbf_kernel(x: np.ndarray, sigma: Optional[float] = None) -> np.ndarray:
+    x = np.asarray(x, dtype=float).reshape(-1, 1)
+    n = x.shape[0]
+    if n <= 1:
+        return np.zeros((n, n), dtype=float)
+
+    # Pairwise squared distances
+    d2 = (x - x.T) ** 2
+
+    if sigma is None:
+        # Median heuristic
+        tri = d2[np.triu_indices(n, k=1)]
+        med = float(np.median(tri)) if tri.size else 1.0
+        sigma = np.sqrt(max(med, 1e-12))
+
+    gamma = 1.0 / (2.0 * (sigma**2) + 1e-12)
+    return np.exp(-gamma * d2)
+
+
+def _hsic_stat(x: np.ndarray, y: np.ndarray) -> float:
+    """Unbiased-ish HSIC using RBF kernels and centering."""
+    x = np.asarray(x, dtype=float).ravel()
+    y = np.asarray(y, dtype=float).ravel()
+    n = x.shape[0]
+    if n < 5:
+        return 0.0
+    if np.std(x) == 0.0 or np.std(y) == 0.0:
+        return 0.0
+
+    K = _rbf_kernel(x)
+    L = _rbf_kernel(y)
+
+    H = np.eye(n) - np.ones((n, n)) / n
+    Kc = H @ K @ H
+    Lc = H @ L @ H
+
+    return float(np.trace(Kc @ Lc) / (n - 1) ** 2)
+
+
+def _hsic_pvalue(x: np.ndarray, y: np.ndarray, *, n_perm: int = 50, seed: int = 0) -> float:
+    """Permutation p-value for HSIC."""
+    x = np.asarray(x, dtype=float).ravel()
+    y = np.asarray(y, dtype=float).ravel()
+    n = x.shape[0]
+    if n < 10:
+        return 1.0
+
+    obs = _hsic_stat(x, y)
+    rng = np.random.default_rng(seed)
+    ge = 0
+    for _ in range(n_perm):
+        yp = rng.permutation(y)
+        if _hsic_stat(x, yp) >= obs:
+            ge += 1
+    return float((ge + 1) / (n_perm + 1))
+
+
+def ci_test_continuous_nonlinear(
+    df: pd.DataFrame,
+    x: str,
+    y: str,
+    z: Iterable[str],
+    alpha: float,
+    *,
+    n_perm: int = 200,
+    seed: int = 0,
+) -> bool:
+    """Nonlinear CI test: X ⟂ Y | Z.
+
+    Procedure:
+    1) Build a design matrix for Z (one-hot for categoricals).
+    2) Fit flexible regressors x~Z and y~Z (HGBR if sklearn available; else linear).
+    3) Compute residuals r_x, r_y.
+    4) Test r_x ⟂ r_y via HSIC permutation test.
+
+    Returns True if independent at level alpha.
+    """
+    z = list(z)
+    cols = [x, y] + z
+    sub = df[cols].copy()
+
+    # Coerce x/y to numeric
+    sub[x] = pd.to_numeric(sub[x], errors="coerce")
+    sub[y] = pd.to_numeric(sub[y], errors="coerce")
+    for c in z:
+        # leave Z as-is; we will one-hot it
+        pass
+
+    sub = sub.replace([np.inf, -np.inf], np.nan).dropna()
+    if sub.shape[0] < 30:
+        # Too little data => do not delete edges
+        return False
+
+    if len(z) == 0:
+        p = _hsic_pvalue(sub[x].to_numpy(), sub[y].to_numpy(), n_perm=n_perm, seed=seed)
+        return p > alpha
+
+    Zdf = pd.get_dummies(sub[z], drop_first=False)
+    Zm = Zdf.to_numpy(dtype=float)
+
+    def _fit_and_resid(target: str) -> np.ndarray:
+        yt = sub[target].to_numpy(dtype=float)
+        if _SKLEARN_AVAILABLE and HistGradientBoostingRegressor is not None:
+            model = HistGradientBoostingRegressor(max_depth=3, learning_rate=0.1, random_state=seed)
+            model.fit(Zm, yt)
+            yhat = model.predict(Zm)
+        else:
+            # Fallback linear residualization with intercept
+            X = np.column_stack([np.ones(Zm.shape[0]), Zm])
+            coef, *_ = np.linalg.lstsq(X, yt, rcond=None)
+            yhat = X @ coef
+        return yt - yhat
+
+    rx = _fit_and_resid(x)
+    ry = _fit_and_resid(y)
+
+    p = _hsic_pvalue(rx, ry, n_perm=n_perm, seed=seed)
     return p > alpha
 
 
@@ -162,7 +263,8 @@ def pc_skeleton(  # type: ignore
 
     def ci_indep(X: str, Y: str, Z: Iterable[str]) -> bool:  # noqa: N803
         if is_numerical:
-            return ci_test_gaussian(obs_df, X, Y, Z, alpha)
+            # Nonlinear CI is needed for mechanisms like q/C or (V-Vc)/R.
+            return ci_test_continuous_nonlinear(obs_df, X, Y, Z, alpha, n_perm=50, seed=0)
         return ci_test_discrete_chi2_stratified(obs_df, X, Y, Z, alpha)
 
     l = 0  # noqa: E741
@@ -233,15 +335,15 @@ def apply_meek_r1(skeleton: nx.Graph, directed: set[tuple[str, str]]) -> set[tup
         changed = False
 
         # undirected edges are those in skeleton not already oriented
-        undirected_edges = [
+        undirected_edges = sorted(
             (u, v)
             for (u, v) in skeleton.edges()
             if (u, v) not in directed and (v, u) not in directed
-        ]
+        )
 
         for Y, Z in undirected_edges:
             # look for some X such that X -> Y and X not adj Z
-            for X, Y2 in list(directed):
+            for X, Y2 in sorted(directed):
                 if Y2 != Y:
                     continue
                 if not is_adj(X, Z):
@@ -309,46 +411,92 @@ def learn_dag_from_samples(
     directed = orient_v_structures(skeleton, sep_sets)
     directed = apply_meek_r1(skeleton, directed)
 
-    # Now use interventions to orient remaining undirected edges
-    # We assume interventions are single-variable do(X=...) regimes,
-    # stored under key X with a list of dataframes for that regime.
+    pooled_interventions: dict[str, pd.DataFrame] = {}
+    for var, batches in interventional_batches.items():
+        if not batches:
+            continue
+        pooled_interventions[var] = pd.concat(batches, axis=0, ignore_index=True, sort=False)
+
+    # -----------------------------------------------------------------
+    # Interventions: (i) orient remaining skeleton edges, and
+    # (ii) add missing edges using an intervention-derived partial order.
+    #
+    # Key causal fact (under causal sufficiency + perfect interventions):
+    # If do(X) changes the distribution of Y, then X is an ancestor of Y.
+    # We use this to recover edges that PC may miss under nonlinear/deterministic mechanisms.
+    # To avoid adding mediated edges (e.g., C -> I when C -> Vc -> I),
+    # we perform a simple transitive reduction on the "affects" relation.
+    # -----------------------------------------------------------------
+
+    # Build affects[X][Y] from pooled interventions
+    vars_ = list(obs_df.columns)
+    affects: dict[str, set[str]] = {v: set() for v in vars_}
+
+    for X, x_int in pooled_interventions.items():
+        if x_int is None or x_int.empty:
+            continue
+        for Y in vars_:
+            if Y == X:
+                continue
+            if Y not in x_int.columns or Y not in obs_df.columns:
+                continue
+            # Does do(X) change Y?
+            if is_numerical:
+                base = pd.to_numeric(obs_df[Y], errors="coerce").dropna().to_numpy(dtype=float)
+                inter = pd.to_numeric(x_int[Y], errors="coerce").dropna().to_numpy(dtype=float)
+                if base.size < 20 or inter.size < 20:
+                    continue
+                _, p = ks_2samp(base, inter)
+                if p < alpha:
+                    affects[X].add(Y)
+            else:
+                base = obs_df[Y].dropna()
+                inter = x_int[Y].dropna()
+                if base.empty or inter.empty:
+                    continue
+                # 2xK chi-square on counts
+                base_counts = base.value_counts()
+                inter_counts = inter.value_counts()
+                cats = sorted(set(base_counts.index).union(set(inter_counts.index)))
+                a = np.array([base_counts.get(c, 0) for c in cats], dtype=float)
+                b = np.array([inter_counts.get(c, 0) for c in cats], dtype=float)
+                table = np.vstack([a, b])
+                if table.sum() > 0 and table[0].sum() > 0 and table[1].sum() > 0:
+                    _, p, _, _ = chi2_contingency(table)
+                    if p < alpha:
+                        affects[X].add(Y)
+
+    # (A) Orient remaining skeleton edges using affects relation
     remaining_undirected = [
         (u, v) for (u, v) in skeleton.edges() if (u, v) not in directed and (v, u) not in directed
     ]
 
     for X, Y in remaining_undirected:
-        # Check evidence X -> Y: does intervening on X change Y?
-        x_batches = interventional_batches.get(X, [])
-        y_batches = interventional_batches.get(Y, [])
-
-        x_affects_y = False
-        for df_int in x_batches:
-            if Y not in df_int.columns:
-                continue
-            if is_numerical:
-                x_affects_y |= intervention_changes_target_numeric(obs_df[Y], df_int[Y], alpha)
-            else:
-                x_affects_y |= intervention_changes_target_discrete(obs_df[Y], df_int[Y], alpha)
-            if x_affects_y:
-                break
-
-        y_affects_x = False
-        for df_int in y_batches:
-            if X not in df_int.columns:
-                continue
-            if is_numerical:
-                y_affects_x |= intervention_changes_target_numeric(obs_df[X], df_int[X], alpha)
-            else:
-                y_affects_x |= intervention_changes_target_discrete(obs_df[X], df_int[X], alpha)
-            if y_affects_x:
-                break
-
-        # If only one direction has evidence, orient it
+        x_affects_y = Y in affects.get(X, set())
+        y_affects_x = X in affects.get(Y, set())
         if x_affects_y and not y_affects_x:
             directed.add((X, Y))
         elif y_affects_x and not x_affects_y:
             directed.add((Y, X))
-        # else: ambiguous -> leave out (or keep undirected if your game supports it)
+
+    # (B) Add missing edges by transitive reduction of the affects relation
+    # Add X->Y if X affects Y and there is no mediator Z such that X affects Z and Z affects Y.
+    extra_direct: set[tuple[str, str]] = set()
+    for X in vars_:
+        for Y in affects.get(X, set()):
+            if X == Y:
+                continue
+            mediated = False
+            for Z in vars_:
+                if Z == X or Z == Y:
+                    continue
+                if Z in affects.get(X, set()) and Y in affects.get(Z, set()):
+                    mediated = True
+                    break
+            if not mediated:
+                extra_direct.add((X, Y))
+
+    directed |= extra_direct
 
     # Build final DAG (we omit ambiguous edges)
     G = nx.DiGraph()

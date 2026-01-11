@@ -2,26 +2,21 @@
 
 from __future__ import annotations
 
-from typing import Any, override
+from typing import override
 
 import numpy as np
 
-from TheCausalityGame.agent.strategies.cate_strategy import CATEStrategy
-from TheCausalityGame.agent.strategies.dag_strategy import DAGDiscoveryStrategy
-from TheCausalityGame.agent.strategies.scm_strategy import SCMDiscoveryStrategy
-from TheCausalityGame.core.contracts.agent import Agent, AgentContext
+from TheCausalityGame.agent.common import CommonAgent
 from TheCausalityGame.core.contracts.dto.environment import (
     AvailableActions,
     RoundInfo,
-    SamplesCollection,
 )
 from TheCausalityGame.core.contracts.specs.agent import AgentSpec
 from TheCausalityGame.core.infrastructure.decisions import Decision
 from TheCausalityGame.core.infrastructure.registry import get_class_path
-from TheCausalityGame.core.infrastructure.strategy import Strategy
 
 
-class ExhaustiveAgent(Agent):
+class ExhaustiveAgent(CommonAgent):
     """
     Agent that performs exhaustive experimentation and learns conditional treatment effects.
 
@@ -41,25 +36,10 @@ class ExhaustiveAgent(Agent):
         num_obs: int = 1,
         num_inter: int = 1,
     ) -> None:
-        rng = np.random.default_rng()
         self.id = id
         self._num_obs = num_obs
         self._num_inter = num_inter
-        self._counter = rng.integers(7000, 12500)
-        self._should_answer = False
-
-    @override
-    def set_context(self, ctx: AgentContext) -> None:
-        self._context = ctx
-
-        strategies: dict[str, Strategy] = {
-            "Conditional Average Treatment Effect Mission": CATEStrategy(),
-            "DAG Discovery Mission": DAGDiscoveryStrategy(),
-            "SCM Estimation Mission": SCMDiscoveryStrategy(),
-        }
-
-        self.strategy = strategies[self._context.mission["name"]]
-        self.strategy.initialize()
+        self.rng = np.random.default_rng()
 
     @override
     def act(self, round_info: RoundInfo, available_actions: AvailableActions) -> Decision:
@@ -72,18 +52,16 @@ class ExhaustiveAgent(Agent):
                 for val in var.domain:
                     decision.add_experiment({var.name: val}, n=self._num_inter)
             else:  # Numerical variable
-                for val in np.linspace(float(low), float(high), num=5):
-                    decision.add_experiment({var.name: val}, n=self._num_inter)
+                # decision.add_experiment({var.name: low}, n=self._num_inter)
+                # decision.add_experiment({var.name: high}, n=self._num_inter)
+                # for val in np.linspace(float(low), float(high), num=3):
+                #     decision.add_experiment({var.name: val}, n=self._num_inter)
+                for _ in range(5):
+                    decision.add_experiment(
+                        {var.name: self.rng.uniform(float(low), float(high))}, n=self._num_inter
+                    )
 
         return decision
-
-    @override
-    def inform(self, samples_collection: SamplesCollection) -> None:
-        self.strategy.learn(samples_collection)
-
-    @override
-    def answer(self) -> Any:
-        return self.strategy.answer()
 
     @override
     def to_spec(self) -> AgentSpec:

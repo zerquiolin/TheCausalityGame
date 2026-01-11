@@ -7,6 +7,7 @@ from typing import Any, override
 
 import networkx as nx
 import numpy as np
+import pandas as pd
 
 from TheCausalityGame.agent.strategies.scm_strategy import EstimatedANMSCM
 from TheCausalityGame.core.contracts.mission import ResultMetric
@@ -131,49 +132,139 @@ class SCMCombinedScoreResultMetric(ResultMetric):
 
         shd_score = float(missing + extra + reversal_cost * reversed_)
 
-        # Evaluate the accuracy of the estimated SCM in generating data
+        # print(f"SHD Score: {shd_score} (missing: {missing}, extra: {extra}, reversed: {reversed_})")
 
-        # Select a random variable to intervene on
-        num_samples = 10
-        intervention_var = self.rng.choice(self.scm.controllable_vars)
-        low, high = self.scm.nodes[intervention_var].domain
-        value = self.rng.uniform(float(low), float(high))
-        true_samples = self.scm.generate_samples(
-            num_samples=num_samples,
-            interventions={intervention_var: value},
-        )
-        estimated_samples = result.generate_samples(
-            num_samples=num_samples,
-            interventions={intervention_var: value},
-        )
-        # Compute mean squared error for all variables except the intervention variable
-        mse = 0.0
-        count = 0
-        for var in self.scm.vars:
-            if var == intervention_var:
-                continue
-            true_values = true_samples[var].values
+        # Evaluate the accuracy of the estimated SCM in generating data.
+        # IMPORTANT: comparing sample i to sample i across two independently-sampled SCMs
+        # produces a very noisy score that does not converge to 0 even for a perfect model.
+        # Instead we compare *distributional* summaries under interventions.
 
-            if var not in estimated_samples.columns:
-                # If the estimator didn't produce this variable, penalize heavily.
-                # Use the true variance scale as a proxy penalty.
-                mse += float(np.mean(true_values**2))
-                count += 1
-                continue
+        eps = 1e-12
+        num_samples = int(getattr(self, "num_samples", 256))
+        num_trials = int(getattr(self, "num_trials", 5))
 
-            estimated_values = estimated_samples[var].values
-            estimated_values = np.nan_to_num(estimated_values, nan=0.0, posinf=0.0, neginf=0.0)
-            mse += float(np.mean((true_values - estimated_values) ** 2))
-            count += 1
-        if count > 0:
-            mse /= count
+        def _is_numeric(arr: np.ndarray) -> bool:
+            try:
+                a = arr.astype(float)
+                return np.isfinite(a).mean() > 0.95
+            except Exception:
+                return False
+
+        def _moment_score(true_arr: np.ndarray, est_arr: np.ndarray) -> float:
+            """Scale-normalized mean/variance error for numeric variables."""
+            t = np.asarray(true_arr, dtype=float)
+            e = np.asarray(est_arr, dtype=float)
+            t = t[np.isfinite(t)]
+            e = e[np.isfinite(e)]
+            if t.size < 5 or e.size < 5:
+                return 1.0
+
+            mu_t = float(t.mean())
+            mu_e = float(e.mean())
+            var_t = float(t.var())
+            var_e = float(e.var())
+
+            # normalized mean-squared error (scale-invariant)
+            mean_term = ((mu_t - mu_e) ** 2) / (var_t + eps)
+            # normalized variance error
+            var_term = ((var_t - var_e) ** 2) / ((var_t**2) + eps)
+            return float(mean_term + var_term)
+
+        def _categorical_l1(true_arr: np.ndarray, est_arr: np.ndarray) -> float:
+            """L1 distance between empirical category probabilities."""
+            t = np.asarray(true_arr, dtype=object)
+            e = np.asarray(est_arr, dtype=object)
+            # Drop missing
+            t = t[pd.notna(t)] if "pd" in globals() else t[t != None]  # noqa: E711
+            e = e[pd.notna(e)] if "pd" in globals() else e[e != None]  # noqa: E711
+            if t.size == 0 or e.size == 0:
+                return 1.0
+            cats = set(t.tolist()) | set(e.tolist())
+            if not cats:
+                return 1.0
+            t_counts = {c: 0 for c in cats}
+            e_counts = {c: 0 for c in cats}
+            for v in t.tolist():
+                t_counts[v] += 1
+            for v in e.tolist():
+                e_counts[v] += 1
+            t_total = float(len(t))
+            e_total = float(len(e))
+            l1 = 0.0
+            for c in cats:
+                l1 += abs((t_counts[c] / t_total) - (e_counts[c] / e_total))
+            return float(l1)
+
+        scm_score = 0.0
+        trial_count = 0
+
+        for _ in range(num_trials):
+            # Select a random variable to intervene on
+            intervention_var = self.rng.choice(self.scm.controllable_vars)
+            low, high = self.scm.nodes[intervention_var].domain
+            value = self.rng.uniform(float(low), float(high))
+
+            true_samples = self.scm.generate_samples(
+                num_samples=num_samples,
+                interventions={intervention_var: value},
+            )
+
+            # Estimated SCM: prefer deterministic generation if available to reduce variance
+            try:
+                estimated_samples = result.generate_samples(
+                    num_samples=num_samples,
+                    interventions={intervention_var: value},
+                    deterministic=True,
+                )
+            except TypeError:
+                estimated_samples = result.generate_samples(
+                    num_samples=num_samples,
+                    interventions={intervention_var: value},
+                )
+
+            # Score all variables except the intervened one
+            per_trial = 0.0
+            per_count = 0
+
+            for var in self.scm.vars:
+                if var == intervention_var:
+                    continue
+
+                if var not in true_samples.columns:
+                    continue
+
+                true_values = true_samples[var].values
+
+                if var not in estimated_samples.columns:
+                    # Missing variable output is a hard failure
+                    per_trial += 5.0
+                    per_count += 1
+                    continue
+
+                est_values = estimated_samples[var].values
+
+                if _is_numeric(true_values) and _is_numeric(est_values):
+                    per_trial += _moment_score(true_values, est_values)
+                else:
+                    per_trial += _categorical_l1(true_values, est_values)
+
+                per_count += 1
+
+            if per_count > 0:
+                scm_score += per_trial / per_count
+                trial_count += 1
+
+        if trial_count > 0:
+            scm_score /= trial_count
         else:
-            mse = float("inf")
+            scm_score = float("inf")
 
-        # Combine SHD score and MSE into a final score
+        # Combine SHD score and SCM distributional score.
+        # Default: mostly SCM fit, with optional small SHD weight.
         alpha = 0.5
-        final_score = alpha * shd_score + (1 - alpha) * mse
+        final_score = alpha * scm_score + (1 - alpha) * shd_score
         return float(final_score)
+        # return float(scm_score)
 
     @override
     def to_spec(self) -> MetricSpec:

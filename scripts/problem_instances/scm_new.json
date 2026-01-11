@@ -5,11 +5,11 @@
     "agents": [
         {
             "class_": "TheCausalityGame.agent.exhaustive:ExhaustiveAgent",
-            "params": {
-                "num_obs": 10,
-                "num_inter": 10
-            },
             "id": "Exhaustive"
+        },
+        {
+            "class_": "TheCausalityGame.agent.random:RandomAgent",
+            "id": "Random"
         }
     ],
     "scm": {
@@ -58,16 +58,16 @@
     }
 },
     "mission": {
-        "class_": "TheCausalityGame.mission.dag_discovery:DAGDiscoveryMission",
-        "id": "dag_discovery_mission",
+        "class_": "TheCausalityGame.mission.scm_estimation:SCMEstimationMission",
+        "id": "scm_estimation_mission",
         "behavior_metric": {
             "class_": "TheCausalityGame.metric.behavior.resource_usage:ResourceUsageBehaviorMetric"
         },
         "result_metric": {
-            "class_": "TheCausalityGame.metric.result.shd:SHDResultMetric"
+            "class_": "TheCausalityGame.metric.result.scm_combined_score:SCMCombinedScoreResultMetric"
         },
         "result_validator": {
-            "class_": "TheCausalityGame.metric.result.result_validator.dag_validator:DAGResultValidator"
+            "class_": "TheCausalityGame.metric.result.result_validator.scm_validator:SCMResultValidator"
         }
     },
     "custom_metrics": [],
@@ -76,17 +76,13 @@
         "parallel_backend": "thread",
         "budget": {
             "rounds": 75,
-            "time_s": 1500,
+            "time_s": 150000,
             "samples": 10000000,
-            "memory_mb": 1024
+            "memory_mb": 5024
         },
         "hook_plan": [
             {
                 "class_": "TheCausalityGame.hook.plots.agent_comparison_plot:AgentsComparisonPlotHook",
-                "step": "benchmark_end"
-            },
-            {
-                "class_": "TheCausalityGame.hook.plots.final_dag_per_agent:FinalDAGPerAgent",
                 "step": "benchmark_end"
             }
         ]

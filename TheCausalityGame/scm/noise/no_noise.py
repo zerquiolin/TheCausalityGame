@@ -19,9 +19,8 @@ class NoNoiseDistribution(NoiseDistribution):
     Useful for testing purposes.
     """
 
-    def __init__(self, low: float = -1.0, high: float = 1.0) -> None:
-        self.low = low
-        self.high = high
+    def __init__(self) -> None:
+        pass
 
     @override
     def generate(self, size: int, random_state: int | None = 911) -> np.ndarray:
@@ -46,10 +45,9 @@ class NoNoiseDistribution(NoiseDistribution):
     def to_spec(self) -> NoiseDistributionSpec:
         return NoiseDistributionSpec(
             class_=get_class_path(self.__class__),
-            params={},
         )
 
     @classmethod
     @override
     def from_spec(cls, spec: NoiseDistributionSpec) -> NoNoiseDistribution:
-        return cls(**spec.params)
+        return cls()

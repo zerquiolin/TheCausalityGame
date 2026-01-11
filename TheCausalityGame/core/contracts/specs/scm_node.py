@@ -11,7 +11,7 @@ from TheCausalityGame.core.lib.enum.nodes import NodeAccessibility
 
 class SCMNodeSpec(CommonSpec):
     """
-    Specification for constructing a Structural Causal Model (SCM) node.
+    Specification for constructing a Structural causal Model (SCM) node.
 
     Inherits from `CommonSpec` to support dynamic loading and configuration.
 

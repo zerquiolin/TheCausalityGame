@@ -7,46 +7,58 @@
             "class_": "TheCausalityGame.agent.exhaustive:ExhaustiveAgent",
             "params": {
                 "num_obs": 100,
-                "num_inter":100 
+                "num_inter": 100
             },
             "id": "Exhaustive"
         }
     ],
     "scm": {
-    "class_": "TheCausalityGame.scm.core:CoreSCM",
-    "vars": [
-        {
-            "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-            "name": "m",
-            "domain": [0, 1e11],
-            "noise_distribution": {
-                "class_": "TheCausalityGame.scm.noise.no_noise:NoNoiseDistribution"
+        "class_": "TheCausalityGame.scm.core:CoreSCM",
+        "vars": [
+            {
+                "class_": "TheCausalityGame.scm.nodes.bn:BayesianNetworkSCMNode",
+                "name": "Z",
+                "parents": [],
+                "domain": [
+                    "0",
+                    "1"
+                ],
+                "probability_distribution": [
+                    0.5,
+                    0.5
+                ],
+                "accessibility": "controllable"
+            },
+            {
+                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+                "name": "X",
+                "equation": "2*Z",
+                "domain": [
+                    0,
+                    2
+                ],
+                "noise_distribution": {
+                    "class_": "TheCausalityGame.scm.noise.gaussian:GaussianNoiseDistribution"
+                }
+            },
+            {
+                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+                "name": "Y",
+                "equation": "X + 3*Z",
+                "domain": [
+                    0,
+                    5
+                ],
+                "noise_distribution": {
+                    "class_": "TheCausalityGame.scm.noise.gaussian:GaussianNoiseDistribution"
+                }
             }
-
-        },
-        {
-            "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-            "name": "a",
-            "domain": [-1e11, 1e11],
-            "noise_distribution": {
-                "class_": "TheCausalityGame.scm.noise.no_noise:NoNoiseDistribution"
-            }
-        },
-        {
-            "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-            "name": "F",
-            "equation": "a*m",
-            "domain": [-1e11, 1e23],
-            "noise_distribution": {
-                "class_": "TheCausalityGame.scm.noise.no_noise:NoNoiseDistribution"
-            }
+        ],
+        "dag": {
+            "class_": "TheCausalityGame.scm.dag.core:CoreDAG",
+            "edges": [["Z", "X"], ["X", "Y"], ["Z", "Y"]]
         }
-    ],
-    "dag": {
-        "class_": "TheCausalityGame.scm.dag.core:CoreDAG",
-        "edges": [["m", "F"], ["a", "F"]]
-    }
-},
+    },
     "mission": {
         "class_": "TheCausalityGame.mission.dag_discovery:DAGDiscoveryMission",
         "id": "dag_discovery_mission",
@@ -65,7 +77,7 @@
         "execution": "parallel",
         "parallel_backend": "thread",
         "budget": {
-            "rounds": 100,
+            "rounds": 1500,
             "time_s": 1500000,
             "samples": 10000000000000,
             "memory_mb": 10024

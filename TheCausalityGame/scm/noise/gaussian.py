@@ -65,4 +65,6 @@ class GaussianNoiseDistribution(NoiseDistribution):
     @classmethod
     @override
     def from_spec(cls, spec: NoiseDistributionSpec) -> GaussianNoiseDistribution:
+        if spec.params is None:
+            return cls()
         return cls(**spec.params)

@@ -2,24 +2,21 @@
 
 from __future__ import annotations
 
-from typing import Any, override
+from typing import override
 
 import numpy as np
 
-from TheCausalityGame.agent.strategies.cate_strategy import CATEStrategy
-from TheCausalityGame.core.contracts.agent import Agent, AgentContext
+from TheCausalityGame.agent.common import CommonAgent
 from TheCausalityGame.core.contracts.dto.environment import (
     AvailableActions,
     RoundInfo,
-    SamplesCollection,
 )
 from TheCausalityGame.core.contracts.specs.agent import AgentSpec
 from TheCausalityGame.core.infrastructure.decisions import Decision
 from TheCausalityGame.core.infrastructure.registry import get_class_path
-from TheCausalityGame.core.infrastructure.strategy import Strategy
 
 
-class RandomAgent(Agent):
+class RandomAgent(CommonAgent):
     """Agent that selects a single observation / intervention uniformly at random each round."""
 
     def __init__(
@@ -34,17 +31,6 @@ class RandomAgent(Agent):
         self._num_inter = num_inter
         self._threshold = threshold
         self._rng = np.random.default_rng()
-
-    @override
-    def set_context(self, ctx: AgentContext) -> None:
-        self._context = ctx
-
-        strategies: dict[str, Strategy] = {
-            "Conditional Average Treatment Effect Mission": CATEStrategy()
-        }
-
-        self.strategy = strategies[self._context.mission["name"]]
-        self.strategy.initialize()
 
     @override
     def act(self, round_info: RoundInfo, available_actions: AvailableActions) -> Decision:
@@ -64,14 +50,6 @@ class RandomAgent(Agent):
             value = self._rng.uniform(float(low), float(high))
             decision.add_experiment({experiment.name: value}, n=self._num_inter)
         return decision
-
-    @override
-    def inform(self, samples_collection: SamplesCollection) -> None:
-        self.strategy.learn(samples_collection)
-
-    @override
-    def answer(self) -> Any:
-        return self.strategy.answer()
 
     @override
     def to_spec(self) -> AgentSpec:
