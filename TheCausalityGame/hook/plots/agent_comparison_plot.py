@@ -61,7 +61,7 @@ class AgentsComparisonPlotHook(Hook):
             va="center",
         )
         ax.set_ylabel(ylabel)
-        # ax.set_yscale("log")
+        ax.set_yscale("log")
         # ax.set_xscale("log")
 
     @override
