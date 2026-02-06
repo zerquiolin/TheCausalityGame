@@ -70,9 +70,7 @@ class Game:
         self.agent: Agent = build_from_spec(agent_spec)
         self.scm: SCM = build_from_spec(scm_spec)
         self.mission: Mission = build_from_spec(mission_spec)
-        self.custom_metrics: list[Metric] = [
-            build_from_spec(m) for m in custom_metrics_specs
-        ]
+        self.custom_metrics: list[Metric] = [build_from_spec(m) for m in custom_metrics_specs]
 
         # Set agent context
         agent_ctx = AgentContext(
@@ -89,8 +87,7 @@ class Game:
                 "description": self.mission.result_metric.description,
             },
             custom_metrics=[
-                {"name": m.name, "description": m.description}
-                for m in self.custom_metrics
+                {"name": m.name, "description": m.description} for m in self.custom_metrics
             ],
         )
         self.agent.set_context(agent_ctx)
@@ -102,6 +99,7 @@ class Game:
             mission_id=self.mission.id,
             manifest_id=self.manifest_id,
             entries=[],
+            budget=budget_spec,
         )
 
         # Environment

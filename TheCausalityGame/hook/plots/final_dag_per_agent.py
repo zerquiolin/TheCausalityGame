@@ -39,7 +39,7 @@ class FinalDAGPerAgent(Hook):
         if context is None or not isinstance(context, dict):
             return
 
-        fig, axes = plt.subplots(1, 3, figsize=(18, 4))
+        fig, axes = plt.subplots(1, 7, figsize=(18, 4))
         fig.suptitle("Agent Final DAGs", fontsize=14)
 
         for i, (id, transcript) in enumerate(context.items()):

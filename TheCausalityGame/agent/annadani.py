@@ -28,14 +28,14 @@ class Annadani2024CAASLOnlineAgent(CommonAgent):
         self,
         id: str,
         num_obs: int = 1,
-        num_inter: int = 10,
+        num_inter: int = 1,
         n_bootstrap: int = 24,  # keep belief cheap, policy shouldn't be heavy
         ridge_lambda: float = 1e-2,
         coef_threshold: float = 1e-2,
         lr: float = 0.05,
         temperature: float = 1.0,
         num_value_candidates: int = 5,  # sampled values for numeric ranges
-        seed: int | None = None,
+        seed: int | None = 911,
     ) -> None:
         self.id = id
         self._num_obs = int(num_obs)
@@ -119,6 +119,67 @@ class Annadani2024CAASLOnlineAgent(CommonAgent):
         e = np.exp(z)
         return e / np.sum(e)
 
+    def _candidate_values(self, var) -> list[Any]:
+        """Return candidate intervention values for a variable domain."""
+        dom = list(var.domain)
+        if not dom:
+            return []
+
+        # Numeric bounds: treat as [low, high] and generate an interior grid.
+        if len(dom) >= 2 and all(
+            isinstance(x, (int, float, np.integer, np.floating)) for x in dom[:2]
+        ):
+            low, high = float(dom[0]), float(dom[1])
+            if high < low:
+                low, high = high, low
+            if np.isclose(low, high):
+                return [float(low)]
+            return (
+                np.linspace(low, high, num=self.num_value_candidates, dtype=float)
+                .astype(float)
+                .tolist()
+            )
+
+        # Categorical/enumerated domain.
+        return dom
+
+    def _phi(self, var: str, val: Any, rounds_left: int | None) -> np.ndarray:
+        """Feature map for the linear policy over actions."""
+        s = self._belief.summary()
+
+        # Structural uncertainty (where)
+        u = float(self._belief.outgoing_uncertainty(var))
+        total_u = 1.0
+        if s is not None:
+            try:
+                total_u = max(1.0, float(s.edge_entropy.sum()))
+            except Exception:
+                total_u = 1.0
+        u_n = float(u / total_u)
+
+        # Value signal (how): a simple heuristic from the belief.
+        try:
+            sig = float(self._belief.value_signal(var, val))
+        except Exception:
+            sig = 0.0
+        sig = float(min(sig, 1e6))
+        sig_n = float(sig / (1.0 + sig))
+
+        # Rounds-left feature (budget awareness)
+        rl = 0.0
+        if rounds_left is not None:
+            rl = float(1.0 / (1.0 + max(0, int(rounds_left))))
+
+        # Numeric indicator
+        try:
+            float(val)
+            is_num = 1.0
+        except (TypeError, ValueError):
+            is_num = 0.0
+
+        # 6-dimensional feature vector (must match self.k)
+        return np.array([1.0, u_n, sig_n, rl, is_num, u_n * sig_n], dtype=float)
+
     @override
     def act(self, round_info: RoundInfo, available_actions: AvailableActions) -> Decision:
         decision = Decision.experiment()
@@ -186,15 +247,17 @@ class Annadani2024CAASLOnlineAgent(CommonAgent):
 
     @classmethod
     @override
-    def from_spec(cls, spec: AgentSpec) -> "Annadani2024CAASLOnlineAgent":
-        p = spec.params or {}
+    def from_spec(cls, spec: AgentSpec) -> Annadani2024CAASLOnlineAgent:
+        if spec.params is None:
+            return cls(id=spec.id)
+
         return cls(
             id=spec.id,
-            num_obs=p.get("num_obs", 1),
-            num_inter=p.get("num_inter", 1),
-            n_bootstrap=p.get("n_bootstrap", 24),
-            ridge_lambda=p.get("ridge_lambda", 1e-2),
-            coef_threshold=p.get("coef_threshold", 1e-2),
-            lr=p.get("lr", 0.05),
-            temperature=p.get("temperature", 1.0),
+            num_obs=spec.params.num_obs or None,  # type: ignore
+            num_inter=spec.params.num_inter or None,  # type: ignore
+            n_bootstrap=spec.params.n_bootstrap or None,  # type: ignore
+            ridge_lambda=spec.params.ridge_lambda or None,  # type: ignore
+            coef_threshold=spec.params.coef_threshold or None,  # type: ignore
+            lr=spec.params.lr or None,  # type: ignore
+            temperature=spec.params.temperature or None,  # type: ignore
         )

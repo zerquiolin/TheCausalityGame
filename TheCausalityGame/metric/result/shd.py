@@ -44,7 +44,6 @@ class SHDResultMetric(ResultMetric):
     @override
     def mount(self, scm: SCM) -> None:
         self.scm = scm
-        print(self.scm.dag.edges)
         self.is_mounted = True
 
     def skeleton_edge_set(self, G: nx.DiGraph, nodes: Iterable[Hashable]) -> set[frozenset[str]]:  # type: ignore # noqa: N803

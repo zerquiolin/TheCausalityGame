@@ -1,6 +1,6 @@
 {
     "class_": "TheCausalityGame.core.contracts.problem_instance:ProblemInstance",
-    "id": "test_problem_instance",
+    "id": "scm discovery",
     "schema_version": "0.1.0",
     "agents": [
         {
@@ -22,6 +22,14 @@
         {
             "class_": "TheCausalityGame.agent.annadani:Annadani2024CAASLOnlineAgent",
             "id": "Annadani2024CAASLOnline"
+        },
+        {
+            "class_": "TheCausalityGame.agent.geng:HeGeng2008MinimaxAgent",
+            "id": "HeGeng2008Minimax"
+        },
+        {
+            "class_": "TheCausalityGame.agent.gies:GIESAgent",
+            "id": "GIES"
         }
     ],
     "scm": {
@@ -29,81 +37,49 @@
         "vars": [
             {
                 "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-                "name": "V",
+                "name": "m",
                 "domain": [
-                    -10e10,
-                    10e10
+                    0,
+                    1e11
                 ],
-                "accessibility": "controllable"
+                "noise_distribution": {
+                    "class_": "TheCausalityGame.scm.noise.no_noise:NoNoiseDistribution"
+                }
             },
             {
                 "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-                "name": "R",
+                "name": "a",
                 "domain": [
-                    0.1,
-                    10e10
+                    -1e11,
+                    1e11
                 ],
-                "accessibility": "controllable"
+                "noise_distribution": {
+                    "class_": "TheCausalityGame.scm.noise.no_noise:NoNoiseDistribution"
+                }
             },
             {
                 "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-                "name": "C",
+                "name": "F",
+                "equation": "a*m",
                 "domain": [
-                    0.1,
-                    10e10
+                    -1e11,
+                    1e23
                 ],
-                "accessibility": "controllable"
-            },
-            {
-                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-                "name": "q",
-                "domain": [
-                    -10e10,
-                    10e10
-                ],
-                "accessibility": "controllable"
-            },
-            {
-                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-                "name": "Vc",
-                "domain": [
-                    -10e10,
-                    10e10
-                ],
-                "equation": "q/C"
-            },
-            {
-                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-                "name": "I",
-                "domain": [
-                    -10e10,
-                    10e10
-                ],
-                "equation": "(V - Vc)/R"
+                "noise_distribution": {
+                    "class_": "TheCausalityGame.scm.noise.no_noise:NoNoiseDistribution"
+                }
             }
         ],
         "dag": {
             "class_": "TheCausalityGame.scm.dag.core:CoreDAG",
             "edges": [
                 [
-                    "C",
-                    "Vc"
+                    "m",
+                    "F"
                 ],
                 [
-                    "q",
-                    "Vc"
-                ],
-                [
-                    "V",
-                    "I"
-                ],
-                [
-                    "Vc",
-                    "I"
-                ],
-                [
-                    "R",
-                    "I"
+                    "a",
+                    "F"
                 ]
             ]
         }
@@ -112,7 +88,7 @@
         "class_": "TheCausalityGame.mission.scm_estimation:SCMEstimationMission",
         "id": "scm_estimation_mission",
         "behavior_metric": {
-            "class_": "TheCausalityGame.metric.behavior.resource_usage:ResourceUsageBehaviorMetric"
+            "class_": "TheCausalityGame.metric.behavior.available_resources:AvailableResourcesBehaviorMetric"
         },
         "result_metric": {
             "class_": "TheCausalityGame.metric.result.scm_combined_score:SCMCombinedScoreResultMetric"
@@ -126,14 +102,18 @@
         "execution": "parallel",
         "parallel_backend": "thread",
         "budget": {
-            "rounds": 375,
-            "time_s": 8750,
-            "samples": 10000,
+            "rounds": 250,
+            "time_s": 12500,
+            "samples": 15000,
             "memory_mb": 100
         },
         "hook_plan": [
             {
                 "class_": "TheCausalityGame.hook.plots.agent_comparison_plot:AgentsComparisonPlotHook",
+                "step": "benchmark_end"
+            },
+            {
+                "class_": "TheCausalityGame.hook.plots.final_dag_per_agent:FinalDAGPerAgent",
                 "step": "benchmark_end"
             }
         ]

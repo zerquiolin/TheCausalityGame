@@ -1,23 +1,35 @@
 {
     "class_": "TheCausalityGame.core.contracts.problem_instance:ProblemInstance",
-    "id": "test_problem_instance",
+    "id": "hill instance",
     "schema_version": "0.1.0",
     "agents": [
         {
             "class_": "TheCausalityGame.agent.exhaustive:ExhaustiveAgent",
-            "params": {
-                "num_obs": 2,
-                "num_inter": 2
-            },
             "id": "Exhaustive"
         },
         {
-            "class_": "TheCausalityGame.agent.random_agent:RandomAgent",
-            "params": {
-                "num_obs": 2,
-                "num_inter": 2
-            },
+            "class_": "TheCausalityGame.agent.random:RandomAgent",
             "id": "Random"
+        },
+        {
+            "class_": "TheCausalityGame.agent.cho:Cho2016ActiveGBNAgent",
+            "id": "Cho2016ActiveGBN"
+        },
+        {
+            "class_": "TheCausalityGame.agent.tigas:Tigas2022CBEDAgent",
+            "id": "Tigas2022CBED"
+        },
+        {
+            "class_": "TheCausalityGame.agent.annadani:Annadani2024CAASLOnlineAgent",
+            "id": "Annadani2024CAASLOnline"
+        },
+        {
+            "class_": "TheCausalityGame.agent.geng:HeGeng2008MinimaxAgent",
+            "id": "HeGeng2008Minimax"
+        },
+        {
+            "class_": "TheCausalityGame.agent.gies:GIESAgent",
+            "id": "GIES"
         }
     ],
     "scm": {
@@ -57,25 +69,6 @@
             },
             {
                 "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-                "name": "W",
-                "accessibility": "measurable",
-                "domain": [
-                    2,
-                    3
-                ],
-                "parents": [
-                    "Z"
-                ],
-                "parent_mappings": {
-                    "Z": {
-                        "0": 0,
-                        "1": 1
-                    }
-                },
-                "equation": "Z + 2"
-            },
-            {
-                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
                 "name": "Y",
                 "accessibility": "measurable",
                 "domain": [
@@ -83,40 +76,20 @@
                     4
                 ],
                 "parents": [
-                    "Z",
-                    "X",
-                    "W"
+                    "X"
                 ],
-                "equation": "W + 0.5*X + 3*Z"
+                "equation": "X"
             }
         ],
         "dag": {
             "class_": "TheCausalityGame.scm.dag.core:CoreDAG",
-            "nodes": [
-                "Z",
-                "X",
-                "Y",
-                "W"
-            ],
             "edges": [
                 [
                     "Z",
                     "X"
                 ],
                 [
-                    "Z",
-                    "Y"
-                ],
-                [
-                    "Z",
-                    "W"
-                ],
-                [
                     "X",
-                    "Y"
-                ],
-                [
-                    "W",
                     "Y"
                 ]
             ]
@@ -140,10 +113,10 @@
         "execution": "parallel",
         "parallel_backend": "thread",
         "budget": {
-            "rounds": 1000,
-            "time_s": 1500,
-            "samples": 10000000,
-            "memory_mb": 1024
+            "rounds": 1250,
+            "time_s": 45,
+            "samples": 7550,
+            "memory_mb": 1
         },
         "hook_plan": [
             {

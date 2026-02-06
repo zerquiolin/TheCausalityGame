@@ -23,14 +23,14 @@ class RandomAgent(CommonAgent):
         self,
         id: str,
         num_obs: int = 1,
-        num_inter: int = 1,
+        num_inter: int = 3,
         threshold: float = 0.5,
     ) -> None:
         self.id = id
         self._num_obs = num_obs
         self._num_inter = num_inter
         self._threshold = threshold
-        self._rng = np.random.default_rng()
+        self._rng = np.random.default_rng(1)
 
     @override
     def act(self, round_info: RoundInfo, available_actions: AvailableActions) -> Decision:
@@ -72,7 +72,7 @@ class RandomAgent(CommonAgent):
 
         return cls(
             id=spec.id,
-            num_obs=spec.params.get("num_obs", 1),
-            num_inter=spec.params.get("num_inter", 1),
-            threshold=spec.params.get("threshold", 0.5),
+            num_obs=spec.params.num_obs or None,  # type: ignore
+            num_inter=spec.params.num_inter or None,  # type: ignore
+            threshold=spec.params.threshold or None,  # type: ignore
         )

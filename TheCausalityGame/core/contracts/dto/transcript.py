@@ -12,6 +12,7 @@ from TheCausalityGame.core.contracts.dto.environment import (
     Feedback,
     SamplesCollection,
 )
+from TheCausalityGame.core.contracts.specs.budget import BudgetSpec
 from TheCausalityGame.core.infrastructure.decisions import Decision
 
 
@@ -61,3 +62,4 @@ class Transcript(CommonDTO):
     entries: list[TranscriptEntry] = Field(
         default_factory=list, description="Chronological list of transcript entries."
     )
+    budget: BudgetSpec

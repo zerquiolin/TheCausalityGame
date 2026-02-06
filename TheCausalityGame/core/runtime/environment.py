@@ -142,16 +142,15 @@ class Environment:
 
             self.budget.pause_time()
             self.hook_manager.trigger(HookEvent.AFTER_ACT, transcript_entry)
-            self.hook_manager.trigger(HookEvent.BEFORE_EVAL, transcript_entry)
 
             # Execute decision
             samples_collection = self._apply_decision(decision)
-            feedback = self._get_feedback(self.transcript)
-
             transcript_entry.samples_collection = samples_collection
-            transcript_entry.feedback = feedback
 
-            self.hook_manager.trigger(HookEvent.AFTER_EVAL, transcript_entry)
+            if samples_collection:
+                self.budget.charge_samples(samples_collection.total_n())
+                self.budget.charge_memory(samples_collection.total_bytes())
+
             self.hook_manager.trigger(HookEvent.BEFORE_INFORM, transcript_entry)
             self.budget.resume_time()
 
@@ -174,12 +173,14 @@ class Environment:
             self.hook_manager.trigger(HookEvent.AFTER_INFORM, transcript_entry)
             self.budget.tick_round()
 
-            if samples_collection:
-                self.budget.charge_samples(samples_collection.total_n())
-                self.budget.charge_memory(samples_collection.total_bytes())
-
             transcript_entry.budget_snapshot = self.budget.snapshot()
             self.hook_manager.trigger(HookEvent.BUDGET_SNAPSHOT, transcript_entry)
+
+            self.hook_manager.trigger(HookEvent.BEFORE_EVAL, transcript_entry)
+            feedback = self._get_feedback(self.transcript)
+            transcript_entry.feedback = feedback
+            self.hook_manager.trigger(HookEvent.AFTER_EVAL, transcript_entry)
+
             self.hook_manager.trigger(HookEvent.ROUND_END, transcript_entry)
 
             if decision.kind == ActionKind.ANSWER:

@@ -213,7 +213,19 @@ class RidgeBootstrapEdgeBelief:
         # Conditional mean/cov of X_rest | X_k = v
         mu_r = mu[rest] + (Sigma_rk[:, 0] / Sigma_kk) * (v - mu[k])
         cov_r = Sigma_rr - (Sigma_rk @ Sigma_kr) / Sigma_kk
+
+        # Numerical stabilization: enforce symmetry and project to PSD.
+        cov_r = 0.5 * (cov_r + cov_r.T)
+        # Add small jitter, then clip negative eigenvalues.
         cov_r = cov_r + 1e-8 * np.eye(d - 1)
+        try:
+            w, V = np.linalg.eigh(cov_r)
+            w = np.maximum(w, 1e-10)
+            cov_r = (V * w) @ V.T
+            cov_r = 0.5 * (cov_r + cov_r.T)
+        except np.linalg.LinAlgError:
+            # Fallback: diagonal covariance
+            cov_r = np.diag(np.maximum(np.diag(cov_r), 1e-10))
 
         Xr = rng.multivariate_normal(mean=mu_r, cov=cov_r, size=n)
         X = np.zeros((n, d), dtype=float)
@@ -274,3 +286,83 @@ class RidgeBootstrapEdgeBelief:
         np.fill_diagonal(edge_entropy, 0.0)
 
         return float(edge_entropy.sum())
+
+    def sample_linear_dag_ensemble(
+        self,
+        n_graphs: int = 32,
+        ridge_lambda: float | None = None,
+        coef_threshold: float | None = None,
+        seed: int | None = None,
+    ) -> list[tuple[list[int], np.ndarray, np.ndarray]]:
+        """\
+        Sample an ensemble of DAG linear-Gaussian SEMs from the current numeric dataset.
+
+        Returns a list of tuples:
+          (order, B, sigma2)
+        where:
+          - order is a topological ordering (list of variable indices)
+          - B is a [d,d] coefficient matrix with B[i,j] = weight i->j
+          - sigma2 is a [d] vector of noise variances for each node.
+
+        This provides a lightweight posterior proxy over DAGs for minimax/Thompson/EIG agents.
+        """
+        s = self._summary
+        if s is None:
+            return []
+
+        lam = float(ridge_lambda) if ridge_lambda is not None else float(self.ridge_lambda)
+        thr = float(coef_threshold) if coef_threshold is not None else float(self.coef_threshold)
+
+        X_full = s.df_numeric.to_numpy(dtype=float)
+        n, d = X_full.shape
+        if n < 8 or d < 2:
+            return []
+
+        rng = np.random.default_rng(seed)
+
+        models: list[tuple[list[int], np.ndarray, np.ndarray]] = []
+        for _ in range(int(n_graphs)):
+            order = list(rng.permutation(d))
+            pos = {node: k for k, node in enumerate(order)}
+
+            B = np.zeros((d, d), dtype=float)
+            sigma2 = np.ones((d,), dtype=float)
+
+            # Fit each node as linear regression on its predecessors in this ordering.
+            for node in order:
+                preds = [p for p in order if pos[p] < pos[node]]
+                y = X_full[:, node]
+
+                if len(preds) == 0:
+                    resid = y - y.mean()
+                    sigma2[node] = float(np.var(resid) + 1e-8)
+                    continue
+
+                Xp = X_full[:, preds]
+
+                # Center
+                y_c = y - y.mean()
+                Xp_c = Xp - Xp.mean(axis=0, keepdims=True)
+
+                XtX = Xp_c.T @ Xp_c
+                XtX.flat[:: XtX.shape[0] + 1] += lam
+                Xty = Xp_c.T @ y_c
+
+                try:
+                    beta = np.linalg.solve(XtX, Xty)
+                except np.linalg.LinAlgError:
+                    beta = np.linalg.pinv(XtX) @ Xty
+
+                # Threshold to form sparse parents
+                for kk, p in enumerate(preds):
+                    if abs(beta[kk]) > thr:
+                        B[p, node] = float(beta[kk])
+
+                # Noise variance from residuals
+                y_hat = Xp_c @ beta
+                resid = y_c - y_hat
+                sigma2[node] = float(np.var(resid) + 1e-8)
+
+            models.append((order, B, sigma2))
+
+        return models

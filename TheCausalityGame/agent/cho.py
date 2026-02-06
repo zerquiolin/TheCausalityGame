@@ -1,12 +1,16 @@
 from __future__ import annotations
 
-from typing import override
+from typing import Any, override
 
 import numpy as np
 
 from TheCausalityGame.agent.common import CommonAgent
 from TheCausalityGame.agent.helpers.ridge_bootstrap_edge_belief import RidgeBootstrapEdgeBelief
-from TheCausalityGame.core.contracts.dto.environment import AvailableActions, RoundInfo
+from TheCausalityGame.core.contracts.dto.environment import (
+    AvailableActions,
+    RoundInfo,
+    SamplesCollection,
+)
 from TheCausalityGame.core.contracts.specs.agent import AgentSpec
 from TheCausalityGame.core.infrastructure.decisions import Decision
 from TheCausalityGame.core.infrastructure.registry import get_class_path
@@ -22,12 +26,13 @@ class Cho2016ActiveGBNAgent(CommonAgent):
     def __init__(
         self,
         id: str,
-        num_obs: int = 0,
-        num_inter: int = 10,
+        num_obs: int = 5,
+        num_inter: int = 1,
         n_bootstrap: int = 32,
         ridge_lambda: float = 1e-2,
         coef_threshold: float = 1e-2,
-        seed: int | None = None,
+        k_intervene: int = 1,
+        seed: int | None = 911,
     ) -> None:
         self.id = id
         self._num_obs = int(num_obs)
@@ -39,9 +44,10 @@ class Cho2016ActiveGBNAgent(CommonAgent):
             seed=seed,
         )
         self.rng = np.random.default_rng(seed)
+        self.k_intervene = int(max(1, k_intervene))
 
     @override
-    def inform(self, samples_collection) -> None:
+    def inform(self, samples_collection: SamplesCollection) -> None:
         self.strategy.learn(samples_collection)
         self._belief.fit(list(samples_collection))
 
@@ -56,34 +62,39 @@ class Cho2016ActiveGBNAgent(CommonAgent):
         if self._num_inter <= 0 or not available_actions.experiments:
             return decision
 
-        # Choose WHERE: max incident uncertainty
-        best_var = None
-        best_u = -1.0
-        for var in available_actions.experiments:
-            u = self._belief.incident_uncertainty(var.name)
-            if u > best_u:
-                best_u = u
-                best_var = var
+        # Choose WHERE: greedily pick up to k_intervene variables by incident uncertainty
+        candidates = sorted(
+            list(available_actions.experiments),
+            key=lambda v: (-float(self._belief.incident_uncertainty(v.name)), str(v.name)),
+        )
+        chosen = candidates[: min(self.k_intervene, len(candidates))]
 
-        if best_var is None:
+        if not chosen:
             return decision
 
         # Choose HOW: sample interior value for numeric domains, else categorical
-        dom = list(best_var.domain)
+        treatment: dict[str, Any] = {}
+        for v in chosen:
+            dom = list(v.domain)
+            if not dom:
+                continue
 
-        # For numeric domains represented as [low, high], sample an interior value to avoid endpoint bias.
-        if len(dom) >= 2 and all(
-            isinstance(x, (int, float, np.integer, np.floating)) for x in dom[:2]
-        ):
-            low, high = float(dom[0]), float(dom[1])
-            if high < low:
-                low, high = high, low
-            val = float(self.rng.uniform(low, high))
-        else:
-            # categorical / enumerated
-            val = dom[self.rng.integers(0, len(dom))]
+            if len(dom) >= 2 and all(
+                isinstance(x, (int, float, np.integer, np.floating)) for x in dom[:2]
+            ):
+                low, high = float(dom[0]), float(dom[1])
+                if high < low:
+                    low, high = high, low
+                val = float(self.rng.uniform(low, high))
+            else:
+                val = dom[self.rng.integers(0, len(dom))]
 
-        decision.add_experiment(treatment={best_var.name: val}, n=self._num_inter)
+            treatment[v.name] = val
+
+        if not treatment:
+            return decision
+
+        decision.add_experiment(treatment=treatment, n=self._num_inter)
         return decision
 
     @override
@@ -94,18 +105,22 @@ class Cho2016ActiveGBNAgent(CommonAgent):
             "n_bootstrap": self._belief.n_bootstrap,
             "ridge_lambda": self._belief.ridge_lambda,
             "coef_threshold": self._belief.coef_threshold,
+            "k_intervene": self.k_intervene,
         }
         return AgentSpec(id=self.id, class_=get_class_path(self.__class__), params=params)
 
     @classmethod
     @override
     def from_spec(cls, spec: AgentSpec) -> "Cho2016ActiveGBNAgent":
-        p = spec.params or {}
+        if not spec.params:
+            return cls(id=spec.id)
+
         return cls(
             id=spec.id,
-            num_obs=p.get("num_obs", 1),
-            num_inter=p.get("num_inter", 1),
-            n_bootstrap=p.get("n_bootstrap", 32),
-            ridge_lambda=p.get("ridge_lambda", 1e-2),
-            coef_threshold=p.get("coef_threshold", 1e-2),
+            num_obs=spec.params.num_obs or None,  # type: ignore
+            num_inter=spec.params.num_inter or None,  # type: ignore
+            n_bootstrap=spec.params.n_bootstrap or None,  # type: ignore
+            ridge_lambda=spec.params.ridge_lambda or None,  # type: ignore
+            coef_threshold=spec.params.coef_threshold or None,  # type: ignore
+            k_intervene=spec.params.k_intervene or None,  # type: ignore
         )

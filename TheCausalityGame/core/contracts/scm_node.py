@@ -72,9 +72,7 @@ class SCMNode(Serializable):
         self.parents = parents
         self.parent_mappings = parent_mappings
         self.random_state = random_state or np.random.RandomState(911)
-        self.logger = logger or logging.getLogger(
-            f"{self.__module__}.{self.__class__.__name__}"
-        )
+        self.logger = logger or logging.getLogger(f"{self.__module__}.{self.__class__.__name__}")
         super().__init__()
 
     # def _init_random_state(self):

@@ -42,9 +42,7 @@ class RoundsBehaviorMetric(BehaviorMetric):
             If alpha is not in the open interval (0, 1).
         """
         if not 0.0 < alpha < 1.0:
-            raise AttributeOutOfBoundsError(
-                attribute_name="alpha", value=alpha, domain=[0.0, 1.0]
-            )
+            raise AttributeOutOfBoundsError(attribute_name="alpha", value=alpha, domain=[0.0, 1.0])
         self.alpha = alpha
 
     @override
@@ -84,4 +82,6 @@ class RoundsBehaviorMetric(BehaviorMetric):
     @classmethod
     @override
     def from_spec(cls, spec: MetricSpec) -> "RoundsBehaviorMetric":
+        if spec.params is None:
+            return cls()
         return cls(**spec.params)

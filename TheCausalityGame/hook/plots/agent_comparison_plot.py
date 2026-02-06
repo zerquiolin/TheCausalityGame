@@ -37,8 +37,21 @@ class AgentsComparisonPlotHook(Hook):
             ha="left",
             va="center",
         )
+        # Set y log scale
+        ax.set_yscale("log")
 
-    def _plot_time_series(self, name: str, scores: list[float], ylabel: str, ax):
+        # Set y label
+        ax.set_ylabel("Result Score")
+
+    def _plot_time_series(
+        self,
+        name: str,
+        scores: list[float],
+        ylabel: str,
+        ax,  # noqa: ANN001 # type: ignore
+        ylog: bool = False,
+        xlog: bool = False,
+    ):
         """
         Plot a time series of scores across rounds.
 
@@ -61,8 +74,10 @@ class AgentsComparisonPlotHook(Hook):
             va="center",
         )
         ax.set_ylabel(ylabel)
-        ax.set_yscale("log")
-        # ax.set_xscale("log")
+        if ylog:
+            ax.set_yscale("log")
+        if xlog:
+            ax.set_xscale("log")
 
     @override
     def run(self, hooks_dir: Path, context: dict[str, Transcript] | TranscriptEntry | None) -> None:
@@ -91,6 +106,8 @@ class AgentsComparisonPlotHook(Hook):
                 [entry.feedback.result for entry in transcript.entries],
                 "Result Score",
                 axes[2],
+                ylog=True,
+                xlog=True,
             )
 
         # Set common axis labels and formatting

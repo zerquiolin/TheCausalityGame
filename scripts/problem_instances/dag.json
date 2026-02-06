@@ -1,52 +1,95 @@
 {
     "class_": "TheCausalityGame.core.contracts.problem_instance:ProblemInstance",
-    "id": "test_problem_instance",
+    "id": "test",
     "schema_version": "0.1.0",
     "agents": [
         {
             "class_": "TheCausalityGame.agent.exhaustive:ExhaustiveAgent",
-            "params": {
-                "num_obs": 100,
-                "num_inter":100 
-            },
-            "id": "Exhaustive"
+            "id": "Exhaustive",
+            "active": true
+        },
+        {
+            "class_": "TheCausalityGame.agent.random:RandomAgent",
+            "id": "Random",
+            "active": true
+        },
+        {
+            "class_": "TheCausalityGame.agent.cho:Cho2016ActiveGBNAgent",
+            "id": "Cho2016ActiveGBN"
+        },
+        {
+            "class_": "TheCausalityGame.agent.tigas:Tigas2022CBEDAgent",
+            "id": "Tigas2022CBED",
+            "active": true
+        },
+        {
+            "class_": "TheCausalityGame.agent.annadani:Annadani2024CAASLOnlineAgent",
+            "id": "Annadani2024CAASLOnline",
+            "active": true
+        },
+        {
+            "class_": "TheCausalityGame.agent.geng:HeGeng2008MinimaxAgent",
+            "id": "HeGeng2008Minimax",
+            "active": true
+        },
+        {
+            "class_": "TheCausalityGame.agent.gies:GIESAgent",
+            "id": "GIES",
+            "active": true
         }
     ],
     "scm": {
-    "class_": "TheCausalityGame.scm.core:CoreSCM",
-    "vars": [
-        {
-            "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-            "name": "m",
-            "domain": [0, 1e11],
-            "noise_distribution": {
-                "class_": "TheCausalityGame.scm.noise.no_noise:NoNoiseDistribution"
+        "class_": "TheCausalityGame.scm.core:CoreSCM",
+        "vars": [
+            {
+                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+                "name": "m",
+                "domain": [
+                    0,
+                    1e11
+                ],
+                "noise_distribution": {
+                    "class_": "TheCausalityGame.scm.noise.no_noise:NoNoiseDistribution"
+                }
+            },
+            {
+                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+                "name": "a",
+                "equation": "F/m",
+                "domain": [
+                    -1e11,
+                    1e11
+                ],
+                "noise_distribution": {
+                    "class_": "TheCausalityGame.scm.noise.no_noise:NoNoiseDistribution"
+                }
+            },
+            {
+                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+                "name": "F",
+                "domain": [
+                    -1e11,
+                    1e23
+                ],
+                "noise_distribution": {
+                    "class_": "TheCausalityGame.scm.noise.no_noise:NoNoiseDistribution"
+                }
             }
-
-        },
-        {
-            "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-            "name": "a",
-            "domain": [-1e11, 1e11],
-            "noise_distribution": {
-                "class_": "TheCausalityGame.scm.noise.no_noise:NoNoiseDistribution"
-            }
-        },
-        {
-            "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
-            "name": "F",
-            "equation": "a*m",
-            "domain": [-1e11, 1e23],
-            "noise_distribution": {
-                "class_": "TheCausalityGame.scm.noise.no_noise:NoNoiseDistribution"
-            }
+        ],
+        "dag": {
+            "class_": "TheCausalityGame.scm.dag.core:CoreDAG",
+            "edges": [
+                [
+                    "m",
+                    "a"
+                ],
+                [
+                    "F",
+                    "a"
+                ]
+            ]
         }
-    ],
-    "dag": {
-        "class_": "TheCausalityGame.scm.dag.core:CoreDAG",
-        "edges": [["m", "F"], ["a", "F"]]
-    }
-},
+    },
     "mission": {
         "class_": "TheCausalityGame.mission.dag_discovery:DAGDiscoveryMission",
         "id": "dag_discovery_mission",
@@ -65,10 +108,10 @@
         "execution": "parallel",
         "parallel_backend": "thread",
         "budget": {
-            "rounds": 100,
-            "time_s": 1500000,
-            "samples": 10000000000000,
-            "memory_mb": 10024
+            "rounds": 115,
+            "time_s": 55500,
+            "samples": 15000,
+            "memory_mb": 100
         },
         "hook_plan": [
             {

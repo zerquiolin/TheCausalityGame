@@ -19,7 +19,6 @@ from TheCausalityGame.core.infrastructure.registry import (
 )
 from TheCausalityGame.core.lib.enum.nodes import NodeAccessibility
 from TheCausalityGame.core.lib.utils.random_state_serialization import (
-    random_state_from_json,
     random_state_to_json,
 )
 
@@ -60,9 +59,7 @@ class SCM(Serializable):
         self._topologically_sorted_var_names: list[str] = list(nx.topological_sort(self.dag.graph))  # type: ignore
         self.random_state = random_state or np.random.RandomState(911)
         self.name = name
-        self.logger = logger or logging.getLogger(
-            f"{self.__module__}.{self.__class__.__name__}"
-        )
+        self.logger = logger or logging.getLogger(f"{self.__module__}.{self.__class__.__name__}")
 
     @property
     def vars(self) -> list[str]:
@@ -73,9 +70,7 @@ class SCM(Serializable):
     def controllable_vars(self) -> list[str]:
         """Return variables that are controllable by the agent."""
         return [
-            n
-            for n in self.vars
-            if self.nodes[n].accessibility == NodeAccessibility.CONTROLLABLE
+            n for n in self.vars if self.nodes[n].accessibility == NodeAccessibility.CONTROLLABLE
         ]
 
     @property
@@ -91,11 +86,7 @@ class SCM(Serializable):
     @property
     def latent_vars(self) -> list[str]:
         """Return variables that are latent (not observable or controllable)."""
-        return [
-            n
-            for n in self.vars
-            if self.nodes[n].accessibility == NodeAccessibility.LATENT
-        ]
+        return [n for n in self.vars if self.nodes[n].accessibility == NodeAccessibility.LATENT]
 
     @property
     def outcome_vars(self) -> list[str]:
@@ -143,9 +134,7 @@ class SCM(Serializable):
         interventions: dict[str, float | str] | None = None,
         num_samples: int = 1,
         cancel_noise: bool = False,
-        random_state: (
-            dict[str, np.random.RandomState] | np.random.RandomState | None
-        ) = None,
+        random_state: (dict[str, np.random.RandomState] | np.random.RandomState | None) = None,
     ) -> pd.DataFrame:
         """Generate samples from the SCM given optional interventions.
 
@@ -177,9 +166,7 @@ class SCM(Serializable):
         for node_name in self.vars:
             node = self.nodes[node_name]
             if node_name in interventions:
-                sample_for_col: list[int | float | str] = [
-                    interventions[node_name]
-                ] * num_samples
+                sample_for_col: list[int | float | str] = [interventions[node_name]] * num_samples
             else:
                 sample_for_col = node.generate_values(
                     parent_values=sample,
@@ -187,9 +174,7 @@ class SCM(Serializable):
                     cancel_noise=cancel_noise,
                 )
 
-            sample = pd.concat(
-                [sample, pd.DataFrame({node_name: sample_for_col})], axis=1
-            )
+            sample = pd.concat([sample, pd.DataFrame({node_name: sample_for_col})], axis=1)
 
         return sample
 
@@ -228,9 +213,7 @@ class SCM(Serializable):
         topological_order: list[str] = list(nx.topological_sort(dag.graph))  # type: ignore
         nodes: list[SCMNode] = []
 
-        for node_spec in sorted(
-            spec.vars, key=lambda n: topological_order.index(n.name)
-        ):
+        for node_spec in sorted(spec.vars, key=lambda n: topological_order.index(n.name)):
             parents = (
                 node_spec.parents
                 or list(dag.graph.predecessors(node_spec.name))  # type: ignore
@@ -243,8 +226,7 @@ class SCM(Serializable):
                 cat_index: dict[str, dict[float | str, int]] = {
                     n.name: {cat: i for i, cat in enumerate(n.domain)}
                     for n in nodes
-                    if getattr(n, "domain", None)
-                    and all(isinstance(cat, str) for cat in n.domain)
+                    if getattr(n, "domain", None) and all(isinstance(cat, str) for cat in n.domain)
                 }
                 parent_mappings = {
                     p: cat_index[p] for p in (parents or []) if p in cat_index
@@ -255,7 +237,8 @@ class SCM(Serializable):
             )
             nodes.append(build_from_spec(updated_spec))
 
-        random_state = (
-            random_state_from_json(spec.random_state) if spec.random_state else None
-        )
+        # random_state = (
+        #     random_state_from_json(spec.random_state) if spec.random_state else None
+        # )
+        random_state = np.random.RandomState(2345)
         return cls(dag, nodes, random_state)

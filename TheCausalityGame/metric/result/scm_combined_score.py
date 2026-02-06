@@ -47,8 +47,37 @@ class SCMCombinedScoreResultMetric(ResultMetric):
 
     @override
     def mount(self, scm: SCM) -> None:
+        self.seed = 911
         self.scm = scm
-        self.rng = np.random.default_rng(911)
+        self.rng = np.random.default_rng(self.seed)
+        self._true_edges = set(tuple(edge) for edge in self.scm.dag.edges)  # type: ignore
+
+        # Cache true samples and intervention specs to avoid recomputation in evaluate.
+        num_samples = int(getattr(self, "num_samples", 256))
+        num_trials = int(getattr(self, "num_trials", 5))
+        self._cached_num_samples = num_samples
+        self._cached_num_trials = num_trials
+        self._trial_specs: list[dict[str, Any]] = []
+
+        for _ in range(num_trials):
+            intervention_var = self.rng.choice(self.scm.controllable_vars)
+            low, high = self.scm.nodes[intervention_var].domain
+            value = self.rng.uniform(float(low), float(high))
+
+            true_samples = self.scm.generate_samples(
+                num_samples=num_samples,
+                interventions={intervention_var: value},
+                cancel_noise=True,
+                random_state=np.random.RandomState(self.seed),
+            )
+
+            self._trial_specs.append(
+                {
+                    "intervention_var": intervention_var,
+                    "value": value,
+                    "true_samples": true_samples,
+                }
+            )
         self.is_mounted = True
 
     def skeleton_edge_set(self, G: nx.DiGraph, nodes: Iterable[Hashable]) -> set[frozenset[str]]:  # type: ignore # noqa: N803
@@ -109,7 +138,9 @@ class SCMCombinedScoreResultMetric(ResultMetric):
                     edges.add((u, v))  # type: ignore
             return edges
 
-        true_edges = directed_edge_set(self.scm.dag)  # type: ignore
+        true_edges = {
+            edge for edge in self._true_edges if edge[0] in all_nodes and edge[1] in all_nodes
+        }
         pred_edges = directed_edge_set(result.dag)  # type: ignore
 
         reversal_cost = getattr(self, "reversal_cost", 1)
@@ -140,8 +171,7 @@ class SCMCombinedScoreResultMetric(ResultMetric):
         # Instead we compare *distributional* summaries under interventions.
 
         eps = 1e-12
-        num_samples = int(getattr(self, "num_samples", 256))
-        num_trials = int(getattr(self, "num_trials", 5))
+        num_samples = int(getattr(self, "_cached_num_samples", getattr(self, "num_samples", 256)))
 
         def _is_numeric(arr: np.ndarray) -> bool:
             try:
@@ -198,16 +228,10 @@ class SCMCombinedScoreResultMetric(ResultMetric):
         scm_score = 0.0
         trial_count = 0
 
-        for _ in range(num_trials):
-            # Select a random variable to intervene on
-            intervention_var = self.rng.choice(self.scm.controllable_vars)
-            low, high = self.scm.nodes[intervention_var].domain
-            value = self.rng.uniform(float(low), float(high))
-
-            true_samples = self.scm.generate_samples(
-                num_samples=num_samples,
-                interventions={intervention_var: value},
-            )
+        for trial in self._trial_specs:
+            intervention_var = trial["intervention_var"]
+            value = trial["value"]
+            true_samples = trial["true_samples"]
 
             # Estimated SCM: prefer deterministic generation if available to reduce variance
             try:
@@ -261,7 +285,7 @@ class SCMCombinedScoreResultMetric(ResultMetric):
 
         # Combine SHD score and SCM distributional score.
         # Default: mostly SCM fit, with optional small SHD weight.
-        alpha = 0.5
+        alpha = 0.75
         final_score = alpha * scm_score + (1 - alpha) * shd_score
         return float(final_score)
         # return float(scm_score)

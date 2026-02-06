@@ -5,11 +5,31 @@
     "agents": [
         {
             "class_": "TheCausalityGame.agent.exhaustive:ExhaustiveAgent",
-            "params": {
-                "num_obs": 100,
-                "num_inter": 100
-            },
             "id": "Exhaustive"
+        },
+        {
+            "class_": "TheCausalityGame.agent.random:RandomAgent",
+            "id": "Random"
+        },
+        {
+            "class_": "TheCausalityGame.agent.cho:Cho2016ActiveGBNAgent",
+            "id": "Cho2016ActiveGBN"
+        },
+        {
+            "class_": "TheCausalityGame.agent.tigas:Tigas2022CBEDAgent",
+            "id": "Tigas2022CBED"
+        },
+        {
+            "class_": "TheCausalityGame.agent.annadani:Annadani2024CAASLOnlineAgent",
+            "id": "Annadani2024CAASLOnline"
+        },
+        {
+            "class_": "TheCausalityGame.agent.geng:HeGeng2008MinimaxAgent",
+            "id": "HeGeng2008Minimax"
+        },
+        {
+            "class_": "TheCausalityGame.agent.gies:GIESAgent",
+            "id": "GIES"
         }
     ],
     "scm": {
@@ -77,7 +97,7 @@
         "execution": "parallel",
         "parallel_backend": "thread",
         "budget": {
-            "rounds": 1500,
+            "rounds": 75,
             "time_s": 1500000,
             "samples": 10000000000000,
             "memory_mb": 10024

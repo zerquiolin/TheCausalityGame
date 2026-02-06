@@ -39,7 +39,7 @@ class ExhaustiveAgent(CommonAgent):
         self.id = id
         self._num_obs = num_obs
         self._num_inter = num_inter
-        self.rng = np.random.default_rng()
+        self.rng = np.random.default_rng(911)
 
     @override
     def act(self, round_info: RoundInfo, available_actions: AvailableActions) -> Decision:
@@ -83,6 +83,6 @@ class ExhaustiveAgent(CommonAgent):
 
         return cls(
             id=spec.id,
-            num_obs=spec.params.get("num_obs", 1),
-            num_inter=spec.params.get("num_inter", 1),
+            num_obs=spec.params.num_obs or None,  # type: ignore
+            num_inter=spec.params.num_inter or None,  # type: ignore
         )

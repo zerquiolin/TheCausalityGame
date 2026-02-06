@@ -25,8 +25,8 @@ class Tigas2022CBEDAgent(CommonAgent):
     def __init__(
         self,
         id: str,
-        num_obs: int = 0,
-        num_inter: int = 10,
+        num_obs: int = 2,
+        num_inter: int = 3,
         n_bootstrap: int = 32,
         ridge_lambda: float = 1e-2,
         coef_threshold: float = 1e-2,
@@ -34,7 +34,7 @@ class Tigas2022CBEDAgent(CommonAgent):
         eval_bootstrap: int = 12,  # fewer bootstraps during candidate eval
         topk_vars: int = 4,  # only evaluate top-k uncertain vars for speed
         num_value_candidates: int = 7,  # candidate values for numeric ranges
-        seed: int | None = None,
+        seed: int | None = 911,
     ) -> None:
         self.id = id
         self._num_obs = int(num_obs)
@@ -178,15 +178,17 @@ class Tigas2022CBEDAgent(CommonAgent):
     @classmethod
     @override
     def from_spec(cls, spec: AgentSpec) -> "Tigas2022CBEDAgent":
-        p = spec.params or {}
+        if not spec.params:
+            return cls(id=spec.id)
+
         return cls(
             id=spec.id,
-            num_obs=p.get("num_obs", 1),
-            num_inter=p.get("num_inter", 1),
-            n_bootstrap=p.get("n_bootstrap", 32),
-            ridge_lambda=p.get("ridge_lambda", 1e-2),
-            coef_threshold=p.get("coef_threshold", 1e-2),
-            fantasies=p.get("fantasies", 5),
-            eval_bootstrap=p.get("eval_bootstrap", 12),
-            topk_vars=p.get("topk_vars", 4),
+            num_obs=spec.params.num_obs or None,  # type: ignore
+            num_inter=spec.params.num_inter or None,  # type: ignore
+            n_bootstrap=spec.params.n_bootstrap or None,  # type: ignore
+            ridge_lambda=spec.params.ridge_lambda or None,  # type: ignore
+            coef_threshold=spec.params.coef_threshold or None,  # type: ignore
+            fantasies=spec.params.fantasies or None,  # type: ignore
+            eval_bootstrap=spec.params.eval_bootstrap or None,  # type: ignore
+            topk_vars=spec.params.topk_vars or None,  # type: ignore
         )

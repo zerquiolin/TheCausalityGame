@@ -535,13 +535,12 @@ class DAGDiscoveryStrategy(Strategy):
         self.seed = seed
 
         self._obs_df: Optional[pd.DataFrame] = None
-        self._interventional_batches: dict[str, list[pd.DataFrame]] = {}
+        self._int_batches: list[tuple[set[str], pd.DataFrame]] = []
         self._dag: Optional[nx.DiGraph] = None
 
     def initialize(self) -> None:
         self._obs_df = None
-        self._interventional_batches = {}
-        self._dag = None
+        self._int_batches = []
         self._is_initialized = True
 
     def learn(self, samples: SamplesCollection) -> None:
@@ -549,25 +548,21 @@ class DAGDiscoveryStrategy(Strategy):
             raise RuntimeError("Strategy must be initialized before learning.")
 
         for batch in samples:
-            if batch.data is None or batch.data.empty:
+            if batch.data is None:
                 continue
 
             if batch.kind == "observational":
-                if self._obs_df is None:
-                    self._obs_df = batch.data.copy()
-                else:
-                    # align columns, union schema
-                    self._obs_df = pd.concat(
-                        [self._obs_df, batch.data], axis=0, ignore_index=True, sort=False
-                    )
+                self._obs_df = (
+                    batch.data.copy()
+                    if self._obs_df is None
+                    else pd.concat([self._obs_df, batch.data], ignore_index=True, sort=False)
+                )
 
             elif batch.kind == "interventional":
-                # We assume batch.interventions is like {"X": some_value} or {"X": ... , "Y": ...}
-                # This code groups the batch under each intervened variable key.
                 if not batch.interventions:
                     continue
-                for int_var in batch.interventions.keys():
-                    self._interventional_batches.setdefault(int_var, []).append(batch.data.copy())
+                int_keys = set(batch.interventions.keys())
+                self._int_batches.append((int_keys, batch.data.copy()))
             else:
                 raise ValueError(f"Unknown batch.kind: {batch.kind}")
 
@@ -585,9 +580,15 @@ class DAGDiscoveryStrategy(Strategy):
             self._dag = nx.DiGraph()
             return self._dag
 
+        # Build the interventional_batches dict[str, list[pd.DataFrame]] expected by your DAG code
+        interventional_batches: dict[str, list[pd.DataFrame]] = {}
+        for keys, df in self._int_batches:
+            for k in keys:
+                interventional_batches.setdefault(k, []).append(df)
+
         self._dag = learn_dag_from_samples(
             obs_df=self._obs_df,
-            interventional_batches=self._interventional_batches,
+            interventional_batches=interventional_batches,
             is_numerical=self.is_numerical,
             alpha=self.alpha,
             seed=self.seed,

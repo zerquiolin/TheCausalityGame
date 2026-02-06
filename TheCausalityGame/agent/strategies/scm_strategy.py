@@ -13,19 +13,11 @@ from TheCausalityGame.agent.strategies.dag_strategy import learn_dag_from_sample
 from TheCausalityGame.core.contracts.dto.environment import SamplesCollection
 from TheCausalityGame.core.infrastructure.strategy import Strategy
 
-# Optional ML stack (preferred for nonlinear mechanisms). Falls back to numpy lstsq if unavailable.
-try:
-    from sklearn.linear_model import Ridge
-    from sklearn.pipeline import make_pipeline
-    from sklearn.preprocessing import PolynomialFeatures, StandardScaler
+from sklearn.linear_model import Ridge
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 
-    _SKLEARN_AVAILABLE = True
-except Exception:  # pragma: no cover
-    Ridge = None  # type: ignore
-    make_pipeline = None  # type: ignore
-    PolynomialFeatures = None  # type: ignore
-    StandardScaler = None  # type: ignore
-    _SKLEARN_AVAILABLE = False
+_SKLEARN_AVAILABLE = True
 
 
 # ----------------------------
@@ -150,7 +142,7 @@ class DiscreteCPTMechanism:
 class EstimatedANMSCM:
     """Estimated SCM supporting sampling under do-interventions."""
 
-    def __init__(self, dag: nx.DiGraph, mechanisms: dict[str, Any], seed: int = 0):
+    def __init__(self, dag: nx.DiGraph, mechanisms: dict[str, Any], seed: int = 911):
         self.dag = dag
         self.mechanisms = mechanisms
         self._seed = seed
@@ -785,9 +777,8 @@ class SCMDiscoveryStrategy(Strategy):
         )
 
         # dag = nx.DiGraph()  # type: ignore
-        # dag.add_edge("C", "Vc")  # type: ignore
-        # dag.add_edge("q", "Vc")  # type: ignore
-        # dag.add_edge("V", "I")  # type: ignore
+        # dag.add_edge("F", "a")  # type: ignore
+        # dag.add_edge("m", "a")  # type: ignore
         # dag.add_edge("Vc", "I")  # type: ignore
         # dag.add_edge("R", "I")  # type: ignore
 
