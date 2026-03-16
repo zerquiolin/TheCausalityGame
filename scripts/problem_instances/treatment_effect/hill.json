@@ -1,6 +1,6 @@
 {
     "class_": "TheCausalityGame.core.contracts.problem_instance:ProblemInstance",
-    "id": "hill instance",
+    "id": "treatment_effect/hill_instance",
     "schema_version": "0.1.0",
     "agents": [
         {

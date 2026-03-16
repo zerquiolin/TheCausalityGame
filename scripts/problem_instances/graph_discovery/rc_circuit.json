@@ -1,6 +1,6 @@
 {
     "class_": "TheCausalityGame.core.contracts.problem_instance:ProblemInstance",
-    "id": "graph_estimation/rc_circuit",
+    "id": "graph_discovery/rc_circuit",
     "schema_version": "0.1.0",
     "agents": [
         {

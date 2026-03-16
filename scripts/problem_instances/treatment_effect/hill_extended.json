@@ -1,6 +1,6 @@
 {
     "class_": "TheCausalityGame.core.contracts.problem_instance:ProblemInstance",
-    "id": "cate estimation",
+    "id": "treatment_effect/cate_estimation",
     "schema_version": "0.1.0",
     "agents": [
         {
