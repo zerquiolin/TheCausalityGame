@@ -23,10 +23,10 @@ te, te_files = "treatment_effect", ["hill.json", "hill_extended.json"]
 gd, gd_files = "graph_discovery", ["rc_circuit.json"]
 sd, sd_files = "scm_discovery", ["rc_circuit.json", "newton_second_law.json"]
 
-rss = [
-    (seed, np.random.RandomState(seed))
-    for seed in (1, 42, 59, 34, 57, 91, 17, 83, 27, 99, 123, 473, 501, 701, 875, 101, 911)
-]
+seeds = list(np.random.default_rng(911).integers(0, 999, size=20))
+seeds.append(911)  # Just Because
+
+rss = [(seed, np.random.RandomState(seed)) for seed in seeds]
 
 for folder, files in [(te, te_files), (gd, gd_files), (sd, sd_files)]:
     output_folder = os.path.join(input_path, output_directory, folder)
@@ -45,6 +45,7 @@ for folder, files in [(te, te_files), (gd, gd_files), (sd, sd_files)]:
             modified_json = copy.deepcopy(json_content)
             modified_json["scm"]["random_state"] = random_state_to_json(rs)
             modified_json["id"] = f"rss/{modified_json['id']}"
+            modified_json["run_plan"]["hook_plan"] = []
 
             output_file = f"{os.path.splitext(filename)[0]}_rs-{seed}.json"
             output_path = os.path.join(output_folder, output_file)

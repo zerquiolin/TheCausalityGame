@@ -119,12 +119,7 @@
             "samples": 7550,
             "memory_mb": 1
         },
-        "hook_plan": [
-            {
-                "class_": "TheCausalityGame.hook.plots.agent_comparison_plot:AgentsComparisonPlotHook",
-                "step": "benchmark_end"
-            }
-        ]
+        "hook_plan": []
     },
     "seeds": {
         "agent": 42,

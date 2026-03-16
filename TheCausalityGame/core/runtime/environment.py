@@ -200,7 +200,7 @@ class Environment:
             hashed = tuple(sorted(treatment.items())) if treatment else SamplesKind.OBSERVATIONAL
             if hashed not in self.random_states:
                 seed = zlib.crc32(str(hashed).encode())
-                base_rs = np.random.RandomState(seed)
+                base_rs = np.random.RandomState(seed + self.scm.random_state.randint(0, 10**5))
                 self.random_states[hashed] = self.scm.prepare_new_random_state_structure(base_rs)
 
             samples = self.scm.generate_samples(

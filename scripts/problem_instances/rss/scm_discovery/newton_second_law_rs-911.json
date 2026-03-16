@@ -108,16 +108,7 @@
             "samples": 15000,
             "memory_mb": 100
         },
-        "hook_plan": [
-            {
-                "class_": "TheCausalityGame.hook.plots.agent_comparison_plot:AgentsComparisonPlotHook",
-                "step": "benchmark_end"
-            },
-            {
-                "class_": "TheCausalityGame.hook.plots.final_dag_per_agent:FinalDAGPerAgent",
-                "step": "benchmark_end"
-            }
-        ]
+        "hook_plan": []
     },
     "seeds": {
         "agent": 42,

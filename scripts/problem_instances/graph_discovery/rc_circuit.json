@@ -98,8 +98,8 @@
         "parallel_backend": "thread",
         "budget": {
             "rounds": 150,
-            "time_s": 1550, 
-            "samples": 5000,
+            "time_s": 2500, 
+            "samples": 5250,
             "memory_mb": 10000
         },
         "hook_plan": [

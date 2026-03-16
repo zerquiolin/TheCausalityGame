@@ -138,20 +138,11 @@
         "parallel_backend": "thread",
         "budget": {
             "rounds": 150,
-            "time_s": 1550,
-            "samples": 5000,
+            "time_s": 2500,
+            "samples": 5250,
             "memory_mb": 10000
         },
-        "hook_plan": [
-            {
-                "class_": "TheCausalityGame.hook.plots.agent_comparison_plot:AgentsComparisonPlotHook",
-                "step": "benchmark_end"
-            },
-            {
-                "class_": "TheCausalityGame.hook.plots.final_dag_per_agent:FinalDAGPerAgent",
-                "step": "benchmark_end"
-            }
-        ]
+        "hook_plan": []
     },
     "seeds": {
         "agent": 42,

@@ -19,6 +19,7 @@ from TheCausalityGame.core.infrastructure.registry import (
 )
 from TheCausalityGame.core.lib.enum.nodes import NodeAccessibility
 from TheCausalityGame.core.lib.utils.random_state_serialization import (
+    random_state_from_json,
     random_state_to_json,
 )
 
@@ -237,8 +238,6 @@ class SCM(Serializable):
             )
             nodes.append(build_from_spec(updated_spec))
 
-        # random_state = (
-        #     random_state_from_json(spec.random_state) if spec.random_state else None
-        # )
-        random_state = np.random.RandomState(2345)
+        random_state = random_state_from_json(spec.random_state) if spec.random_state else None
+
         return cls(dag, nodes, random_state)
