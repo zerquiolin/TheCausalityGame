@@ -2,7 +2,7 @@
 
 import pytest
 
-from TheCausalityGame.agent.exhaustive import ExhaustiveAgent
+from TheCausalityGame.agent.composable import ComposableAgent
 from TheCausalityGame.core.infrastructure.registry import (
     build_from_spec,
     get_class_path,
@@ -30,8 +30,8 @@ def test_build_from_spec_requires_class() -> None:
 def test_get_class_path() -> None:
     """Test getting the class path of a class."""
     assert (
-        get_class_path(ExhaustiveAgent)
-        == "TheCausalityGame.agent.exhaustive:ExhaustiveAgent"
+        get_class_path(ComposableAgent)
+        == "TheCausalityGame.agent.composable:ComposableAgent"
     )
     assert (
         get_class_path(UniformNoiseDistribution)

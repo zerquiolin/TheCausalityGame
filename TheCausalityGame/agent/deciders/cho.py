@@ -4,28 +4,20 @@ from typing import Any, override
 
 import numpy as np
 
-from TheCausalityGame.agent.common import CommonAgent
 from TheCausalityGame.agent.helpers.ridge_bootstrap_edge_belief import RidgeBootstrapEdgeBelief
-from TheCausalityGame.core.contracts.dto.environment import (
-    AvailableActions,
-    RoundInfo,
-    SamplesCollection,
-)
-from TheCausalityGame.core.contracts.specs.agent import AgentSpec
+from TheCausalityGame.core.contracts.decider import Decider
+from TheCausalityGame.core.contracts.dto.agent import BeliefSnapshot, RoundObservation
+from TheCausalityGame.core.contracts.dto.environment import AvailableActions, RoundInfo
+from TheCausalityGame.core.contracts.specs.decider import DeciderSpec
 from TheCausalityGame.core.infrastructure.decisions import Decision
 from TheCausalityGame.core.infrastructure.registry import get_class_path
 
 
-class Cho2016ActiveGBNAgent(CommonAgent):
-    """
-    Cho-style active learning proxy:
-      - pick the variable (WHERE) with highest incident uncertainty
-      - intervene at a canonical baseline value (no HOW optimization)
-    """
+class Cho2016ActiveGBNDecider(Decider):
+    """Cho-style active intervention policy."""
 
     def __init__(
         self,
-        id: str,
         num_obs: int = 5,
         num_inter: int = 1,
         n_bootstrap: int = 32,
@@ -34,7 +26,6 @@ class Cho2016ActiveGBNAgent(CommonAgent):
         k_intervene: int = 1,
         seed: int | None = 911,
     ) -> None:
-        self.id = id
         self._num_obs = int(num_obs)
         self._num_inter = int(num_inter)
         self._belief = RidgeBootstrapEdgeBelief(
@@ -47,22 +38,25 @@ class Cho2016ActiveGBNAgent(CommonAgent):
         self.k_intervene = int(max(1, k_intervene))
 
     @override
-    def inform(self, samples_collection: SamplesCollection) -> None:
-        self.strategy.learn(samples_collection)
-        self._belief.fit(list(samples_collection))
+    def update(self, observation: RoundObservation) -> None:
+        self._belief.fit(list(observation.samples))
 
     @override
-    def act(self, round_info: RoundInfo, available_actions: AvailableActions) -> Decision:
+    def decide(
+        self,
+        round_info: RoundInfo,
+        available_actions: AvailableActions,
+        belief: BeliefSnapshot,
+    ) -> Decision:
+        del round_info, belief
         decision = Decision.experiment()
 
-        # modest observational probe (optional)
         if self._num_obs > 0:
             decision.add_experiment(treatment=None, n=self._num_obs)
 
         if self._num_inter <= 0 or not available_actions.experiments:
             return decision
 
-        # Choose WHERE: greedily pick up to k_intervene variables by incident uncertainty
         candidates = sorted(
             list(available_actions.experiments),
             key=lambda v: (-float(self._belief.incident_uncertainty(v.name)), str(v.name)),
@@ -72,7 +66,6 @@ class Cho2016ActiveGBNAgent(CommonAgent):
         if not chosen:
             return decision
 
-        # Choose HOW: sample interior value for numeric domains, else categorical
         treatment: dict[str, Any] = {}
         for v in chosen:
             dom = list(v.domain)
@@ -91,36 +84,33 @@ class Cho2016ActiveGBNAgent(CommonAgent):
 
             treatment[v.name] = val
 
-        if not treatment:
-            return decision
-
-        decision.add_experiment(treatment=treatment, n=self._num_inter)
+        if treatment:
+            decision.add_experiment(treatment=treatment, n=self._num_inter)
         return decision
 
     @override
-    def to_spec(self) -> AgentSpec:
-        params = {
-            "num_obs": self._num_obs,
-            "num_inter": self._num_inter,
-            "n_bootstrap": self._belief.n_bootstrap,
-            "ridge_lambda": self._belief.ridge_lambda,
-            "coef_threshold": self._belief.coef_threshold,
-            "k_intervene": self.k_intervene,
-        }
-        return AgentSpec(id=self.id, class_=get_class_path(self.__class__), params=params)
+    def to_spec(self) -> DeciderSpec:
+        return DeciderSpec(
+            class_=get_class_path(self.__class__),
+            params={
+                "num_obs": self._num_obs,
+                "num_inter": self._num_inter,
+                "n_bootstrap": self._belief.n_bootstrap,
+                "ridge_lambda": self._belief.ridge_lambda,
+                "coef_threshold": self._belief.coef_threshold,
+                "k_intervene": self.k_intervene,
+            },
+        )
 
     @classmethod
     @override
-    def from_spec(cls, spec: AgentSpec) -> "Cho2016ActiveGBNAgent":
-        if not spec.params:
-            return cls(id=spec.id)
-
+    def from_spec(cls, spec: DeciderSpec) -> Cho2016ActiveGBNDecider:
+        params = spec.params or {}
         return cls(
-            id=spec.id,
-            num_obs=spec.params.num_obs or None,  # type: ignore
-            num_inter=spec.params.num_inter or None,  # type: ignore
-            n_bootstrap=spec.params.n_bootstrap or None,  # type: ignore
-            ridge_lambda=spec.params.ridge_lambda or None,  # type: ignore
-            coef_threshold=spec.params.coef_threshold or None,  # type: ignore
-            k_intervene=spec.params.k_intervene or None,  # type: ignore
+            num_obs=int(params.get("num_obs", 5)),
+            num_inter=int(params.get("num_inter", 1)),
+            n_bootstrap=int(params.get("n_bootstrap", 32)),
+            ridge_lambda=float(params.get("ridge_lambda", 1e-2)),
+            coef_threshold=float(params.get("coef_threshold", 1e-2)),
+            k_intervene=int(params.get("k_intervene", 1)),
         )

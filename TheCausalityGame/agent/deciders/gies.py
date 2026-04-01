@@ -5,9 +5,10 @@ from typing import Any, override
 import numpy as np
 import pandas as pd
 
-from TheCausalityGame.agent.common import CommonAgent
+from TheCausalityGame.core.contracts.decider import Decider
+from TheCausalityGame.core.contracts.dto.agent import BeliefSnapshot, RoundObservation
 from TheCausalityGame.core.contracts.dto.environment import AvailableActions, RoundInfo
-from TheCausalityGame.core.contracts.specs.agent import AgentSpec
+from TheCausalityGame.core.contracts.specs.decider import DeciderSpec
 from TheCausalityGame.core.infrastructure.decisions import Decision
 from TheCausalityGame.core.infrastructure.registry import get_class_path
 
@@ -20,12 +21,11 @@ def _df_to_numeric(df: pd.DataFrame) -> pd.DataFrame:
     return df.select_dtypes(include=[np.number]).dropna(axis=0, how="any")
 
 
-def _sample_value(rng, domain):
+def _sample_value(rng: np.random.Generator, domain: list[Any]) -> Any:
     dom = list(domain)
     if not dom:
         return 0
 
-    # Numeric bounds convention: [low, high]
     if len(dom) >= 2 and all(isinstance(x, (int, float, np.integer, np.floating)) for x in dom[:2]):
         low, high = float(dom[0]), float(dom[1])
         if high < low:
@@ -34,32 +34,22 @@ def _sample_value(rng, domain):
             return float(low)
         return float(rng.uniform(low, high))
 
-    # categorical/enumerated
     return dom[rng.integers(0, len(dom))]
 
 
-class GIESAgent(CommonAgent):
-    """
-    Greedy Interventional Equivalence Search (GIES), Hauser & Bühlmann (2012).
-
-    We call the actual GIES implementation (pip package `gies`) with the Gaussian BIC score.
-    It returns a CPDAG adjacency matrix A where:
-      - A[i,j] != 0 and A[j,i] == 0 implies i -> j
-      - A[i,j] != 0 and A[j,i] != 0 implies i - j (undirected)
-    """
+class GIESDecider(Decider):
+    """Greedy interventional design using a learned GIES CPDAG."""
 
     def __init__(
         self,
-        id: str,
         num_obs: int = 3,
         num_inter: int = 3,
         debug: int = 0,
         phases: list[str] | None = None,
         iterate: bool = True,
-        k_intervene: int = 1,  # number of variables to intervene on at once
+        k_intervene: int = 1,
         seed: int | None = 911,
     ) -> None:
-        self.id = id
         self._num_obs = int(num_obs)
         self._num_inter = int(num_inter)
         self.k_intervene = int(max(1, k_intervene))
@@ -67,27 +57,22 @@ class GIESAgent(CommonAgent):
         self.phases = phases or ["forward", "backward", "turning"]
         self.iterate = bool(iterate)
         self.rng = np.random.default_rng(seed)
-
         self._columns: list[str] | None = None
         self._cpdag: np.ndarray | None = None
         self._score: float | None = None
 
     @override
-    def inform(self, samples_collection) -> None:
-        self.strategy.learn(samples_collection)
-
+    def update(self, observation: RoundObservation) -> None:
         try:
             import gies  # type: ignore
         except Exception:
-            # If not installed, just skip learning
             self._cpdag = None
             self._score = None
             return
 
-        # Gather and numeric-encode all samples
         frames = []
         interventions = []
-        for s in list(samples_collection):
+        for s in list(observation.samples):
             if getattr(s, "data", None) is None or len(s.data) == 0:
                 continue
             df = _df_to_numeric(s.data)
@@ -101,23 +86,18 @@ class GIESAgent(CommonAgent):
             self._score = None
             return
 
-        # Fix a consistent column order
         if self._columns is None:
             self._columns = list(frames[0].columns)
         cols = self._columns
 
-        # Group by intervention target set (environment)
-        # GIES expects: data = [X_env0, X_env1, ...], I = [targets_env0, targets_env1, ...]
         env_map: dict[tuple[int, ...], list[np.ndarray]] = {}
-
         for df, inter in zip(frames, interventions):
             df = df.reindex(columns=cols)
             X = df.to_numpy(dtype=float)
 
             if inter is None:
-                key = tuple()  # observational environment
+                key = tuple()
             else:
-                # map intervened variable names to indices
                 idxs = []
                 for name in inter.keys():
                     if name in cols:
@@ -128,12 +108,10 @@ class GIESAgent(CommonAgent):
 
         data_list: list[np.ndarray] = []
         I_list: list[list[int]] = []
-
         for key, mats in env_map.items():
             data_list.append(np.vstack(mats))
             I_list.append(list(key))
 
-        # Run GIES (Gaussian BIC score)
         A_hat, score = gies.fit_bic(
             data_list,
             I_list,
@@ -146,27 +124,14 @@ class GIESAgent(CommonAgent):
         self._cpdag = A_hat.astype(float)
         self._score = float(score)
 
-    def _pick_value(self, domain: list[Any]) -> Any:
-        dom = list(domain)
-        if not dom:
-            return 0
-
-        # Numeric bounds
-        if len(dom) >= 2 and all(
-            isinstance(x, (int, float, np.integer, np.floating)) for x in dom[:2]
-        ):
-            low, high = float(dom[0]), float(dom[1])
-            if high < low:
-                low, high = high, low
-            if np.isclose(low, high):
-                return float(low)
-            return float(self.rng.uniform(low, high))
-
-        # Categorical/enumerated
-        return dom[self.rng.integers(0, len(dom))]
-
     @override
-    def act(self, round_info: RoundInfo, available_actions: AvailableActions) -> Decision:
+    def decide(
+        self,
+        round_info: RoundInfo,
+        available_actions: AvailableActions,
+        belief: BeliefSnapshot,
+    ) -> Decision:
+        del round_info, belief
         decision = Decision.experiment()
 
         if self._num_obs > 0:
@@ -175,11 +140,10 @@ class GIESAgent(CommonAgent):
         if self._num_inter <= 0 or not available_actions.experiments:
             return decision
 
-        # If no learned CPDAG yet: random intervention
         if self._cpdag is None or self._columns is None:
             vars_sorted = sorted(list(available_actions.experiments), key=lambda v: str(v.name))
             var = vars_sorted[self.rng.integers(0, len(vars_sorted))]
-            val = self._pick_value(list(var.domain))
+            val = _sample_value(self.rng, list(var.domain))
             decision.add_experiment(treatment={var.name: val}, n=self._num_inter)
             return decision
 
@@ -203,12 +167,12 @@ class GIESAgent(CommonAgent):
         if not cands:
             vars_sorted = sorted(list(available_actions.experiments), key=lambda v: str(v.name))
             var = vars_sorted[self.rng.integers(0, len(vars_sorted))]
-            val = _sample_value(self.rng, var.domain)
+            val = _sample_value(self.rng, list(var.domain))
             decision.add_experiment(treatment={var.name: val}, n=self._num_inter)
             return decision
 
         chosen: list[Any] = []
-        covered_edges: set[tuple[int, int]] = set()  # undirected edges as (min(i,j), max(i,j))
+        covered_edges: set[tuple[int, int]] = set()
 
         k = min(self.k_intervene, len(cands))
         for _ in range(k):
@@ -237,34 +201,33 @@ class GIESAgent(CommonAgent):
             for j in undirected_neighbors(i):
                 covered_edges.add((min(i, j), max(i, j)))
 
-        treatment = {v.name: _sample_value(self.rng, v.domain) for v in chosen}
+        treatment = {v.name: _sample_value(self.rng, list(v.domain)) for v in chosen}
         decision.add_experiment(treatment=treatment, n=self._num_inter)
         return decision
 
     @override
-    def to_spec(self) -> AgentSpec:
-        params = {
-            "num_obs": self._num_obs,
-            "num_inter": self._num_inter,
-            "debug": self.debug,
-            "phases": self.phases,
-            "iterate": self.iterate,
-            "k_intervene": self.k_intervene,
-        }
-        return AgentSpec(id=self.id, class_=get_class_path(self.__class__), params=params)
+    def to_spec(self) -> DeciderSpec:
+        return DeciderSpec(
+            class_=get_class_path(self.__class__),
+            params={
+                "num_obs": self._num_obs,
+                "num_inter": self._num_inter,
+                "debug": self.debug,
+                "phases": self.phases,
+                "iterate": self.iterate,
+                "k_intervene": self.k_intervene,
+            },
+        )
 
     @classmethod
     @override
-    def from_spec(cls, spec: AgentSpec) -> GIESAgent:
-        if not spec.params:
-            return cls(id=spec.id)
-
+    def from_spec(cls, spec: DeciderSpec) -> GIESDecider:
+        params = spec.params or {}
         return cls(
-            id=spec.id,
-            num_obs=spec.params.num_obs or None,  # type: ignore
-            num_inter=spec.params.num_inter or None,  # type: ignore
-            debug=spec.params.debug or None,  # type: ignore
-            phases=spec.params.phases or None,  # type: ignore
-            iterate=spec.params.iterate or None,  # type: ignore
-            k_intervene=spec.params.k_intervene or None,  # type: ignore
+            num_obs=int(params.get("num_obs", 3)),
+            num_inter=int(params.get("num_inter", 3)),
+            debug=int(params.get("debug", 0)),
+            phases=list(params.get("phases", ["forward", "backward", "turning"])),
+            iterate=bool(params.get("iterate", True)),
+            k_intervene=int(params.get("k_intervene", 1)),
         )

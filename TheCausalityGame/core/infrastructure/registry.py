@@ -5,6 +5,7 @@ from __future__ import annotations
 import importlib
 import importlib.util
 import inspect
+import os
 import sys
 from pathlib import Path
 from types import ModuleType
@@ -24,8 +25,20 @@ from TheCausalityGame.core.lib.errors.registry import (
     PathFormatError,
 )
 
-# Only modules starting with this prefix may be dynamically loaded
-_ALLOWLIST = ("TheCausalityGame.",)
+# Only modules starting with an allow-listed prefix may be dynamically loaded.
+_ALLOWLIST: set[str] = {"TheCausalityGame."}
+_ALLOWLIST.update(
+    {
+        prefix.strip()
+        for prefix in os.getenv("TCG_REGISTRY_ALLOWLIST", "").split(",")
+        if prefix.strip()
+    }
+)
+
+
+def register_allowlist_prefix(prefix: str) -> None:
+    """Allow dynamic loading from an additional module prefix."""
+    _ALLOWLIST.add(prefix)
 
 
 def load_class(class_path: str) -> type[Any]:

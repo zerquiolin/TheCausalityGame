@@ -1,4 +1,4 @@
-"""The Causality Game - Conditional Average Treatment Effect Strategy."""
+"""Treatment-effect inferer implementation."""
 
 from __future__ import annotations
 
@@ -8,52 +8,37 @@ import numpy as np
 import pandas as pd
 from sklearn.linear_model import SGDRegressor
 
-from TheCausalityGame.core.contracts.dto.environment import (
-    SamplesCollection,
-)
-from TheCausalityGame.core.infrastructure.strategy import Strategy
+from TheCausalityGame.core.contracts.dto.agent import BeliefSnapshot, RoundObservation
+from TheCausalityGame.core.contracts.inferer import Inferer
+from TheCausalityGame.core.contracts.specs.inferer import InfererSpec
+from TheCausalityGame.core.infrastructure.registry import get_class_path
 
 
-class CATEStrategy(Strategy):
-    """Conditional Average Treatment Effect (CATE) strategy."""
+class CATEInferer(Inferer):
+    """Infer treatment effects from accumulated observational/interventional data."""
 
-    @override
-    def initialize(self) -> None:
+    def __init__(self) -> None:
         self._model: SGDRegressor | None = None
-        self._last: SamplesCollection | None = None
-        self._features: list[str]
-        self._target: str
+        self._last_data: list[pd.DataFrame] = []
+        self._features: list[str] = []
+        self._target: str | None = None
 
     @override
-    def learn(self, samples: SamplesCollection) -> None:
-        """
-        Learn from new samples using partial fit.
+    def update(self, observation: RoundObservation) -> None:
+        for sample in observation.samples:
+            self._last_data.append(sample.data)
 
-        Parameters
-        ----------
-        samples : SamplesCollection
-            Collection of observed/intervened data.
-        """
-        if self._model is None:
-            self._last = samples
+        if self._model is None or self._target is None or not self._features:
             return
 
-        for sample in samples:
+        for sample in observation.samples:
             X = sample.data[self._features]  # noqa: N806
             y: pd.Series[int | float | str] = sample.data[self._target]
             self._model.partial_fit(X, y)
 
     @override
     def answer(self) -> Any:
-        """
-        Return callable that computes treatment effect from counterfactual pairs.
-
-        Returns
-        -------
-        Callable
-            A function that computes treatment effects on given data.
-        """
-        if self._last is None:
+        if not self._last_data:
 
             def dummy(
                 X: list[str],  # noqa: ARG001, N803
@@ -81,7 +66,7 @@ class CATEStrategy(Strategy):
                 self._target = outcome
 
                 x_non, x_treat = covariate_values
-                data = pd.concat([s.data for s in self._last] if self._last else [])
+                data = pd.concat(self._last_data, ignore_index=True, sort=False)
 
                 X_train = data[self._features]  # noqa: N806
                 y_train: pd.Series[int | float | str] = data[self._target]
@@ -95,9 +80,6 @@ class CATEStrategy(Strategy):
                     penalty="l2",
                     alpha=0.01,
                 )
-                # Optional alternative:
-                # model = RandomForestRegressor(n_estimators=100, random_state=911)
-
                 model.partial_fit(X_train, y_train)
                 self._model = model
 
@@ -116,9 +98,23 @@ class CATEStrategy(Strategy):
         ) -> pd.DataFrame:
             x_non, x_treat = covariate_values
 
-            y_non = self._model.predict(x_non[self._features])  # type: ignore
-            y_treat = self._model.predict(x_treat[self._features])  # type: ignore
+            y_non = self._model.predict(x_non[self._features])  # type: ignore[arg-type]
+            y_treat = self._model.predict(x_treat[self._features])  # type: ignore[arg-type]
 
             return pd.DataFrame(y_treat - y_non, columns=["treatment_effect"])
 
         return after
+
+    @override
+    def snapshot(self) -> BeliefSnapshot:
+        return BeliefSnapshot(estimate=self.answer())
+
+    @override
+    def to_spec(self) -> InfererSpec:
+        return InfererSpec(class_=get_class_path(self.__class__))
+
+    @classmethod
+    @override
+    def from_spec(cls, spec: InfererSpec) -> CATEInferer:
+        del spec
+        return cls()

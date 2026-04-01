@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, override
 
-from TheCausalityGame.agent.strategies.scm_strategy import EstimatedANMSCM
+from TheCausalityGame.agent.inferers.scm import EstimatedANMSCM
 from TheCausalityGame.core.contracts.result_validator import ResultValidator
 from TheCausalityGame.core.contracts.specs.result_validator import ResultValidatorSpec
 from TheCausalityGame.core.infrastructure.registry import get_class_path

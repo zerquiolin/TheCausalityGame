@@ -6,13 +6,13 @@ from TheCausalityGame.core.contracts.specs.problem_instance import ProblemInstan
 from TheCausalityGame.core.runtime.runner import Runner
 
 # Hill
-# problem_instance_path = "scripts/problem_instances/treatment_effect/hill.json"
+problem_instance_path = "scripts/problem_instances/treatment_effect/hill.json"
 
 # Hill Extended
 # problem_instance_path = "scripts/problem_instances/treatment_effect/hill_extended.json"
 
 # Graph Discovery
-problem_instance_path = "scripts/problem_instances/graph_discovery/rc_circuit.json"
+# problem_instance_path = "scripts/problem_instances/graph_discovery/rc_circuit.json"
 
 # SCM Discovery
 # problem_instance_path = "scripts/problem_instances/scm_discovery/rc_circuit.json"

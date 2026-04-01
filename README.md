@@ -48,7 +48,7 @@ The Causality Game models an interactive loop in which an **agent** explores an 
 | `TheCausalityGame/core/runtime` | Runner, environment, and game orchestration logic. |
 | `TheCausalityGame/core/infrastructure` | Registry, serialization helpers, artifact writer, decision helpers, logging utilities. |
 | `TheCausalityGame/core/managers` | Budget and hook managers coordinating runtime policies. |
-| `TheCausalityGame/agent` | Reference agent implementations (e.g., `ExhaustiveAgent`). |
+| `TheCausalityGame/agent` | Agent wrappers plus shipped inferers, deciders, and unified policies. |
 | `TheCausalityGame/mission`, `scm`, `metric`, `hook` | Domain-specific implementations shipped with the game. |
 | `scripts/main.py` | Legacy helper replicating the CLI `run` command. |
 | `tests/` | Unit tests and fixtures. |
@@ -98,8 +98,14 @@ After installation the `tcg` CLI is available on your PATH.
   "agents": [
     {
       "id": "exhaustive",
-      "class": "TheCausalityGame.agent.exhaustive:ExhaustiveAgent",
-      "params": {"num_obs": 2, "num_inter": 2}
+      "class": "TheCausalityGame.agent.composable:ComposableAgent",
+      "inferer": {
+        "class": "TheCausalityGame.agent.inferers.cate:CATEInferer"
+      },
+      "decider": {
+        "class": "TheCausalityGame.agent.deciders.exhaustive:ExhaustiveDecider",
+        "params": {"num_obs": 2, "num_inter": 2}
+      }
     }
   ],
   "scm": {
@@ -185,7 +191,7 @@ Problem instances are validated against `ProblemInstanceSpec`. JSON documents ma
 | `class` | Optional when using the spec-only workflow; set it to a `ProblemInstance` class path when you want `build_from_spec` to construct a concrete instance. |
 | `schema_version` | Schema identifier for compatibility management. |
 | `id` | Unique identifier for the run; used in artifact folder names. |
-| `agents` | List of [`AgentSpec`](TheCausalityGame/core/contracts/specs/agent.py) entries defining agent class paths and parameters. |
+| `agents` | List of [`AgentSpec`](TheCausalityGame/core/contracts/specs/agent.py) entries defining either `inferer + decider` or a unified `policy`. |
 | `scm` | [`SCMSpec`](TheCausalityGame/core/contracts/specs/scm.py) describing nodes, DAG structure, and implementation class. |
 | `mission` | [`MissionSpec`](TheCausalityGame/core/contracts/specs/mission.py) including behavior/result metrics and validators. |
 | `custom_metrics` | Optional list of [`MetricSpec`](TheCausalityGame/core/contracts/specs/metric.py) evaluated in addition to mission metrics. |
@@ -205,10 +211,10 @@ Problem instances are validated against `ProblemInstanceSpec`. JSON documents ma
 ## Extending the Game
 
 ### Implement a new agent
-1. Subclass `TheCausalityGame.core.contracts.agent.Agent`.
-2. Provide `act`, `inform`, and `answer` implementations; use `Decision` helpers from `core.infrastructure.decisions`.
-3. Implement `from_spec`/`to_spec` if additional configuration is required (see `TheCausalityGame/agent/exhaustive.py` for reference).
-4. Export the agent in a module under the `TheCausalityGame.` namespace so the registry allowlist accepts it.
+1. For compositional agents, implement an `Inferer` and/or a `Decider` under `TheCausalityGame.core.contracts.inferer` and `TheCausalityGame.core.contracts.decider`.
+2. For tightly coupled algorithms, implement an `AgentPolicy` under `TheCausalityGame.core.contracts.agent_policy`.
+3. Use the shipped wrappers `TheCausalityGame.agent.composable:ComposableAgent` or `TheCausalityGame.agent.combined:CombinedAgent` in manifests.
+4. Implement `from_spec`/`to_spec` for the new component and reference its `module:Class` path in the manifest.
 
 ### Add a mission or metric
 - Missions inherit from `TheCausalityGame.core.contracts.mission.Mission` and must coordinate behavior/result metrics plus validation.

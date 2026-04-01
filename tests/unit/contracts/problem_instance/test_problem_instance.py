@@ -7,7 +7,9 @@ import numpy as np
 import pytest
 import sympy as sp
 
-from TheCausalityGame.agent.exhaustive import ExhaustiveAgent
+from TheCausalityGame.agent.composable import ComposableAgent
+from TheCausalityGame.agent.deciders.exhaustive import ExhaustiveDecider
+from TheCausalityGame.agent.inferers.cate import CATEInferer
 from TheCausalityGame.core.contracts.problem_instance import ProblemInstance
 from TheCausalityGame.core.contracts.specs.budget import BudgetSpec
 from TheCausalityGame.core.contracts.specs.problem_instance import ProblemInstanceSpec
@@ -88,7 +90,11 @@ def problem_instance(request: Any) -> None:  # noqa: ANN401
     )
 
     # Create Agent
-    agent = ExhaustiveAgent(id="911")
+    agent = ComposableAgent(
+        id="911",
+        inferer=CATEInferer(),
+        decider=ExhaustiveDecider(),
+    )
 
     # Create Budget
     budget = BudgetSpec(rounds=100, time_s=60.0, samples=100, memory_mb=512)

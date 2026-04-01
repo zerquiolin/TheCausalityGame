@@ -3,15 +3,18 @@ from __future__ import annotations
 # ruff: noqa
 
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any, Optional, override
 
 import networkx as nx
 import numpy as np
 import pandas as pd
 
-from TheCausalityGame.agent.strategies.dag_strategy import learn_dag_from_samples  # type: ignore
+from TheCausalityGame.agent.inferers.dag import learn_dag_from_samples  # type: ignore
+from TheCausalityGame.core.contracts.dto.agent import BeliefSnapshot, RoundObservation
 from TheCausalityGame.core.contracts.dto.environment import SamplesCollection
-from TheCausalityGame.core.infrastructure.strategy import Strategy
+from TheCausalityGame.core.contracts.inferer import Inferer
+from TheCausalityGame.core.contracts.specs.inferer import InfererSpec
+from TheCausalityGame.core.infrastructure.registry import get_class_path
 
 from sklearn.linear_model import Ridge
 from sklearn.pipeline import make_pipeline
@@ -645,7 +648,7 @@ def fit_anm_mechanism_for_node(
     )
 
 
-class SCMDiscoveryStrategy(Strategy):
+class SCMDiscoveryInferer(Inferer):
     def _training_df_for_node(self, node: str) -> pd.DataFrame:
         """Training data for a node's mechanism.
 
@@ -684,23 +687,14 @@ class SCMDiscoveryStrategy(Strategy):
         self.seed = seed
         self.bins_numeric_parents = bins_numeric_parents
         self.use_interventional_for_mechanisms = use_interventional_for_mechanisms
-
         self._obs_df: Optional[pd.DataFrame] = None
         self._schema_columns: set[str] = set()
-        # store (intervention_keys_set, df)
         self._int_batches: list[tuple[set[str], pd.DataFrame]] = []
         self._cached_scm: Optional[EstimatedANMSCM] = None
 
-    def initialize(self) -> None:
-        self._obs_df = None
-        self._schema_columns = set()
-        self._int_batches = []
-        self._cached_scm = None
-        self._is_initialized = True
-
-    def learn(self, samples: SamplesCollection) -> None:
-        if not self.is_initialized:
-            raise RuntimeError("Strategy must be initialized before learning.")
+    @override
+    def update(self, observation: RoundObservation) -> None:
+        samples: SamplesCollection = observation.samples
 
         for batch in samples:
             if batch.data is None:
@@ -729,10 +723,8 @@ class SCMDiscoveryStrategy(Strategy):
 
         self._cached_scm = None
 
+    @override
     def answer(self) -> EstimatedANMSCM:
-        if not self.is_initialized:
-            raise RuntimeError("Strategy must be initialized before answering.")
-
         if self._cached_scm is not None:
             return self._cached_scm
 
@@ -833,3 +825,35 @@ class SCMDiscoveryStrategy(Strategy):
             parts.append(df)
 
         return pd.concat(parts, ignore_index=True, sort=False)
+
+    @override
+    def snapshot(self) -> BeliefSnapshot:
+        return BeliefSnapshot(
+            estimate=self.answer(),
+            summary={"schema_columns": sorted(self._schema_columns)},
+        )
+
+    @override
+    def to_spec(self) -> InfererSpec:
+        return InfererSpec(
+            class_=get_class_path(self.__class__),
+            params={
+                "alpha": self.alpha,
+                "seed": self.seed,
+                "bins_numeric_parents": self.bins_numeric_parents,
+                "use_interventional_for_mechanisms": self.use_interventional_for_mechanisms,
+            },
+        )
+
+    @classmethod
+    @override
+    def from_spec(cls, spec: InfererSpec) -> SCMDiscoveryInferer:
+        params = spec.params or {}
+        return cls(
+            alpha=float(params.get("alpha", 0.05)),
+            seed=int(params.get("seed", 911)),
+            bins_numeric_parents=int(params.get("bins_numeric_parents", 4)),
+            use_interventional_for_mechanisms=bool(
+                params.get("use_interventional_for_mechanisms", True)
+            ),
+        )

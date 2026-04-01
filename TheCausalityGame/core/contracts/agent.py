@@ -50,7 +50,7 @@ class Agent(Serializable):
 
     Agents must implement three core methods:
       - `act(round_info, available_actions)`: choose an experiment or answer.
-      - `inform(samples_collection, feedback)`: process observed outcomes.
+      - `inform(samples_collection)`: process observed outcomes.
       - `answer()`: return the current best estimate.
 
     Agents are serializable and can be reconstructed from specifications.

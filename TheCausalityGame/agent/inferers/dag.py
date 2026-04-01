@@ -1,11 +1,13 @@
 # ruff: noqa # pylint: skip-file # mypy: ignore-errors
 # type: ignore
-"""The Causality Game - DAG Discovery Strategy Implementation."""
+"""The Causality Game - DAG discovery inferer implementation."""
+
+from __future__ import annotations
 
 import itertools
 import logging
 from collections.abc import Iterable
-from typing import Optional
+from typing import Optional, override
 
 import networkx as nx
 import numpy as np
@@ -17,8 +19,11 @@ from sklearn.ensemble import HistGradientBoostingRegressor
 
 _SKLEARN_AVAILABLE = True
 
+from TheCausalityGame.core.contracts.dto.agent import BeliefSnapshot, RoundObservation
 from TheCausalityGame.core.contracts.dto.environment import SamplesCollection
-from TheCausalityGame.core.infrastructure.strategy import Strategy  # adjust import if needed
+from TheCausalityGame.core.contracts.inferer import Inferer
+from TheCausalityGame.core.contracts.specs.inferer import InfererSpec
+from TheCausalityGame.core.infrastructure.registry import get_class_path
 
 
 # ---------------------------------------------------------------------
@@ -522,7 +527,7 @@ def learn_dag_from_samples(
 # ---------------------------------------------------------------------
 # Concrete Strategy implementation
 # ---------------------------------------------------------------------
-class DAGDiscoveryStrategy(Strategy):
+class DAGDiscoveryInferer(Inferer):
     """
     Concrete strategy:
     - learn(): incrementally stores observational/interventional data
@@ -533,19 +538,13 @@ class DAGDiscoveryStrategy(Strategy):
         self.is_numerical = is_numerical
         self.alpha = alpha
         self.seed = seed
-
         self._obs_df: Optional[pd.DataFrame] = None
         self._int_batches: list[tuple[set[str], pd.DataFrame]] = []
         self._dag: Optional[nx.DiGraph] = None
 
-    def initialize(self) -> None:
-        self._obs_df = None
-        self._int_batches = []
-        self._is_initialized = True
-
-    def learn(self, samples: SamplesCollection) -> None:
-        if not self.is_initialized:
-            raise RuntimeError("Strategy must be initialized before learning.")
+    @override
+    def update(self, observation: RoundObservation) -> None:
+        samples: SamplesCollection = observation.samples
 
         for batch in samples:
             if batch.data is None:
@@ -569,10 +568,8 @@ class DAGDiscoveryStrategy(Strategy):
         # Invalidate cached answer
         self._dag = None
 
+    @override
     def answer(self) -> nx.DiGraph:
-        if not self.is_initialized:
-            raise RuntimeError("Strategy must be initialized before answering.")
-
         if self._dag is not None:
             return self._dag
 
@@ -594,3 +591,31 @@ class DAGDiscoveryStrategy(Strategy):
             seed=self.seed,
         )
         return self._dag
+
+    @override
+    def snapshot(self) -> BeliefSnapshot:
+        return BeliefSnapshot(
+            estimate=self.answer(),
+            summary={"observational_rows": 0 if self._obs_df is None else len(self._obs_df)},
+        )
+
+    @override
+    def to_spec(self) -> InfererSpec:
+        return InfererSpec(
+            class_=get_class_path(self.__class__),
+            params={
+                "is_numerical": self.is_numerical,
+                "alpha": self.alpha,
+                "seed": self.seed,
+            },
+        )
+
+    @classmethod
+    @override
+    def from_spec(cls, spec: InfererSpec) -> DAGDiscoveryInferer:
+        params = spec.params or {}
+        return cls(
+            is_numerical=bool(params.get("is_numerical", True)),
+            alpha=float(params.get("alpha", 0.05)),
+            seed=int(params.get("seed", 911)),
+        )

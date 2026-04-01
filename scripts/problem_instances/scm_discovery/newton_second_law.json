@@ -4,32 +4,81 @@
     "schema_version": "0.1.0",
     "agents": [
         {
-            "class_": "TheCausalityGame.agent.exhaustive:ExhaustiveAgent",
-            "id": "Exhaustive"
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "Exhaustive",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.scm:SCMDiscoveryInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.exhaustive:ExhaustiveDecider"
+            }
         },
         {
-            "class_": "TheCausalityGame.agent.random:RandomAgent",
-            "id": "Random"
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "Random",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.scm:SCMDiscoveryInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.random:RandomDecider"
+            }
         },
         {
-            "class_": "TheCausalityGame.agent.cho:Cho2016ActiveGBNAgent",
-            "id": "Cho2016ActiveGBN"
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "Cho2016ActiveGBN",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.scm:SCMDiscoveryInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.cho:Cho2016ActiveGBNDecider"
+            }
         },
         {
-            "class_": "TheCausalityGame.agent.tigas:Tigas2022CBEDAgent",
-            "id": "Tigas2022CBED"
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "Tigas2022CBED",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.scm:SCMDiscoveryInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.tigas:Tigas2022CBEDDecider"
+            }
         },
         {
-            "class_": "TheCausalityGame.agent.annadani:Annadani2024CAASLOnlineAgent",
-            "id": "Annadani2024CAASLOnline"
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "Annadani2024CAASLOnline",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.scm:SCMDiscoveryInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.annadani:Annadani2024CAASLOnlineDecider"
+            }
         },
         {
-            "class_": "TheCausalityGame.agent.geng:HeGeng2008MinimaxAgent",
-            "id": "HeGeng2008Minimax"
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "HeGeng2008Minimax",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.scm:SCMDiscoveryInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.geng:HeGeng2008MinimaxDecider"
+            }
         },
         {
-            "class_": "TheCausalityGame.agent.gies:GIESAgent",
-            "id": "GIES"
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "GIES",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.scm:SCMDiscoveryInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.gies:GIESDecider"
+            }
         }
     ],
     "scm": {
@@ -40,7 +89,7 @@
                 "name": "m",
                 "domain": [
                     0,
-                    1e11
+                    100000000000.0
                 ],
                 "noise_distribution": {
                     "class_": "TheCausalityGame.scm.noise.no_noise:NoNoiseDistribution"
@@ -51,8 +100,8 @@
                 "name": "a",
                 "equation": "F/m",
                 "domain": [
-                    -1e11,
-                    1e11
+                    -100000000000.0,
+                    100000000000.0
                 ],
                 "noise_distribution": {
                     "class_": "TheCausalityGame.scm.noise.no_noise:NoNoiseDistribution"
@@ -62,8 +111,8 @@
                 "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
                 "name": "F",
                 "domain": [
-                    -1e11,
-                    1e23
+                    -100000000000.0,
+                    1e+23
                 ],
                 "noise_distribution": {
                     "class_": "TheCausalityGame.scm.noise.no_noise:NoNoiseDistribution"

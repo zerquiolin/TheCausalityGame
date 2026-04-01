@@ -9,7 +9,7 @@ import networkx as nx
 import numpy as np
 import pandas as pd
 
-from TheCausalityGame.agent.strategies.scm_strategy import EstimatedANMSCM
+from TheCausalityGame.agent.inferers.scm import EstimatedANMSCM
 from TheCausalityGame.core.contracts.mission import ResultMetric
 from TheCausalityGame.core.contracts.scm import SCM
 from TheCausalityGame.core.contracts.specs.metric import MetricSpec
