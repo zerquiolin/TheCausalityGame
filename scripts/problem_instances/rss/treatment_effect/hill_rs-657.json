@@ -8,7 +8,7 @@
             "id": "Exhaustive",
             "active": true,
             "inferer": {
-                "class_": "TheCausalityGame.agent.inferers.cate:CATEInferer"
+                "class_": "TheCausalityGame.agent.inferers.outcome_regression:OutcomeRegressionInferer"
             },
             "decider": {
                 "class_": "TheCausalityGame.agent.deciders.exhaustive:ExhaustiveDecider"
@@ -19,7 +19,7 @@
             "id": "Random",
             "active": true,
             "inferer": {
-                "class_": "TheCausalityGame.agent.inferers.cate:CATEInferer"
+                "class_": "TheCausalityGame.agent.inferers.outcome_regression:OutcomeRegressionInferer"
             },
             "decider": {
                 "class_": "TheCausalityGame.agent.deciders.random:RandomDecider"
@@ -30,7 +30,7 @@
             "id": "Cho2016ActiveGBN",
             "active": true,
             "inferer": {
-                "class_": "TheCausalityGame.agent.inferers.cate:CATEInferer"
+                "class_": "TheCausalityGame.agent.inferers.outcome_regression:OutcomeRegressionInferer"
             },
             "decider": {
                 "class_": "TheCausalityGame.agent.deciders.cho:Cho2016ActiveGBNDecider"
@@ -41,7 +41,7 @@
             "id": "Tigas2022CBED",
             "active": true,
             "inferer": {
-                "class_": "TheCausalityGame.agent.inferers.cate:CATEInferer"
+                "class_": "TheCausalityGame.agent.inferers.outcome_regression:OutcomeRegressionInferer"
             },
             "decider": {
                 "class_": "TheCausalityGame.agent.deciders.tigas:Tigas2022CBEDDecider"
@@ -52,7 +52,7 @@
             "id": "Annadani2024CAASLOnline",
             "active": true,
             "inferer": {
-                "class_": "TheCausalityGame.agent.inferers.cate:CATEInferer"
+                "class_": "TheCausalityGame.agent.inferers.outcome_regression:OutcomeRegressionInferer"
             },
             "decider": {
                 "class_": "TheCausalityGame.agent.deciders.annadani:Annadani2024CAASLOnlineDecider"
@@ -63,7 +63,7 @@
             "id": "HeGeng2008Minimax",
             "active": true,
             "inferer": {
-                "class_": "TheCausalityGame.agent.inferers.cate:CATEInferer"
+                "class_": "TheCausalityGame.agent.inferers.outcome_regression:OutcomeRegressionInferer"
             },
             "decider": {
                 "class_": "TheCausalityGame.agent.deciders.geng:HeGeng2008MinimaxDecider"
@@ -74,7 +74,7 @@
             "id": "GIES",
             "active": true,
             "inferer": {
-                "class_": "TheCausalityGame.agent.inferers.cate:CATEInferer"
+                "class_": "TheCausalityGame.agent.inferers.outcome_regression:OutcomeRegressionInferer"
             },
             "decider": {
                 "class_": "TheCausalityGame.agent.deciders.gies:GIESDecider"

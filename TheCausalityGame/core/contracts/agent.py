@@ -26,22 +26,22 @@ class AgentContext:
 
     Attributes
     ----------
-    mission : Mapping[str, str]
+    mission : Mapping[str, Any]
         Information about the mission, such as name and description.
-    behavior_metric : Mapping[str, str]
+    behavior_metric : Mapping[str, Any]
         Details of the metric evaluating agent behavior.
-    result_metric : Mapping[str, str]
+    result_metric : Mapping[str, Any]
         Details of the metric evaluating agent performance.
-    custom_metrics : list[Mapping[str, str]]
+    custom_metrics : list[Mapping[str, Any]]
         Additional custom metrics associated with the mission.
     seed : int
         Global seed used for deterministic operations.
     """
 
-    mission: Mapping[str, str]
-    behavior_metric: Mapping[str, str]
-    result_metric: Mapping[str, str]
-    custom_metrics: list[Mapping[str, str]]
+    mission: Mapping[str, Any]
+    behavior_metric: Mapping[str, Any]
+    result_metric: Mapping[str, Any]
+    custom_metrics: list[Mapping[str, Any]]
 
 
 class Agent(Serializable):

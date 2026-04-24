@@ -72,22 +72,34 @@ class Game:
         self.mission: Mission = build_from_spec(mission_spec)
         self.custom_metrics: list[Metric] = [build_from_spec(m) for m in custom_metrics_specs]
 
+        if not self.mission.is_mounted:
+            self.mission.mount(self.scm)
+
         # Set agent context
         agent_ctx = AgentContext(
             mission={
+                "id": self.mission.id,
                 "name": self.mission.name,
                 "description": self.mission.description,
+                "metadata": self.mission.context_metadata(),
             },
             behavior_metric={
                 "name": self.mission.behavior_metric.name,
                 "description": self.mission.behavior_metric.description,
+                "metadata": self.mission.behavior_metric.context_metadata(),
             },
             result_metric={
                 "name": self.mission.result_metric.name,
                 "description": self.mission.result_metric.description,
+                "metadata": self.mission.result_metric.context_metadata(),
             },
             custom_metrics=[
-                {"name": m.name, "description": m.description} for m in self.custom_metrics
+                {
+                    "name": m.name,
+                    "description": m.description,
+                    "metadata": m.context_metadata(),
+                }
+                for m in self.custom_metrics
             ],
         )
         self.agent.set_context(agent_ctx)

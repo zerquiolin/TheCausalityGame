@@ -58,6 +58,7 @@ class PEHEResultMetric(ResultMetric):
             raise NoNumericLeafNodeError()
 
         self.te_node = rs.choice(possible_outcomes)
+        self.scm = scm
 
         # Pick a treatment node with controllable access
         possible_treatments = [
@@ -69,6 +70,13 @@ class PEHEResultMetric(ResultMetric):
             raise NoControllableNodeError()
 
         self.treatment_node = rs.choice(possible_treatments)
+        self.input_features = [
+            var
+            for var in scm.vars
+            if var not in (self.te_node, self.treatment_node)
+            and scm.nodes[var].accessibility
+            in {NodeAccessibility.CONTROLLABLE, NodeAccessibility.MEASURABLE}
+        ]
 
         # Generate a random covariate configuration (excluding treatment/outcome)
         conditional_samples = scm.generate_samples(
@@ -98,8 +106,8 @@ class PEHEResultMetric(ResultMetric):
         self.true_cate: float = (
             treated_samples[self.te_node] - non_treated_samples[self.te_node]
         )[0]
+        self.treatment_values = tuple(domain_values)
         self.treatment_samples = (non_treated_samples, treated_samples)
-        self.scm = scm
         self.is_mounted = True
 
     @override
@@ -133,13 +141,7 @@ class PEHEResultMetric(ResultMetric):
             raise UnsupportedMetricTypeError(kind)
 
         # Prepare the input features (exclude treatment/outcome)
-        input_features = [
-            var
-            for var in self.scm.vars
-            if var not in (self.te_node, self.treatment_node)
-            and self.scm.nodes[var].accessibility
-            in {NodeAccessibility.CONTROLLABLE, NodeAccessibility.MEASURABLE}
-        ]
+        input_features = list(self.input_features)
 
         # Prepare covariate test samples
         non_treated = self.treatment_samples[0].drop(columns=[self.te_node])
@@ -160,6 +162,19 @@ class PEHEResultMetric(ResultMetric):
         pehe = np.sqrt(np.mean(difference**2))
 
         return pehe
+
+    @override
+    def context_metadata(self) -> dict[str, Any]:
+        if not self.is_mounted:
+            return {}
+        return {
+            "query_family": "treatment_effect",
+            "estimand_kind": "cate",
+            "treatment": self.treatment_node,
+            "outcome": self.te_node,
+            "covariates": list(self.input_features),
+            "treatment_values": list(self.treatment_values),
+        }
 
     @override
     def to_spec(self) -> MetricSpec:

@@ -9,7 +9,7 @@ import sympy as sp
 
 from TheCausalityGame.agent.composable import ComposableAgent
 from TheCausalityGame.agent.deciders.exhaustive import ExhaustiveDecider
-from TheCausalityGame.agent.inferers.cate import CATEInferer
+from TheCausalityGame.agent.inferers.outcome_regression import OutcomeRegressionInferer
 from TheCausalityGame.core.contracts.problem_instance import ProblemInstance
 from TheCausalityGame.core.contracts.specs.budget import BudgetSpec
 from TheCausalityGame.core.contracts.specs.problem_instance import ProblemInstanceSpec
@@ -92,7 +92,7 @@ def problem_instance(request: Any) -> None:  # noqa: ANN401
     # Create Agent
     agent = ComposableAgent(
         id="911",
-        inferer=CATEInferer(),
+        inferer=OutcomeRegressionInferer(),
         decider=ExhaustiveDecider(),
     )
 

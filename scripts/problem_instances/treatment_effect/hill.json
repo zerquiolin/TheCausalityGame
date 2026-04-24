@@ -5,79 +5,164 @@
     "agents": [
         {
             "class_": "TheCausalityGame.agent.composable:ComposableAgent",
-            "id": "Exhaustive",
+            "id": "OptimalEffectDesign_Fast",
             "active": true,
             "inferer": {
-                "class_": "TheCausalityGame.agent.inferers.cate:CATEInferer"
+                "class_": "TheCausalityGame.agent.inferers.outcome_regression:OutcomeRegressionInferer"
             },
             "decider": {
-                "class_": "TheCausalityGame.agent.deciders.exhaustive:ExhaustiveDecider"
+                "class_": "TheCausalityGame.agent.deciders.optimal_effect_design:OptimalEffectDesignDecider",
+                "params": {
+                    "num_obs": 1,
+                    "num_inter": 3,
+                    "n_bootstrap": 24,
+                    "n_graphs": 16,
+                    "fantasy_samples": 24,
+                    "num_value_candidates": 4,
+                    "treatment_bonus": 1.5,
+                    "path_weight": 1.0,
+                    "coverage_weight": 0.25,
+                    "disagreement_weight": 0.75,
+                    "seed": 911
+                }
             }
         },
         {
             "class_": "TheCausalityGame.agent.composable:ComposableAgent",
-            "id": "Random",
+            "id": "OptimalEffectDesign_Balanced",
             "active": true,
             "inferer": {
-                "class_": "TheCausalityGame.agent.inferers.cate:CATEInferer"
+                "class_": "TheCausalityGame.agent.inferers.outcome_regression:OutcomeRegressionInferer"
             },
             "decider": {
-                "class_": "TheCausalityGame.agent.deciders.random:RandomDecider"
+                "class_": "TheCausalityGame.agent.deciders.optimal_effect_design:OptimalEffectDesignDecider",
+                "params": {
+                    "num_obs": 1,
+                    "num_inter": 3,
+                    "n_bootstrap": 32,
+                    "n_graphs": 24,
+                    "fantasy_samples": 48,
+                    "num_value_candidates": 5,
+                    "treatment_bonus": 2.0,
+                    "path_weight": 1.5,
+                    "coverage_weight": 0.5,
+                    "disagreement_weight": 1.0,
+                    "seed": 911
+                }
             }
         },
         {
             "class_": "TheCausalityGame.agent.composable:ComposableAgent",
-            "id": "Cho2016ActiveGBN",
+            "id": "OptimalEffectDesign_PathFocused",
             "active": true,
             "inferer": {
-                "class_": "TheCausalityGame.agent.inferers.cate:CATEInferer"
+                "class_": "TheCausalityGame.agent.inferers.outcome_regression:OutcomeRegressionInferer"
             },
             "decider": {
-                "class_": "TheCausalityGame.agent.deciders.cho:Cho2016ActiveGBNDecider"
+                "class_": "TheCausalityGame.agent.deciders.optimal_effect_design:OptimalEffectDesignDecider",
+                "params": {
+                    "num_obs": 1,
+                    "num_inter": 3,
+                    "n_bootstrap": 32,
+                    "n_graphs": 24,
+                    "fantasy_samples": 48,
+                    "num_value_candidates": 5,
+                    "treatment_bonus": 2.5,
+                    "path_weight": 2.0,
+                    "coverage_weight": 0.25,
+                    "disagreement_weight": 1.0,
+                    "seed": 911
+                }
             }
         },
         {
             "class_": "TheCausalityGame.agent.composable:ComposableAgent",
-            "id": "Tigas2022CBED",
+            "id": "OptimalEffectDesign_DisagreementHeavy",
             "active": true,
             "inferer": {
-                "class_": "TheCausalityGame.agent.inferers.cate:CATEInferer"
+                "class_": "TheCausalityGame.agent.inferers.outcome_regression:OutcomeRegressionInferer"
             },
             "decider": {
-                "class_": "TheCausalityGame.agent.deciders.tigas:Tigas2022CBEDDecider"
+                "class_": "TheCausalityGame.agent.deciders.optimal_effect_design:OptimalEffectDesignDecider",
+                "params": {
+                    "num_obs": 1,
+                    "num_inter": 3,
+                    "n_bootstrap": 32,
+                    "n_graphs": 32,
+                    "fantasy_samples": 72,
+                    "num_value_candidates": 7,
+                    "treatment_bonus": 2.0,
+                    "path_weight": 1.0,
+                    "coverage_weight": 0.5,
+                    "disagreement_weight": 1.75,
+                    "seed": 911
+                }
             }
         },
         {
             "class_": "TheCausalityGame.agent.composable:ComposableAgent",
-            "id": "Annadani2024CAASLOnline",
+            "id": "OptimalEffectDesign_InterventionHeavy",
             "active": true,
             "inferer": {
-                "class_": "TheCausalityGame.agent.inferers.cate:CATEInferer"
+                "class_": "TheCausalityGame.agent.inferers.outcome_regression:OutcomeRegressionInferer"
             },
             "decider": {
-                "class_": "TheCausalityGame.agent.deciders.annadani:Annadani2024CAASLOnlineDecider"
+                "class_": "TheCausalityGame.agent.deciders.optimal_effect_design:OptimalEffectDesignDecider",
+                "params": {
+                    "num_obs": 0,
+                    "num_inter": 4,
+                    "n_bootstrap": 64,
+                    "n_graphs": 36,
+                    "fantasy_samples": 72,
+                    "num_value_candidates": 6,
+                    "treatment_bonus": 3.0,
+                    "path_weight": 1.5,
+                    "coverage_weight": 0.75,
+                    "disagreement_weight": 1.25,
+                    "seed": 911
+                }
             }
         },
         {
             "class_": "TheCausalityGame.agent.composable:ComposableAgent",
-            "id": "HeGeng2008Minimax",
+            "id": "ABCI_Fast",
             "active": true,
             "inferer": {
-                "class_": "TheCausalityGame.agent.inferers.cate:CATEInferer"
+                "class_": "TheCausalityGame.agent.inferers.outcome_regression:OutcomeRegressionInferer"
             },
             "decider": {
-                "class_": "TheCausalityGame.agent.deciders.geng:HeGeng2008MinimaxDecider"
+                "class_": "TheCausalityGame.agent.deciders.abci:ABCIDecider",
+                "params": {
+                    "num_obs": 1,
+                    "num_inter": 3,
+                    "n_bootstrap": 24,
+                    "n_graphs": 16,
+                    "fantasy_samples": 24,
+                    "num_value_candidates": 4,
+                    "query_focus_weight": 0.5,
+                    "seed": 911
+                }
             }
         },
         {
             "class_": "TheCausalityGame.agent.composable:ComposableAgent",
-            "id": "GIES",
+            "id": "ABCI_Balanced",
             "active": true,
             "inferer": {
-                "class_": "TheCausalityGame.agent.inferers.cate:CATEInferer"
+                "class_": "TheCausalityGame.agent.inferers.outcome_regression:OutcomeRegressionInferer"
             },
             "decider": {
-                "class_": "TheCausalityGame.agent.deciders.gies:GIESDecider"
+                "class_": "TheCausalityGame.agent.deciders.abci:ABCIDecider",
+                "params": {
+                    "num_obs": 1,
+                    "num_inter": 3,
+                    "n_bootstrap": 32,
+                    "n_graphs": 24,
+                    "fantasy_samples": 48,
+                    "num_value_candidates": 5,
+                    "query_focus_weight": 0.75,
+                    "seed": 911
+                }
             }
         }
     ],
@@ -163,8 +248,8 @@
         "parallel_backend": "thread",
         "budget": {
             "rounds": 1250,
-            "time_s": 45,
-            "samples": 7550,
+            "time_s": 5998,
+            "samples": 15100,
             "memory_mb": 1
         },
         "hook_plan": [

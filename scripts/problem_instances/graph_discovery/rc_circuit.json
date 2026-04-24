@@ -79,6 +79,48 @@
             "decider": {
                 "class_": "TheCausalityGame.agent.deciders.gies:GIESDecider"
             }
+        },
+        {
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "ABCI_Fast",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.dag:DAGDiscoveryInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.abci:ABCIDecider",
+                "params": {
+                    "num_obs": 1,
+                    "num_inter": 3,
+                    "n_bootstrap": 24,
+                    "n_graphs": 16,
+                    "fantasy_samples": 24,
+                    "num_value_candidates": 4,
+                    "query_focus_weight": 0.5,
+                    "seed": 911
+                }
+            }
+        },
+        {
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "ABCI_Balanced",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.dag:DAGDiscoveryInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.abci:ABCIDecider",
+                "params": {
+                    "num_obs": 1,
+                    "num_inter": 3,
+                    "n_bootstrap": 32,
+                    "n_graphs": 24,
+                    "fantasy_samples": 48,
+                    "num_value_candidates": 5,
+                    "query_focus_weight": 0.75,
+                    "seed": 911
+                }
+            }
         }
     ],
     "scm": {

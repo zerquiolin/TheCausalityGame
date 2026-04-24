@@ -58,6 +58,10 @@ class Metric(Serializable):
         """
         raise NotImplementedError
 
+    def context_metadata(self) -> dict[str, Any]:
+        """Return runtime metadata that can be exposed to agents."""
+        return {}
+
 
 class BehaviorMetric(Metric):
     """

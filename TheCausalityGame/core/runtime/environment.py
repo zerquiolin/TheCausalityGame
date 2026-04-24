@@ -107,8 +107,9 @@ class Environment:
             np.random.RandomState | dict[str, np.random.RandomState],
         ] = {}
 
-        # Mount SCM to mission
-        self.mission.mount(self.scm)
+        # Mount SCM to mission if the game has not mounted it already.
+        if not self.mission.is_mounted:
+            self.mission.mount(self.scm)
 
     def run(self) -> None:
         """

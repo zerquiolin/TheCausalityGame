@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from abc import abstractmethod
+from typing import Any
 
 from TheCausalityGame.core.contracts.dto.transcript import Transcript
 from TheCausalityGame.core.contracts.metric import BehaviorMetric, ResultMetric
@@ -76,6 +77,10 @@ class Mission(Serializable):
         self.behavior_metric.mount(scm)
         self.result_metric.mount(scm)
         self.is_mounted = True
+
+    def context_metadata(self) -> dict[str, Any]:
+        """Return runtime metadata that can be exposed to agents."""
+        return {}
 
     @abstractmethod
     def evaluate(self, transcript: Transcript) -> tuple[float, float]:

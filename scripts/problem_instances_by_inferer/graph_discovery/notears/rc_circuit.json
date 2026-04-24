@@ -1,0 +1,227 @@
+{
+    "class_": "TheCausalityGame.core.contracts.problem_instance:ProblemInstance",
+    "id": "graph_discovery/notears/rc_circuit",
+    "schema_version": "0.1.0",
+    "agents": [
+        {
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "Cho2016ActiveGBN",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.notears:NOTEARSInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.cho:Cho2016ActiveGBNDecider"
+            }
+        },
+        {
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "Tigas2022CBED",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.notears:NOTEARSInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.tigas:Tigas2022CBEDDecider"
+            }
+        },
+        {
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "Annadani2024CAASLOnline",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.notears:NOTEARSInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.annadani:Annadani2024CAASLOnlineDecider"
+            }
+        },
+        {
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "HeGeng2008Minimax",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.notears:NOTEARSInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.geng:HeGeng2008MinimaxDecider"
+            }
+        },
+        {
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "GIES",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.notears:NOTEARSInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.gies:GIESDecider"
+            }
+        },
+        {
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "ABCI_Fast",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.notears:NOTEARSInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.abci:ABCIDecider",
+                "params": {
+                    "num_obs": 1,
+                    "num_inter": 3,
+                    "n_bootstrap": 24,
+                    "n_graphs": 16,
+                    "fantasy_samples": 24,
+                    "num_value_candidates": 4,
+                    "query_focus_weight": 0.5,
+                    "seed": 911
+                }
+            }
+        },
+        {
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "ABCI_Balanced",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.notears:NOTEARSInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.abci:ABCIDecider",
+                "params": {
+                    "num_obs": 1,
+                    "num_inter": 3,
+                    "n_bootstrap": 32,
+                    "n_graphs": 24,
+                    "fantasy_samples": 48,
+                    "num_value_candidates": 5,
+                    "query_focus_weight": 0.75,
+                    "seed": 911
+                }
+            }
+        }
+    ],
+    "scm": {
+        "class_": "TheCausalityGame.scm.core:CoreSCM",
+        "vars": [
+            {
+                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+                "name": "V",
+                "domain": [
+                    -100000000000.0,
+                    100000000000.0
+                ]
+            },
+            {
+                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+                "name": "R",
+                "domain": [
+                    0.001,
+                    100000000000.0
+                ]
+            },
+            {
+                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+                "name": "C",
+                "domain": [
+                    1e-06,
+                    100000000000.0
+                ]
+            },
+            {
+                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+                "name": "q",
+                "domain": [
+                    -100000000000.0,
+                    100000000000.0
+                ]
+            },
+            {
+                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+                "name": "Vc",
+                "domain": [
+                    -100000000000.0,
+                    100000000000.0
+                ],
+                "equation": "q/C"
+            },
+            {
+                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+                "name": "I",
+                "domain": [
+                    -100000000000.0,
+                    100000000000.0
+                ],
+                "equation": "(V - Vc)/R"
+            }
+        ],
+        "dag": {
+            "class_": "TheCausalityGame.scm.dag.core:CoreDAG",
+            "edges": [
+                [
+                    "C",
+                    "Vc"
+                ],
+                [
+                    "q",
+                    "Vc"
+                ],
+                [
+                    "V",
+                    "I"
+                ],
+                [
+                    "Vc",
+                    "I"
+                ],
+                [
+                    "R",
+                    "I"
+                ]
+            ]
+        }
+    },
+    "mission": {
+        "class_": "TheCausalityGame.mission.dag_discovery:DAGDiscoveryMission",
+        "id": "dag_discovery_mission",
+        "behavior_metric": {
+            "class_": "TheCausalityGame.metric.behavior.resource_usage:ResourceUsageBehaviorMetric"
+        },
+        "result_metric": {
+            "class_": "TheCausalityGame.metric.result.shd:SHDResultMetric"
+        },
+        "result_validator": {
+            "class_": "TheCausalityGame.metric.result.result_validator.dag_validator:DAGResultValidator"
+        }
+    },
+    "custom_metrics": [],
+    "run_plan": {
+        "execution": "parallel",
+        "parallel_backend": "thread",
+        "budget": {
+            "rounds": 150,
+            "time_s": 2500,
+            "samples": 5250,
+            "memory_mb": 10000
+        },
+        "hook_plan": [
+            {
+                "class_": "TheCausalityGame.hook.plots.agent_comparison_plot:AgentsComparisonPlotHook",
+                "step": "benchmark_end"
+            },
+            {
+                "class_": "TheCausalityGame.hook.plots.final_dag_per_agent:FinalDAGPerAgent",
+                "step": "benchmark_end"
+            }
+        ]
+    },
+    "seeds": {
+        "agent": 42,
+        "scm": 911,
+        "misc": 7
+    },
+    "runtime": {
+        "mode": "dev",
+        "debug_level": 10
+    }
+}

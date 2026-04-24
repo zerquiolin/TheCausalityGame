@@ -100,7 +100,7 @@ After installation the `tcg` CLI is available on your PATH.
       "id": "exhaustive",
       "class": "TheCausalityGame.agent.composable:ComposableAgent",
       "inferer": {
-        "class": "TheCausalityGame.agent.inferers.cate:CATEInferer"
+        "class": "TheCausalityGame.agent.inferers.outcome_regression:OutcomeRegressionInferer"
       },
       "decider": {
         "class": "TheCausalityGame.agent.deciders.exhaustive:ExhaustiveDecider",

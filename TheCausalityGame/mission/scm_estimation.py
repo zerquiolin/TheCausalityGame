@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from typing import Any
 from typing import override
 
 from TheCausalityGame.core.contracts.dto.transcript import Transcript
@@ -101,6 +102,13 @@ class SCMEstimationMission(Mission):
         )
 
         return behavior_score, result_score
+
+    @override
+    def context_metadata(self) -> dict[str, Any]:
+        return {
+            "query_family": "scm",
+            "target": "estimated_scm",
+        }
 
     @override
     def to_spec(self) -> MissionSpec:
