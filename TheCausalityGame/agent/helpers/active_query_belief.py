@@ -113,7 +113,12 @@ class ActiveQueryBelief:
                     low, high = high, low
                 if np.isclose(low, high):
                     return [float(low)]
-                return np.linspace(low, high, num=max(2, num_value_candidates), dtype=float).tolist()
+                return np.linspace(
+                    low,
+                    high,
+                    num=max(2, num_value_candidates),
+                    dtype=float,
+                ).tolist()
             except (TypeError, ValueError):
                 pass
 
@@ -157,7 +162,11 @@ class ActiveQueryBelief:
         X = np.zeros((n, len(cols)), dtype=float)
         index = self.column_index()
         encoded_intervention = {
-            index[name]: self.encode_value(name, value, None if domain_lookup is None else domain_lookup.get(name))
+            index[name]: self.encode_value(
+                name,
+                value,
+                None if domain_lookup is None else domain_lookup.get(name),
+            )
             for name, value in intervention.items()
             if name in index
         }
@@ -309,7 +318,9 @@ class ActiveQueryBelief:
                 continue
             if query.outcome not in control.columns or query.outcome not in treated.columns:
                 continue
-            effects.append(float(treated[query.outcome].mean() - control[query.outcome].mean()))
+            effects.append(
+                float(treated[query.outcome].mean() - control[query.outcome].mean())
+            )
 
         if len(effects) < 2:
             return 0.0

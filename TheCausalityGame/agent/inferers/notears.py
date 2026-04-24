@@ -91,19 +91,27 @@ class NOTEARSInferer(Inferer):
             return h_val, h_grad
 
         for _ in range(self.max_iter):
-            def objective(flat_w: np.ndarray) -> float:
+            def objective(
+                flat_w: np.ndarray,
+                rho_local: float = rho,
+                alpha_local: float = alpha,
+            ) -> float:
                 W = flat_w.reshape(d, d)  # noqa: N806
                 loss, _ = loss_and_grad(flat_w)
                 h_val, _ = h_and_grad(W)
                 reg = 0.5 * self.lambda_l2 * float(np.square(W).sum())
-                penalty = 0.5 * rho * h_val * h_val + alpha * h_val
+                penalty = 0.5 * rho_local * h_val * h_val + alpha_local * h_val
                 return loss + reg + penalty
 
-            def gradient(flat_w: np.ndarray) -> np.ndarray:
+            def gradient(
+                flat_w: np.ndarray,
+                rho_local: float = rho,
+                alpha_local: float = alpha,
+            ) -> np.ndarray:
                 W = flat_w.reshape(d, d)  # noqa: N806
                 _, grad_loss = loss_and_grad(flat_w)
                 h_val, h_grad = h_and_grad(W)
-                grad = grad_loss + self.lambda_l2 * W + (rho * h_val + alpha) * h_grad
+                grad = grad_loss + self.lambda_l2 * W + (rho_local * h_val + alpha_local) * h_grad
                 np.fill_diagonal(grad, 0.0)
                 return grad.reshape(-1)
 

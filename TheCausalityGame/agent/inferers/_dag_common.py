@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 import networkx as nx
 import numpy as np
 import pandas as pd
@@ -109,4 +107,3 @@ def standardize(df: pd.DataFrame) -> pd.DataFrame:
     means = centered.mean(axis=0)
     scales = centered.std(axis=0, ddof=0).replace(0.0, 1.0)
     return (centered - means) / scales
-

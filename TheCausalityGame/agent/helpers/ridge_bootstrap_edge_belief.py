@@ -203,8 +203,7 @@ class RidgeBootstrapEdgeBelief:
 
         rest = [i for i in range(d) if i != k]
         Sigma_kk = Sigma[k, k]
-        if Sigma_kk <= 1e-12:
-            Sigma_kk = 1e-12
+        Sigma_kk = max(1e-12, Sigma_kk)
 
         Sigma_rk = Sigma[np.ix_(rest, [k])]  # [d-1,1]
         Sigma_kr = Sigma[np.ix_([k], rest)]  # [1,d-1]
@@ -243,7 +242,6 @@ class RidgeBootstrapEdgeBelief:
         if df.shape[0] < 8 or df.shape[1] < 2:
             return float("inf")
 
-        cols = list(df.columns)
         X_full = df.to_numpy(dtype=float)
         n, d = X_full.shape
 

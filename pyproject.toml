@@ -36,8 +36,15 @@ where = ["TheCausalityGame"]
 [tool.ruff]
 line-length = 100
 target-version = "py310"
+exclude = ["temp"]
+
+[tool.ruff.lint]
 select = ["RUF","ARG","C4","BLE","TRY","ANN","N","D","E","F","I","B","UP","SIM","PL","PERF", "NPY"]
 ignore = ["D104","D105","D107"]
+
+[tool.ruff.lint.per-file-ignores]
+"TheCausalityGame/agent/helpers/active_query_belief.py" = ["ANN401", "D100", "D101", "D102", "N806", "PLR0913", "PLR2004"]
+"TheCausalityGame/agent/helpers/ridge_bootstrap_edge_belief.py" = ["ANN401", "D100", "D101", "D102", "D205", "D400", "N806", "PLR2004"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"

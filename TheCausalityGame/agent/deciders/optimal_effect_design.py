@@ -1,6 +1,8 @@
+"""Query-aware optimal effect-design decider."""
+
 from __future__ import annotations
 
-from typing import Any, override
+from typing import override
 
 import numpy as np
 
@@ -22,7 +24,7 @@ from TheCausalityGame.core.infrastructure.registry import get_class_path
 class OptimalEffectDesignDecider(Decider):
     """Query-specific intervention-set heuristic for treatment-effect identification."""
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         num_obs: int = 1,
         num_inter: int = 3,
@@ -63,7 +65,7 @@ class OptimalEffectDesignDecider(Decider):
         self._belief.update(list(observation.samples))
 
     @override
-    def decide(
+    def decide(  # noqa: PLR0912
         self,
         round_info: RoundInfo,
         available_actions: AvailableActions,
@@ -126,7 +128,7 @@ class OptimalEffectDesignDecider(Decider):
             decision.add_experiment(treatment={treatment_variable.name: value}, n=self._num_inter)
             return decision
 
-        ranked: list[tuple[float, Any, Any]] = []
+        ranked: list[tuple[float, object, object]] = []
         for var_idx, variable in enumerate(available_actions.experiments):
             path_relevance = self._belief.query_path_relevance(
                 models,
@@ -151,15 +153,16 @@ class OptimalEffectDesignDecider(Decider):
             ):
                 if variable.name == query.treatment:
                     treatment_value = _treatment_round_value(query, round_info)
-                    if treatment_value is not None:
-                        value = treatment_value
+                    candidate_value = treatment_value if treatment_value is not None else value
+                else:
+                    candidate_value = value
 
                 local_rng = np.random.default_rng(
                     self.seed + 3037 * round_info.round + 211 * var_idx + val_idx
                 )
                 disagreement = self._belief.predictive_disagreement(
                     models,
-                    intervention={variable.name: value},
+                    intervention={variable.name: candidate_value},
                     focus_nodes=[query.outcome],
                     n=self.fantasy_samples,
                     rng=local_rng,
@@ -167,7 +170,7 @@ class OptimalEffectDesignDecider(Decider):
                 )
                 if disagreement > best_disagreement:
                     best_disagreement = disagreement
-                    best_value = value
+                    best_value = candidate_value
 
             if best_value is None:
                 best_value = _random_value(self._belief, self.rng, variable, query, round_info)
@@ -183,8 +186,8 @@ class OptimalEffectDesignDecider(Decider):
 
         ranked.sort(key=lambda item: item[0], reverse=True)
         chosen = ranked[: min(self.k_intervene, len(ranked))]
-        treatment = {variable.name: value for _, variable, value in chosen}
-        decision.add_experiment(treatment=treatment, n=self._num_inter)
+        treatment = {variable.name: value for _, variable, value in chosen}  # type: ignore
+        decision.add_experiment(treatment=treatment, n=self._num_inter)  # type: ignore
         return decision
 
     @override

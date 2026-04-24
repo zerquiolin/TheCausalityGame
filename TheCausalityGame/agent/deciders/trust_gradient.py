@@ -1,6 +1,8 @@
+"""Gradient-style active intervention decider."""
+
 from __future__ import annotations
 
-from typing import Any, override
+from typing import override
 
 import numpy as np
 
@@ -21,7 +23,7 @@ from TheCausalityGame.core.infrastructure.registry import get_class_path
 class TrustYourGradientDecider(Decider):
     """Gradient-magnitude intervention targeting inspired by GIT."""
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         num_obs: int = 1,
         num_inter: int = 3,

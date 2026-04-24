@@ -6,6 +6,7 @@ from itertools import combinations
 from typing import override
 
 import networkx as nx
+import pandas as pd
 
 from TheCausalityGame.agent.inferers._dag_common import empty_graph, observational_frame
 from TheCausalityGame.agent.inferers.dag import (
@@ -20,6 +21,8 @@ from TheCausalityGame.core.contracts.dto.environment import Samples
 from TheCausalityGame.core.contracts.inferer import Inferer
 from TheCausalityGame.core.contracts.specs.inferer import InfererSpec
 from TheCausalityGame.core.infrastructure.registry import get_class_path
+
+GAUSSIAN_CI_MAX_CONDITIONING = 2
 
 
 class PCInferer(Inferer):
@@ -96,11 +99,9 @@ class PCInferer(Inferer):
 
     def _pc_skeleton(
         self,
-        obs_df: "pd.DataFrame",
+        obs_df: pd.DataFrame,
     ) -> tuple[nx.Graph, dict[frozenset[str], set[str]]]:
         """Run a small PC skeleton search over observational data."""
-        import pandas as pd
-
         columns = list(obs_df.columns)
         graph = nx.Graph()
         graph.add_nodes_from(columns)
@@ -137,9 +138,13 @@ class PCInferer(Inferer):
                 if tested:
                     continue
 
-            if not any(len(list(graph.neighbors(node))) > cond_size for node in graph.nodes()):
+            max_neighbors = max(
+                (len(list(graph.neighbors(node))) for node in graph.nodes()),
+                default=0,
+            )
+            if max_neighbors <= cond_size:
                 break
-            if not removed_any and cond_size >= max(len(list(graph.neighbors(node))) for node in graph.nodes()):
+            if not removed_any and cond_size >= max_neighbors:
                 break
             cond_size += 1
 
@@ -147,14 +152,14 @@ class PCInferer(Inferer):
 
     def _independent(
         self,
-        obs_df: "pd.DataFrame",
+        obs_df: pd.DataFrame,
         source: str,
         target: str,
         conditioning: tuple[str, ...],
     ) -> bool:
         """Dispatch to the configured CI test."""
         if self.is_numerical:
-            if len(conditioning) <= 2:
+            if len(conditioning) <= GAUSSIAN_CI_MAX_CONDITIONING:
                 return ci_test_gaussian(obs_df, source, target, conditioning, self.alpha)
             return ci_test_continuous_nonlinear(
                 obs_df,

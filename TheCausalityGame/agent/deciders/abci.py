@@ -1,43 +1,51 @@
+"""ABCI-style active intervention decider."""
+
 from __future__ import annotations
 
-from typing import Any, override
+from typing import override
 
 import numpy as np
 
 from TheCausalityGame.agent.helpers.active_query_belief import ActiveQueryBelief, QuerySpec
 from TheCausalityGame.core.contracts.decider import Decider
 from TheCausalityGame.core.contracts.dto.agent import BeliefSnapshot, RoundObservation
-from TheCausalityGame.core.contracts.dto.environment import AvailableActions, RoundInfo
+from TheCausalityGame.core.contracts.dto.environment import (
+    AvailableActions,
+    ExperimentVariable,
+    RoundInfo,
+)
 from TheCausalityGame.core.contracts.specs.decider import DeciderSpec
 from TheCausalityGame.core.infrastructure.decisions import Decision
 from TheCausalityGame.core.infrastructure.registry import get_class_path
 
+DOMAIN_BOUNDS_COUNT = 2
+
 
 def _context_query_spec(decider: Decider) -> QuerySpec:
-    merged: dict[str, Any] = {}
+    merged: dict[str, object] = {}
 
     mission_meta = decider.context.mission.get("metadata", {})
     result_meta = decider.context.result_metric.get("metadata", {})
     if isinstance(mission_meta, dict):
-        merged.update(mission_meta)
+        merged.update(mission_meta)  # type: ignore
     if isinstance(result_meta, dict):
-        merged.update(result_meta)
+        merged.update(result_meta)  # type: ignore
 
     return QuerySpec(
-        family=merged.get("query_family"),
-        treatment=merged.get("treatment"),
-        outcome=merged.get("outcome"),
-        covariates=tuple(merged.get("covariates", ())),
-        treatment_values=tuple(merged.get("treatment_values", ())),
+        family=merged.get("query_family"),  # type: ignore
+        treatment=merged.get("treatment"),  # type: ignore
+        outcome=merged.get("outcome"),  # type: ignore
+        covariates=tuple(merged.get("covariates", ())),  # type: ignore
+        treatment_values=tuple(merged.get("treatment_values", ())),  # type: ignore
     )
 
 
-def _domain_lookup(available_actions: AvailableActions) -> dict[str, list[Any]]:
+def _domain_lookup(available_actions: AvailableActions) -> dict[str, list[object]]:
     return {var.name: list(var.domain) for var in available_actions.experiments}
 
 
-def _treatment_round_value(query: QuerySpec, round_info: RoundInfo) -> Any | None:
-    if len(query.treatment_values) < 2:
+def _treatment_round_value(query: QuerySpec, round_info: RoundInfo) -> object | None:
+    if len(query.treatment_values) < DOMAIN_BOUNDS_COUNT:
         return None
     values = list(query.treatment_values)
     index = (round_info.round + 1) % len(values)
@@ -47,10 +55,10 @@ def _treatment_round_value(query: QuerySpec, round_info: RoundInfo) -> Any | Non
 def _random_value(
     belief: ActiveQueryBelief,
     rng: np.random.Generator,
-    variable: Any,
+    variable: ExperimentVariable,
     query: QuerySpec,
     round_info: RoundInfo,
-) -> Any:
+) -> object:
     if query.treatment is not None and variable.name == query.treatment:
         chosen = _treatment_round_value(query, round_info)
         if chosen is not None:
@@ -63,7 +71,7 @@ def _random_value(
 class ABCIDecider(Decider):
     """Query-aware intervention design inspired by Active Bayesian Causal Inference."""
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         num_obs: int = 1,
         num_inter: int = 3,

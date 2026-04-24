@@ -27,8 +27,8 @@ class AgentSpec(CommonSpec):
     """
 
     id: str = Field(..., description="Unique identifier for the agent.")
-    active: bool = Field(
-        True, description="Flag indicating whether the agent is active in the game."
+    active: bool | None = Field(
+        default=True, description="Flag indicating whether the agent is active in the game."
     )
     inferer: InfererSpec | None = Field(
         default=None,

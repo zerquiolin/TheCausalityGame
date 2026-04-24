@@ -99,7 +99,7 @@ class ComposableAgent(Agent):
     @override
     def from_spec(cls, spec: AgentSpec) -> ComposableAgent:
         if spec.inferer is None or spec.decider is None:
-            raise ValueError("ComposableAgent requires both inferer and decider specs.")
+            raise ValueError("ComposableAgent requires both inferer and decider specs.")  # noqa: TRY003
 
         inferer = build_from_spec(spec.inferer)
         decider = build_from_spec(spec.decider)

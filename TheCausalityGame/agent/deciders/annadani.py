@@ -1,22 +1,30 @@
+"""Annadani-style CAASL online decider."""
+
 from __future__ import annotations
 
-from typing import Any, override
+from typing import override
 
 import numpy as np
 
 from TheCausalityGame.agent.helpers.ridge_bootstrap_edge_belief import RidgeBootstrapEdgeBelief
 from TheCausalityGame.core.contracts.decider import Decider
 from TheCausalityGame.core.contracts.dto.agent import BeliefSnapshot, RoundObservation
-from TheCausalityGame.core.contracts.dto.environment import AvailableActions, RoundInfo
+from TheCausalityGame.core.contracts.dto.environment import (
+    AvailableActions,
+    ExperimentVariable,
+    RoundInfo,
+)
 from TheCausalityGame.core.contracts.specs.decider import DeciderSpec
 from TheCausalityGame.core.infrastructure.decisions import Decision
 from TheCausalityGame.core.infrastructure.registry import get_class_path
+
+DOMAIN_BOUNDS_COUNT = 2
 
 
 class Annadani2024CAASLOnlineDecider(Decider):
     """CAASL-like online decider with a lightweight learned policy."""
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         num_obs: int = 1,
         num_inter: int = 1,
@@ -49,7 +57,7 @@ class Annadani2024CAASLOnlineDecider(Decider):
     def update(self, observation: RoundObservation) -> None:
         before = self._entropy_before
         self._belief.fit(list(observation.samples))
-        after = self._belief.summary().total_entropy if self._belief.summary() else None
+        after = self._belief.summary().total_entropy if self._belief.summary() else None  # type: ignore
 
         if before is None or after is None or self._last_phi is None:
             self._entropy_before = None
@@ -61,12 +69,13 @@ class Annadani2024CAASLOnlineDecider(Decider):
         self._entropy_before = None
         self._last_phi = None
 
-    def _enumerate_actions(self, available_actions: AvailableActions) -> list[tuple[str, Any]]:
-        out: list[tuple[str, Any]] = []
+    def _enumerate_actions(self, available_actions: AvailableActions) -> list[tuple[str, object]]:
+        out: list[tuple[str, object]] = []
         for var in available_actions.experiments:
             dom = list(var.domain)
-            if len(dom) >= 2 and all(
-                isinstance(x, (int, float, np.integer, np.floating)) for x in dom[:2]
+            if len(dom) >= DOMAIN_BOUNDS_COUNT and all(
+                isinstance(x, (int, float, np.integer, np.floating))
+                for x in dom[:DOMAIN_BOUNDS_COUNT]
             ):
                 low, high = float(dom[0]), float(dom[1])
                 if high < low:
@@ -82,12 +91,10 @@ class Annadani2024CAASLOnlineDecider(Decider):
                         dtype=float,
                     ).tolist()
 
-                for v in candidates:
-                    out.append((var.name, float(v)))
+                out.extend((var.name, float(v)) for v in candidates)
                 continue
 
-            for v in dom:
-                out.append((var.name, v))
+            out.extend((var.name, v) for v in dom)
 
         return out
 
@@ -97,13 +104,13 @@ class Annadani2024CAASLOnlineDecider(Decider):
         e = np.exp(z)
         return e / np.sum(e)
 
-    def _candidate_values(self, var: Any) -> list[Any]:
+    def _candidate_values(self, var: ExperimentVariable) -> list[int | float | str]:
         dom = list(var.domain)
         if not dom:
             return []
 
-        if len(dom) >= 2 and all(
-            isinstance(x, (int, float, np.integer, np.floating)) for x in dom[:2]
+        if len(dom) >= DOMAIN_BOUNDS_COUNT and all(
+            isinstance(x, (int, float, np.integer, np.floating)) for x in dom[:DOMAIN_BOUNDS_COUNT]
         ):
             low, high = float(dom[0]), float(dom[1])
             if high < low:
@@ -118,20 +125,20 @@ class Annadani2024CAASLOnlineDecider(Decider):
 
         return dom
 
-    def _phi(self, var: str, val: Any, rounds_left: int | None) -> np.ndarray:
+    def _phi(self, var: str, val: object, rounds_left: int | None) -> np.ndarray:
         s = self._belief.summary()
         u = float(self._belief.outgoing_uncertainty(var))
         total_u = 1.0
         if s is not None:
             try:
                 total_u = max(1.0, float(s.edge_entropy.sum()))
-            except Exception:
+            except (AttributeError, TypeError, ValueError):
                 total_u = 1.0
         u_n = float(u / total_u)
 
         try:
             sig = float(self._belief.value_signal(var, val))
-        except Exception:
+        except (AttributeError, TypeError, ValueError):
             sig = 0.0
         sig = float(min(sig, 1e6))
         sig_n = float(sig / (1.0 + sig))
@@ -141,7 +148,7 @@ class Annadani2024CAASLOnlineDecider(Decider):
             rl = float(1.0 / (1.0 + max(0, int(rounds_left))))
 
         try:
-            float(val)
+            float(val)  # type: ignore
             is_num = 1.0
         except (TypeError, ValueError):
             is_num = 0.0
@@ -171,8 +178,9 @@ class Annadani2024CAASLOnlineDecider(Decider):
         if summ is None:
             for var in available_actions.experiments:
                 dom = list(var.domain)
-                if len(dom) >= 2 and all(
-                    isinstance(x, (int, float, np.integer, np.floating)) for x in dom[:2]
+                if len(dom) >= DOMAIN_BOUNDS_COUNT and all(
+                    isinstance(x, (int, float, np.integer, np.floating))
+                    for x in dom[:DOMAIN_BOUNDS_COUNT]
                 ):
                     low, high = float(dom[0]), float(dom[1])
                     if high < low:

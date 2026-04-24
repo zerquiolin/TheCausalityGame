@@ -1,6 +1,8 @@
+"""He-Geng style minimax intervention decider."""
+
 from __future__ import annotations
 
-from typing import Any, override
+from typing import override
 
 import numpy as np
 
@@ -12,14 +14,18 @@ from TheCausalityGame.core.contracts.specs.decider import DeciderSpec
 from TheCausalityGame.core.infrastructure.decisions import Decision
 from TheCausalityGame.core.infrastructure.registry import get_class_path
 
+DOMAIN_BOUNDS_COUNT = 2
 
-def _sample_value(rng: np.random.Generator, domain: list[Any]) -> Any:
+
+def _sample_value(rng: np.random.Generator, domain: list[object]) -> object:
     dom = list(domain)
     if not dom:
         return 0
 
-    if len(dom) >= 2 and all(isinstance(x, (int, float, np.integer, np.floating)) for x in dom[:2]):
-        low, high = float(dom[0]), float(dom[1])
+    if len(dom) >= DOMAIN_BOUNDS_COUNT and all(
+        isinstance(x, (int, float, np.integer, np.floating)) for x in dom[:DOMAIN_BOUNDS_COUNT]
+    ):
+        low, high = float(dom[0]), float(dom[1])  # type: ignore
         if high < low:
             low, high = high, low
         if np.isclose(low, high):
@@ -32,7 +38,7 @@ def _sample_value(rng: np.random.Generator, domain: list[Any]) -> Any:
 class HeGeng2008MinimaxDecider(Decider):
     """He-Geng style minimax intervention design."""
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         num_obs: int = 2,
         num_inter: int = 3,
@@ -78,7 +84,7 @@ class HeGeng2008MinimaxDecider(Decider):
 
         summ = self._belief.summary()
         if summ is None:
-            vars_sorted = sorted(list(available_actions.experiments), key=lambda v: str(v.name))
+            vars_sorted = sorted(available_actions.experiments, key=lambda v: str(v.name))
             var = vars_sorted[self.rng.integers(0, len(vars_sorted))]
             val = _sample_value(self.rng, list(var.domain))
             decision.add_experiment(treatment={var.name: val}, n=self._num_inter)
@@ -95,7 +101,7 @@ class HeGeng2008MinimaxDecider(Decider):
             key=lambda v: str(v.name),
         )
         if not cands:
-            vars_sorted = sorted(list(available_actions.experiments), key=lambda v: str(v.name))
+            vars_sorted = sorted(available_actions.experiments, key=lambda v: str(v.name))
             var = vars_sorted[self.rng.integers(0, len(vars_sorted))]
             treatment = {var.name: _sample_value(self.rng, list(var.domain))}
             decision.add_experiment(treatment=treatment, n=self._num_inter)
@@ -103,12 +109,14 @@ class HeGeng2008MinimaxDecider(Decider):
 
         edges = []
         degs = []
-        for _, B, _ in models:
-            A = (np.abs(B) > 0).astype(int)
-            edges.append(float(A.sum()))
-            degs.append(A.sum(axis=0).astype(float) + A.sum(axis=1).astype(float))
+        for _, adjacency, _ in models:
+            adjacency_mask = (np.abs(adjacency) > 0).astype(int)
+            edges.append(float(adjacency_mask.sum()))  # type: ignore
+            degs.append(  # type: ignore
+                adjacency_mask.sum(axis=0).astype(float) + adjacency_mask.sum(axis=1).astype(float)
+            )
 
-        chosen: list[Any] = []
+        chosen: list[object] = []
         chosen_idx: set[int] = set()
 
         k = min(self.k_intervene, len(cands))
@@ -123,9 +131,9 @@ class HeGeng2008MinimaxDecider(Decider):
 
                 worst_remaining = -1.0
                 for g in range(len(models)):
-                    removed = sum(degs[g][col_index[x.name]] for x in chosen) + degs[g][idx]
-                    remaining = edges[g] - removed
-                    worst_remaining = max(worst_remaining, remaining)
+                    removed = sum(degs[g][col_index[x.name]] for x in chosen) + degs[g][idx]  # type: ignore
+                    remaining = edges[g] - removed  # type: ignore
+                    worst_remaining = max(worst_remaining, remaining)  # type: ignore
 
                 if worst_remaining < best_obj:
                     best_obj = worst_remaining
@@ -136,8 +144,8 @@ class HeGeng2008MinimaxDecider(Decider):
             chosen.append(best_var)
             chosen_idx.add(col_index[best_var.name])
 
-        treatment = {v.name: _sample_value(self.rng, list(v.domain)) for v in chosen}
-        decision.add_experiment(treatment=treatment, n=self._num_inter)
+        treatment = {v.name: _sample_value(self.rng, list(v.domain)) for v in chosen}  # type: ignore
+        decision.add_experiment(treatment=treatment, n=self._num_inter)  # type: ignore
         return decision
 
     @override

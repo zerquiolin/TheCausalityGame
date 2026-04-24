@@ -1,6 +1,8 @@
+"""Tigas-style CBED lookahead decider."""
+
 from __future__ import annotations
 
-from typing import Any, override
+from typing import override
 
 import numpy as np
 import pandas as pd
@@ -13,11 +15,13 @@ from TheCausalityGame.core.contracts.specs.decider import DeciderSpec
 from TheCausalityGame.core.infrastructure.decisions import Decision
 from TheCausalityGame.core.infrastructure.registry import get_class_path
 
+DOMAIN_BOUNDS_COUNT = 2
+
 
 class Tigas2022CBEDDecider(Decider):
     """CBED-style lookahead decider."""
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         num_obs: int = 2,
         num_inter: int = 3,
@@ -48,13 +52,17 @@ class Tigas2022CBEDDecider(Decider):
     def update(self, observation: RoundObservation) -> None:
         self._belief.fit(list(observation.samples))
 
-    def _candidate_values(self, var: Any) -> list[Any]:
-        dom = list(var.domain)
+    def _candidate_values(self, var: object) -> list[object]:
+        dom = list(var.domain)  # type: ignore
 
-        if len(dom) >= 2 and all(
-            isinstance(x, (int, float, np.integer, np.floating)) for x in dom[:2]
+        if (
+            len(dom) >= DOMAIN_BOUNDS_COUNT  # type: ignore
+            and all(
+                isinstance(x, (int, float, np.integer, np.floating))
+                for x in dom[:DOMAIN_BOUNDS_COUNT]  # type: ignore
+            )
         ):
-            low, high = float(dom[0]), float(dom[1])
+            low, high = float(dom[0]), float(dom[1])  # type: ignore
             if high < low:
                 low, high = high, low
             grid = np.linspace(low, high, num=self.num_value_candidates, dtype=float)
@@ -62,9 +70,9 @@ class Tigas2022CBEDDecider(Decider):
                 return [float(low)]
             return [float(v) for v in grid]
 
-        return dom
+        return dom  # type: ignore
 
-    def _expected_entropy_after(self, var: str, val: Any, n_add: int) -> float:
+    def _expected_entropy_after(self, var: str, val: object, n_add: int) -> float:
         s = self._belief.summary()
         if s is None:
             return float("inf")
@@ -76,11 +84,11 @@ class Tigas2022CBEDDecider(Decider):
                 continue
             df_hyp = pd.concat([s.df_numeric, fant], axis=0, ignore_index=True)
             ent = self._belief.entropy_of_df(df_hyp, n_bootstrap=self.eval_bootstrap)
-            entropies.append(ent)
+            entropies.append(ent)  # type: ignore
 
         if not entropies:
             return float("inf")
-        return float(np.mean(entropies))
+        return float(np.mean(entropies))  # type: ignore
 
     @override
     def decide(
@@ -100,10 +108,13 @@ class Tigas2022CBEDDecider(Decider):
 
         summ = self._belief.summary()
         if summ is None:
-            var = available_actions.experiments[self.rng.integers(0, len(available_actions.experiments))]
+            var = available_actions.experiments[
+                self.rng.integers(0, len(available_actions.experiments))
+            ]
             dom = list(var.domain)
-            if len(dom) >= 2 and all(
-                isinstance(x, (int, float, np.integer, np.floating)) for x in dom[:2]
+            if len(dom) >= DOMAIN_BOUNDS_COUNT and all(
+                isinstance(x, (int, float, np.integer, np.floating))
+                for x in dom[:DOMAIN_BOUNDS_COUNT]
             ):
                 low, high = float(dom[0]), float(dom[1])
                 if high < low:

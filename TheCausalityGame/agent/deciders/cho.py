@@ -1,6 +1,8 @@
+"""Cho-style active intervention decider."""
+
 from __future__ import annotations
 
-from typing import Any, override
+from typing import override
 
 import numpy as np
 
@@ -12,11 +14,13 @@ from TheCausalityGame.core.contracts.specs.decider import DeciderSpec
 from TheCausalityGame.core.infrastructure.decisions import Decision
 from TheCausalityGame.core.infrastructure.registry import get_class_path
 
+DOMAIN_BOUNDS_COUNT = 2
+
 
 class Cho2016ActiveGBNDecider(Decider):
     """Cho-style active intervention policy."""
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         num_obs: int = 5,
         num_inter: int = 1,
@@ -58,7 +62,7 @@ class Cho2016ActiveGBNDecider(Decider):
             return decision
 
         candidates = sorted(
-            list(available_actions.experiments),
+            available_actions.experiments,
             key=lambda v: (-float(self._belief.incident_uncertainty(v.name)), str(v.name)),
         )
         chosen = candidates[: min(self.k_intervene, len(candidates))]
@@ -66,14 +70,15 @@ class Cho2016ActiveGBNDecider(Decider):
         if not chosen:
             return decision
 
-        treatment: dict[str, Any] = {}
+        treatment: dict[str, object] = {}
         for v in chosen:
             dom = list(v.domain)
             if not dom:
                 continue
 
-            if len(dom) >= 2 and all(
-                isinstance(x, (int, float, np.integer, np.floating)) for x in dom[:2]
+            if len(dom) >= DOMAIN_BOUNDS_COUNT and all(
+                isinstance(x, (int, float, np.integer, np.floating))
+                for x in dom[:DOMAIN_BOUNDS_COUNT]
             ):
                 low, high = float(dom[0]), float(dom[1])
                 if high < low:

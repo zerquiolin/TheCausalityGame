@@ -82,7 +82,7 @@ class CombinedAgent(Agent):
     @override
     def from_spec(cls, spec: AgentSpec) -> CombinedAgent:
         if spec.policy is None:
-            raise ValueError("CombinedAgent requires a policy spec.")
+            raise ValueError("CombinedAgent requires a policy spec.")  # noqa: TRY003
 
         policy = build_from_spec(spec.policy)
         return cls(id=spec.id, policy=policy)

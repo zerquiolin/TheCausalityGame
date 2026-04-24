@@ -1,6 +1,9 @@
+"""GIES-style interventional design decider."""
+
 from __future__ import annotations
 
-from typing import Any, override
+import importlib
+from typing import override
 
 import numpy as np
 import pandas as pd
@@ -12,6 +15,8 @@ from TheCausalityGame.core.contracts.specs.decider import DeciderSpec
 from TheCausalityGame.core.infrastructure.decisions import Decision
 from TheCausalityGame.core.infrastructure.registry import get_class_path
 
+DOMAIN_BOUNDS_COUNT = 2
+
 
 def _df_to_numeric(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
@@ -21,13 +26,15 @@ def _df_to_numeric(df: pd.DataFrame) -> pd.DataFrame:
     return df.select_dtypes(include=[np.number]).dropna(axis=0, how="any")
 
 
-def _sample_value(rng: np.random.Generator, domain: list[Any]) -> Any:
+def _sample_value(rng: np.random.Generator, domain: list[object]) -> object:
     dom = list(domain)
     if not dom:
         return 0
 
-    if len(dom) >= 2 and all(isinstance(x, (int, float, np.integer, np.floating)) for x in dom[:2]):
-        low, high = float(dom[0]), float(dom[1])
+    if len(dom) >= DOMAIN_BOUNDS_COUNT and all(
+        isinstance(x, (int, float, np.integer, np.floating)) for x in dom[:DOMAIN_BOUNDS_COUNT]
+    ):
+        low, high = float(dom[0]), float(dom[1])  # type: ignore
         if high < low:
             low, high = high, low
         if np.isclose(low, high):
@@ -40,7 +47,7 @@ def _sample_value(rng: np.random.Generator, domain: list[Any]) -> Any:
 class GIESDecider(Decider):
     """Greedy interventional design using a learned GIES CPDAG."""
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         num_obs: int = 3,
         num_inter: int = 3,
@@ -64,8 +71,8 @@ class GIESDecider(Decider):
     @override
     def update(self, observation: RoundObservation) -> None:
         try:
-            import gies  # type: ignore
-        except Exception:
+            gies = importlib.import_module("gies")
+        except ImportError:
             self._cpdag = None
             self._score = None
             return
@@ -78,8 +85,8 @@ class GIESDecider(Decider):
             df = _df_to_numeric(s.data)
             if len(df) == 0:
                 continue
-            frames.append(df)
-            interventions.append(getattr(s, "interventions", None))
+            frames.append(df)  # type: ignore
+            interventions.append(getattr(s, "interventions", None))  # type: ignore
 
         if not frames:
             self._cpdag = None
@@ -87,41 +94,38 @@ class GIESDecider(Decider):
             return
 
         if self._columns is None:
-            self._columns = list(frames[0].columns)
+            self._columns = list(frames[0].columns)  # type: ignore
         cols = self._columns
 
         env_map: dict[tuple[int, ...], list[np.ndarray]] = {}
-        for df, inter in zip(frames, interventions):
-            df = df.reindex(columns=cols)
-            X = df.to_numpy(dtype=float)
+        for frame, inter in zip(frames, interventions, strict=True):  # type: ignore
+            numeric_frame = frame.reindex(columns=cols)  # type: ignore
+            values = numeric_frame.to_numpy(dtype=float)  # type: ignore
 
             if inter is None:
-                key = tuple()
+                key = ()
             else:
-                idxs = []
-                for name in inter.keys():
-                    if name in cols:
-                        idxs.append(cols.index(name))
+                idxs = [cols.index(name) for name in inter if name in cols]  # type: ignore
                 key = tuple(sorted(set(idxs)))
 
-            env_map.setdefault(key, []).append(X)
+            env_map.setdefault(key, []).append(values)  # type: ignore
 
         data_list: list[np.ndarray] = []
-        I_list: list[list[int]] = []
+        intervention_list: list[list[int]] = []
         for key, mats in env_map.items():
             data_list.append(np.vstack(mats))
-            I_list.append(list(key))
+            intervention_list.append(list(key))
 
-        A_hat, score = gies.fit_bic(
+        adjacency_hat, score = gies.fit_bic(
             data_list,
-            I_list,
+            intervention_list,
             A0=None,
             phases=self.phases,
             iterate=self.iterate,
             debug=self.debug,
         )
 
-        self._cpdag = A_hat.astype(float)
+        self._cpdag = adjacency_hat.astype(float)
         self._score = float(score)
 
     @override
@@ -141,21 +145,21 @@ class GIESDecider(Decider):
             return decision
 
         if self._cpdag is None or self._columns is None:
-            vars_sorted = sorted(list(available_actions.experiments), key=lambda v: str(v.name))
+            vars_sorted = sorted(available_actions.experiments, key=lambda v: str(v.name))
             var = vars_sorted[self.rng.integers(0, len(vars_sorted))]
             val = _sample_value(self.rng, list(var.domain))
             decision.add_experiment(treatment={var.name: val}, n=self._num_inter)
             return decision
 
         cols = self._columns
-        A = self._cpdag
+        adjacency = self._cpdag
 
         def undirected_neighbors(i: int) -> set[int]:
             nbrs: set[int] = set()
-            for j in range(A.shape[0]):
+            for j in range(adjacency.shape[0]):
                 if i == j:
                     continue
-                if A[i, j] != 0.0 and A[j, i] != 0.0:
+                if adjacency[i, j] != 0.0 and adjacency[j, i] != 0.0:
                     nbrs.add(j)
             return nbrs
 
@@ -165,13 +169,13 @@ class GIESDecider(Decider):
             key=lambda v: str(v.name),
         )
         if not cands:
-            vars_sorted = sorted(list(available_actions.experiments), key=lambda v: str(v.name))
+            vars_sorted = sorted(available_actions.experiments, key=lambda v: str(v.name))
             var = vars_sorted[self.rng.integers(0, len(vars_sorted))]
             val = _sample_value(self.rng, list(var.domain))
             decision.add_experiment(treatment={var.name: val}, n=self._num_inter)
             return decision
 
-        chosen: list[Any] = []
+        chosen: list[object] = []
         covered_edges: set[tuple[int, int]] = set()
 
         k = min(self.k_intervene, len(cands))
@@ -201,8 +205,8 @@ class GIESDecider(Decider):
             for j in undirected_neighbors(i):
                 covered_edges.add((min(i, j), max(i, j)))
 
-        treatment = {v.name: _sample_value(self.rng, list(v.domain)) for v in chosen}
-        decision.add_experiment(treatment=treatment, n=self._num_inter)
+        treatment = {v.name: _sample_value(self.rng, list(v.domain)) for v in chosen}  # type: ignore
+        decision.add_experiment(treatment=treatment, n=self._num_inter)  # type: ignore
         return decision
 
     @override
