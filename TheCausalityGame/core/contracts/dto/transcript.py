@@ -55,6 +55,12 @@ class Transcript(CommonDTO):
     Stores the complete sequence of interactions along with metadata identifying the run.
     """
 
+    model_config = ConfigDict(
+        extra="ignore",
+        frozen=False,
+        arbitrary_types_allowed=True,
+    )
+
     agent_id: str
     mission_id: str
     manifest_id: str
@@ -63,3 +69,16 @@ class Transcript(CommonDTO):
         default_factory=list, description="Chronological list of transcript entries."
     )
     budget: BudgetSpec
+    invalidated: bool = Field(
+        default=False,
+        description="Whether the run ended because a budget or runtime error invalidated it.",
+    )
+    invalidation_reason: str | None = Field(
+        default=None,
+        description="Error type and message explaining why the run was invalidated.",
+    )
+
+    def invalidate(self, error: Exception) -> None:
+        """Mark this transcript as invalidated by a runtime or budget error."""
+        self.invalidated = True
+        self.invalidation_reason = f"{type(error).__name__}: {error}"

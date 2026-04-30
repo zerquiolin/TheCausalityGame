@@ -139,11 +139,28 @@ class Game:
             The full recorded transcript of the run.
         """
         self.logger.info(f"Starting game run for agent {self.agent.id}.")
-        self.hook_manager.trigger(HookEvent.GAME_START)
+        try:
+            self.hook_manager.trigger(HookEvent.GAME_START)
+            self.environment.run()
+        except Exception as error:  # noqa: BLE001
+            self.transcript.invalidate(error)
+            self.logger.error(
+                f"Game run for agent {self.agent.id} was invalidated: "
+                f"{self.transcript.invalidation_reason}"
+            )
+        finally:
+            try:
+                self.hook_manager.trigger(HookEvent.GAME_END)
+            except Exception as error:  # noqa: BLE001
+                self.transcript.invalidate(error)
+                self.logger.error(
+                    f"Game end hook for agent {self.agent.id} failed: "
+                    f"{self.transcript.invalidation_reason}"
+                )
 
-        self.environment.run()
-
-        self.hook_manager.trigger(HookEvent.GAME_END)
-        self.logger.info(f"Game run ended for agent {self.agent.id}.")
+        self.logger.info(
+            f"Game run ended for agent {self.agent.id} "
+            f"(invalidated={self.transcript.invalidated})."
+        )
 
         return self.transcript

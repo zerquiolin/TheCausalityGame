@@ -139,6 +139,8 @@ class ArtifactWriter:
             "agent_id": transcript.agent_id,
             "mission_id": transcript.mission_id,
             "manifest_id": transcript.manifest_id,
+            "invalidated": transcript.invalidated,
+            "invalidation_reason": transcript.invalidation_reason,
             "entries": [
                 self._clean_transcript_entry_for_serialization(entry)
                 for entry in transcript.entries

@@ -43,7 +43,13 @@ class FinalDAGPerAgent(Hook):
         fig.suptitle("Agent Final DAGs", fontsize=14)
 
         for i, (id, transcript) in enumerate(context.items()):
+            if transcript.invalidated or not transcript.entries:
+                continue
+
             last_entry = transcript.entries[-1]
+            if last_entry.result is None:
+                continue
+
             result = last_entry.result
             dag = CoreDAG(result)
 

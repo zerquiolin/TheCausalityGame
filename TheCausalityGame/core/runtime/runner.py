@@ -77,6 +77,18 @@ class Runner:
             level=self.problem_instance.runtime.debug_level,
         )
 
+    def _invalidated_transcript(self, agent: AgentSpec, error: Exception) -> Transcript:
+        """Create an invalidated transcript when an agent cannot be fully executed."""
+        transcript = Transcript(
+            agent_id=agent.id,
+            mission_id=self.problem_instance.mission.id,
+            manifest_id=self.problem_instance.id,
+            entries=[],
+            budget=self.problem_instance.run_plan.budget,
+        )
+        transcript.invalidate(error)
+        return transcript
+
     def run(self) -> None:
         """Run the main execution entrypoint."""
         execution = self.problem_instance.run_plan.execution
@@ -113,12 +125,12 @@ class Runner:
             return
 
         # Hooks (fresh per agent)
-        self.hook_manager = HookManager(
+        hook_manager = HookManager(
             self.problem_instance.run_plan.hook_plan,
             self.artifact_writer.agents_dir / agent.id / "hooks",
         )
         self.logger.info(
-            f"Hook Manager initialized with {[h.id for h in self.hook_manager.hooks]}."
+            f"Hook Manager initialized with {[h.id for h in hook_manager.hooks]}."
         )
 
         self.logger.info(f"Running agent '{agent.id}'.")
@@ -127,24 +139,45 @@ class Runner:
             f"Agent {agent.id}", self.artifact_writer.agents_dir / agent.id
         )
 
-        game = Game(
-            manifest_id=self.problem_instance.id,
-            agent_spec=agent,
-            scm_spec=self.problem_instance.scm,
-            mission_spec=self.problem_instance.mission,
-            custom_metrics_specs=self.problem_instance.custom_metrics,
-            budget_spec=self.problem_instance.run_plan.budget,
-            hook_manager=self.hook_manager,
-            agent_logger=agent_logger,
-            game_logger=self.game_logger,
-            environment_logger=self.environment_logger,
-        )
+        game: Game | None = None
+        try:
+            game = Game(
+                manifest_id=self.problem_instance.id,
+                agent_spec=agent,
+                scm_spec=self.problem_instance.scm,
+                mission_spec=self.problem_instance.mission,
+                custom_metrics_specs=self.problem_instance.custom_metrics,
+                budget_spec=self.problem_instance.run_plan.budget,
+                hook_manager=hook_manager,
+                agent_logger=agent_logger,
+                game_logger=self.game_logger,
+                environment_logger=self.environment_logger,
+            )
 
-        transcript = game.run()
+            transcript = game.run()
+        except Exception as error:  # noqa: BLE001
+            if game is None:
+                transcript = self._invalidated_transcript(agent, error)
+            else:
+                transcript = game.transcript
+                transcript.invalidate(error)
+            self.logger.error(
+                f"Agent '{agent.id}' failed before or during setup: "
+                f"{transcript.invalidation_reason}"
+            )
 
-        self.logger.info(
-            f"Agent '{agent.id}' completed with feedback: {transcript.entries[-1].feedback}"
-        )
+        if transcript.invalidated:
+            self.logger.warning(
+                f"Agent '{agent.id}' produced an invalidated transcript: "
+                f"{transcript.invalidation_reason}"
+            )
+        elif transcript.entries:
+            self.logger.info(
+                f"Agent '{agent.id}' completed with feedback: "
+                f"{transcript.entries[-1].feedback}"
+            )
+        else:
+            self.logger.info(f"Agent '{agent.id}' completed with an empty transcript.")
         return transcript
 
     def _sequential_run(self) -> dict[str, Transcript]:
@@ -176,7 +209,7 @@ class Runner:
 
         with executor_cls(max_workers=self.workers) as ex:
             futures = {
-                ex.submit(self._run_agent, agent): agent.id
+                ex.submit(self._run_agent, agent): agent
                 for agent in self.problem_instance.agents
                 if agent.active
             }
@@ -187,9 +220,17 @@ class Runner:
                 leave=False,
             ) as pbar:
                 for future in as_completed(futures):
-                    result = future.result()
+                    agent = futures[future]
+                    try:
+                        result = future.result()
+                    except Exception as error:  # noqa: BLE001
+                        result = self._invalidated_transcript(agent, error)
+                        self.logger.error(
+                            f"Agent '{agent.id}' failed in the parallel executor: "
+                            f"{result.invalidation_reason}"
+                        )
                     if result is not None:
-                        transcripts[futures[future]] = result
+                        transcripts[agent.id] = result
                     pbar.update(1)
 
         return transcripts

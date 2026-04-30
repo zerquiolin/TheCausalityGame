@@ -88,22 +88,37 @@ class AgentsComparisonPlotHook(Hook):
         fig.suptitle("Agent Comparison Scores", fontsize=14)
 
         for id, transcript in context.items():
+            scored_entries = [
+                entry for entry in transcript.entries if entry.feedback is not None
+            ]
+            if not scored_entries:
+                continue
+
+            final_feedback = scored_entries[-1].feedback
+            assert final_feedback is not None
+            behavior_scores: list[float] = []
+            result_scores: list[float] = []
+            for entry in scored_entries:
+                assert entry.feedback is not None
+                behavior_scores.append(entry.feedback.behavior)
+                result_scores.append(entry.feedback.result)
+
             self._plot_scores(
                 id,
-                transcript.entries[-1].feedback.behavior,
-                transcript.entries[-1].feedback.result,
+                final_feedback.behavior,
+                final_feedback.result,
                 axes[0],
             )
             self._plot_time_series(
                 id,
-                [entry.feedback.behavior for entry in transcript.entries],
+                behavior_scores,
                 "Behavior Score",
                 axes[1],
             )
 
             self._plot_time_series(
                 id,
-                [entry.feedback.result for entry in transcript.entries],
+                result_scores,
                 "Result Score",
                 axes[2],
                 ylog=True,
