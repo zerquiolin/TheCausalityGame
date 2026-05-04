@@ -1,0 +1,33 @@
+{
+  "name": "Ideal Gas Law",
+  "vars": [
+      {
+        "name": "P",
+        "equation": "R*T*n/V",
+        "domain": [0, 1e100],
+        "class": "EquationBasedNumericalSCMNode"
+      },
+      {
+        "name": "n",
+        "domain": [0, 1e11],
+        "class": "EquationBasedNumericalSCMNode",
+        "accessibility": "controllable"
+      },
+      {
+        "name": "R",
+        "domain": [0, 1e11],
+        "class": "EquationBasedNumericalSCMNode"
+      },
+      {
+        "name": "T",
+        "domain": [0, 1e11],
+        "class": "EquationBasedNumericalSCMNode"
+      },
+      {
+        "name": "V",
+        "domain": [0.000001, 1e11],
+        "class": "EquationBasedNumericalSCMNode"
+      }
+    ],
+    "edges": [["V", "P"], ["T", "P"], ["R", "P"], ["n", "P"]]
+  }

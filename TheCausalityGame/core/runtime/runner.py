@@ -77,6 +77,10 @@ class Runner:
             level=self.problem_instance.runtime.debug_level,
         )
 
+    def _invalidation_reason(self, error: Exception) -> str:
+        """Return a plain-text invalidation reason for serialization-safe transcripts."""
+        return f"{type(error).__name__}: {error}"
+
     def _invalidated_transcript(self, agent: AgentSpec, error: Exception) -> Transcript:
         """Create an invalidated transcript when an agent cannot be fully executed."""
         transcript = Transcript(
@@ -86,7 +90,7 @@ class Runner:
             entries=[],
             budget=self.problem_instance.run_plan.budget,
         )
-        transcript.invalidate(error)
+        transcript.invalidate(self._invalidation_reason(error))
         return transcript
 
     def run(self) -> None:
@@ -129,9 +133,7 @@ class Runner:
             self.problem_instance.run_plan.hook_plan,
             self.artifact_writer.agents_dir / agent.id / "hooks",
         )
-        self.logger.info(
-            f"Hook Manager initialized with {[h.id for h in hook_manager.hooks]}."
-        )
+        self.logger.info(f"Hook Manager initialized with {[h.id for h in hook_manager.hooks]}.")
 
         self.logger.info(f"Running agent '{agent.id}'.")
 
@@ -160,8 +162,8 @@ class Runner:
                 transcript = self._invalidated_transcript(agent, error)
             else:
                 transcript = game.transcript
-                transcript.invalidate(error)
-            self.logger.error(
+                transcript.invalidate(self._invalidation_reason(error))
+            self.logger.error(  # noqa: TRY400
                 f"Agent '{agent.id}' failed before or during setup: "
                 f"{transcript.invalidation_reason}"
             )
@@ -173,8 +175,7 @@ class Runner:
             )
         elif transcript.entries:
             self.logger.info(
-                f"Agent '{agent.id}' completed with feedback: "
-                f"{transcript.entries[-1].feedback}"
+                f"Agent '{agent.id}' completed with feedback: {transcript.entries[-1].feedback}"
             )
         else:
             self.logger.info(f"Agent '{agent.id}' completed with an empty transcript.")
@@ -225,7 +226,7 @@ class Runner:
                         result = future.result()
                     except Exception as error:  # noqa: BLE001
                         result = self._invalidated_transcript(agent, error)
-                        self.logger.error(
+                        self.logger.error(  # noqa: TRY400
                             f"Agent '{agent.id}' failed in the parallel executor: "
                             f"{result.invalidation_reason}"
                         )

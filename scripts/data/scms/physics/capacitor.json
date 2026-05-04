@@ -1,0 +1,27 @@
+{
+    "vars": [
+    {
+      "name": "C",
+      "class": "EquationBasedNumericalSCMNode",
+      "accessibility": "controllable",
+      "domain": [1e-9, 1e-3]
+    },
+    {
+      "name": "V",
+      "class": "EquationBasedNumericalSCMNode",
+      "accessibility": "controllable",
+      "domain": [0.0, 100.0]
+    },
+    {
+      "name": "E",
+      "equation": "0.5*C*V**2",
+      "class": "EquationBasedNumericalSCMNode",
+      "domain": [0.0, 1e10]
+    }
+  ],
+  "edges": [
+    ["C", "E"],
+    ["V", "E"]
+  ]
+}
+  

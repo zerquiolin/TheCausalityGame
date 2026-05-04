@@ -143,8 +143,8 @@ class Game:
             self.hook_manager.trigger(HookEvent.GAME_START)
             self.environment.run()
         except Exception as error:  # noqa: BLE001
-            self.transcript.invalidate(error)
-            self.logger.error(
+            self.transcript.invalidate(f"{type(error).__name__}: {error}")
+            self.logger.error(  # noqa: TRY400
                 f"Game run for agent {self.agent.id} was invalidated: "
                 f"{self.transcript.invalidation_reason}"
             )
@@ -152,15 +152,14 @@ class Game:
             try:
                 self.hook_manager.trigger(HookEvent.GAME_END)
             except Exception as error:  # noqa: BLE001
-                self.transcript.invalidate(error)
-                self.logger.error(
+                self.transcript.invalidate(f"{type(error).__name__}: {error}")
+                self.logger.error(  # noqa: TRY400
                     f"Game end hook for agent {self.agent.id} failed: "
                     f"{self.transcript.invalidation_reason}"
                 )
 
         self.logger.info(
-            f"Game run ended for agent {self.agent.id} "
-            f"(invalidated={self.transcript.invalidated})."
+            f"Game run ended for agent {self.agent.id} (invalidated={self.transcript.invalidated})."
         )
 
         return self.transcript

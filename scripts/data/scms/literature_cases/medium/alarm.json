@@ -1,0 +1,1965 @@
+{
+  "vars": [
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "HISTORY",
+      "parents": [
+        "LVFAILURE"
+      ],
+      "values": [
+        "TRUE",
+        "FALSE"
+      ],
+      "probability_distribution": {
+        "TRUE": [
+          0.9,
+          0.1
+        ],
+        "FALSE": [
+          0.01,
+          0.99
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "CVP",
+      "parents": [
+        "LVEDVOLUME"
+      ],
+      "values": [
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "LOW": [
+          0.95,
+          0.04,
+          0.01
+        ],
+        "NORMAL": [
+          0.04,
+          0.95,
+          0.01
+        ],
+        "HIGH": [
+          0.01,
+          0.29,
+          0.7
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PCWP",
+      "parents": [
+        "LVEDVOLUME"
+      ],
+      "values": [
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "LOW": [
+          0.95,
+          0.04,
+          0.01
+        ],
+        "NORMAL": [
+          0.04,
+          0.95,
+          0.01
+        ],
+        "HIGH": [
+          0.01,
+          0.04,
+          0.95
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "HYPOVOLEMIA",
+      "parents": [],
+      "values": [
+        "TRUE",
+        "FALSE"
+      ],
+      "probability_distribution": [
+        [
+          0.2
+        ],
+        [
+          0.8
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "LVEDVOLUME",
+      "parents": [
+        "LVFAILURE",
+        "HYPOVOLEMIA"
+      ],
+      "values": [
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "TRUE,TRUE": [
+          0.95,
+          0.04,
+          0.01
+        ],
+        "TRUE,FALSE": [
+          0.01,
+          0.09,
+          0.9
+        ],
+        "FALSE,TRUE": [
+          0.98,
+          0.01,
+          0.01
+        ],
+        "FALSE,FALSE": [
+          0.05,
+          0.9,
+          0.05
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "LVFAILURE",
+      "parents": [],
+      "values": [
+        "TRUE",
+        "FALSE"
+      ],
+      "probability_distribution": [
+        [
+          0.05
+        ],
+        [
+          0.95
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "STROKEVOLUME",
+      "parents": [
+        "LVFAILURE",
+        "HYPOVOLEMIA"
+      ],
+      "values": [
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "TRUE,TRUE": [
+          0.98,
+          0.01,
+          0.01
+        ],
+        "TRUE,FALSE": [
+          0.5,
+          0.49,
+          0.01
+        ],
+        "FALSE,TRUE": [
+          0.95,
+          0.04,
+          0.01
+        ],
+        "FALSE,FALSE": [
+          0.05,
+          0.9,
+          0.05
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "ERRLOWOUTPUT",
+      "parents": [],
+      "values": [
+        "TRUE",
+        "FALSE"
+      ],
+      "probability_distribution": [
+        [
+          0.05
+        ],
+        [
+          0.95
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "HRBP",
+      "parents": [
+        "HR",
+        "ERRLOWOUTPUT"
+      ],
+      "values": [
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "LOW,TRUE": [
+          0.98,
+          0.01,
+          0.01
+        ],
+        "LOW,FALSE": [
+          0.3,
+          0.4,
+          0.3
+        ],
+        "NORMAL,TRUE": [
+          0.01,
+          0.98,
+          0.01
+        ],
+        "NORMAL,FALSE": [
+          0.4,
+          0.59,
+          0.01
+        ],
+        "HIGH,TRUE": [
+          0.98,
+          0.01,
+          0.01
+        ],
+        "HIGH,FALSE": [
+          0.01,
+          0.01,
+          0.98
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "HREKG",
+      "parents": [
+        "HR",
+        "ERRCAUTER"
+      ],
+      "values": [
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "LOW,TRUE": [
+          0.3333333,
+          0.3333333,
+          0.3333333
+        ],
+        "LOW,FALSE": [
+          0.3333333,
+          0.3333333,
+          0.3333333
+        ],
+        "NORMAL,TRUE": [
+          0.01,
+          0.98,
+          0.01
+        ],
+        "NORMAL,FALSE": [
+          0.3333333,
+          0.3333333,
+          0.3333333
+        ],
+        "HIGH,TRUE": [
+          0.98,
+          0.01,
+          0.01
+        ],
+        "HIGH,FALSE": [
+          0.01,
+          0.01,
+          0.98
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "ERRCAUTER",
+      "parents": [],
+      "values": [
+        "TRUE",
+        "FALSE"
+      ],
+      "probability_distribution": [
+        [
+          0.1
+        ],
+        [
+          0.9
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "HRSAT",
+      "parents": [
+        "HR",
+        "ERRCAUTER"
+      ],
+      "values": [
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "LOW,TRUE": [
+          0.3333333,
+          0.3333333,
+          0.3333333
+        ],
+        "LOW,FALSE": [
+          0.3333333,
+          0.3333333,
+          0.3333333
+        ],
+        "NORMAL,TRUE": [
+          0.01,
+          0.98,
+          0.01
+        ],
+        "NORMAL,FALSE": [
+          0.3333333,
+          0.3333333,
+          0.3333333
+        ],
+        "HIGH,TRUE": [
+          0.98,
+          0.01,
+          0.01
+        ],
+        "HIGH,FALSE": [
+          0.01,
+          0.01,
+          0.98
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "INSUFFANESTH",
+      "parents": [],
+      "values": [
+        "TRUE",
+        "FALSE"
+      ],
+      "probability_distribution": [
+        [
+          0.1
+        ],
+        [
+          0.9
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "ANAPHYLAXIS",
+      "parents": [],
+      "values": [
+        "TRUE",
+        "FALSE"
+      ],
+      "probability_distribution": [
+        [
+          0.01
+        ],
+        [
+          0.99
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "TPR",
+      "parents": [
+        "ANAPHYLAXIS"
+      ],
+      "values": [
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "TRUE": [
+          0.98,
+          0.01,
+          0.01
+        ],
+        "FALSE": [
+          0.3,
+          0.4,
+          0.3
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "EXPCO2",
+      "parents": [
+        "VENTLUNG",
+        "ARTCO2"
+      ],
+      "values": [
+        "ZERO",
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "ZERO,LOW": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "ZERO,NORMAL": [
+          0.01,
+          0.97,
+          0.01,
+          0.01
+        ],
+        "ZERO,HIGH": [
+          0.01,
+          0.01,
+          0.97,
+          0.01
+        ],
+        "LOW,LOW": [
+          0.01,
+          0.01,
+          0.01,
+          0.97
+        ],
+        "LOW,NORMAL": [
+          0.01,
+          0.97,
+          0.01,
+          0.01
+        ],
+        "LOW,HIGH": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "NORMAL,LOW": [
+          0.01,
+          0.01,
+          0.97,
+          0.01
+        ],
+        "NORMAL,NORMAL": [
+          0.01,
+          0.01,
+          0.01,
+          0.97
+        ],
+        "NORMAL,HIGH": [
+          0.01,
+          0.97,
+          0.01,
+          0.01
+        ],
+        "HIGH,LOW": [
+          0.01,
+          0.01,
+          0.97,
+          0.01
+        ],
+        "HIGH,NORMAL": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "HIGH,HIGH": [
+          0.01,
+          0.01,
+          0.01,
+          0.97
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "KINKEDTUBE",
+      "parents": [],
+      "values": [
+        "TRUE",
+        "FALSE"
+      ],
+      "probability_distribution": [
+        [
+          0.04
+        ],
+        [
+          0.96
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "MINVOL",
+      "parents": [
+        "VENTLUNG",
+        "INTUBATION"
+      ],
+      "values": [
+        "ZERO",
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "ZERO,NORMAL": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "ZERO,ESOPHAGEAL": [
+          0.01,
+          0.01,
+          0.01,
+          0.97
+        ],
+        "ZERO,ONESIDED": [
+          0.5,
+          0.48,
+          0.01,
+          0.01
+        ],
+        "LOW,NORMAL": [
+          0.01,
+          0.97,
+          0.01,
+          0.01
+        ],
+        "LOW,ESOPHAGEAL": [
+          0.01,
+          0.97,
+          0.01,
+          0.01
+        ],
+        "LOW,ONESIDED": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "NORMAL,NORMAL": [
+          0.5,
+          0.48,
+          0.01,
+          0.01
+        ],
+        "NORMAL,ESOPHAGEAL": [
+          0.01,
+          0.01,
+          0.97,
+          0.01
+        ],
+        "NORMAL,ONESIDED": [
+          0.01,
+          0.01,
+          0.97,
+          0.01
+        ],
+        "HIGH,NORMAL": [
+          0.6,
+          0.38,
+          0.01,
+          0.01
+        ],
+        "HIGH,ESOPHAGEAL": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "HIGH,ONESIDED": [
+          0.01,
+          0.01,
+          0.01,
+          0.97
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "FIO2",
+      "parents": [],
+      "values": [
+        "LOW",
+        "NORMAL"
+      ],
+      "probability_distribution": [
+        [
+          0.05
+        ],
+        [
+          0.95
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PVSAT",
+      "parents": [
+        "VENTALV",
+        "FIO2"
+      ],
+      "values": [
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "ZERO,LOW": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "ZERO,NORMAL": [
+          0.95,
+          0.04,
+          0.01
+        ],
+        "LOW,LOW": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "LOW,NORMAL": [
+          0.01,
+          0.95,
+          0.04
+        ],
+        "NORMAL,LOW": [
+          0.99,
+          0.01,
+          0.0
+        ],
+        "NORMAL,NORMAL": [
+          0.95,
+          0.04,
+          0.01
+        ],
+        "HIGH,LOW": [
+          0.95,
+          0.04,
+          0.01
+        ],
+        "HIGH,NORMAL": [
+          0.01,
+          0.01,
+          0.98
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "SAO2",
+      "parents": [
+        "SHUNT",
+        "PVSAT"
+      ],
+      "values": [
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "NORMAL,LOW": [
+          0.98,
+          0.01,
+          0.01
+        ],
+        "NORMAL,NORMAL": [
+          0.98,
+          0.01,
+          0.01
+        ],
+        "NORMAL,HIGH": [
+          0.01,
+          0.98,
+          0.01
+        ],
+        "HIGH,LOW": [
+          0.98,
+          0.01,
+          0.01
+        ],
+        "HIGH,NORMAL": [
+          0.01,
+          0.01,
+          0.98
+        ],
+        "HIGH,HIGH": [
+          0.69,
+          0.3,
+          0.01
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PAP",
+      "parents": [
+        "PULMEMBOLUS"
+      ],
+      "values": [
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "TRUE": [
+          0.01,
+          0.19,
+          0.8
+        ],
+        "FALSE": [
+          0.05,
+          0.9,
+          0.05
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PULMEMBOLUS",
+      "parents": [],
+      "values": [
+        "TRUE",
+        "FALSE"
+      ],
+      "probability_distribution": [
+        [
+          0.01
+        ],
+        [
+          0.99
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "SHUNT",
+      "parents": [
+        "PULMEMBOLUS",
+        "INTUBATION"
+      ],
+      "values": [
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "TRUE,NORMAL": [
+          0.1,
+          0.9
+        ],
+        "TRUE,ESOPHAGEAL": [
+          0.95,
+          0.05
+        ],
+        "TRUE,ONESIDED": [
+          0.1,
+          0.9
+        ],
+        "FALSE,NORMAL": [
+          0.95,
+          0.05
+        ],
+        "FALSE,ESOPHAGEAL": [
+          0.01,
+          0.99
+        ],
+        "FALSE,ONESIDED": [
+          0.05,
+          0.95
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "INTUBATION",
+      "parents": [],
+      "values": [
+        "NORMAL",
+        "ESOPHAGEAL",
+        "ONESIDED"
+      ],
+      "probability_distribution": [
+        [
+          0.92
+        ],
+        [
+          0.03
+        ],
+        [
+          0.05
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PRESS",
+      "parents": [
+        "VENTTUBE",
+        "KINKEDTUBE",
+        "INTUBATION"
+      ],
+      "values": [
+        "ZERO",
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "ZERO,TRUE,NORMAL": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "ZERO,TRUE,ESOPHAGEAL": [
+          0.05,
+          0.25,
+          0.25,
+          0.45
+        ],
+        "ZERO,TRUE,ONESIDED": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "ZERO,FALSE,NORMAL": [
+          0.2,
+          0.75,
+          0.04,
+          0.01
+        ],
+        "ZERO,FALSE,ESOPHAGEAL": [
+          0.01,
+          0.01,
+          0.01,
+          0.97
+        ],
+        "ZERO,FALSE,ONESIDED": [
+          0.01,
+          0.29,
+          0.3,
+          0.4
+        ],
+        "LOW,TRUE,NORMAL": [
+          0.01,
+          0.01,
+          0.01,
+          0.97
+        ],
+        "LOW,TRUE,ESOPHAGEAL": [
+          0.01,
+          0.9,
+          0.08,
+          0.01
+        ],
+        "LOW,TRUE,ONESIDED": [
+          0.01,
+          0.3,
+          0.49,
+          0.2
+        ],
+        "LOW,FALSE,NORMAL": [
+          0.01,
+          0.15,
+          0.25,
+          0.59
+        ],
+        "LOW,FALSE,ESOPHAGEAL": [
+          0.01,
+          0.97,
+          0.01,
+          0.01
+        ],
+        "LOW,FALSE,ONESIDED": [
+          0.2,
+          0.7,
+          0.09,
+          0.01
+        ],
+        "NORMAL,TRUE,NORMAL": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "NORMAL,TRUE,ESOPHAGEAL": [
+          0.01,
+          0.01,
+          0.08,
+          0.9
+        ],
+        "NORMAL,TRUE,ONESIDED": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "NORMAL,FALSE,NORMAL": [
+          0.01,
+          0.01,
+          0.38,
+          0.6
+        ],
+        "NORMAL,FALSE,ESOPHAGEAL": [
+          0.01,
+          0.01,
+          0.08,
+          0.9
+        ],
+        "NORMAL,FALSE,ONESIDED": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "HIGH,TRUE,NORMAL": [
+          0.01,
+          0.01,
+          0.97,
+          0.01
+        ],
+        "HIGH,TRUE,ESOPHAGEAL": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "HIGH,TRUE,ONESIDED": [
+          0.1,
+          0.84,
+          0.05,
+          0.01
+        ],
+        "HIGH,FALSE,NORMAL": [
+          0.01,
+          0.01,
+          0.01,
+          0.97
+        ],
+        "HIGH,FALSE,ESOPHAGEAL": [
+          0.4,
+          0.58,
+          0.01,
+          0.01
+        ],
+        "HIGH,FALSE,ONESIDED": [
+          0.01,
+          0.01,
+          0.01,
+          0.97
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "DISCONNECT",
+      "parents": [],
+      "values": [
+        "TRUE",
+        "FALSE"
+      ],
+      "probability_distribution": [
+        [
+          0.1
+        ],
+        [
+          0.9
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "MINVOLSET",
+      "parents": [],
+      "values": [
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": [
+        [
+          0.05
+        ],
+        [
+          0.9
+        ],
+        [
+          0.05
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "VENTMACH",
+      "parents": [
+        "MINVOLSET"
+      ],
+      "values": [
+        "ZERO",
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "LOW": [
+          0.05,
+          0.93,
+          0.01,
+          0.01
+        ],
+        "NORMAL": [
+          0.05,
+          0.01,
+          0.93,
+          0.01
+        ],
+        "HIGH": [
+          0.05,
+          0.01,
+          0.01,
+          0.93
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "VENTTUBE",
+      "parents": [
+        "VENTMACH",
+        "DISCONNECT"
+      ],
+      "values": [
+        "ZERO",
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "ZERO,TRUE": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "ZERO,FALSE": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "LOW,TRUE": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "LOW,FALSE": [
+          0.01,
+          0.01,
+          0.97,
+          0.01
+        ],
+        "NORMAL,TRUE": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "NORMAL,FALSE": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "HIGH,TRUE": [
+          0.01,
+          0.97,
+          0.01,
+          0.01
+        ],
+        "HIGH,FALSE": [
+          0.01,
+          0.01,
+          0.01,
+          0.97
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "VENTLUNG",
+      "parents": [
+        "VENTTUBE",
+        "KINKEDTUBE",
+        "INTUBATION"
+      ],
+      "values": [
+        "ZERO",
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "ZERO,TRUE,NORMAL": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "ZERO,TRUE,ESOPHAGEAL": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "ZERO,TRUE,ONESIDED": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "ZERO,FALSE,NORMAL": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "ZERO,FALSE,ESOPHAGEAL": [
+          0.3,
+          0.68,
+          0.01,
+          0.01
+        ],
+        "ZERO,FALSE,ONESIDED": [
+          0.95,
+          0.03,
+          0.01,
+          0.01
+        ],
+        "LOW,TRUE,NORMAL": [
+          0.01,
+          0.01,
+          0.01,
+          0.97
+        ],
+        "LOW,TRUE,ESOPHAGEAL": [
+          0.01,
+          0.97,
+          0.01,
+          0.01
+        ],
+        "LOW,TRUE,ONESIDED": [
+          0.95,
+          0.03,
+          0.01,
+          0.01
+        ],
+        "LOW,FALSE,NORMAL": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "LOW,FALSE,ESOPHAGEAL": [
+          0.01,
+          0.97,
+          0.01,
+          0.01
+        ],
+        "LOW,FALSE,ONESIDED": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "NORMAL,TRUE,NORMAL": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "NORMAL,TRUE,ESOPHAGEAL": [
+          0.5,
+          0.48,
+          0.01,
+          0.01
+        ],
+        "NORMAL,TRUE,ONESIDED": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "NORMAL,FALSE,NORMAL": [
+          0.01,
+          0.01,
+          0.97,
+          0.01
+        ],
+        "NORMAL,FALSE,ESOPHAGEAL": [
+          0.4,
+          0.58,
+          0.01,
+          0.01
+        ],
+        "NORMAL,FALSE,ONESIDED": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "HIGH,TRUE,NORMAL": [
+          0.01,
+          0.01,
+          0.97,
+          0.01
+        ],
+        "HIGH,TRUE,ESOPHAGEAL": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "HIGH,TRUE,ONESIDED": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "HIGH,FALSE,NORMAL": [
+          0.3,
+          0.68,
+          0.01,
+          0.01
+        ],
+        "HIGH,FALSE,ESOPHAGEAL": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "HIGH,FALSE,ONESIDED": [
+          0.01,
+          0.01,
+          0.01,
+          0.97
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "VENTALV",
+      "parents": [
+        "VENTLUNG",
+        "INTUBATION"
+      ],
+      "values": [
+        "ZERO",
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "ZERO,NORMAL": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "ZERO,ESOPHAGEAL": [
+          0.01,
+          0.01,
+          0.01,
+          0.97
+        ],
+        "ZERO,ONESIDED": [
+          0.01,
+          0.01,
+          0.97,
+          0.01
+        ],
+        "LOW,NORMAL": [
+          0.03,
+          0.95,
+          0.01,
+          0.01
+        ],
+        "LOW,ESOPHAGEAL": [
+          0.01,
+          0.97,
+          0.01,
+          0.01
+        ],
+        "LOW,ONESIDED": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "NORMAL,NORMAL": [
+          0.01,
+          0.01,
+          0.01,
+          0.97
+        ],
+        "NORMAL,ESOPHAGEAL": [
+          0.01,
+          0.94,
+          0.04,
+          0.01
+        ],
+        "NORMAL,ONESIDED": [
+          0.01,
+          0.01,
+          0.97,
+          0.01
+        ],
+        "HIGH,NORMAL": [
+          0.01,
+          0.97,
+          0.01,
+          0.01
+        ],
+        "HIGH,ESOPHAGEAL": [
+          0.97,
+          0.01,
+          0.01,
+          0.01
+        ],
+        "HIGH,ONESIDED": [
+          0.01,
+          0.88,
+          0.1,
+          0.01
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "ARTCO2",
+      "parents": [
+        "VENTALV"
+      ],
+      "values": [
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "ZERO": [
+          0.01,
+          0.01,
+          0.98
+        ],
+        "LOW": [
+          0.01,
+          0.01,
+          0.98
+        ],
+        "NORMAL": [
+          0.04,
+          0.92,
+          0.04
+        ],
+        "HIGH": [
+          0.9,
+          0.09,
+          0.01
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "CATECHOL",
+      "parents": [
+        "TPR",
+        "SAO2",
+        "INSUFFANESTH",
+        "ARTCO2"
+      ],
+      "values": [
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "LOW,LOW,TRUE,LOW": [
+          0.01,
+          0.99
+        ],
+        "LOW,LOW,TRUE,NORMAL": [
+          0.01,
+          0.99
+        ],
+        "LOW,LOW,TRUE,HIGH": [
+          0.7,
+          0.3
+        ],
+        "LOW,LOW,FALSE,LOW": [
+          0.01,
+          0.99
+        ],
+        "LOW,LOW,FALSE,NORMAL": [
+          0.05,
+          0.95
+        ],
+        "LOW,LOW,FALSE,HIGH": [
+          0.7,
+          0.3
+        ],
+        "LOW,NORMAL,TRUE,LOW": [
+          0.01,
+          0.99
+        ],
+        "LOW,NORMAL,TRUE,NORMAL": [
+          0.05,
+          0.95
+        ],
+        "LOW,NORMAL,TRUE,HIGH": [
+          0.95,
+          0.05
+        ],
+        "LOW,NORMAL,FALSE,LOW": [
+          0.01,
+          0.99
+        ],
+        "LOW,NORMAL,FALSE,NORMAL": [
+          0.05,
+          0.95
+        ],
+        "LOW,NORMAL,FALSE,HIGH": [
+          0.7,
+          0.3
+        ],
+        "LOW,HIGH,TRUE,LOW": [
+          0.01,
+          0.99
+        ],
+        "LOW,HIGH,TRUE,NORMAL": [
+          0.05,
+          0.95
+        ],
+        "LOW,HIGH,TRUE,HIGH": [
+          0.95,
+          0.05
+        ],
+        "LOW,HIGH,FALSE,LOW": [
+          0.05,
+          0.95
+        ],
+        "LOW,HIGH,FALSE,NORMAL": [
+          0.05,
+          0.95
+        ],
+        "LOW,HIGH,FALSE,HIGH": [
+          0.95,
+          0.05
+        ],
+        "NORMAL,LOW,TRUE,LOW": [
+          0.01,
+          0.99
+        ],
+        "NORMAL,LOW,TRUE,NORMAL": [
+          0.01,
+          0.99
+        ],
+        "NORMAL,LOW,TRUE,HIGH": [
+          0.7,
+          0.3
+        ],
+        "NORMAL,LOW,FALSE,LOW": [
+          0.01,
+          0.99
+        ],
+        "NORMAL,LOW,FALSE,NORMAL": [
+          0.05,
+          0.95
+        ],
+        "NORMAL,LOW,FALSE,HIGH": [
+          0.7,
+          0.3
+        ],
+        "NORMAL,NORMAL,TRUE,LOW": [
+          0.01,
+          0.99
+        ],
+        "NORMAL,NORMAL,TRUE,NORMAL": [
+          0.05,
+          0.95
+        ],
+        "NORMAL,NORMAL,TRUE,HIGH": [
+          0.99,
+          0.01
+        ],
+        "NORMAL,NORMAL,FALSE,LOW": [
+          0.01,
+          0.99
+        ],
+        "NORMAL,NORMAL,FALSE,NORMAL": [
+          0.05,
+          0.95
+        ],
+        "NORMAL,NORMAL,FALSE,HIGH": [
+          0.7,
+          0.3
+        ],
+        "NORMAL,HIGH,TRUE,LOW": [
+          0.01,
+          0.99
+        ],
+        "NORMAL,HIGH,TRUE,NORMAL": [
+          0.05,
+          0.95
+        ],
+        "NORMAL,HIGH,TRUE,HIGH": [
+          0.99,
+          0.01
+        ],
+        "NORMAL,HIGH,FALSE,LOW": [
+          0.05,
+          0.95
+        ],
+        "NORMAL,HIGH,FALSE,NORMAL": [
+          0.05,
+          0.95
+        ],
+        "NORMAL,HIGH,FALSE,HIGH": [
+          0.99,
+          0.01
+        ],
+        "HIGH,LOW,TRUE,LOW": [
+          0.01,
+          0.99
+        ],
+        "HIGH,LOW,TRUE,NORMAL": [
+          0.01,
+          0.99
+        ],
+        "HIGH,LOW,TRUE,HIGH": [
+          0.1,
+          0.9
+        ],
+        "HIGH,LOW,FALSE,LOW": [
+          0.01,
+          0.99
+        ],
+        "HIGH,LOW,FALSE,NORMAL": [
+          0.01,
+          0.99
+        ],
+        "HIGH,LOW,FALSE,HIGH": [
+          0.1,
+          0.9
+        ],
+        "HIGH,NORMAL,TRUE,LOW": [
+          0.01,
+          0.99
+        ],
+        "HIGH,NORMAL,TRUE,NORMAL": [
+          0.01,
+          0.99
+        ],
+        "HIGH,NORMAL,TRUE,HIGH": [
+          0.3,
+          0.7
+        ],
+        "HIGH,NORMAL,FALSE,LOW": [
+          0.01,
+          0.99
+        ],
+        "HIGH,NORMAL,FALSE,NORMAL": [
+          0.01,
+          0.99
+        ],
+        "HIGH,NORMAL,FALSE,HIGH": [
+          0.1,
+          0.9
+        ],
+        "HIGH,HIGH,TRUE,LOW": [
+          0.01,
+          0.99
+        ],
+        "HIGH,HIGH,TRUE,NORMAL": [
+          0.01,
+          0.99
+        ],
+        "HIGH,HIGH,TRUE,HIGH": [
+          0.3,
+          0.7
+        ],
+        "HIGH,HIGH,FALSE,LOW": [
+          0.01,
+          0.99
+        ],
+        "HIGH,HIGH,FALSE,NORMAL": [
+          0.01,
+          0.99
+        ],
+        "HIGH,HIGH,FALSE,HIGH": [
+          0.3,
+          0.7
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "HR",
+      "parents": [
+        "CATECHOL"
+      ],
+      "values": [
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "NORMAL": [
+          0.05,
+          0.9,
+          0.05
+        ],
+        "HIGH": [
+          0.01,
+          0.09,
+          0.9
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "CO",
+      "parents": [
+        "STROKEVOLUME",
+        "HR"
+      ],
+      "values": [
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "LOW,LOW": [
+          0.98,
+          0.01,
+          0.01
+        ],
+        "LOW,NORMAL": [
+          0.95,
+          0.04,
+          0.01
+        ],
+        "LOW,HIGH": [
+          0.3,
+          0.69,
+          0.01
+        ],
+        "NORMAL,LOW": [
+          0.95,
+          0.04,
+          0.01
+        ],
+        "NORMAL,NORMAL": [
+          0.04,
+          0.95,
+          0.01
+        ],
+        "NORMAL,HIGH": [
+          0.01,
+          0.3,
+          0.69
+        ],
+        "HIGH,LOW": [
+          0.8,
+          0.19,
+          0.01
+        ],
+        "HIGH,NORMAL": [
+          0.01,
+          0.04,
+          0.95
+        ],
+        "HIGH,HIGH": [
+          0.01,
+          0.01,
+          0.98
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "BP",
+      "parents": [
+        "TPR",
+        "CO"
+      ],
+      "values": [
+        "LOW",
+        "NORMAL",
+        "HIGH"
+      ],
+      "probability_distribution": {
+        "LOW,LOW": [
+          0.98,
+          0.01,
+          0.01
+        ],
+        "LOW,NORMAL": [
+          0.98,
+          0.01,
+          0.01
+        ],
+        "LOW,HIGH": [
+          0.3,
+          0.6,
+          0.1
+        ],
+        "NORMAL,LOW": [
+          0.98,
+          0.01,
+          0.01
+        ],
+        "NORMAL,NORMAL": [
+          0.1,
+          0.85,
+          0.05
+        ],
+        "NORMAL,HIGH": [
+          0.05,
+          0.4,
+          0.55
+        ],
+        "HIGH,LOW": [
+          0.9,
+          0.09,
+          0.01
+        ],
+        "HIGH,NORMAL": [
+          0.05,
+          0.2,
+          0.75
+        ],
+        "HIGH,HIGH": [
+          0.01,
+          0.09,
+          0.9
+        ]
+      }
+    }
+  ],
+  "edges": [
+    [
+      "HYPOVOLEMIA",
+      "LVEDVOLUME"
+    ],
+    [
+      "HYPOVOLEMIA",
+      "STROKEVOLUME"
+    ],
+    [
+      "LVEDVOLUME",
+      "CVP"
+    ],
+    [
+      "LVEDVOLUME",
+      "PCWP"
+    ],
+    [
+      "STROKEVOLUME",
+      "CO"
+    ],
+    [
+      "LVFAILURE",
+      "HISTORY"
+    ],
+    [
+      "LVFAILURE",
+      "LVEDVOLUME"
+    ],
+    [
+      "LVFAILURE",
+      "STROKEVOLUME"
+    ],
+    [
+      "CO",
+      "BP"
+    ],
+    [
+      "ERRLOWOUTPUT",
+      "HRBP"
+    ],
+    [
+      "ERRCAUTER",
+      "HREKG"
+    ],
+    [
+      "ERRCAUTER",
+      "HRSAT"
+    ],
+    [
+      "INSUFFANESTH",
+      "CATECHOL"
+    ],
+    [
+      "CATECHOL",
+      "HR"
+    ],
+    [
+      "ANAPHYLAXIS",
+      "TPR"
+    ],
+    [
+      "TPR",
+      "CATECHOL"
+    ],
+    [
+      "TPR",
+      "BP"
+    ],
+    [
+      "KINKEDTUBE",
+      "PRESS"
+    ],
+    [
+      "KINKEDTUBE",
+      "VENTLUNG"
+    ],
+    [
+      "VENTLUNG",
+      "EXPCO2"
+    ],
+    [
+      "VENTLUNG",
+      "MINVOL"
+    ],
+    [
+      "VENTLUNG",
+      "VENTALV"
+    ],
+    [
+      "FIO2",
+      "PVSAT"
+    ],
+    [
+      "PVSAT",
+      "SAO2"
+    ],
+    [
+      "SAO2",
+      "CATECHOL"
+    ],
+    [
+      "PULMEMBOLUS",
+      "PAP"
+    ],
+    [
+      "PULMEMBOLUS",
+      "SHUNT"
+    ],
+    [
+      "SHUNT",
+      "SAO2"
+    ],
+    [
+      "INTUBATION",
+      "MINVOL"
+    ],
+    [
+      "INTUBATION",
+      "SHUNT"
+    ],
+    [
+      "INTUBATION",
+      "PRESS"
+    ],
+    [
+      "INTUBATION",
+      "VENTLUNG"
+    ],
+    [
+      "INTUBATION",
+      "VENTALV"
+    ],
+    [
+      "VENTALV",
+      "PVSAT"
+    ],
+    [
+      "VENTALV",
+      "ARTCO2"
+    ],
+    [
+      "DISCONNECT",
+      "VENTTUBE"
+    ],
+    [
+      "VENTTUBE",
+      "PRESS"
+    ],
+    [
+      "VENTTUBE",
+      "VENTLUNG"
+    ],
+    [
+      "MINVOLSET",
+      "VENTMACH"
+    ],
+    [
+      "VENTMACH",
+      "VENTTUBE"
+    ],
+    [
+      "ARTCO2",
+      "EXPCO2"
+    ],
+    [
+      "ARTCO2",
+      "CATECHOL"
+    ],
+    [
+      "HR",
+      "HRBP"
+    ],
+    [
+      "HR",
+      "HREKG"
+    ],
+    [
+      "HR",
+      "HRSAT"
+    ],
+    [
+      "HR",
+      "CO"
+    ]
+  ]
+}

@@ -33,9 +33,9 @@ class DAG(Serializable):
 
     _spec: str = "TheCausalityGame.core.contracts.specs.dag:DAGSpec"
 
-    def __init__(self, graph: nx.DiGraph) -> None:
-        self.graph: nx.DiGraph = graph
-        if not nx.is_directed_acyclic_graph(self.graph):
+    def __init__(self, graph: nx.DiGraph) -> None:  # type: ignore
+        self.graph: nx.DiGraph = graph  # type: ignore
+        if not nx.is_directed_acyclic_graph(self.graph):  # type: ignore
             raise DAGCycleError()
 
     @property

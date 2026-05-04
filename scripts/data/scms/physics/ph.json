@@ -1,0 +1,20 @@
+{
+    "vars": [
+    {
+        "name": "hp",
+        "class": "EquationBasedNumericalSCMNode",
+        "accessibility": "controllable",
+        "domain": [1e-14, 1.0]
+    },
+    {
+        "name": "pH",
+        "equation": "-log(hp)/log(10)",
+        "class": "EquationBasedNumericalSCMNode",
+        "domain": [0, 1000.0]
+    }
+  ],
+  "edges": [
+    ["hp", "pH"]
+  ]
+}
+  

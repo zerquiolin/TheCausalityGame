@@ -1,0 +1,48 @@
+{
+    "vars": [
+        {
+            "name": "Z",
+            "class": "BayesianNetworkSCMNode",
+            "parents": [],
+            "values": [
+                "0",
+                "1"
+            ],
+            "probability_distribution": [
+                0.5,
+                0.5
+            ],
+            "accessibility": "controllable"
+        },
+        {
+            "name": "X",
+            "equation": "200*Z + 200",
+            "domain": [
+                200,
+                400
+            ],
+            "class": "EquationBasedNumericalSCMNode",
+            "accessibility": "observable"
+        },
+        {
+            "name": "Y",
+            "equation": "X",
+            "domain": [
+                200,
+                400
+            ],
+            "class": "EquationBasedNumericalSCMNode",
+            "accessibility": "observable"
+        }
+    ],
+    "edges": [
+        [
+            "Z",
+            "X"
+        ],
+        [
+            "X",
+            "Y"
+        ]
+    ]
+}

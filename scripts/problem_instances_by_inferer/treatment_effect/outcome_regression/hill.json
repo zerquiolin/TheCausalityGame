@@ -247,10 +247,10 @@
         "execution": "parallel",
         "parallel_backend": "thread",
         "budget": {
-            "rounds": 1250,
-            "time_s": 5998,
-            "samples": 15100,
-            "memory_mb": 1
+            "rounds": 650,
+            "time_s": 115,
+            "samples": 3000,
+            "memory_mb": 0.5
         },
         "hook_plan": [
             {

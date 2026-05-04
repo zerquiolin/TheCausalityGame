@@ -20,7 +20,7 @@ class BeliefSnapshot(CommonDTO):
         arbitrary_types_allowed=True,
     )
 
-    estimate: Any = None  # noqa: ANN401
+    estimate: Any = None
     summary: dict[str, Any] = Field(default_factory=dict)
     capabilities: tuple[str, ...] = Field(default_factory=tuple)
 

@@ -1,0 +1,137 @@
+{
+    "class_": "TheCausalityGame.core.contracts.problem_instance:ProblemInstance",
+    "id": "symbolic_scm_discovery/newton_second_law",
+    "schema_version": "0.1.0",
+    "agents": [
+        {
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "SparseSymbolicSCM_TrustYourGradient",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.symbolic_scm:SparseSymbolicSCMDiscoveryInferer",
+                "params": {
+                    "dag_alpha": 0.05,
+                    "lasso_alpha": 0.000001,
+                    "coefficient_threshold": 0.0001,
+                    "reciprocal_eps": 0.000001,
+                    "min_reciprocal_valid_fraction": 0.95,
+                    "seed": 911
+                }
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.trust_gradient:TrustYourGradientDecider",
+                "params": {
+                    "num_obs": 1,
+                    "num_inter": 3,
+                    "n_bootstrap": 32,
+                    "n_graphs": 20,
+                    "fantasy_samples": 48,
+                    "num_value_candidates": 5,
+                    "uncertainty_weight": 0.25,
+                    "seed": 911
+                }
+            }
+        }
+    ],
+    "scm": {
+        "class_": "TheCausalityGame.scm.core:CoreSCM",
+        "vars": [
+            {
+                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+                "name": "m",
+                "domain": [
+                    0,
+                    100000000000.0
+                ],
+                "noise_distribution": {
+                    "class_": "TheCausalityGame.scm.noise.no_noise:NoNoiseDistribution"
+                }
+            },
+            {
+                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+                "name": "a",
+                "equation": "F/m",
+                "domain": [
+                    -100000000000.0,
+                    100000000000.0
+                ],
+                "noise_distribution": {
+                    "class_": "TheCausalityGame.scm.noise.no_noise:NoNoiseDistribution"
+                }
+            },
+            {
+                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+                "name": "F",
+                "domain": [
+                    -100000000000.0,
+                    1e+23
+                ],
+                "noise_distribution": {
+                    "class_": "TheCausalityGame.scm.noise.no_noise:NoNoiseDistribution"
+                }
+            }
+        ],
+        "dag": {
+            "class_": "TheCausalityGame.scm.dag.core:CoreDAG",
+            "edges": [
+                [
+                    "m",
+                    "a"
+                ],
+                [
+                    "F",
+                    "a"
+                ]
+            ]
+        }
+    },
+    "mission": {
+        "class_": "TheCausalityGame.mission.symbolic_scm_discovery:SymbolicSCMDiscoveryMission",
+        "id": "symbolic_scm_discovery",
+        "behavior_metric": {
+            "class_": "TheCausalityGame.metric.behavior.resource_usage:ResourceUsageBehaviorMetric"
+        },
+        "result_metric": {
+            "class_": "TheCausalityGame.metric.result.symbolic_mechanism:SymbolicMechanismFunctionalErrorMetric",
+            "params": {
+                "num_samples": 512,
+                "missing_penalty": 10.0,
+                "invalid_penalty": 10.0,
+                "seed": 911
+            }
+        },
+        "result_validator": {
+            "class_": "TheCausalityGame.metric.result.result_validator.symbolic_scm_validator:SymbolicSCMResultValidator"
+        }
+    },
+    "custom_metrics": [],
+    "run_plan": {
+        "execution": "parallel",
+        "parallel_backend": "thread",
+        "budget": {
+            "rounds": 111,
+            "time_s": 25,
+            "samples": 550,
+            "memory_mb": 0.1
+        },
+        "hook_plan": [
+            {
+                "class_": "TheCausalityGame.hook.plots.agent_comparison_plot:AgentsComparisonPlotHook",
+                "step": "benchmark_end"
+            },
+            {
+                "class_": "TheCausalityGame.hook.plots.symbolic_mechanisms_per_agent:SymbolicMechanismsPerAgentPlotHook",
+                "step": "benchmark_end"
+            }
+        ]
+    },
+    "seeds": {
+        "agent": 42,
+        "scm": 911,
+        "misc": 7
+    },
+    "runtime": {
+        "mode": "dev",
+        "debug_level": 10
+    }
+}

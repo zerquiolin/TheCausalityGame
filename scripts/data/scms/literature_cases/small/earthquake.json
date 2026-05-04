@@ -1,0 +1,128 @@
+{
+  "vars": [
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Burglary",
+      "parents": [],
+      "values": [
+        "True",
+        "False"
+      ],
+      "probability_distribution": [
+        [
+          0.01
+        ],
+        [
+          0.99
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Earthquake",
+      "parents": [],
+      "values": [
+        "True",
+        "False"
+      ],
+      "probability_distribution": [
+        [
+          0.02
+        ],
+        [
+          0.98
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Alarm",
+      "parents": [
+        "Earthquake",
+        "Burglary"
+      ],
+      "values": [
+        "True",
+        "False"
+      ],
+      "probability_distribution": {
+        "True,True": [
+          0.95,
+          0.05
+        ],
+        "True,False": [
+          0.94,
+          0.06
+        ],
+        "False,True": [
+          0.29,
+          0.71
+        ],
+        "False,False": [
+          0.001,
+          0.999
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "JohnCalls",
+      "parents": [
+        "Alarm"
+      ],
+      "values": [
+        "True",
+        "False"
+      ],
+      "probability_distribution": {
+        "True": [
+          0.9,
+          0.1
+        ],
+        "False": [
+          0.05,
+          0.95
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "MaryCalls",
+      "parents": [
+        "Alarm"
+      ],
+      "values": [
+        "True",
+        "False"
+      ],
+      "probability_distribution": {
+        "True": [
+          0.7,
+          0.3
+        ],
+        "False": [
+          0.01,
+          0.99
+        ]
+      }
+    }
+  ],
+  "edges": [
+    [
+      "Burglary",
+      "Alarm"
+    ],
+    [
+      "Alarm",
+      "JohnCalls"
+    ],
+    [
+      "Alarm",
+      "MaryCalls"
+    ],
+    [
+      "Earthquake",
+      "Alarm"
+    ]
+  ]
+}

@@ -54,6 +54,6 @@ class RunPlanSpec(BaseModel):
         description="Resource budgets per agent run.",
     )
     hook_plan: list[HookSpec] = Field(
-        default_factory=list,
+        default=[],
         description="Hook subscriptions for lifecycle events.",
     )

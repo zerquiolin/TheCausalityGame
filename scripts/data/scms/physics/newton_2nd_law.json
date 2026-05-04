@@ -1,0 +1,23 @@
+{
+    "vars": [
+        {
+            "name": "F",
+            "equation": "a*m",
+            "domain": [-1e11, 1e23],
+            "class": "EquationBasedNumericalSCMNode"
+        },
+        {
+            "name": "m",
+            "domain": [0, 1e11],
+            "class": "EquationBasedNumericalSCMNode",
+            "accessibility": "controllable"
+        },
+        {
+            "name": "a",
+            "domain": [-1e11, 1e11],
+            "class": "EquationBasedNumericalSCMNode",
+            "accessibility": "controllable"
+        }
+    ],
+    "edges": [["m", "F"], ["a", "F"]]
+}

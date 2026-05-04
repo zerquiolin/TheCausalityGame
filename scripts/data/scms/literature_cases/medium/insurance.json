@@ -1,0 +1,2874 @@
+{
+  "vars": [
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "GoodStudent",
+      "parents": [
+        "Age",
+        "SocioEcon"
+      ],
+      "values": [
+        "True",
+        "False"
+      ],
+      "probability_distribution": {
+        "Adolescent,Prole": [
+          0.1,
+          0.9
+        ],
+        "Adolescent,Middle": [
+          0.0,
+          1.0
+        ],
+        "Adolescent,UpperMiddle": [
+          0.0,
+          1.0
+        ],
+        "Adolescent,Wealthy": [
+          0.2,
+          0.8
+        ],
+        "Adult,Prole": [
+          0.0,
+          1.0
+        ],
+        "Adult,Middle": [
+          0.0,
+          1.0
+        ],
+        "Adult,UpperMiddle": [
+          0.5,
+          0.5
+        ],
+        "Adult,Wealthy": [
+          0.0,
+          1.0
+        ],
+        "Senior,Prole": [
+          0.0,
+          1.0
+        ],
+        "Senior,Middle": [
+          0.4,
+          0.6
+        ],
+        "Senior,UpperMiddle": [
+          0.0,
+          1.0
+        ],
+        "Senior,Wealthy": [
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Age",
+      "parents": [],
+      "values": [
+        "Adolescent",
+        "Adult",
+        "Senior"
+      ],
+      "probability_distribution": [
+        [
+          0.2
+        ],
+        [
+          0.6
+        ],
+        [
+          0.2
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "SocioEcon",
+      "parents": [
+        "Age"
+      ],
+      "values": [
+        "Prole",
+        "Middle",
+        "UpperMiddle",
+        "Wealthy"
+      ],
+      "probability_distribution": {
+        "Adolescent": [
+          0.4,
+          0.4,
+          0.19,
+          0.01
+        ],
+        "Adult": [
+          0.4,
+          0.4,
+          0.19,
+          0.01
+        ],
+        "Senior": [
+          0.5,
+          0.2,
+          0.29,
+          0.01
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "RiskAversion",
+      "parents": [
+        "SocioEcon",
+        "Age"
+      ],
+      "values": [
+        "Psychopath",
+        "Adventurous",
+        "Normal",
+        "Cautious"
+      ],
+      "probability_distribution": {
+        "Prole,Adolescent": [
+          0.02,
+          0.58,
+          0.3,
+          0.1
+        ],
+        "Prole,Adult": [
+          0.02,
+          0.38,
+          0.5,
+          0.1
+        ],
+        "Prole,Senior": [
+          0.02,
+          0.48,
+          0.4,
+          0.1
+        ],
+        "Middle,Adolescent": [
+          0.02,
+          0.58,
+          0.3,
+          0.1
+        ],
+        "Middle,Adult": [
+          0.015,
+          0.285,
+          0.5,
+          0.2
+        ],
+        "Middle,Senior": [
+          0.015,
+          0.185,
+          0.6,
+          0.2
+        ],
+        "UpperMiddle,Adolescent": [
+          0.015,
+          0.285,
+          0.5,
+          0.2
+        ],
+        "UpperMiddle,Adult": [
+          0.015,
+          0.285,
+          0.4,
+          0.3
+        ],
+        "UpperMiddle,Senior": [
+          0.01,
+          0.09,
+          0.4,
+          0.5
+        ],
+        "Wealthy,Adolescent": [
+          0.01,
+          0.04,
+          0.35,
+          0.6
+        ],
+        "Wealthy,Adult": [
+          0.01,
+          0.09,
+          0.4,
+          0.5
+        ],
+        "Wealthy,Senior": [
+          0.01,
+          0.09,
+          0.4,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "VehicleYear",
+      "parents": [
+        "RiskAversion",
+        "SocioEcon"
+      ],
+      "values": [
+        "Current",
+        "Older"
+      ],
+      "probability_distribution": {
+        "Psychopath,Prole": [
+          0.15,
+          0.85
+        ],
+        "Psychopath,Middle": [
+          0.15,
+          0.85
+        ],
+        "Psychopath,UpperMiddle": [
+          0.15,
+          0.85
+        ],
+        "Psychopath,Wealthy": [
+          0.15,
+          0.85
+        ],
+        "Adventurous,Prole": [
+          0.3,
+          0.7
+        ],
+        "Adventurous,Middle": [
+          0.3,
+          0.7
+        ],
+        "Adventurous,UpperMiddle": [
+          0.3,
+          0.7
+        ],
+        "Adventurous,Wealthy": [
+          0.3,
+          0.7
+        ],
+        "Normal,Prole": [
+          0.8,
+          0.2
+        ],
+        "Normal,Middle": [
+          0.8,
+          0.2
+        ],
+        "Normal,UpperMiddle": [
+          0.8,
+          0.2
+        ],
+        "Normal,Wealthy": [
+          0.8,
+          0.2
+        ],
+        "Cautious,Prole": [
+          0.9,
+          0.1
+        ],
+        "Cautious,Middle": [
+          0.9,
+          0.1
+        ],
+        "Cautious,UpperMiddle": [
+          0.9,
+          0.1
+        ],
+        "Cautious,Wealthy": [
+          0.9,
+          0.1
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "ThisCarDam",
+      "parents": [
+        "RuggedAuto",
+        "Accident"
+      ],
+      "values": [
+        "None",
+        "Mild",
+        "Moderate",
+        "Severe"
+      ],
+      "probability_distribution": {
+        "EggShell,None": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "EggShell,Mild": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "EggShell,Moderate": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "EggShell,Severe": [
+          0.001,
+          0.9,
+          0.098,
+          0.001
+        ],
+        "Football,None": [
+          0.2,
+          0.75,
+          0.049999,
+          1e-06
+        ],
+        "Football,Mild": [
+          0.7,
+          0.29,
+          0.009999,
+          1e-06
+        ],
+        "Football,Moderate": [
+          1e-06,
+          0.000999,
+          0.7,
+          0.299
+        ],
+        "Football,Severe": [
+          0.001,
+          0.099,
+          0.8,
+          0.1
+        ],
+        "Tank,None": [
+          0.05,
+          0.6,
+          0.3,
+          0.05
+        ],
+        "Tank,Mild": [
+          1e-06,
+          9e-06,
+          9e-05,
+          0.9999
+        ],
+        "Tank,Moderate": [
+          1e-06,
+          0.000999,
+          0.009,
+          0.99
+        ],
+        "Tank,Severe": [
+          0.05,
+          0.2,
+          0.2,
+          0.55
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "RuggedAuto",
+      "parents": [
+        "VehicleYear",
+        "MakeModel"
+      ],
+      "values": [
+        "EggShell",
+        "Football",
+        "Tank"
+      ],
+      "probability_distribution": {
+        "Current,SportsCar": [
+          0.95,
+          0.04,
+          0.01
+        ],
+        "Current,Economy": [
+          0.95,
+          0.04,
+          0.01
+        ],
+        "Current,FamilySedan": [
+          0.5,
+          0.5,
+          0.0
+        ],
+        "Current,Luxury": [
+          0.9,
+          0.1,
+          0.0
+        ],
+        "Current,SuperLuxury": [
+          0.2,
+          0.6,
+          0.2
+        ],
+        "Older,SportsCar": [
+          0.05,
+          0.55,
+          0.4
+        ],
+        "Older,Economy": [
+          0.1,
+          0.6,
+          0.3
+        ],
+        "Older,FamilySedan": [
+          0.1,
+          0.6,
+          0.3
+        ],
+        "Older,Luxury": [
+          0.05,
+          0.55,
+          0.4
+        ],
+        "Older,SuperLuxury": [
+          0.05,
+          0.55,
+          0.4
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Accident",
+      "parents": [
+        "DrivQuality",
+        "Mileage",
+        "Antilock"
+      ],
+      "values": [
+        "None",
+        "Mild",
+        "Moderate",
+        "Severe"
+      ],
+      "probability_distribution": {
+        "Poor,FiveThou,True": [
+          0.7,
+          0.2,
+          0.07,
+          0.03
+        ],
+        "Poor,FiveThou,False": [
+          0.99,
+          0.007,
+          0.002,
+          0.001
+        ],
+        "Poor,TwentyThou,True": [
+          0.999,
+          0.0007,
+          0.0002,
+          0.0001
+        ],
+        "Poor,TwentyThou,False": [
+          0.4,
+          0.3,
+          0.2,
+          0.1
+        ],
+        "Poor,FiftyThou,True": [
+          0.98,
+          0.01,
+          0.005,
+          0.005
+        ],
+        "Poor,FiftyThou,False": [
+          0.995,
+          0.003,
+          0.001,
+          0.001
+        ],
+        "Poor,Domino,True": [
+          0.3,
+          0.3,
+          0.2,
+          0.2
+        ],
+        "Poor,Domino,False": [
+          0.97,
+          0.02,
+          0.007,
+          0.003
+        ],
+        "Normal,FiveThou,True": [
+          0.99,
+          0.007,
+          0.002,
+          0.001
+        ],
+        "Normal,FiveThou,False": [
+          0.2,
+          0.2,
+          0.3,
+          0.3
+        ],
+        "Normal,TwentyThou,True": [
+          0.95,
+          0.03,
+          0.01,
+          0.01
+        ],
+        "Normal,TwentyThou,False": [
+          0.985,
+          0.01,
+          0.003,
+          0.002
+        ],
+        "Normal,FiftyThou,True": [
+          0.6,
+          0.2,
+          0.1,
+          0.1
+        ],
+        "Normal,FiftyThou,False": [
+          0.98,
+          0.01,
+          0.005,
+          0.005
+        ],
+        "Normal,Domino,True": [
+          0.995,
+          0.003,
+          0.001,
+          0.001
+        ],
+        "Normal,Domino,False": [
+          0.3,
+          0.2,
+          0.2,
+          0.3
+        ],
+        "Excellent,FiveThou,True": [
+          0.96,
+          0.02,
+          0.015,
+          0.005
+        ],
+        "Excellent,FiveThou,False": [
+          0.99,
+          0.007,
+          0.002,
+          0.001
+        ],
+        "Excellent,TwentyThou,True": [
+          0.2,
+          0.2,
+          0.2,
+          0.4
+        ],
+        "Excellent,TwentyThou,False": [
+          0.95,
+          0.03,
+          0.015,
+          0.005
+        ],
+        "Excellent,FiftyThou,True": [
+          0.98,
+          0.01,
+          0.005,
+          0.005
+        ],
+        "Excellent,FiftyThou,False": [
+          0.1,
+          0.1,
+          0.3,
+          0.5
+        ],
+        "Excellent,Domino,True": [
+          0.94,
+          0.03,
+          0.02,
+          0.01
+        ],
+        "Excellent,Domino,False": [
+          0.98,
+          0.01,
+          0.007,
+          0.003
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "MakeModel",
+      "parents": [
+        "RiskAversion",
+        "SocioEcon"
+      ],
+      "values": [
+        "SportsCar",
+        "Economy",
+        "FamilySedan",
+        "Luxury",
+        "SuperLuxury"
+      ],
+      "probability_distribution": {
+        "Psychopath,Prole": [
+          0.1,
+          0.7,
+          0.2,
+          0.0,
+          0.0
+        ],
+        "Psychopath,Middle": [
+          0.1,
+          0.7,
+          0.2,
+          0.0,
+          0.0
+        ],
+        "Psychopath,UpperMiddle": [
+          0.1,
+          0.7,
+          0.2,
+          0.0,
+          0.0
+        ],
+        "Psychopath,Wealthy": [
+          0.1,
+          0.7,
+          0.2,
+          0.0,
+          0.0
+        ],
+        "Adventurous,Prole": [
+          0.15,
+          0.2,
+          0.65,
+          0.0,
+          0.0
+        ],
+        "Adventurous,Middle": [
+          0.15,
+          0.2,
+          0.65,
+          0.0,
+          0.0
+        ],
+        "Adventurous,UpperMiddle": [
+          0.15,
+          0.2,
+          0.65,
+          0.0,
+          0.0
+        ],
+        "Adventurous,Wealthy": [
+          0.15,
+          0.2,
+          0.65,
+          0.0,
+          0.0
+        ],
+        "Normal,Prole": [
+          0.2,
+          0.05,
+          0.3,
+          0.45,
+          0.0
+        ],
+        "Normal,Middle": [
+          0.2,
+          0.05,
+          0.3,
+          0.45,
+          0.0
+        ],
+        "Normal,UpperMiddle": [
+          0.2,
+          0.05,
+          0.3,
+          0.45,
+          0.0
+        ],
+        "Normal,Wealthy": [
+          0.2,
+          0.05,
+          0.3,
+          0.45,
+          0.0
+        ],
+        "Cautious,Prole": [
+          0.3,
+          0.01,
+          0.09,
+          0.4,
+          0.2
+        ],
+        "Cautious,Middle": [
+          0.3,
+          0.01,
+          0.09,
+          0.4,
+          0.2
+        ],
+        "Cautious,UpperMiddle": [
+          0.3,
+          0.01,
+          0.09,
+          0.4,
+          0.2
+        ],
+        "Cautious,Wealthy": [
+          0.3,
+          0.01,
+          0.09,
+          0.4,
+          0.2
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "DrivQuality",
+      "parents": [
+        "RiskAversion",
+        "DrivingSkill"
+      ],
+      "values": [
+        "Poor",
+        "Normal",
+        "Excellent"
+      ],
+      "probability_distribution": {
+        "Psychopath,SubStandard": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "Psychopath,Normal": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "Psychopath,Expert": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "Adventurous,SubStandard": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "Adventurous,Normal": [
+          0.5,
+          0.2,
+          0.3
+        ],
+        "Adventurous,Expert": [
+          0.3,
+          0.4,
+          0.3
+        ],
+        "Normal,SubStandard": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "Normal,Normal": [
+          0.0,
+          0.8,
+          0.2
+        ],
+        "Normal,Expert": [
+          0.3,
+          0.2,
+          0.5
+        ],
+        "Cautious,SubStandard": [
+          0.01,
+          0.01,
+          0.98
+        ],
+        "Cautious,Normal": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "Cautious,Expert": [
+          0.0,
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Mileage",
+      "parents": [],
+      "values": [
+        "FiveThou",
+        "TwentyThou",
+        "FiftyThou",
+        "Domino"
+      ],
+      "probability_distribution": [
+        [
+          0.1
+        ],
+        [
+          0.4
+        ],
+        [
+          0.4
+        ],
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Antilock",
+      "parents": [
+        "VehicleYear",
+        "MakeModel"
+      ],
+      "values": [
+        "True",
+        "False"
+      ],
+      "probability_distribution": {
+        "Current,SportsCar": [
+          0.9,
+          0.1
+        ],
+        "Current,Economy": [
+          0.1,
+          0.9
+        ],
+        "Current,FamilySedan": [
+          0.001,
+          0.999
+        ],
+        "Current,Luxury": [
+          0.0,
+          1.0
+        ],
+        "Current,SuperLuxury": [
+          0.4,
+          0.6
+        ],
+        "Older,SportsCar": [
+          0.0,
+          1.0
+        ],
+        "Older,Economy": [
+          0.99,
+          0.01
+        ],
+        "Older,FamilySedan": [
+          0.3,
+          0.7
+        ],
+        "Older,Luxury": [
+          0.99,
+          0.01
+        ],
+        "Older,SuperLuxury": [
+          0.15,
+          0.85
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "DrivingSkill",
+      "parents": [
+        "SeniorTrain",
+        "Age"
+      ],
+      "values": [
+        "SubStandard",
+        "Normal",
+        "Expert"
+      ],
+      "probability_distribution": {
+        "True,Adolescent": [
+          0.5,
+          0.45,
+          0.05
+        ],
+        "True,Adult": [
+          0.5,
+          0.45,
+          0.05
+        ],
+        "True,Senior": [
+          0.3,
+          0.6,
+          0.1
+        ],
+        "False,Adolescent": [
+          0.3,
+          0.6,
+          0.1
+        ],
+        "False,Adult": [
+          0.1,
+          0.6,
+          0.3
+        ],
+        "False,Senior": [
+          0.4,
+          0.5,
+          0.1
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "SeniorTrain",
+      "parents": [
+        "RiskAversion",
+        "Age"
+      ],
+      "values": [
+        "True",
+        "False"
+      ],
+      "probability_distribution": {
+        "Psychopath,Adolescent": [
+          0.0,
+          1.0
+        ],
+        "Psychopath,Adult": [
+          0.0,
+          1.0
+        ],
+        "Psychopath,Senior": [
+          0.0,
+          1.0
+        ],
+        "Adventurous,Adolescent": [
+          0.0,
+          1.0
+        ],
+        "Adventurous,Adult": [
+          0.0,
+          1.0
+        ],
+        "Adventurous,Senior": [
+          0.0,
+          1.0
+        ],
+        "Normal,Adolescent": [
+          0.0,
+          1.0
+        ],
+        "Normal,Adult": [
+          0.0,
+          1.0
+        ],
+        "Normal,Senior": [
+          1e-06,
+          0.999999
+        ],
+        "Cautious,Adolescent": [
+          1e-06,
+          0.999999
+        ],
+        "Cautious,Adult": [
+          0.3,
+          0.7
+        ],
+        "Cautious,Senior": [
+          0.9,
+          0.1
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "ThisCarCost",
+      "parents": [
+        "Theft",
+        "CarValue",
+        "ThisCarDam"
+      ],
+      "values": [
+        "Thousand",
+        "TenThou",
+        "HundredThou",
+        "Million"
+      ],
+      "probability_distribution": {
+        "True,FiveThou,None": [
+          0.2,
+          0.8,
+          0.0,
+          0.0
+        ],
+        "True,FiveThou,Mild": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "True,FiveThou,Moderate": [
+          0.05,
+          0.95,
+          0.0,
+          0.0
+        ],
+        "True,FiveThou,Severe": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "True,TenThou,None": [
+          0.04,
+          0.01,
+          0.95,
+          0.0
+        ],
+        "True,TenThou,Mild": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "True,TenThou,Moderate": [
+          0.04,
+          0.01,
+          0.95,
+          0.0
+        ],
+        "True,TenThou,Severe": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "True,TwentyThou,None": [
+          0.04,
+          0.01,
+          0.2,
+          0.75
+        ],
+        "True,TwentyThou,Mild": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "True,TwentyThou,Moderate": [
+          0.15,
+          0.85,
+          0.0,
+          0.0
+        ],
+        "True,TwentyThou,Severe": [
+          0.95,
+          0.05,
+          0.0,
+          0.0
+        ],
+        "True,FiftyThou,None": [
+          0.03,
+          0.97,
+          0.0,
+          0.0
+        ],
+        "True,FiftyThou,Mild": [
+          0.95,
+          0.05,
+          0.0,
+          0.0
+        ],
+        "True,FiftyThou,Moderate": [
+          0.03,
+          0.02,
+          0.95,
+          0.0
+        ],
+        "True,FiftyThou,Severe": [
+          0.99,
+          0.01,
+          0.0,
+          0.0
+        ],
+        "True,Million,None": [
+          0.03,
+          0.02,
+          0.95,
+          0.0
+        ],
+        "True,Million,Mild": [
+          0.99,
+          0.01,
+          0.0,
+          0.0
+        ],
+        "True,Million,Moderate": [
+          0.02,
+          0.03,
+          0.25,
+          0.7
+        ],
+        "True,Million,Severe": [
+          0.98,
+          0.01,
+          0.01,
+          0.0
+        ],
+        "False,FiveThou,None": [
+          0.05,
+          0.95,
+          0.0,
+          0.0
+        ],
+        "False,FiveThou,Mild": [
+          0.25,
+          0.75,
+          0.0,
+          0.0
+        ],
+        "False,FiveThou,Moderate": [
+          0.01,
+          0.99,
+          0.0,
+          0.0
+        ],
+        "False,FiveThou,Severe": [
+          0.15,
+          0.85,
+          0.0,
+          0.0
+        ],
+        "False,TenThou,None": [
+          0.001,
+          0.001,
+          0.998,
+          0.0
+        ],
+        "False,TenThou,Mild": [
+          0.01,
+          0.01,
+          0.98,
+          0.0
+        ],
+        "False,TenThou,Moderate": [
+          0.001,
+          0.001,
+          0.998,
+          0.0
+        ],
+        "False,TenThou,Severe": [
+          0.005,
+          0.005,
+          0.99,
+          0.0
+        ],
+        "False,TwentyThou,None": [
+          0.001,
+          0.001,
+          0.018,
+          0.98
+        ],
+        "False,TwentyThou,Mild": [
+          0.003,
+          0.003,
+          0.044,
+          0.95
+        ],
+        "False,TwentyThou,Moderate": [
+          0.03,
+          0.97,
+          0.0,
+          0.0
+        ],
+        "False,TwentyThou,Severe": [
+          0.05,
+          0.95,
+          0.0,
+          0.0
+        ],
+        "False,FiftyThou,None": [
+          1e-06,
+          0.999999,
+          0.0,
+          0.0
+        ],
+        "False,FiftyThou,Mild": [
+          0.01,
+          0.99,
+          0.0,
+          0.0
+        ],
+        "False,FiftyThou,Moderate": [
+          1e-06,
+          1e-06,
+          0.999998,
+          0.0
+        ],
+        "False,FiftyThou,Severe": [
+          0.005,
+          0.005,
+          0.99,
+          0.0
+        ],
+        "False,Million,None": [
+          1e-06,
+          1e-06,
+          0.999998,
+          0.0
+        ],
+        "False,Million,Mild": [
+          0.001,
+          0.001,
+          0.998,
+          0.0
+        ],
+        "False,Million,Moderate": [
+          1e-06,
+          1e-06,
+          0.009998,
+          0.99
+        ],
+        "False,Million,Severe": [
+          1e-06,
+          1e-06,
+          0.029998,
+          0.97
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Theft",
+      "parents": [
+        "CarValue",
+        "HomeBase",
+        "AntiTheft"
+      ],
+      "values": [
+        "True",
+        "False"
+      ],
+      "probability_distribution": {
+        "FiveThou,Secure,True": [
+          1e-06,
+          0.999999
+        ],
+        "FiveThou,Secure,False": [
+          2e-06,
+          0.999998
+        ],
+        "FiveThou,City,True": [
+          3e-06,
+          0.999997
+        ],
+        "FiveThou,City,False": [
+          2e-06,
+          0.999998
+        ],
+        "FiveThou,Suburb,True": [
+          1e-06,
+          0.999999
+        ],
+        "FiveThou,Suburb,False": [
+          0.0005,
+          0.9995
+        ],
+        "FiveThou,Rural,True": [
+          0.002,
+          0.998
+        ],
+        "FiveThou,Rural,False": [
+          0.005,
+          0.995
+        ],
+        "TenThou,Secure,True": [
+          0.005,
+          0.995
+        ],
+        "TenThou,Secure,False": [
+          1e-06,
+          0.999999
+        ],
+        "TenThou,City,True": [
+          1e-05,
+          0.99999
+        ],
+        "TenThou,City,False": [
+          0.0001,
+          0.9999
+        ],
+        "TenThou,Suburb,True": [
+          0.0003,
+          0.9997
+        ],
+        "TenThou,Suburb,False": [
+          0.0003,
+          0.9997
+        ],
+        "TenThou,Rural,True": [
+          1e-06,
+          0.999999
+        ],
+        "TenThou,Rural,False": [
+          1e-05,
+          0.99999
+        ],
+        "TwentyThou,Secure,True": [
+          2e-05,
+          0.99998
+        ],
+        "TwentyThou,Secure,False": [
+          5e-05,
+          0.99995
+        ],
+        "TwentyThou,City,True": [
+          5e-05,
+          0.99995
+        ],
+        "TwentyThou,City,False": [
+          1e-06,
+          0.999999
+        ],
+        "TwentyThou,Suburb,True": [
+          1e-06,
+          0.999999
+        ],
+        "TwentyThou,Suburb,False": [
+          2e-06,
+          0.999998
+        ],
+        "TwentyThou,Rural,True": [
+          3e-06,
+          0.999997
+        ],
+        "TwentyThou,Rural,False": [
+          2e-06,
+          0.999998
+        ],
+        "FiftyThou,Secure,True": [
+          1e-06,
+          0.999999
+        ],
+        "FiftyThou,Secure,False": [
+          0.001,
+          0.999
+        ],
+        "FiftyThou,City,True": [
+          0.005,
+          0.995
+        ],
+        "FiftyThou,City,False": [
+          0.01,
+          0.99
+        ],
+        "FiftyThou,Suburb,True": [
+          0.01,
+          0.99
+        ],
+        "FiftyThou,Suburb,False": [
+          1e-06,
+          0.999999
+        ],
+        "FiftyThou,Rural,True": [
+          1e-05,
+          0.99999
+        ],
+        "FiftyThou,Rural,False": [
+          0.0002,
+          0.9998
+        ],
+        "Million,Secure,True": [
+          0.0005,
+          0.9995
+        ],
+        "Million,Secure,False": [
+          0.0005,
+          0.9995
+        ],
+        "Million,City,True": [
+          1e-06,
+          0.999999
+        ],
+        "Million,City,False": [
+          1e-05,
+          0.99999
+        ],
+        "Million,Suburb,True": [
+          0.0001,
+          0.9999
+        ],
+        "Million,Suburb,False": [
+          0.0002,
+          0.9998
+        ],
+        "Million,Rural,True": [
+          0.0002,
+          0.9998
+        ],
+        "Million,Rural,False": [
+          1e-06,
+          0.999999
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "CarValue",
+      "parents": [
+        "Mileage",
+        "VehicleYear",
+        "MakeModel"
+      ],
+      "values": [
+        "FiveThou",
+        "TenThou",
+        "TwentyThou",
+        "FiftyThou",
+        "Million"
+      ],
+      "probability_distribution": {
+        "FiveThou,Current,SportsCar": [
+          0.0,
+          0.1,
+          0.8,
+          0.09,
+          0.01
+        ],
+        "FiveThou,Current,Economy": [
+          0.0,
+          0.1,
+          0.8,
+          0.09,
+          0.01
+        ],
+        "FiveThou,Current,FamilySedan": [
+          0.0,
+          0.1,
+          0.8,
+          0.09,
+          0.01
+        ],
+        "FiveThou,Current,Luxury": [
+          0.0,
+          0.1,
+          0.8,
+          0.09,
+          0.01
+        ],
+        "FiveThou,Current,SuperLuxury": [
+          0.03,
+          0.3,
+          0.6,
+          0.06,
+          0.01
+        ],
+        "FiveThou,Older,SportsCar": [
+          0.16,
+          0.5,
+          0.3,
+          0.03,
+          0.01
+        ],
+        "FiveThou,Older,Economy": [
+          0.4,
+          0.47,
+          0.1,
+          0.02,
+          0.01
+        ],
+        "FiveThou,Older,FamilySedan": [
+          0.9,
+          0.06,
+          0.02,
+          0.01,
+          0.01
+        ],
+        "FiveThou,Older,Luxury": [
+          0.1,
+          0.8,
+          0.1,
+          0.0,
+          0.0
+        ],
+        "FiveThou,Older,SuperLuxury": [
+          0.1,
+          0.8,
+          0.1,
+          0.0,
+          0.0
+        ],
+        "TwentyThou,Current,SportsCar": [
+          0.1,
+          0.8,
+          0.1,
+          0.0,
+          0.0
+        ],
+        "TwentyThou,Current,Economy": [
+          0.1,
+          0.8,
+          0.1,
+          0.0,
+          0.0
+        ],
+        "TwentyThou,Current,FamilySedan": [
+          0.25,
+          0.7,
+          0.05,
+          0.0,
+          0.0
+        ],
+        "TwentyThou,Current,Luxury": [
+          0.7,
+          0.2999,
+          0.0001,
+          0.0,
+          0.0
+        ],
+        "TwentyThou,Current,SuperLuxury": [
+          0.99,
+          0.009999,
+          1e-06,
+          0.0,
+          0.0
+        ],
+        "TwentyThou,Older,SportsCar": [
+          0.999998,
+          1e-06,
+          1e-06,
+          0.0,
+          0.0
+        ],
+        "TwentyThou,Older,Economy": [
+          0.0,
+          0.1,
+          0.9,
+          0.0,
+          0.0
+        ],
+        "TwentyThou,Older,FamilySedan": [
+          0.0,
+          0.1,
+          0.9,
+          0.0,
+          0.0
+        ],
+        "TwentyThou,Older,Luxury": [
+          0.0,
+          0.1,
+          0.9,
+          0.0,
+          0.0
+        ],
+        "TwentyThou,Older,SuperLuxury": [
+          0.0,
+          0.1,
+          0.9,
+          0.0,
+          0.0
+        ],
+        "FiftyThou,Current,SportsCar": [
+          0.2,
+          0.3,
+          0.5,
+          0.0,
+          0.0
+        ],
+        "FiftyThou,Current,Economy": [
+          0.5,
+          0.3,
+          0.2,
+          0.0,
+          0.0
+        ],
+        "FiftyThou,Current,FamilySedan": [
+          0.7,
+          0.2,
+          0.1,
+          0.0,
+          0.0
+        ],
+        "FiftyThou,Current,Luxury": [
+          0.99,
+          0.009999,
+          1e-06,
+          0.0,
+          0.0
+        ],
+        "FiftyThou,Current,SuperLuxury": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "FiftyThou,Older,SportsCar": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "FiftyThou,Older,Economy": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "FiftyThou,Older,FamilySedan": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "FiftyThou,Older,Luxury": [
+          0.01,
+          0.09,
+          0.2,
+          0.7,
+          0.0
+        ],
+        "FiftyThou,Older,SuperLuxury": [
+          0.05,
+          0.15,
+          0.3,
+          0.5,
+          0.0
+        ],
+        "Domino,Current,SportsCar": [
+          0.1,
+          0.3,
+          0.3,
+          0.3,
+          0.0
+        ],
+        "Domino,Current,Economy": [
+          0.2,
+          0.2,
+          0.3,
+          0.3,
+          0.0
+        ],
+        "Domino,Current,FamilySedan": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "Domino,Current,Luxury": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "Domino,Current,SuperLuxury": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "Domino,Older,SportsCar": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "Domino,Older,Economy": [
+          1e-06,
+          1e-06,
+          1e-06,
+          1e-06,
+          0.999996
+        ],
+        "Domino,Older,FamilySedan": [
+          1e-06,
+          1e-06,
+          1e-06,
+          1e-06,
+          0.999996
+        ],
+        "Domino,Older,Luxury": [
+          1e-06,
+          1e-06,
+          1e-06,
+          1e-06,
+          0.999996
+        ],
+        "Domino,Older,SuperLuxury": [
+          1e-06,
+          1e-06,
+          1e-06,
+          1e-06,
+          0.999996
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "HomeBase",
+      "parents": [
+        "SocioEcon",
+        "RiskAversion"
+      ],
+      "values": [
+        "Secure",
+        "City",
+        "Suburb",
+        "Rural"
+      ],
+      "probability_distribution": {
+        "Prole,Psychopath": [
+          1e-06,
+          0.8,
+          0.049999,
+          0.15
+        ],
+        "Prole,Adventurous": [
+          0.15,
+          0.8,
+          0.04,
+          0.01
+        ],
+        "Prole,Normal": [
+          0.35,
+          0.6,
+          0.04,
+          0.01
+        ],
+        "Prole,Cautious": [
+          0.489999,
+          0.5,
+          1e-06,
+          0.01
+        ],
+        "Middle,Psychopath": [
+          1e-06,
+          0.8,
+          0.05,
+          0.149999
+        ],
+        "Middle,Adventurous": [
+          0.01,
+          0.25,
+          0.6,
+          0.14
+        ],
+        "Middle,Normal": [
+          0.2,
+          0.4,
+          0.3,
+          0.1
+        ],
+        "Middle,Cautious": [
+          0.95,
+          1e-06,
+          1e-06,
+          0.049998
+        ],
+        "UpperMiddle,Psychopath": [
+          1e-06,
+          0.8,
+          0.05,
+          0.149999
+        ],
+        "UpperMiddle,Adventurous": [
+          0.299999,
+          1e-06,
+          0.6,
+          0.1
+        ],
+        "UpperMiddle,Normal": [
+          0.5,
+          1e-06,
+          0.4,
+          0.099999
+        ],
+        "UpperMiddle,Cautious": [
+          0.85,
+          1e-06,
+          0.001,
+          0.148999
+        ],
+        "Wealthy,Psychopath": [
+          1e-06,
+          0.8,
+          0.05,
+          0.149999
+        ],
+        "Wealthy,Adventurous": [
+          0.95,
+          1e-06,
+          0.024445,
+          0.025554
+        ],
+        "Wealthy,Normal": [
+          0.999997,
+          1e-06,
+          1e-06,
+          1e-06
+        ],
+        "Wealthy,Cautious": [
+          0.999997,
+          1e-06,
+          1e-06,
+          1e-06
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "AntiTheft",
+      "parents": [
+        "SocioEcon",
+        "RiskAversion"
+      ],
+      "values": [
+        "True",
+        "False"
+      ],
+      "probability_distribution": {
+        "Prole,Psychopath": [
+          1e-06,
+          0.999999
+        ],
+        "Prole,Adventurous": [
+          1e-06,
+          0.999999
+        ],
+        "Prole,Normal": [
+          0.05,
+          0.95
+        ],
+        "Prole,Cautious": [
+          0.5,
+          0.5
+        ],
+        "Middle,Psychopath": [
+          1e-06,
+          0.999999
+        ],
+        "Middle,Adventurous": [
+          1e-06,
+          0.999999
+        ],
+        "Middle,Normal": [
+          0.2,
+          0.8
+        ],
+        "Middle,Cautious": [
+          0.5,
+          0.5
+        ],
+        "UpperMiddle,Psychopath": [
+          0.1,
+          0.9
+        ],
+        "UpperMiddle,Adventurous": [
+          0.3,
+          0.7
+        ],
+        "UpperMiddle,Normal": [
+          0.9,
+          0.1
+        ],
+        "UpperMiddle,Cautious": [
+          0.8,
+          0.2
+        ],
+        "Wealthy,Psychopath": [
+          0.95,
+          0.05
+        ],
+        "Wealthy,Adventurous": [
+          0.999999,
+          1e-06
+        ],
+        "Wealthy,Normal": [
+          0.999999,
+          1e-06
+        ],
+        "Wealthy,Cautious": [
+          0.999999,
+          1e-06
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PropCost",
+      "parents": [
+        "ThisCarCost",
+        "OtherCarCost"
+      ],
+      "values": [
+        "Thousand",
+        "TenThou",
+        "HundredThou",
+        "Million"
+      ],
+      "probability_distribution": {
+        "Thousand,Thousand": [
+          0.7,
+          0.3,
+          0.0,
+          0.0
+        ],
+        "Thousand,TenThou": [
+          0.0,
+          0.95,
+          0.05,
+          0.0
+        ],
+        "Thousand,HundredThou": [
+          0.0,
+          0.0,
+          0.98,
+          0.02
+        ],
+        "Thousand,Million": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "TenThou,Thousand": [
+          0.0,
+          0.95,
+          0.05,
+          0.0
+        ],
+        "TenThou,TenThou": [
+          0.0,
+          0.6,
+          0.4,
+          0.0
+        ],
+        "TenThou,HundredThou": [
+          0.0,
+          0.0,
+          0.95,
+          0.05
+        ],
+        "TenThou,Million": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "HundredThou,Thousand": [
+          0.0,
+          0.0,
+          0.98,
+          0.02
+        ],
+        "HundredThou,TenThou": [
+          0.0,
+          0.0,
+          0.8,
+          0.2
+        ],
+        "HundredThou,HundredThou": [
+          0.0,
+          0.0,
+          0.6,
+          0.4
+        ],
+        "HundredThou,Million": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "Million,Thousand": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "Million,TenThou": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "Million,HundredThou": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "Million,Million": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "OtherCarCost",
+      "parents": [
+        "RuggedAuto",
+        "Accident"
+      ],
+      "values": [
+        "Thousand",
+        "TenThou",
+        "HundredThou",
+        "Million"
+      ],
+      "probability_distribution": {
+        "EggShell,None": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "EggShell,Mild": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "EggShell,Moderate": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "EggShell,Severe": [
+          0.99,
+          0.005,
+          0.00499,
+          1e-05
+        ],
+        "Football,None": [
+          0.9799657,
+          0.00999965,
+          0.009984651,
+          4.999825e-05
+        ],
+        "Football,Mild": [
+          0.95,
+          0.03,
+          0.01998,
+          2e-05
+        ],
+        "Football,Moderate": [
+          0.6,
+          0.2,
+          0.19998,
+          2e-05
+        ],
+        "Football,Severe": [
+          0.5,
+          0.2,
+          0.29997,
+          3e-05
+        ],
+        "Tank,None": [
+          0.4,
+          0.3,
+          0.29996,
+          4e-05
+        ],
+        "Tank,Mild": [
+          0.2,
+          0.4,
+          0.39996,
+          4e-05
+        ],
+        "Tank,Moderate": [
+          0.1,
+          0.5,
+          0.39994,
+          6e-05
+        ],
+        "Tank,Severe": [
+          0.005,
+          0.55,
+          0.4449,
+          0.0001
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "OtherCar",
+      "parents": [
+        "SocioEcon"
+      ],
+      "values": [
+        "True",
+        "False"
+      ],
+      "probability_distribution": {
+        "Prole": [
+          0.5,
+          0.5
+        ],
+        "Middle": [
+          0.8,
+          0.2
+        ],
+        "UpperMiddle": [
+          0.9,
+          0.1
+        ],
+        "Wealthy": [
+          0.95,
+          0.05
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "MedCost",
+      "parents": [
+        "Cushioning",
+        "Age",
+        "Accident"
+      ],
+      "values": [
+        "Thousand",
+        "TenThou",
+        "HundredThou",
+        "Million"
+      ],
+      "probability_distribution": {
+        "Poor,Adolescent,None": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Poor,Adolescent,Mild": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Poor,Adolescent,Moderate": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Poor,Adolescent,Severe": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Poor,Adult,None": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Poor,Adult,Mild": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Poor,Adult,Moderate": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Poor,Adult,Severe": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Poor,Senior,None": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Poor,Senior,Mild": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Poor,Senior,Moderate": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Poor,Senior,Severe": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Fair,Adolescent,None": [
+          0.96,
+          0.03,
+          0.009,
+          0.001
+        ],
+        "Fair,Adolescent,Mild": [
+          0.98,
+          0.019,
+          0.0009,
+          0.0001
+        ],
+        "Fair,Adolescent,Moderate": [
+          0.99,
+          0.0099,
+          9e-05,
+          1e-05
+        ],
+        "Fair,Adolescent,Severe": [
+          0.999,
+          0.00099,
+          9e-06,
+          1e-06
+        ],
+        "Fair,Adult,None": [
+          0.96,
+          0.03,
+          0.009,
+          0.001
+        ],
+        "Fair,Adult,Mild": [
+          0.98,
+          0.019,
+          0.0009,
+          0.0001
+        ],
+        "Fair,Adult,Moderate": [
+          0.99,
+          0.0099,
+          9e-05,
+          1e-05
+        ],
+        "Fair,Adult,Severe": [
+          0.999,
+          0.00099,
+          9e-06,
+          1e-06
+        ],
+        "Fair,Senior,None": [
+          0.9,
+          0.07,
+          0.02,
+          0.01
+        ],
+        "Fair,Senior,Mild": [
+          0.95,
+          0.04,
+          0.007,
+          0.003
+        ],
+        "Fair,Senior,Moderate": [
+          0.97,
+          0.025,
+          0.003,
+          0.002
+        ],
+        "Fair,Senior,Severe": [
+          0.99,
+          0.007,
+          0.002,
+          0.001
+        ],
+        "Good,Adolescent,None": [
+          0.5,
+          0.2,
+          0.2,
+          0.1
+        ],
+        "Good,Adolescent,Mild": [
+          0.8,
+          0.15,
+          0.03,
+          0.02
+        ],
+        "Good,Adolescent,Moderate": [
+          0.95,
+          0.02,
+          0.02,
+          0.01
+        ],
+        "Good,Adolescent,Severe": [
+          0.99,
+          0.007,
+          0.002,
+          0.001
+        ],
+        "Good,Adult,None": [
+          0.5,
+          0.2,
+          0.2,
+          0.1
+        ],
+        "Good,Adult,Mild": [
+          0.8,
+          0.15,
+          0.03,
+          0.02
+        ],
+        "Good,Adult,Moderate": [
+          0.95,
+          0.02,
+          0.02,
+          0.01
+        ],
+        "Good,Adult,Severe": [
+          0.99,
+          0.007,
+          0.002,
+          0.001
+        ],
+        "Good,Senior,None": [
+          0.3,
+          0.3,
+          0.2,
+          0.2
+        ],
+        "Good,Senior,Mild": [
+          0.5,
+          0.2,
+          0.2,
+          0.1
+        ],
+        "Good,Senior,Moderate": [
+          0.9,
+          0.07,
+          0.02,
+          0.01
+        ],
+        "Good,Senior,Severe": [
+          0.95,
+          0.03,
+          0.01,
+          0.01
+        ],
+        "Excellent,Adolescent,None": [
+          0.3,
+          0.3,
+          0.2,
+          0.2
+        ],
+        "Excellent,Adolescent,Mild": [
+          0.5,
+          0.2,
+          0.2,
+          0.1
+        ],
+        "Excellent,Adolescent,Moderate": [
+          0.9,
+          0.07,
+          0.02,
+          0.01
+        ],
+        "Excellent,Adolescent,Severe": [
+          0.95,
+          0.03,
+          0.01,
+          0.01
+        ],
+        "Excellent,Adult,None": [
+          0.3,
+          0.3,
+          0.2,
+          0.2
+        ],
+        "Excellent,Adult,Mild": [
+          0.5,
+          0.2,
+          0.2,
+          0.1
+        ],
+        "Excellent,Adult,Moderate": [
+          0.9,
+          0.07,
+          0.02,
+          0.01
+        ],
+        "Excellent,Adult,Severe": [
+          0.95,
+          0.03,
+          0.01,
+          0.01
+        ],
+        "Excellent,Senior,None": [
+          0.2,
+          0.2,
+          0.3,
+          0.3
+        ],
+        "Excellent,Senior,Mild": [
+          0.3,
+          0.3,
+          0.2,
+          0.2
+        ],
+        "Excellent,Senior,Moderate": [
+          0.6,
+          0.3,
+          0.07,
+          0.03
+        ],
+        "Excellent,Senior,Severe": [
+          0.9,
+          0.05,
+          0.03,
+          0.02
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Cushioning",
+      "parents": [
+        "Airbag",
+        "RuggedAuto"
+      ],
+      "values": [
+        "Poor",
+        "Fair",
+        "Good",
+        "Excellent"
+      ],
+      "probability_distribution": {
+        "True,EggShell": [
+          0.5,
+          0.3,
+          0.2,
+          0.0
+        ],
+        "True,Football": [
+          0.7,
+          0.3,
+          0.0,
+          0.0
+        ],
+        "True,Tank": [
+          0.0,
+          0.1,
+          0.6,
+          0.3
+        ],
+        "False,EggShell": [
+          0.1,
+          0.6,
+          0.3,
+          0.0
+        ],
+        "False,Football": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "False,Tank": [
+          0.0,
+          0.0,
+          0.7,
+          0.3
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Airbag",
+      "parents": [
+        "VehicleYear",
+        "MakeModel"
+      ],
+      "values": [
+        "True",
+        "False"
+      ],
+      "probability_distribution": {
+        "Current,SportsCar": [
+          1.0,
+          0.0
+        ],
+        "Current,Economy": [
+          0.1,
+          0.9
+        ],
+        "Current,FamilySedan": [
+          1.0,
+          0.0
+        ],
+        "Current,Luxury": [
+          0.05,
+          0.95
+        ],
+        "Current,SuperLuxury": [
+          1.0,
+          0.0
+        ],
+        "Older,SportsCar": [
+          0.2,
+          0.8
+        ],
+        "Older,Economy": [
+          1.0,
+          0.0
+        ],
+        "Older,FamilySedan": [
+          0.6,
+          0.4
+        ],
+        "Older,Luxury": [
+          1.0,
+          0.0
+        ],
+        "Older,SuperLuxury": [
+          0.1,
+          0.9
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "ILiCost",
+      "parents": [
+        "Accident"
+      ],
+      "values": [
+        "Thousand",
+        "TenThou",
+        "HundredThou",
+        "Million"
+      ],
+      "probability_distribution": {
+        "None": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Mild": [
+          0.999,
+          0.000998,
+          1e-06,
+          1e-06
+        ],
+        "Moderate": [
+          0.9,
+          0.05,
+          0.03,
+          0.02
+        ],
+        "Severe": [
+          0.8,
+          0.1,
+          0.06,
+          0.04
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "DrivHist",
+      "parents": [
+        "RiskAversion",
+        "DrivingSkill"
+      ],
+      "values": [
+        "Zero",
+        "One",
+        "Many"
+      ],
+      "probability_distribution": {
+        "Psychopath,SubStandard": [
+          0.001,
+          0.004,
+          0.995
+        ],
+        "Psychopath,Normal": [
+          0.002,
+          0.008,
+          0.99
+        ],
+        "Psychopath,Expert": [
+          0.03,
+          0.15,
+          0.82
+        ],
+        "Adventurous,SubStandard": [
+          0.3,
+          0.3,
+          0.4
+        ],
+        "Adventurous,Normal": [
+          0.1,
+          0.3,
+          0.6
+        ],
+        "Adventurous,Expert": [
+          0.5,
+          0.3,
+          0.2
+        ],
+        "Normal,SubStandard": [
+          0.9,
+          0.07,
+          0.03
+        ],
+        "Normal,Normal": [
+          0.95,
+          0.04,
+          0.01
+        ],
+        "Normal,Expert": [
+          0.3,
+          0.3,
+          0.4
+        ],
+        "Cautious,SubStandard": [
+          0.6,
+          0.3,
+          0.1
+        ],
+        "Cautious,Normal": [
+          0.99,
+          0.009999,
+          1e-06
+        ],
+        "Cautious,Expert": [
+          0.999998,
+          1e-06,
+          1e-06
+        ]
+      }
+    }
+  ],
+  "edges": [
+    [
+      "Age",
+      "GoodStudent"
+    ],
+    [
+      "Age",
+      "SocioEcon"
+    ],
+    [
+      "Age",
+      "RiskAversion"
+    ],
+    [
+      "Age",
+      "DrivingSkill"
+    ],
+    [
+      "Age",
+      "SeniorTrain"
+    ],
+    [
+      "Age",
+      "MedCost"
+    ],
+    [
+      "SocioEcon",
+      "GoodStudent"
+    ],
+    [
+      "SocioEcon",
+      "RiskAversion"
+    ],
+    [
+      "SocioEcon",
+      "VehicleYear"
+    ],
+    [
+      "SocioEcon",
+      "MakeModel"
+    ],
+    [
+      "SocioEcon",
+      "HomeBase"
+    ],
+    [
+      "SocioEcon",
+      "AntiTheft"
+    ],
+    [
+      "SocioEcon",
+      "OtherCar"
+    ],
+    [
+      "RiskAversion",
+      "VehicleYear"
+    ],
+    [
+      "RiskAversion",
+      "MakeModel"
+    ],
+    [
+      "RiskAversion",
+      "DrivQuality"
+    ],
+    [
+      "RiskAversion",
+      "SeniorTrain"
+    ],
+    [
+      "RiskAversion",
+      "HomeBase"
+    ],
+    [
+      "RiskAversion",
+      "AntiTheft"
+    ],
+    [
+      "RiskAversion",
+      "DrivHist"
+    ],
+    [
+      "DrivingSkill",
+      "DrivQuality"
+    ],
+    [
+      "DrivingSkill",
+      "DrivHist"
+    ],
+    [
+      "SeniorTrain",
+      "DrivingSkill"
+    ],
+    [
+      "VehicleYear",
+      "RuggedAuto"
+    ],
+    [
+      "VehicleYear",
+      "Antilock"
+    ],
+    [
+      "VehicleYear",
+      "CarValue"
+    ],
+    [
+      "VehicleYear",
+      "Airbag"
+    ],
+    [
+      "MakeModel",
+      "RuggedAuto"
+    ],
+    [
+      "MakeModel",
+      "Antilock"
+    ],
+    [
+      "MakeModel",
+      "CarValue"
+    ],
+    [
+      "MakeModel",
+      "Airbag"
+    ],
+    [
+      "HomeBase",
+      "Theft"
+    ],
+    [
+      "AntiTheft",
+      "Theft"
+    ],
+    [
+      "DrivQuality",
+      "Accident"
+    ],
+    [
+      "RuggedAuto",
+      "ThisCarDam"
+    ],
+    [
+      "RuggedAuto",
+      "OtherCarCost"
+    ],
+    [
+      "RuggedAuto",
+      "Cushioning"
+    ],
+    [
+      "Antilock",
+      "Accident"
+    ],
+    [
+      "CarValue",
+      "ThisCarCost"
+    ],
+    [
+      "CarValue",
+      "Theft"
+    ],
+    [
+      "Airbag",
+      "Cushioning"
+    ],
+    [
+      "ThisCarDam",
+      "ThisCarCost"
+    ],
+    [
+      "ThisCarCost",
+      "PropCost"
+    ],
+    [
+      "OtherCarCost",
+      "PropCost"
+    ],
+    [
+      "Cushioning",
+      "MedCost"
+    ],
+    [
+      "Accident",
+      "ThisCarDam"
+    ],
+    [
+      "Accident",
+      "OtherCarCost"
+    ],
+    [
+      "Accident",
+      "MedCost"
+    ],
+    [
+      "Accident",
+      "ILiCost"
+    ],
+    [
+      "Mileage",
+      "Accident"
+    ],
+    [
+      "Mileage",
+      "CarValue"
+    ],
+    [
+      "Theft",
+      "ThisCarCost"
+    ]
+  ]
+}

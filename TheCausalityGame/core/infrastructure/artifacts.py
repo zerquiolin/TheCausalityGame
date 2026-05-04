@@ -4,8 +4,11 @@ import os
 import platform
 import sys
 from datetime import datetime
+from math import isfinite
 from pathlib import Path
 from typing import Any
+
+import numpy as np
 
 from TheCausalityGame.core.contracts.dto.transcript import Transcript, TranscriptEntry
 from TheCausalityGame.core.infrastructure.logger import Logger
@@ -24,9 +27,7 @@ class ArtifactWriter:
         Enables extended logging and artifact output in development mode.
     """
 
-    def __init__(
-        self, run_dir: Path, is_dev: bool, logger: Logger | None = None
-    ) -> None:
+    def __init__(self, run_dir: Path, is_dev: bool, logger: Logger | None = None) -> None:
         """
         Initialize the artifact writer and create required directories.
 
@@ -67,9 +68,29 @@ class ArtifactWriter:
 
             os.makedirs(self.logs_dir, exist_ok=True)  # Directory for logs
 
-    def _clean_transcript_entry_for_serialization(
-        self, entry: TranscriptEntry
-    ) -> dict[str, Any]:
+    def _json_safe(self, value: Any) -> Any:  # noqa: ANN401
+        """Convert common runtime values into strict JSON-safe values."""
+        if isinstance(value, float):
+            return value if isfinite(value) else None
+        if isinstance(value, int | str | bool) or value is None:
+            return value
+        if isinstance(value, np.generic):
+            return self._json_safe(value.item())
+        if isinstance(value, np.ndarray):
+            return self._json_safe(value.tolist())
+        if isinstance(value, dict):
+            return {str(k): self._json_safe(v) for k, v in value.items()}
+        if isinstance(value, list | tuple | set):
+            return [self._json_safe(v) for v in value]
+        if hasattr(value, "model_dump"):
+            return self._json_safe(value.model_dump())
+        if hasattr(value, "expressions") and callable(value.expressions):
+            return self._json_safe(value.expressions())
+        if is_serializable(value):
+            return value
+        return str(value)
+
+    def _clean_transcript_entry_for_serialization(self, entry: TranscriptEntry) -> dict[str, Any]:
         """
         Clean a transcript entry.
 
@@ -88,17 +109,17 @@ class ArtifactWriter:
         clean_entry: dict[str, Any] = {}
         # Core attributes
         clean_entry["round"] = entry.round
-        clean_entry["decision"] = entry.decision.to_dict() if entry.decision else None
-        clean_entry["result"] = (
-            entry.result if is_serializable(entry.result) else "Not Serializable"
+        clean_entry["decision"] = (
+            self._json_safe(entry.decision.to_dict()) if entry.decision else None
         )
+        clean_entry["result"] = self._json_safe(entry.result)
         clean_entry["samples_collection"] = (
             [
                 {
-                    "kind": sample.kind,
-                    "n": sample.n,
-                    "data": sample.data.to_dict(orient="records"),  # type: ignore
-                    "interventions": sample.interventions,
+                    "kind": self._json_safe(sample.kind),
+                    "n": self._json_safe(sample.n),
+                    "data": self._json_safe(sample.data.to_dict(orient="records")),
+                    "interventions": self._json_safe(sample.interventions),
                 }
                 for sample in entry.samples_collection
                 if sample
@@ -107,17 +128,16 @@ class ArtifactWriter:
             else None
         )
         clean_entry["budget_snapshot"] = (
-            entry.budget_snapshot.model_dump() if entry.budget_snapshot else None
+            self._json_safe(entry.budget_snapshot.model_dump())
+            if entry.budget_snapshot
+            else None
         )
         clean_entry["feedback"] = (
-            entry.feedback.model_dump() if entry.feedback else None
+            self._json_safe(entry.feedback.model_dump()) if entry.feedback else None
         )
         # Custom attributes
         for key, value in entry.custom_attributes.items():
-            if is_serializable(value):
-                clean_entry[key] = value
-            else:
-                clean_entry[key] = "Not Serializable"
+            clean_entry[key] = self._json_safe(value)
 
         return clean_entry
 

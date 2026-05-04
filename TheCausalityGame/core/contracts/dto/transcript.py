@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Annotated, Any
 
 from pydantic import ConfigDict, Field
 
@@ -55,19 +55,14 @@ class Transcript(CommonDTO):
     Stores the complete sequence of interactions along with metadata identifying the run.
     """
 
-    model_config = ConfigDict(
-        extra="ignore",
-        frozen=False,
-        arbitrary_types_allowed=True,
-    )
-
     agent_id: str
     mission_id: str
     manifest_id: str
 
-    entries: list[TranscriptEntry] = Field(
-        default_factory=list, description="Chronological list of transcript entries."
-    )
+    entries: Annotated[
+        list[TranscriptEntry],
+        Field(default_factory=list, description="Chronological list of transcript entries."),
+    ]
     budget: BudgetSpec
     invalidated: bool = Field(
         default=False,
@@ -78,7 +73,7 @@ class Transcript(CommonDTO):
         description="Error type and message explaining why the run was invalidated.",
     )
 
-    def invalidate(self, error: Exception) -> None:
-        """Mark this transcript as invalidated by a runtime or budget error."""
-        self.invalidated = True
-        self.invalidation_reason = f"{type(error).__name__}: {error}"
+    def invalidate(self, reason: str) -> None:
+        """Mark this transcript as invalidated by a plain-text reason."""
+        object.__setattr__(self, "invalidated", True)
+        object.__setattr__(self, "invalidation_reason", reason)

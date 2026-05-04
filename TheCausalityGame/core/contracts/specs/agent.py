@@ -8,6 +8,7 @@ from TheCausalityGame.core.contracts.specs.agent_policy import AgentPolicySpec
 from TheCausalityGame.core.contracts.specs.common import CommonSpec
 from TheCausalityGame.core.contracts.specs.decider import DeciderSpec
 from TheCausalityGame.core.contracts.specs.inferer import InfererSpec
+from TheCausalityGame.core.lib.errors.agent import AgentSpecificationError
 
 
 class AgentSpec(CommonSpec):
@@ -48,12 +49,12 @@ class AgentSpec(CommonSpec):
         """Ensure the spec encodes exactly one valid agent composition."""
         has_composed = self.inferer is not None or self.decider is not None
         if has_composed and not (self.inferer is not None and self.decider is not None):
-            raise ValueError("Composable agents require both 'inferer' and 'decider'.")
+            raise AgentSpecificationError("Composable agents require both 'inferer' and 'decider'.")  # noqa: TRY003
 
         if has_composed and self.policy is not None:
-            raise ValueError("Agent specs must define either inferer+decider or policy, not both.")
+            raise AgentSpecificationError("Define either inferer+decider or policy, not both.")  # noqa: TRY003
 
         if not has_composed and self.policy is None:
-            raise ValueError("Agent specs must define either inferer+decider or policy.")
+            raise AgentSpecificationError("Define either inferer+decider or policy.")  # noqa: TRY003
 
         return self

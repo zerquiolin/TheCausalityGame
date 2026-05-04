@@ -1,0 +1,27 @@
+{
+    "vars": [
+    {
+      "name": "M",
+      "class": "EquationBasedNumericalSCMNode",
+      "accessibility": "controllable",
+      "domain": [1e22, 1e31]
+    },
+    {
+      "name": "T",
+      "class": "EquationBasedNumericalSCMNode",
+      "accessibility": "controllable",
+      "domain": [1e3, 1e8]
+    },
+    {
+      "name": "r",
+      "equation": "0.000255533931867778*(M*T**2)**(1/3)/pi**(2/3)",
+      "class": "EquationBasedNumericalSCMNode",
+      "domain": [0, 1e100]
+    }
+  ],
+  "edges": [
+    ["M", "r"],
+    ["T", "r"]
+  ]
+}
+  

@@ -1,0 +1,128 @@
+{
+  "vars": [
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Pollution",
+      "parents": [],
+      "values": [
+        "low",
+        "high"
+      ],
+      "probability_distribution": [
+        [
+          0.9
+        ],
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Smoker",
+      "parents": [],
+      "values": [
+        "True",
+        "False"
+      ],
+      "probability_distribution": [
+        [
+          0.3
+        ],
+        [
+          0.7
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Cancer",
+      "parents": [
+        "Smoker",
+        "Pollution"
+      ],
+      "values": [
+        "True",
+        "False"
+      ],
+      "probability_distribution": {
+        "True,low": [
+          0.03,
+          0.97
+        ],
+        "True,high": [
+          0.001,
+          0.999
+        ],
+        "False,low": [
+          0.05,
+          0.95
+        ],
+        "False,high": [
+          0.02,
+          0.98
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Xray",
+      "parents": [
+        "Cancer"
+      ],
+      "values": [
+        "positive",
+        "negative"
+      ],
+      "probability_distribution": {
+        "True": [
+          0.9,
+          0.1
+        ],
+        "False": [
+          0.2,
+          0.8
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Dyspnoea",
+      "parents": [
+        "Cancer"
+      ],
+      "values": [
+        "True",
+        "False"
+      ],
+      "probability_distribution": {
+        "True": [
+          0.65,
+          0.35
+        ],
+        "False": [
+          0.3,
+          0.7
+        ]
+      }
+    }
+  ],
+  "edges": [
+    [
+      "Pollution",
+      "Cancer"
+    ],
+    [
+      "Cancer",
+      "Xray"
+    ],
+    [
+      "Cancer",
+      "Dyspnoea"
+    ],
+    [
+      "Smoker",
+      "Cancer"
+    ]
+  ]
+}

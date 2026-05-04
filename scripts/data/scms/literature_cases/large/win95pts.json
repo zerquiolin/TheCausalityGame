@@ -1,0 +1,3808 @@
+{
+  "vars": [
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "AppOK",
+      "parents": [],
+      "values": [
+        "Correct",
+        "Incorrect_Corrupt"
+      ],
+      "probability_distribution": [
+        [
+          0.995
+        ],
+        [
+          0.005
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "DataFile",
+      "parents": [],
+      "values": [
+        "Correct",
+        "Incorrect_Corrupt"
+      ],
+      "probability_distribution": [
+        [
+          0.995
+        ],
+        [
+          0.005
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "AppData",
+      "parents": [
+        "DataFile",
+        "AppOK"
+      ],
+      "values": [
+        "Correct",
+        "Incorrect_or_corrupt"
+      ],
+      "probability_distribution": {
+        "Correct,Correct": [
+          0.9999,
+          0.0001
+        ],
+        "Correct,Incorrect_Corrupt": [
+          0.0,
+          1.0
+        ],
+        "Incorrect_Corrupt,Correct": [
+          0.0,
+          1.0
+        ],
+        "Incorrect_Corrupt,Incorrect_Corrupt": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "DskLocal",
+      "parents": [],
+      "values": [
+        "Greater_than_2_Mb",
+        "Less_than_2_Mb"
+      ],
+      "probability_distribution": [
+        [
+          0.97
+        ],
+        [
+          0.03
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtSpool",
+      "parents": [],
+      "values": [
+        "Enabled",
+        "Disabled"
+      ],
+      "probability_distribution": [
+        [
+          0.95
+        ],
+        [
+          0.05
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtOn",
+      "parents": [],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": [
+        [
+          0.9
+        ],
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtPaper",
+      "parents": [],
+      "values": [
+        "Has_Paper",
+        "No_Paper"
+      ],
+      "probability_distribution": [
+        [
+          0.98
+        ],
+        [
+          0.02
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "NetPrint",
+      "parents": [],
+      "values": [
+        "No__Local_printer_",
+        "Yes__Network_printer_"
+      ],
+      "probability_distribution": [
+        [
+          0.8
+        ],
+        [
+          0.2
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtDriver",
+      "parents": [],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": [
+        [
+          0.9
+        ],
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtThread",
+      "parents": [],
+      "values": [
+        "OK",
+        "Corrupt_Buggy"
+      ],
+      "probability_distribution": [
+        [
+          0.9999
+        ],
+        [
+          0.0001
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "EMFOK",
+      "parents": [
+        "PrtThread",
+        "DskLocal",
+        "AppData"
+      ],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": {
+        "OK,Greater_than_2_Mb,Correct": [
+          0.99,
+          0.01
+        ],
+        "OK,Greater_than_2_Mb,Incorrect_or_corrupt": [
+          0.05,
+          0.95
+        ],
+        "OK,Less_than_2_Mb,Correct": [
+          0.0,
+          1.0
+        ],
+        "OK,Less_than_2_Mb,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Corrupt_Buggy,Greater_than_2_Mb,Correct": [
+          0.1,
+          0.9
+        ],
+        "Corrupt_Buggy,Greater_than_2_Mb,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Corrupt_Buggy,Less_than_2_Mb,Correct": [
+          0.5,
+          0.5
+        ],
+        "Corrupt_Buggy,Less_than_2_Mb,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "GDIIN",
+      "parents": [
+        "EMFOK",
+        "PrtSpool",
+        "AppData"
+      ],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": {
+        "Yes,Enabled,Correct": [
+          1.0,
+          0.0
+        ],
+        "Yes,Enabled,Incorrect_or_corrupt": [
+          0.0,
+          1.0
+        ],
+        "Yes,Disabled,Correct": [
+          1.0,
+          0.0
+        ],
+        "Yes,Disabled,Incorrect_or_corrupt": [
+          1.0,
+          0.0
+        ],
+        "No,Enabled,Correct": [
+          0.0,
+          1.0
+        ],
+        "No,Enabled,Incorrect_or_corrupt": [
+          0.0,
+          1.0
+        ],
+        "No,Disabled,Correct": [
+          0.0,
+          1.0
+        ],
+        "No,Disabled,Incorrect_or_corrupt": [
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "DrvSet",
+      "parents": [],
+      "values": [
+        "Correct",
+        "Incorrect"
+      ],
+      "probability_distribution": [
+        [
+          0.99
+        ],
+        [
+          0.01
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "DrvOK",
+      "parents": [],
+      "values": [
+        "Reinstalled",
+        "Corrupt"
+      ],
+      "probability_distribution": [
+        [
+          0.99
+        ],
+        [
+          0.01
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "GDIOUT",
+      "parents": [
+        "DrvOK",
+        "DrvSet",
+        "GDIIN",
+        "PrtDriver"
+      ],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": {
+        "Reinstalled,Correct,Yes,Yes": [
+          0.99,
+          0.01
+        ],
+        "Reinstalled,Correct,Yes,No": [
+          0.2,
+          0.8
+        ],
+        "Reinstalled,Correct,No,Yes": [
+          0.9,
+          0.1
+        ],
+        "Reinstalled,Correct,No,No": [
+          0.5,
+          0.5
+        ],
+        "Reinstalled,Incorrect,Yes,Yes": [
+          0.1,
+          0.9
+        ],
+        "Reinstalled,Incorrect,Yes,No": [
+          0.5,
+          0.5
+        ],
+        "Reinstalled,Incorrect,No,Yes": [
+          0.5,
+          0.5
+        ],
+        "Reinstalled,Incorrect,No,No": [
+          0.5,
+          0.5
+        ],
+        "Corrupt,Correct,Yes,Yes": [
+          0.1,
+          0.9
+        ],
+        "Corrupt,Correct,Yes,No": [
+          0.5,
+          0.5
+        ],
+        "Corrupt,Correct,No,Yes": [
+          0.5,
+          0.5
+        ],
+        "Corrupt,Correct,No,No": [
+          0.5,
+          0.5
+        ],
+        "Corrupt,Incorrect,Yes,Yes": [
+          0.5,
+          0.5
+        ],
+        "Corrupt,Incorrect,Yes,No": [
+          0.5,
+          0.5
+        ],
+        "Corrupt,Incorrect,No,Yes": [
+          0.5,
+          0.5
+        ],
+        "Corrupt,Incorrect,No,No": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtSel",
+      "parents": [],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": [
+        [
+          0.99
+        ],
+        [
+          0.01
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtDataOut",
+      "parents": [
+        "PrtSel",
+        "GDIOUT"
+      ],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": {
+        "Yes,Yes": [
+          0.99,
+          0.01
+        ],
+        "Yes,No": [
+          0.0,
+          1.0
+        ],
+        "No,Yes": [
+          0.0,
+          1.0
+        ],
+        "No,No": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtPath",
+      "parents": [],
+      "values": [
+        "Correct",
+        "Incorrect"
+      ],
+      "probability_distribution": [
+        [
+          0.97
+        ],
+        [
+          0.03
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "NtwrkCnfg",
+      "parents": [],
+      "values": [
+        "Correct",
+        "Incorrect"
+      ],
+      "probability_distribution": [
+        [
+          0.98
+        ],
+        [
+          0.02
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PTROFFLINE",
+      "parents": [],
+      "values": [
+        "Online",
+        "Offline"
+      ],
+      "probability_distribution": [
+        [
+          0.7
+        ],
+        [
+          0.3
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "NetOK",
+      "parents": [
+        "PTROFFLINE",
+        "NtwrkCnfg",
+        "PrtPath"
+      ],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": {
+        "Online,Correct,Correct": [
+          0.99,
+          0.01
+        ],
+        "Online,Correct,Incorrect": [
+          0.0,
+          1.0
+        ],
+        "Online,Incorrect,Correct": [
+          0.1,
+          0.9
+        ],
+        "Online,Incorrect,Incorrect": [
+          0.5,
+          0.5
+        ],
+        "Offline,Correct,Correct": [
+          0.0,
+          1.0
+        ],
+        "Offline,Correct,Incorrect": [
+          0.5,
+          0.5
+        ],
+        "Offline,Incorrect,Correct": [
+          0.5,
+          0.5
+        ],
+        "Offline,Incorrect,Incorrect": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtCbl",
+      "parents": [],
+      "values": [
+        "Connected",
+        "Loose"
+      ],
+      "probability_distribution": [
+        [
+          0.98
+        ],
+        [
+          0.02
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtPort",
+      "parents": [],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": [
+        [
+          0.99
+        ],
+        [
+          0.01
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "CblPrtHrdwrOK",
+      "parents": [],
+      "values": [
+        "Operational",
+        "Not_Operational"
+      ],
+      "probability_distribution": [
+        [
+          0.99
+        ],
+        [
+          0.01
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "LclOK",
+      "parents": [
+        "CblPrtHrdwrOK",
+        "PrtPort",
+        "PrtCbl"
+      ],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": {
+        "Operational,Yes,Connected": [
+          0.999,
+          0.001
+        ],
+        "Operational,Yes,Loose": [
+          0.01,
+          0.99
+        ],
+        "Operational,No,Connected": [
+          0.0,
+          1.0
+        ],
+        "Operational,No,Loose": [
+          0.5,
+          0.5
+        ],
+        "Not_Operational,Yes,Connected": [
+          0.0,
+          1.0
+        ],
+        "Not_Operational,Yes,Loose": [
+          0.5,
+          0.5
+        ],
+        "Not_Operational,No,Connected": [
+          0.5,
+          0.5
+        ],
+        "Not_Operational,No,Loose": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "DSApplctn",
+      "parents": [],
+      "values": [
+        "DOS",
+        "Windows"
+      ],
+      "probability_distribution": [
+        [
+          0.15
+        ],
+        [
+          0.85
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtMpTPth",
+      "parents": [],
+      "values": [
+        "Correct",
+        "Incorrect"
+      ],
+      "probability_distribution": [
+        [
+          0.8
+        ],
+        [
+          0.2
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "DS_NTOK",
+      "parents": [
+        "PTROFFLINE",
+        "NtwrkCnfg",
+        "PrtMpTPth",
+        "PrtPath",
+        "AppData"
+      ],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": {
+        "Online,Correct,Correct,Correct,Correct": [
+          0.99,
+          0.01
+        ],
+        "Online,Correct,Correct,Correct,Incorrect_or_corrupt": [
+          0.0,
+          1.0
+        ],
+        "Online,Correct,Correct,Incorrect,Correct": [
+          0.1,
+          0.9
+        ],
+        "Online,Correct,Correct,Incorrect,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Online,Correct,Incorrect,Correct,Correct": [
+          0.0,
+          1.0
+        ],
+        "Online,Correct,Incorrect,Correct,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Online,Correct,Incorrect,Incorrect,Correct": [
+          0.5,
+          0.5
+        ],
+        "Online,Correct,Incorrect,Incorrect,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Online,Incorrect,Correct,Correct,Correct": [
+          0.0,
+          1.0
+        ],
+        "Online,Incorrect,Correct,Correct,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Online,Incorrect,Correct,Incorrect,Correct": [
+          0.5,
+          0.5
+        ],
+        "Online,Incorrect,Correct,Incorrect,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Online,Incorrect,Incorrect,Correct,Correct": [
+          0.5,
+          0.5
+        ],
+        "Online,Incorrect,Incorrect,Correct,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Online,Incorrect,Incorrect,Incorrect,Correct": [
+          0.5,
+          0.5
+        ],
+        "Online,Incorrect,Incorrect,Incorrect,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Offline,Correct,Correct,Correct,Correct": [
+          0.2,
+          0.8
+        ],
+        "Offline,Correct,Correct,Correct,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Offline,Correct,Correct,Incorrect,Correct": [
+          0.5,
+          0.5
+        ],
+        "Offline,Correct,Correct,Incorrect,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Offline,Correct,Incorrect,Correct,Correct": [
+          0.5,
+          0.5
+        ],
+        "Offline,Correct,Incorrect,Correct,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Offline,Correct,Incorrect,Incorrect,Correct": [
+          0.5,
+          0.5
+        ],
+        "Offline,Correct,Incorrect,Incorrect,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Offline,Incorrect,Correct,Correct,Correct": [
+          0.5,
+          0.5
+        ],
+        "Offline,Incorrect,Correct,Correct,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Offline,Incorrect,Correct,Incorrect,Correct": [
+          0.5,
+          0.5
+        ],
+        "Offline,Incorrect,Correct,Incorrect,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Offline,Incorrect,Incorrect,Correct,Correct": [
+          0.5,
+          0.5
+        ],
+        "Offline,Incorrect,Incorrect,Correct,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Offline,Incorrect,Incorrect,Incorrect,Correct": [
+          0.5,
+          0.5
+        ],
+        "Offline,Incorrect,Incorrect,Incorrect,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "DS_LCLOK",
+      "parents": [
+        "CblPrtHrdwrOK",
+        "PrtPort",
+        "PrtCbl",
+        "AppData"
+      ],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": {
+        "Operational,Yes,Connected,Correct": [
+          1.0,
+          0.0
+        ],
+        "Operational,Yes,Connected,Incorrect_or_corrupt": [
+          0.1,
+          0.9
+        ],
+        "Operational,Yes,Loose,Correct": [
+          0.0,
+          1.0
+        ],
+        "Operational,Yes,Loose,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Operational,No,Connected,Correct": [
+          0.0,
+          1.0
+        ],
+        "Operational,No,Connected,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Operational,No,Loose,Correct": [
+          0.5,
+          0.5
+        ],
+        "Operational,No,Loose,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Not_Operational,Yes,Connected,Correct": [
+          0.1,
+          0.9
+        ],
+        "Not_Operational,Yes,Connected,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Not_Operational,Yes,Loose,Correct": [
+          0.5,
+          0.5
+        ],
+        "Not_Operational,Yes,Loose,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Not_Operational,No,Connected,Correct": [
+          0.5,
+          0.5
+        ],
+        "Not_Operational,No,Connected,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Not_Operational,No,Loose,Correct": [
+          0.5,
+          0.5
+        ],
+        "Not_Operational,No,Loose,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PC2PRT",
+      "parents": [
+        "DS_LCLOK",
+        "DS_NTOK",
+        "DSApplctn",
+        "LclOK",
+        "NetOK",
+        "PrtDataOut",
+        "NetPrint"
+      ],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": {
+        "Yes,Yes,DOS,Yes,Yes,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,Yes,DOS,Yes,Yes,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,Yes,DOS,Yes,Yes,No,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,Yes,DOS,Yes,Yes,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,Yes,DOS,Yes,No,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,Yes,DOS,Yes,No,Yes,Yes__Network_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,Yes,DOS,Yes,No,No,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,Yes,DOS,Yes,No,No,Yes__Network_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,Yes,DOS,No,Yes,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,Yes,DOS,No,Yes,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,Yes,DOS,No,Yes,No,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,Yes,DOS,No,Yes,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,Yes,DOS,No,No,Yes,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,Yes,DOS,No,No,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,Yes,DOS,No,No,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,Yes,DOS,No,No,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,Yes,Windows,Yes,Yes,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,Yes,Windows,Yes,Yes,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,Yes,Windows,Yes,Yes,No,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,Yes,Windows,Yes,Yes,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,Yes,Windows,Yes,No,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,Yes,Windows,Yes,No,Yes,Yes__Network_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,Yes,Windows,Yes,No,No,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,Yes,Windows,Yes,No,No,Yes__Network_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,Yes,Windows,No,Yes,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,Yes,Windows,No,Yes,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,Yes,Windows,No,Yes,No,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,Yes,Windows,No,Yes,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,Yes,Windows,No,No,Yes,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,Yes,Windows,No,No,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,Yes,Windows,No,No,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,Yes,Windows,No,No,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,DOS,Yes,Yes,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,No,DOS,Yes,Yes,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,DOS,Yes,Yes,No,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,No,DOS,Yes,Yes,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,DOS,Yes,No,Yes,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,DOS,Yes,No,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,DOS,Yes,No,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,DOS,Yes,No,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,DOS,No,Yes,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,No,DOS,No,Yes,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,DOS,No,Yes,No,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,No,DOS,No,Yes,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,DOS,No,No,Yes,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,DOS,No,No,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,DOS,No,No,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,DOS,No,No,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,Windows,Yes,Yes,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,No,Windows,Yes,Yes,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,Windows,Yes,Yes,No,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,No,Windows,Yes,Yes,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,Windows,Yes,No,Yes,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,Windows,Yes,No,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,Windows,Yes,No,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,Windows,Yes,No,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,Windows,No,Yes,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,No,Windows,No,Yes,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,Windows,No,Yes,No,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,No,Windows,No,Yes,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,Windows,No,No,Yes,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,Windows,No,No,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,Windows,No,No,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,Windows,No,No,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,DOS,Yes,Yes,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,Yes,DOS,Yes,Yes,Yes,Yes__Network_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,Yes,DOS,Yes,Yes,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,DOS,Yes,Yes,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,DOS,Yes,No,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,Yes,DOS,Yes,No,Yes,Yes__Network_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,Yes,DOS,Yes,No,No,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,Yes,DOS,Yes,No,No,Yes__Network_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,Yes,DOS,No,Yes,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,Yes,DOS,No,Yes,Yes,Yes__Network_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,Yes,DOS,No,Yes,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,DOS,No,Yes,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,DOS,No,No,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,Yes,DOS,No,No,Yes,Yes__Network_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,Yes,DOS,No,No,No,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,Yes,DOS,No,No,No,Yes__Network_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,Yes,Windows,Yes,Yes,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,Yes,Windows,Yes,Yes,Yes,Yes__Network_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,Yes,Windows,Yes,Yes,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,Windows,Yes,Yes,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,Windows,Yes,No,Yes,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,Windows,Yes,No,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,Windows,Yes,No,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,Windows,Yes,No,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,Windows,No,Yes,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,Yes,Windows,No,Yes,Yes,Yes__Network_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,Yes,Windows,No,Yes,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,Windows,No,Yes,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,Windows,No,No,Yes,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,Windows,No,No,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,Windows,No,No,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,Windows,No,No,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,DOS,Yes,Yes,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,No,DOS,Yes,Yes,Yes,Yes__Network_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,No,DOS,Yes,Yes,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,DOS,Yes,Yes,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,DOS,Yes,No,Yes,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,DOS,Yes,No,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,DOS,Yes,No,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,DOS,Yes,No,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,DOS,No,Yes,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,No,DOS,No,Yes,Yes,Yes__Network_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,No,DOS,No,Yes,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,DOS,No,Yes,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,DOS,No,No,Yes,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,DOS,No,No,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,DOS,No,No,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,DOS,No,No,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,Windows,Yes,Yes,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,No,Windows,Yes,Yes,Yes,Yes__Network_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,No,Windows,Yes,Yes,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,Windows,Yes,Yes,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,Windows,Yes,No,Yes,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,Windows,Yes,No,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,Windows,Yes,No,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,Windows,Yes,No,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,Windows,No,Yes,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,No,Windows,No,Yes,Yes,Yes__Network_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,No,Windows,No,Yes,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,Windows,No,Yes,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,Windows,No,No,Yes,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,Windows,No,No,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,Windows,No,No,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,Windows,No,No,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtMem",
+      "parents": [],
+      "values": [
+        "Greater_than_2_Mb",
+        "Less_than_2Mb"
+      ],
+      "probability_distribution": [
+        [
+          0.95
+        ],
+        [
+          0.05
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtTimeOut",
+      "parents": [],
+      "values": [
+        "Long_Enough",
+        "Too_Short"
+      ],
+      "probability_distribution": [
+        [
+          0.94
+        ],
+        [
+          0.06
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "FllCrrptdBffr",
+      "parents": [],
+      "values": [
+        "Intact__not_Corrupt_",
+        "Full_or_Corrupt"
+      ],
+      "probability_distribution": [
+        [
+          0.85
+        ],
+        [
+          0.15
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "TnrSpply",
+      "parents": [],
+      "values": [
+        "Adequate",
+        "Low"
+      ],
+      "probability_distribution": [
+        [
+          0.995
+        ],
+        [
+          0.005
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtData",
+      "parents": [
+        "TnrSpply",
+        "FllCrrptdBffr",
+        "PrtTimeOut",
+        "PrtMem",
+        "PC2PRT",
+        "PrtPaper",
+        "PrtOn"
+      ],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": {
+        "Adequate,Intact__not_Corrupt_,Long_Enough,Greater_than_2_Mb,Yes,Has_Paper,Yes": [
+          0.99,
+          0.01
+        ],
+        "Adequate,Intact__not_Corrupt_,Long_Enough,Greater_than_2_Mb,Yes,Has_Paper,No": [
+          0.01,
+          0.99
+        ],
+        "Adequate,Intact__not_Corrupt_,Long_Enough,Greater_than_2_Mb,Yes,No_Paper,Yes": [
+          0.02,
+          0.98
+        ],
+        "Adequate,Intact__not_Corrupt_,Long_Enough,Greater_than_2_Mb,Yes,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Long_Enough,Greater_than_2_Mb,No,Has_Paper,Yes": [
+          0.0,
+          1.0
+        ],
+        "Adequate,Intact__not_Corrupt_,Long_Enough,Greater_than_2_Mb,No,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Long_Enough,Greater_than_2_Mb,No,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Long_Enough,Greater_than_2_Mb,No,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Long_Enough,Less_than_2Mb,Yes,Has_Paper,Yes": [
+          0.1,
+          0.9
+        ],
+        "Adequate,Intact__not_Corrupt_,Long_Enough,Less_than_2Mb,Yes,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Long_Enough,Less_than_2Mb,Yes,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Long_Enough,Less_than_2Mb,Yes,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Long_Enough,Less_than_2Mb,No,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Long_Enough,Less_than_2Mb,No,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Long_Enough,Less_than_2Mb,No,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Long_Enough,Less_than_2Mb,No,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Too_Short,Greater_than_2_Mb,Yes,Has_Paper,Yes": [
+          0.0,
+          1.0
+        ],
+        "Adequate,Intact__not_Corrupt_,Too_Short,Greater_than_2_Mb,Yes,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Too_Short,Greater_than_2_Mb,Yes,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Too_Short,Greater_than_2_Mb,Yes,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Too_Short,Greater_than_2_Mb,No,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Too_Short,Greater_than_2_Mb,No,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Too_Short,Greater_than_2_Mb,No,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Too_Short,Greater_than_2_Mb,No,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Too_Short,Less_than_2Mb,Yes,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Too_Short,Less_than_2Mb,Yes,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Too_Short,Less_than_2Mb,Yes,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Too_Short,Less_than_2Mb,Yes,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Too_Short,Less_than_2Mb,No,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Too_Short,Less_than_2Mb,No,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Too_Short,Less_than_2Mb,No,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Intact__not_Corrupt_,Too_Short,Less_than_2Mb,No,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Long_Enough,Greater_than_2_Mb,Yes,Has_Paper,Yes": [
+          0.0,
+          1.0
+        ],
+        "Adequate,Full_or_Corrupt,Long_Enough,Greater_than_2_Mb,Yes,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Long_Enough,Greater_than_2_Mb,Yes,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Long_Enough,Greater_than_2_Mb,Yes,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Long_Enough,Greater_than_2_Mb,No,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Long_Enough,Greater_than_2_Mb,No,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Long_Enough,Greater_than_2_Mb,No,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Long_Enough,Greater_than_2_Mb,No,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Long_Enough,Less_than_2Mb,Yes,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Long_Enough,Less_than_2Mb,Yes,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Long_Enough,Less_than_2Mb,Yes,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Long_Enough,Less_than_2Mb,Yes,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Long_Enough,Less_than_2Mb,No,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Long_Enough,Less_than_2Mb,No,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Long_Enough,Less_than_2Mb,No,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Long_Enough,Less_than_2Mb,No,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Too_Short,Greater_than_2_Mb,Yes,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Too_Short,Greater_than_2_Mb,Yes,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Too_Short,Greater_than_2_Mb,Yes,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Too_Short,Greater_than_2_Mb,Yes,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Too_Short,Greater_than_2_Mb,No,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Too_Short,Greater_than_2_Mb,No,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Too_Short,Greater_than_2_Mb,No,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Too_Short,Greater_than_2_Mb,No,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Too_Short,Less_than_2Mb,Yes,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Too_Short,Less_than_2Mb,Yes,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Too_Short,Less_than_2Mb,Yes,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Too_Short,Less_than_2Mb,Yes,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Too_Short,Less_than_2Mb,No,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Too_Short,Less_than_2Mb,No,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Too_Short,Less_than_2Mb,No,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Adequate,Full_or_Corrupt,Too_Short,Less_than_2Mb,No,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Long_Enough,Greater_than_2_Mb,Yes,Has_Paper,Yes": [
+          0.0,
+          1.0
+        ],
+        "Low,Intact__not_Corrupt_,Long_Enough,Greater_than_2_Mb,Yes,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Long_Enough,Greater_than_2_Mb,Yes,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Long_Enough,Greater_than_2_Mb,Yes,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Long_Enough,Greater_than_2_Mb,No,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Long_Enough,Greater_than_2_Mb,No,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Long_Enough,Greater_than_2_Mb,No,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Long_Enough,Greater_than_2_Mb,No,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Long_Enough,Less_than_2Mb,Yes,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Long_Enough,Less_than_2Mb,Yes,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Long_Enough,Less_than_2Mb,Yes,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Long_Enough,Less_than_2Mb,Yes,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Long_Enough,Less_than_2Mb,No,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Long_Enough,Less_than_2Mb,No,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Long_Enough,Less_than_2Mb,No,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Long_Enough,Less_than_2Mb,No,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Too_Short,Greater_than_2_Mb,Yes,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Too_Short,Greater_than_2_Mb,Yes,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Too_Short,Greater_than_2_Mb,Yes,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Too_Short,Greater_than_2_Mb,Yes,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Too_Short,Greater_than_2_Mb,No,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Too_Short,Greater_than_2_Mb,No,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Too_Short,Greater_than_2_Mb,No,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Too_Short,Greater_than_2_Mb,No,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Too_Short,Less_than_2Mb,Yes,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Too_Short,Less_than_2Mb,Yes,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Too_Short,Less_than_2Mb,Yes,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Too_Short,Less_than_2Mb,Yes,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Too_Short,Less_than_2Mb,No,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Too_Short,Less_than_2Mb,No,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Too_Short,Less_than_2Mb,No,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Intact__not_Corrupt_,Too_Short,Less_than_2Mb,No,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Long_Enough,Greater_than_2_Mb,Yes,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Long_Enough,Greater_than_2_Mb,Yes,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Long_Enough,Greater_than_2_Mb,Yes,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Long_Enough,Greater_than_2_Mb,Yes,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Long_Enough,Greater_than_2_Mb,No,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Long_Enough,Greater_than_2_Mb,No,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Long_Enough,Greater_than_2_Mb,No,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Long_Enough,Greater_than_2_Mb,No,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Long_Enough,Less_than_2Mb,Yes,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Long_Enough,Less_than_2Mb,Yes,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Long_Enough,Less_than_2Mb,Yes,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Long_Enough,Less_than_2Mb,Yes,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Long_Enough,Less_than_2Mb,No,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Long_Enough,Less_than_2Mb,No,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Long_Enough,Less_than_2Mb,No,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Long_Enough,Less_than_2Mb,No,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Too_Short,Greater_than_2_Mb,Yes,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Too_Short,Greater_than_2_Mb,Yes,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Too_Short,Greater_than_2_Mb,Yes,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Too_Short,Greater_than_2_Mb,Yes,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Too_Short,Greater_than_2_Mb,No,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Too_Short,Greater_than_2_Mb,No,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Too_Short,Greater_than_2_Mb,No,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Too_Short,Greater_than_2_Mb,No,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Too_Short,Less_than_2Mb,Yes,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Too_Short,Less_than_2Mb,Yes,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Too_Short,Less_than_2Mb,Yes,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Too_Short,Less_than_2Mb,Yes,No_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Too_Short,Less_than_2Mb,No,Has_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Too_Short,Less_than_2Mb,No,Has_Paper,No": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Too_Short,Less_than_2Mb,No,No_Paper,Yes": [
+          0.5,
+          0.5
+        ],
+        "Low,Full_or_Corrupt,Too_Short,Less_than_2Mb,No,No_Paper,No": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Problem1",
+      "parents": [
+        "PrtData"
+      ],
+      "values": [
+        "Normal_Output",
+        "No_Output"
+      ],
+      "probability_distribution": {
+        "Yes": [
+          1.0,
+          0.0
+        ],
+        "No": [
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "AppDtGnTm",
+      "parents": [
+        "PrtSpool"
+      ],
+      "values": [
+        "Fast_Enough",
+        "Too_Long"
+      ],
+      "probability_distribution": {
+        "Enabled": [
+          1.0,
+          0.0
+        ],
+        "Disabled": [
+          0.99000001,
+          0.00999999
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrntPrcssTm",
+      "parents": [
+        "PrtSpool"
+      ],
+      "values": [
+        "Fast_Enough",
+        "Too_Long"
+      ],
+      "probability_distribution": {
+        "Enabled": [
+          0.99000001,
+          0.00999999
+        ],
+        "Disabled": [
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "DeskPrntSpd",
+      "parents": [
+        "PrntPrcssTm",
+        "AppDtGnTm",
+        "PrtMem"
+      ],
+      "values": [
+        "OK",
+        "Too_Slow"
+      ],
+      "probability_distribution": {
+        "Fast_Enough,Fast_Enough,Greater_than_2_Mb": [
+          0.99900001,
+          0.00099999
+        ],
+        "Fast_Enough,Fast_Enough,Less_than_2Mb": [
+          0.00099999,
+          0.99900001
+        ],
+        "Fast_Enough,Too_Long,Greater_than_2_Mb": [
+          0.00099999,
+          0.99900001
+        ],
+        "Fast_Enough,Too_Long,Less_than_2Mb": [
+          0.5,
+          0.5
+        ],
+        "Too_Long,Fast_Enough,Greater_than_2_Mb": [
+          0.25,
+          0.75
+        ],
+        "Too_Long,Fast_Enough,Less_than_2Mb": [
+          0.5,
+          0.5
+        ],
+        "Too_Long,Too_Long,Greater_than_2_Mb": [
+          0.5,
+          0.5
+        ],
+        "Too_Long,Too_Long,Less_than_2Mb": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PgOrnttnOK",
+      "parents": [],
+      "values": [
+        "Correct",
+        "Incorrect"
+      ],
+      "probability_distribution": [
+        [
+          0.95
+        ],
+        [
+          0.05
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrntngArOK",
+      "parents": [],
+      "values": [
+        "Correct",
+        "Incorrect"
+      ],
+      "probability_distribution": [
+        [
+          0.98
+        ],
+        [
+          0.02
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "ScrnFntNtPrntrFnt",
+      "parents": [],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": [
+        [
+          0.95
+        ],
+        [
+          0.05
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "CmpltPgPrntd",
+      "parents": [
+        "PrntngArOK",
+        "PgOrnttnOK",
+        "PrtMem"
+      ],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": {
+        "Correct,Correct,Greater_than_2_Mb": [
+          0.99,
+          0.01
+        ],
+        "Correct,Correct,Less_than_2Mb": [
+          0.1,
+          0.9
+        ],
+        "Correct,Incorrect,Greater_than_2_Mb": [
+          0.00999999,
+          0.99000001
+        ],
+        "Correct,Incorrect,Less_than_2Mb": [
+          0.5,
+          0.5
+        ],
+        "Incorrect,Correct,Greater_than_2_Mb": [
+          0.3,
+          0.7
+        ],
+        "Incorrect,Correct,Less_than_2Mb": [
+          0.5,
+          0.5
+        ],
+        "Incorrect,Incorrect,Greater_than_2_Mb": [
+          0.5,
+          0.5
+        ],
+        "Incorrect,Incorrect,Less_than_2Mb": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "GrphcsRltdDrvrSttngs",
+      "parents": [],
+      "values": [
+        "Correct",
+        "Incorrect"
+      ],
+      "probability_distribution": [
+        [
+          0.95
+        ],
+        [
+          0.05
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "EPSGrphc",
+      "parents": [],
+      "values": [
+        "No____TIF___WMF___BMP_",
+        "Yes____EPS_"
+      ],
+      "probability_distribution": [
+        [
+          0.99
+        ],
+        [
+          0.01
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "NnPSGrphc",
+      "parents": [
+        "EPSGrphc",
+        "GrphcsRltdDrvrSttngs",
+        "PrtMem"
+      ],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": {
+        "No____TIF___WMF___BMP_,Correct,Greater_than_2_Mb": [
+          0.999,
+          0.001
+        ],
+        "No____TIF___WMF___BMP_,Correct,Less_than_2Mb": [
+          0.0,
+          1.0
+        ],
+        "No____TIF___WMF___BMP_,Incorrect,Greater_than_2_Mb": [
+          0.1,
+          0.9
+        ],
+        "No____TIF___WMF___BMP_,Incorrect,Less_than_2Mb": [
+          0.5,
+          0.5
+        ],
+        "Yes____EPS_,Correct,Greater_than_2_Mb": [
+          0.25,
+          0.75
+        ],
+        "Yes____EPS_,Correct,Less_than_2Mb": [
+          0.5,
+          0.5
+        ],
+        "Yes____EPS_,Incorrect,Greater_than_2_Mb": [
+          0.5,
+          0.5
+        ],
+        "Yes____EPS_,Incorrect,Less_than_2Mb": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtPScript",
+      "parents": [],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": [
+        [
+          0.4
+        ],
+        [
+          0.6
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PSGRAPHIC",
+      "parents": [
+        "EPSGrphc",
+        "GrphcsRltdDrvrSttngs",
+        "PrtMem"
+      ],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": {
+        "No____TIF___WMF___BMP_,Correct,Greater_than_2_Mb": [
+          0.999,
+          0.001
+        ],
+        "No____TIF___WMF___BMP_,Correct,Less_than_2Mb": [
+          1.0,
+          0.0
+        ],
+        "No____TIF___WMF___BMP_,Incorrect,Greater_than_2_Mb": [
+          0.1,
+          0.9
+        ],
+        "No____TIF___WMF___BMP_,Incorrect,Less_than_2Mb": [
+          0.5,
+          0.5
+        ],
+        "Yes____EPS_,Correct,Greater_than_2_Mb": [
+          0.25,
+          0.75
+        ],
+        "Yes____EPS_,Correct,Less_than_2Mb": [
+          0.5,
+          0.5
+        ],
+        "Yes____EPS_,Incorrect,Greater_than_2_Mb": [
+          0.5,
+          0.5
+        ],
+        "Yes____EPS_,Incorrect,Less_than_2Mb": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Problem4",
+      "parents": [
+        "PSGRAPHIC",
+        "PrtPScript",
+        "NnPSGrphc"
+      ],
+      "values": [
+        "No",
+        "Yes"
+      ],
+      "probability_distribution": {
+        "Yes,Yes,Yes": [
+          0.0,
+          1.0
+        ],
+        "Yes,Yes,No": [
+          1.0,
+          0.0
+        ],
+        "Yes,No,Yes": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,No": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,Yes": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,No": [
+          1.0,
+          0.0
+        ],
+        "No,No,Yes": [
+          1.0,
+          0.0
+        ],
+        "No,No,No": [
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "TrTypFnts",
+      "parents": [],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": [
+        [
+          0.9
+        ],
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "FntInstlltn",
+      "parents": [],
+      "values": [
+        "Verified",
+        "Faulty"
+      ],
+      "probability_distribution": [
+        [
+          0.98
+        ],
+        [
+          0.02
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrntrAccptsTrtyp",
+      "parents": [],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": [
+        [
+          0.9
+        ],
+        [
+          0.1
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "TTOK",
+      "parents": [
+        "PrntrAccptsTrtyp",
+        "FntInstlltn",
+        "PrtMem"
+      ],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": {
+        "Yes,Verified,Greater_than_2_Mb": [
+          0.99000001,
+          0.00999999
+        ],
+        "Yes,Verified,Less_than_2Mb": [
+          0.0,
+          1.0
+        ],
+        "Yes,Faulty,Greater_than_2_Mb": [
+          0.1,
+          0.9
+        ],
+        "Yes,Faulty,Less_than_2Mb": [
+          0.5,
+          0.5
+        ],
+        "No,Verified,Greater_than_2_Mb": [
+          0.5,
+          0.5
+        ],
+        "No,Verified,Less_than_2Mb": [
+          0.5,
+          0.5
+        ],
+        "No,Faulty,Greater_than_2_Mb": [
+          0.5,
+          0.5
+        ],
+        "No,Faulty,Less_than_2Mb": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "NnTTOK",
+      "parents": [
+        "FntInstlltn",
+        "ScrnFntNtPrntrFnt",
+        "PrtMem"
+      ],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": {
+        "Verified,Yes,Greater_than_2_Mb": [
+          0.99000001,
+          0.00999999
+        ],
+        "Verified,Yes,Less_than_2Mb": [
+          0.1,
+          0.9
+        ],
+        "Verified,No,Greater_than_2_Mb": [
+          0.1,
+          0.9
+        ],
+        "Verified,No,Less_than_2Mb": [
+          0.5,
+          0.5
+        ],
+        "Faulty,Yes,Greater_than_2_Mb": [
+          0.5,
+          0.5
+        ],
+        "Faulty,Yes,Less_than_2Mb": [
+          0.5,
+          0.5
+        ],
+        "Faulty,No,Greater_than_2_Mb": [
+          0.5,
+          0.5
+        ],
+        "Faulty,No,Less_than_2Mb": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Problem5",
+      "parents": [
+        "NnTTOK",
+        "TTOK",
+        "TrTypFnts"
+      ],
+      "values": [
+        "No",
+        "Yes"
+      ],
+      "probability_distribution": {
+        "Yes,Yes,Yes": [
+          0.0,
+          1.0
+        ],
+        "Yes,Yes,No": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,Yes": [
+          1.0,
+          0.0
+        ],
+        "Yes,No,No": [
+          1.0,
+          0.0
+        ],
+        "No,Yes,Yes": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,No": [
+          1.0,
+          0.0
+        ],
+        "No,No,Yes": [
+          0.0,
+          1.0
+        ],
+        "No,No,No": [
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "LclGrbld",
+      "parents": [
+        "CblPrtHrdwrOK",
+        "PrtMem",
+        "PrtDriver",
+        "AppData"
+      ],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": {
+        "Operational,Greater_than_2_Mb,Yes,Correct": [
+          1.0,
+          0.0
+        ],
+        "Operational,Greater_than_2_Mb,Yes,Incorrect_or_corrupt": [
+          0.1,
+          0.9
+        ],
+        "Operational,Greater_than_2_Mb,No,Correct": [
+          0.2,
+          0.8
+        ],
+        "Operational,Greater_than_2_Mb,No,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Operational,Less_than_2Mb,Yes,Correct": [
+          0.4,
+          0.6
+        ],
+        "Operational,Less_than_2Mb,Yes,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Operational,Less_than_2Mb,No,Correct": [
+          0.5,
+          0.5
+        ],
+        "Operational,Less_than_2Mb,No,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Not_Operational,Greater_than_2_Mb,Yes,Correct": [
+          0.2,
+          0.8
+        ],
+        "Not_Operational,Greater_than_2_Mb,Yes,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Not_Operational,Greater_than_2_Mb,No,Correct": [
+          0.5,
+          0.5
+        ],
+        "Not_Operational,Greater_than_2_Mb,No,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Not_Operational,Less_than_2Mb,Yes,Correct": [
+          0.5,
+          0.5
+        ],
+        "Not_Operational,Less_than_2Mb,Yes,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Not_Operational,Less_than_2Mb,No,Correct": [
+          0.5,
+          0.5
+        ],
+        "Not_Operational,Less_than_2Mb,No,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "NtGrbld",
+      "parents": [
+        "NtwrkCnfg",
+        "PrtMem",
+        "PrtDriver",
+        "AppData"
+      ],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": {
+        "Correct,Greater_than_2_Mb,Yes,Correct": [
+          1.0,
+          0.0
+        ],
+        "Correct,Greater_than_2_Mb,Yes,Incorrect_or_corrupt": [
+          0.4,
+          0.6
+        ],
+        "Correct,Greater_than_2_Mb,No,Correct": [
+          0.2,
+          0.8
+        ],
+        "Correct,Greater_than_2_Mb,No,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Correct,Less_than_2Mb,Yes,Correct": [
+          0.4,
+          0.6
+        ],
+        "Correct,Less_than_2Mb,Yes,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Correct,Less_than_2Mb,No,Correct": [
+          0.5,
+          0.5
+        ],
+        "Correct,Less_than_2Mb,No,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Incorrect,Greater_than_2_Mb,Yes,Correct": [
+          0.3,
+          0.7
+        ],
+        "Incorrect,Greater_than_2_Mb,Yes,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Incorrect,Greater_than_2_Mb,No,Correct": [
+          0.5,
+          0.5
+        ],
+        "Incorrect,Greater_than_2_Mb,No,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Incorrect,Less_than_2Mb,Yes,Correct": [
+          0.5,
+          0.5
+        ],
+        "Incorrect,Less_than_2Mb,Yes,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ],
+        "Incorrect,Less_than_2Mb,No,Correct": [
+          0.5,
+          0.5
+        ],
+        "Incorrect,Less_than_2Mb,No,Incorrect_or_corrupt": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "GrbldOtpt",
+      "parents": [
+        "NtGrbld",
+        "LclGrbld",
+        "NetPrint"
+      ],
+      "values": [
+        "No",
+        "Yes"
+      ],
+      "probability_distribution": {
+        "Yes,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,Yes,Yes__Network_printer_": [
+          1.0,
+          0.0
+        ],
+        "Yes,No,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,Yes,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "No,No,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "No,No,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "HrglssDrtnAftrPrnt",
+      "parents": [
+        "AppDtGnTm"
+      ],
+      "values": [
+        "Fast_Enough",
+        "Too_Long"
+      ],
+      "probability_distribution": {
+        "Fast_Enough": [
+          0.99,
+          0.01
+        ],
+        "Too_Long": [
+          0.1,
+          0.9
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "REPEAT",
+      "parents": [
+        "NtwrkCnfg",
+        "CblPrtHrdwrOK"
+      ],
+      "values": [
+        "Yes__Always_the_Same_",
+        "No__Different_Each_Time_"
+      ],
+      "probability_distribution": {
+        "Correct,Operational": [
+          1.0,
+          0.0
+        ],
+        "Correct,Not_Operational": [
+          0.5,
+          0.5
+        ],
+        "Incorrect,Operational": [
+          0.5,
+          0.5
+        ],
+        "Incorrect,Not_Operational": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "AvlblVrtlMmry",
+      "parents": [
+        "PrtPScript"
+      ],
+      "values": [
+        "Adequate____1Mb_",
+        "Inadequate____1_Mb_"
+      ],
+      "probability_distribution": {
+        "Yes": [
+          0.98,
+          0.02
+        ],
+        "No": [
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PSERRMEM",
+      "parents": [
+        "AvlblVrtlMmry",
+        "PrtPScript"
+      ],
+      "values": [
+        "No_Error",
+        "Low_Memory"
+      ],
+      "probability_distribution": {
+        "Adequate____1Mb_,Yes": [
+          1.0,
+          0.0
+        ],
+        "Adequate____1Mb_,No": [
+          0.05,
+          0.95
+        ],
+        "Inadequate____1_Mb_,Yes": [
+          1.0,
+          0.0
+        ],
+        "Inadequate____1_Mb_,No": [
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "TstpsTxt",
+      "parents": [
+        "AvlblVrtlMmry",
+        "PrtPScript"
+      ],
+      "values": [
+        "x_1_Mb_Available_VM",
+        "x_1_Mb_Available_VM2"
+      ],
+      "probability_distribution": {
+        "Adequate____1Mb_,Yes": [
+          0.99900001,
+          0.00099999
+        ],
+        "Adequate____1Mb_,No": [
+          0.00099999,
+          0.99900001
+        ],
+        "Inadequate____1_Mb_,Yes": [
+          1.0,
+          0.0
+        ],
+        "Inadequate____1_Mb_,No": [
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "GrbldPS",
+      "parents": [
+        "AvlblVrtlMmry",
+        "GrbldOtpt"
+      ],
+      "values": [
+        "No",
+        "Yes"
+      ],
+      "probability_distribution": {
+        "Adequate____1Mb_,No": [
+          1.0,
+          0.0
+        ],
+        "Adequate____1Mb_,Yes": [
+          0.1,
+          0.9
+        ],
+        "Inadequate____1_Mb_,No": [
+          0.0,
+          1.0
+        ],
+        "Inadequate____1_Mb_,Yes": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "IncmpltPS",
+      "parents": [
+        "AvlblVrtlMmry",
+        "CmpltPgPrntd"
+      ],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": {
+        "Adequate____1Mb_,Yes": [
+          1.0,
+          0.0
+        ],
+        "Adequate____1Mb_,No": [
+          0.3,
+          0.7
+        ],
+        "Inadequate____1_Mb_,Yes": [
+          0.0,
+          1.0
+        ],
+        "Inadequate____1_Mb_,No": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtFile",
+      "parents": [
+        "PrtDataOut"
+      ],
+      "values": [
+        "Yes",
+        "No"
+      ],
+      "probability_distribution": {
+        "Yes": [
+          0.8,
+          0.2
+        ],
+        "No": [
+          0.2,
+          0.8
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtIcon",
+      "parents": [
+        "PTROFFLINE",
+        "NtwrkCnfg"
+      ],
+      "values": [
+        "Normal",
+        "Grayed_Out"
+      ],
+      "probability_distribution": {
+        "Online,Correct": [
+          0.9999,
+          0.0001
+        ],
+        "Online,Incorrect": [
+          0.7,
+          0.3
+        ],
+        "Offline,Correct": [
+          0.25,
+          0.75
+        ],
+        "Offline,Incorrect": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Problem6",
+      "parents": [
+        "GrbldPS",
+        "PrtPScript",
+        "GrbldOtpt"
+      ],
+      "values": [
+        "No",
+        "Yes"
+      ],
+      "probability_distribution": {
+        "No,Yes,No": [
+          1.0,
+          0.0
+        ],
+        "No,Yes,Yes": [
+          0.0,
+          1.0
+        ],
+        "No,No,No": [
+          1.0,
+          0.0
+        ],
+        "No,No,Yes": [
+          1.0,
+          0.0
+        ],
+        "Yes,Yes,No": [
+          1.0,
+          0.0
+        ],
+        "Yes,Yes,Yes": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,No": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,Yes": [
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Problem3",
+      "parents": [
+        "IncmpltPS",
+        "PrtPScript",
+        "CmpltPgPrntd"
+      ],
+      "values": [
+        "No",
+        "Yes"
+      ],
+      "probability_distribution": {
+        "Yes,Yes,Yes": [
+          0.0,
+          1.0
+        ],
+        "Yes,Yes,No": [
+          1.0,
+          0.0
+        ],
+        "Yes,No,Yes": [
+          0.0,
+          1.0
+        ],
+        "Yes,No,No": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,Yes": [
+          0.0,
+          1.0
+        ],
+        "No,Yes,No": [
+          1.0,
+          0.0
+        ],
+        "No,No,Yes": [
+          1.0,
+          0.0
+        ],
+        "No,No,No": [
+          1.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtQueue",
+      "parents": [],
+      "values": [
+        "Short",
+        "Long"
+      ],
+      "probability_distribution": [
+        [
+          0.99
+        ],
+        [
+          0.01
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "NtSpd",
+      "parents": [
+        "PrtQueue",
+        "NtwrkCnfg",
+        "DeskPrntSpd"
+      ],
+      "values": [
+        "OK",
+        "Slow"
+      ],
+      "probability_distribution": {
+        "Short,Correct,OK": [
+          0.99900001,
+          0.00099999
+        ],
+        "Short,Correct,Too_Slow": [
+          0.25,
+          0.75
+        ],
+        "Short,Incorrect,OK": [
+          0.25,
+          0.75
+        ],
+        "Short,Incorrect,Too_Slow": [
+          0.5,
+          0.5
+        ],
+        "Long,Correct,OK": [
+          0.0,
+          1.0
+        ],
+        "Long,Correct,Too_Slow": [
+          0.5,
+          0.5
+        ],
+        "Long,Incorrect,OK": [
+          0.5,
+          0.5
+        ],
+        "Long,Incorrect,Too_Slow": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Problem2",
+      "parents": [
+        "NtSpd",
+        "DeskPrntSpd",
+        "NetPrint"
+      ],
+      "values": [
+        "OK",
+        "Too_Long"
+      ],
+      "probability_distribution": {
+        "OK,OK,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "OK,OK,Yes__Network_printer_": [
+          1.0,
+          0.0
+        ],
+        "OK,Too_Slow,No__Local_printer_": [
+          0.0,
+          1.0
+        ],
+        "OK,Too_Slow,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Slow,OK,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Slow,OK,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ],
+        "Slow,Too_Slow,No__Local_printer_": [
+          1.0,
+          0.0
+        ],
+        "Slow,Too_Slow,Yes__Network_printer_": [
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtStatPaper",
+      "parents": [
+        "PrtPaper"
+      ],
+      "values": [
+        "No_Error",
+        "Jam__Out__Bin_Full"
+      ],
+      "probability_distribution": {
+        "Has_Paper": [
+          0.99900001,
+          0.00099999
+        ],
+        "No_Paper": [
+          0.00099999,
+          0.99900001
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtStatToner",
+      "parents": [
+        "TnrSpply"
+      ],
+      "values": [
+        "No_Error",
+        "Low__None"
+      ],
+      "probability_distribution": {
+        "Adequate": [
+          0.99900001,
+          0.00099999
+        ],
+        "Low": [
+          0.00099999,
+          0.99900001
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtStatMem",
+      "parents": [
+        "PrtMem"
+      ],
+      "values": [
+        "No_Error",
+        "Out_of_Memory"
+      ],
+      "probability_distribution": {
+        "Greater_than_2_Mb": [
+          0.99900001,
+          0.00099999
+        ],
+        "Less_than_2Mb": [
+          0.2,
+          0.8
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PrtStatOff",
+      "parents": [
+        "PrtOn"
+      ],
+      "values": [
+        "No_Error",
+        "OFFLINE__OFF"
+      ],
+      "probability_distribution": {
+        "Yes": [
+          0.99000001,
+          0.00999999
+        ],
+        "No": [
+          0.00999999,
+          0.99000001
+        ]
+      }
+    }
+  ],
+  "edges": [
+    [
+      "AppOK",
+      "AppData"
+    ],
+    [
+      "AppData",
+      "EMFOK"
+    ],
+    [
+      "AppData",
+      "GDIIN"
+    ],
+    [
+      "AppData",
+      "DS_NTOK"
+    ],
+    [
+      "AppData",
+      "DS_LCLOK"
+    ],
+    [
+      "AppData",
+      "LclGrbld"
+    ],
+    [
+      "AppData",
+      "NtGrbld"
+    ],
+    [
+      "DataFile",
+      "AppData"
+    ],
+    [
+      "EMFOK",
+      "GDIIN"
+    ],
+    [
+      "GDIIN",
+      "GDIOUT"
+    ],
+    [
+      "DS_NTOK",
+      "PC2PRT"
+    ],
+    [
+      "DS_LCLOK",
+      "PC2PRT"
+    ],
+    [
+      "LclGrbld",
+      "GrbldOtpt"
+    ],
+    [
+      "NtGrbld",
+      "GrbldOtpt"
+    ],
+    [
+      "DskLocal",
+      "EMFOK"
+    ],
+    [
+      "PrtSpool",
+      "GDIIN"
+    ],
+    [
+      "PrtSpool",
+      "AppDtGnTm"
+    ],
+    [
+      "PrtSpool",
+      "PrntPrcssTm"
+    ],
+    [
+      "AppDtGnTm",
+      "DeskPrntSpd"
+    ],
+    [
+      "AppDtGnTm",
+      "HrglssDrtnAftrPrnt"
+    ],
+    [
+      "PrntPrcssTm",
+      "DeskPrntSpd"
+    ],
+    [
+      "PrtOn",
+      "PrtData"
+    ],
+    [
+      "PrtOn",
+      "PrtStatOff"
+    ],
+    [
+      "PrtData",
+      "Problem1"
+    ],
+    [
+      "PrtPaper",
+      "PrtData"
+    ],
+    [
+      "PrtPaper",
+      "PrtStatPaper"
+    ],
+    [
+      "NetPrint",
+      "PC2PRT"
+    ],
+    [
+      "NetPrint",
+      "GrbldOtpt"
+    ],
+    [
+      "NetPrint",
+      "Problem2"
+    ],
+    [
+      "PC2PRT",
+      "PrtData"
+    ],
+    [
+      "GrbldOtpt",
+      "GrbldPS"
+    ],
+    [
+      "GrbldOtpt",
+      "Problem6"
+    ],
+    [
+      "PrtDriver",
+      "GDIOUT"
+    ],
+    [
+      "PrtDriver",
+      "LclGrbld"
+    ],
+    [
+      "PrtDriver",
+      "NtGrbld"
+    ],
+    [
+      "GDIOUT",
+      "PrtDataOut"
+    ],
+    [
+      "PrtThread",
+      "EMFOK"
+    ],
+    [
+      "DrvSet",
+      "GDIOUT"
+    ],
+    [
+      "DrvOK",
+      "GDIOUT"
+    ],
+    [
+      "PrtDataOut",
+      "PC2PRT"
+    ],
+    [
+      "PrtDataOut",
+      "PrtFile"
+    ],
+    [
+      "PrtSel",
+      "PrtDataOut"
+    ],
+    [
+      "PrtPath",
+      "NetOK"
+    ],
+    [
+      "PrtPath",
+      "DS_NTOK"
+    ],
+    [
+      "NetOK",
+      "PC2PRT"
+    ],
+    [
+      "NtwrkCnfg",
+      "NetOK"
+    ],
+    [
+      "NtwrkCnfg",
+      "DS_NTOK"
+    ],
+    [
+      "NtwrkCnfg",
+      "NtGrbld"
+    ],
+    [
+      "NtwrkCnfg",
+      "REPEAT"
+    ],
+    [
+      "NtwrkCnfg",
+      "PrtIcon"
+    ],
+    [
+      "NtwrkCnfg",
+      "NtSpd"
+    ],
+    [
+      "NtSpd",
+      "Problem2"
+    ],
+    [
+      "PTROFFLINE",
+      "NetOK"
+    ],
+    [
+      "PTROFFLINE",
+      "DS_NTOK"
+    ],
+    [
+      "PTROFFLINE",
+      "PrtIcon"
+    ],
+    [
+      "PrtCbl",
+      "LclOK"
+    ],
+    [
+      "PrtCbl",
+      "DS_LCLOK"
+    ],
+    [
+      "LclOK",
+      "PC2PRT"
+    ],
+    [
+      "PrtPort",
+      "LclOK"
+    ],
+    [
+      "PrtPort",
+      "DS_LCLOK"
+    ],
+    [
+      "CblPrtHrdwrOK",
+      "LclOK"
+    ],
+    [
+      "CblPrtHrdwrOK",
+      "DS_LCLOK"
+    ],
+    [
+      "CblPrtHrdwrOK",
+      "LclGrbld"
+    ],
+    [
+      "CblPrtHrdwrOK",
+      "REPEAT"
+    ],
+    [
+      "DSApplctn",
+      "PC2PRT"
+    ],
+    [
+      "PrtMpTPth",
+      "DS_NTOK"
+    ],
+    [
+      "PrtMem",
+      "PrtData"
+    ],
+    [
+      "PrtMem",
+      "DeskPrntSpd"
+    ],
+    [
+      "PrtMem",
+      "CmpltPgPrntd"
+    ],
+    [
+      "PrtMem",
+      "NnPSGrphc"
+    ],
+    [
+      "PrtMem",
+      "PSGRAPHIC"
+    ],
+    [
+      "PrtMem",
+      "TTOK"
+    ],
+    [
+      "PrtMem",
+      "NnTTOK"
+    ],
+    [
+      "PrtMem",
+      "LclGrbld"
+    ],
+    [
+      "PrtMem",
+      "NtGrbld"
+    ],
+    [
+      "PrtMem",
+      "PrtStatMem"
+    ],
+    [
+      "DeskPrntSpd",
+      "NtSpd"
+    ],
+    [
+      "DeskPrntSpd",
+      "Problem2"
+    ],
+    [
+      "CmpltPgPrntd",
+      "IncmpltPS"
+    ],
+    [
+      "CmpltPgPrntd",
+      "Problem3"
+    ],
+    [
+      "NnPSGrphc",
+      "Problem4"
+    ],
+    [
+      "PSGRAPHIC",
+      "Problem4"
+    ],
+    [
+      "TTOK",
+      "Problem5"
+    ],
+    [
+      "NnTTOK",
+      "Problem5"
+    ],
+    [
+      "PrtTimeOut",
+      "PrtData"
+    ],
+    [
+      "FllCrrptdBffr",
+      "PrtData"
+    ],
+    [
+      "TnrSpply",
+      "PrtData"
+    ],
+    [
+      "TnrSpply",
+      "PrtStatToner"
+    ],
+    [
+      "PgOrnttnOK",
+      "CmpltPgPrntd"
+    ],
+    [
+      "PrntngArOK",
+      "CmpltPgPrntd"
+    ],
+    [
+      "ScrnFntNtPrntrFnt",
+      "NnTTOK"
+    ],
+    [
+      "IncmpltPS",
+      "Problem3"
+    ],
+    [
+      "GrphcsRltdDrvrSttngs",
+      "NnPSGrphc"
+    ],
+    [
+      "GrphcsRltdDrvrSttngs",
+      "PSGRAPHIC"
+    ],
+    [
+      "EPSGrphc",
+      "NnPSGrphc"
+    ],
+    [
+      "EPSGrphc",
+      "PSGRAPHIC"
+    ],
+    [
+      "PrtPScript",
+      "Problem4"
+    ],
+    [
+      "PrtPScript",
+      "AvlblVrtlMmry"
+    ],
+    [
+      "PrtPScript",
+      "PSERRMEM"
+    ],
+    [
+      "PrtPScript",
+      "TstpsTxt"
+    ],
+    [
+      "PrtPScript",
+      "Problem6"
+    ],
+    [
+      "PrtPScript",
+      "Problem3"
+    ],
+    [
+      "AvlblVrtlMmry",
+      "PSERRMEM"
+    ],
+    [
+      "AvlblVrtlMmry",
+      "TstpsTxt"
+    ],
+    [
+      "AvlblVrtlMmry",
+      "GrbldPS"
+    ],
+    [
+      "AvlblVrtlMmry",
+      "IncmpltPS"
+    ],
+    [
+      "TrTypFnts",
+      "Problem5"
+    ],
+    [
+      "FntInstlltn",
+      "TTOK"
+    ],
+    [
+      "FntInstlltn",
+      "NnTTOK"
+    ],
+    [
+      "PrntrAccptsTrtyp",
+      "TTOK"
+    ],
+    [
+      "GrbldPS",
+      "Problem6"
+    ],
+    [
+      "PrtQueue",
+      "NtSpd"
+    ]
+  ]
+}

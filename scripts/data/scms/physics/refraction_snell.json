@@ -1,0 +1,33 @@
+{
+    "vars": [
+    {
+      "name": "n_1",
+      "class": "EquationBasedNumericalSCMNode",
+      "accessibility": "controllable",
+      "domain": [1.0, 1.5]
+    },
+    {
+      "name": "n_2",
+      "class": "EquationBasedNumericalSCMNode",
+      "accessibility": "controllable",
+      "domain": [1.5, 2.5]
+    },
+    {
+      "name": "theta_1",
+      "class": "EquationBasedNumericalSCMNode",
+      "accessibility": "controllable",
+      "domain": [0.0, 1.57]
+    },
+    {
+      "name": "theta_2",
+      "equation": "asin(n_1*sin(theta_1)/n_2)",
+      "class": "EquationBasedNumericalSCMNode",
+      "domain": [-1e10, 1e10]
+    }
+  ],
+  "edges": [
+    ["n_1", "theta_2"],
+    ["n_2", "theta_2"],
+    ["theta_1", "theta_2"]
+  ]
+}

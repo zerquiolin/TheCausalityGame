@@ -1,0 +1,7109 @@
+{
+  "vars": [
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "N0_7muVerMo",
+      "parents": [],
+      "values": [
+        "StrongUp",
+        "WeakUp",
+        "Neutral",
+        "Down"
+      ],
+      "probability_distribution": [
+        [
+          0.25
+        ],
+        [
+          0.25
+        ],
+        [
+          0.25
+        ],
+        [
+          0.25
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "SubjVertMo",
+      "parents": [],
+      "values": [
+        "StronUp",
+        "WeakUp",
+        "Neutral",
+        "Down"
+      ],
+      "probability_distribution": [
+        [
+          0.15
+        ],
+        [
+          0.15
+        ],
+        [
+          0.5
+        ],
+        [
+          0.2
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "QGVertMotion",
+      "parents": [],
+      "values": [
+        "StrongUp",
+        "WeakUp",
+        "Neutral",
+        "Down"
+      ],
+      "probability_distribution": [
+        [
+          0.15
+        ],
+        [
+          0.15
+        ],
+        [
+          0.5
+        ],
+        [
+          0.2
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "CombVerMo",
+      "parents": [
+        "QGVertMotion",
+        "SubjVertMo",
+        "N0_7muVerMo"
+      ],
+      "values": [
+        "StrongUp",
+        "WeakUp",
+        "Neutral",
+        "Down"
+      ],
+      "probability_distribution": {
+        "StrongUp,StronUp,StrongUp": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "StrongUp,StronUp,WeakUp": [
+          0.9,
+          0.1,
+          0.0,
+          0.0
+        ],
+        "StrongUp,StronUp,Neutral": [
+          0.7,
+          0.2,
+          0.1,
+          0.0
+        ],
+        "StrongUp,StronUp,Down": [
+          0.2,
+          0.5,
+          0.2,
+          0.1
+        ],
+        "StrongUp,WeakUp,StrongUp": [
+          0.9,
+          0.1,
+          0.0,
+          0.0
+        ],
+        "StrongUp,WeakUp,WeakUp": [
+          0.7,
+          0.3,
+          0.0,
+          0.0
+        ],
+        "StrongUp,WeakUp,Neutral": [
+          0.15,
+          0.7,
+          0.15,
+          0.0
+        ],
+        "StrongUp,WeakUp,Down": [
+          0.1,
+          0.35,
+          0.45,
+          0.1
+        ],
+        "StrongUp,Neutral,StrongUp": [
+          0.7,
+          0.2,
+          0.1,
+          0.0
+        ],
+        "StrongUp,Neutral,WeakUp": [
+          0.15,
+          0.7,
+          0.15,
+          0.0
+        ],
+        "StrongUp,Neutral,Neutral": [
+          0.2,
+          0.6,
+          0.2,
+          0.0
+        ],
+        "StrongUp,Neutral,Down": [
+          0.1,
+          0.2,
+          0.6,
+          0.1
+        ],
+        "StrongUp,Down,StrongUp": [
+          0.2,
+          0.5,
+          0.2,
+          0.1
+        ],
+        "StrongUp,Down,WeakUp": [
+          0.1,
+          0.35,
+          0.45,
+          0.1
+        ],
+        "StrongUp,Down,Neutral": [
+          0.1,
+          0.2,
+          0.6,
+          0.1
+        ],
+        "StrongUp,Down,Down": [
+          0.1,
+          0.1,
+          0.2,
+          0.6
+        ],
+        "WeakUp,StronUp,StrongUp": [
+          0.9,
+          0.1,
+          0.0,
+          0.0
+        ],
+        "WeakUp,StronUp,WeakUp": [
+          0.7,
+          0.3,
+          0.0,
+          0.0
+        ],
+        "WeakUp,StronUp,Neutral": [
+          0.15,
+          0.7,
+          0.15,
+          0.0
+        ],
+        "WeakUp,StronUp,Down": [
+          0.1,
+          0.35,
+          0.45,
+          0.1
+        ],
+        "WeakUp,WeakUp,StrongUp": [
+          0.7,
+          0.3,
+          0.0,
+          0.0
+        ],
+        "WeakUp,WeakUp,WeakUp": [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "WeakUp,WeakUp,Neutral": [
+          0.0,
+          0.7,
+          0.3,
+          0.0
+        ],
+        "WeakUp,WeakUp,Down": [
+          0.0,
+          0.2,
+          0.7,
+          0.1
+        ],
+        "WeakUp,Neutral,StrongUp": [
+          0.15,
+          0.7,
+          0.15,
+          0.0
+        ],
+        "WeakUp,Neutral,WeakUp": [
+          0.0,
+          0.7,
+          0.3,
+          0.0
+        ],
+        "WeakUp,Neutral,Neutral": [
+          0.0,
+          0.3,
+          0.7,
+          0.0
+        ],
+        "WeakUp,Neutral,Down": [
+          0.0,
+          0.15,
+          0.5,
+          0.35
+        ],
+        "WeakUp,Down,StrongUp": [
+          0.1,
+          0.35,
+          0.45,
+          0.1
+        ],
+        "WeakUp,Down,WeakUp": [
+          0.0,
+          0.2,
+          0.7,
+          0.1
+        ],
+        "WeakUp,Down,Neutral": [
+          0.0,
+          0.15,
+          0.5,
+          0.35
+        ],
+        "WeakUp,Down,Down": [
+          0.0,
+          0.1,
+          0.2,
+          0.7
+        ],
+        "Neutral,StronUp,StrongUp": [
+          0.7,
+          0.2,
+          0.1,
+          0.0
+        ],
+        "Neutral,StronUp,WeakUp": [
+          0.15,
+          0.7,
+          0.15,
+          0.0
+        ],
+        "Neutral,StronUp,Neutral": [
+          0.2,
+          0.6,
+          0.2,
+          0.0
+        ],
+        "Neutral,StronUp,Down": [
+          0.1,
+          0.2,
+          0.6,
+          0.1
+        ],
+        "Neutral,WeakUp,StrongUp": [
+          0.15,
+          0.7,
+          0.15,
+          0.0
+        ],
+        "Neutral,WeakUp,WeakUp": [
+          0.0,
+          0.7,
+          0.3,
+          0.0
+        ],
+        "Neutral,WeakUp,Neutral": [
+          0.0,
+          0.3,
+          0.7,
+          0.0
+        ],
+        "Neutral,WeakUp,Down": [
+          0.0,
+          0.15,
+          0.5,
+          0.35
+        ],
+        "Neutral,Neutral,StrongUp": [
+          0.2,
+          0.6,
+          0.2,
+          0.0
+        ],
+        "Neutral,Neutral,WeakUp": [
+          0.0,
+          0.3,
+          0.7,
+          0.0
+        ],
+        "Neutral,Neutral,Neutral": [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "Neutral,Neutral,Down": [
+          0.0,
+          0.0,
+          0.7,
+          0.3
+        ],
+        "Neutral,Down,StrongUp": [
+          0.1,
+          0.2,
+          0.6,
+          0.1
+        ],
+        "Neutral,Down,WeakUp": [
+          0.0,
+          0.15,
+          0.5,
+          0.35
+        ],
+        "Neutral,Down,Neutral": [
+          0.0,
+          0.0,
+          0.7,
+          0.3
+        ],
+        "Neutral,Down,Down": [
+          0.0,
+          0.0,
+          0.3,
+          0.7
+        ],
+        "Down,StronUp,StrongUp": [
+          0.2,
+          0.5,
+          0.2,
+          0.1
+        ],
+        "Down,StronUp,WeakUp": [
+          0.1,
+          0.35,
+          0.45,
+          0.1
+        ],
+        "Down,StronUp,Neutral": [
+          0.1,
+          0.2,
+          0.6,
+          0.1
+        ],
+        "Down,StronUp,Down": [
+          0.1,
+          0.1,
+          0.2,
+          0.6
+        ],
+        "Down,WeakUp,StrongUp": [
+          0.1,
+          0.35,
+          0.45,
+          0.1
+        ],
+        "Down,WeakUp,WeakUp": [
+          0.0,
+          0.2,
+          0.7,
+          0.1
+        ],
+        "Down,WeakUp,Neutral": [
+          0.0,
+          0.15,
+          0.5,
+          0.35
+        ],
+        "Down,WeakUp,Down": [
+          0.0,
+          0.1,
+          0.2,
+          0.7
+        ],
+        "Down,Neutral,StrongUp": [
+          0.1,
+          0.2,
+          0.6,
+          0.1
+        ],
+        "Down,Neutral,WeakUp": [
+          0.0,
+          0.15,
+          0.5,
+          0.35
+        ],
+        "Down,Neutral,Neutral": [
+          0.0,
+          0.0,
+          0.7,
+          0.3
+        ],
+        "Down,Neutral,Down": [
+          0.0,
+          0.0,
+          0.3,
+          0.7
+        ],
+        "Down,Down,StrongUp": [
+          0.1,
+          0.1,
+          0.2,
+          0.6
+        ],
+        "Down,Down,WeakUp": [
+          0.0,
+          0.1,
+          0.2,
+          0.7
+        ],
+        "Down,Down,Neutral": [
+          0.0,
+          0.0,
+          0.3,
+          0.7
+        ],
+        "Down,Down,Down": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "AreaMeso_ALS",
+      "parents": [
+        "CombVerMo"
+      ],
+      "values": [
+        "StrongUp",
+        "WeakUp",
+        "Neutral",
+        "Down"
+      ],
+      "probability_distribution": {
+        "StrongUp": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "WeakUp": [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "Neutral": [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "Down": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "SatContMoist",
+      "parents": [],
+      "values": [
+        "VeryWet",
+        "Wet",
+        "Neutral",
+        "Dry"
+      ],
+      "probability_distribution": [
+        [
+          0.15
+        ],
+        [
+          0.2
+        ],
+        [
+          0.4
+        ],
+        [
+          0.25
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "RaoContMoist",
+      "parents": [],
+      "values": [
+        "VeryWet",
+        "Wet",
+        "Neutral",
+        "Dry"
+      ],
+      "probability_distribution": [
+        [
+          0.15
+        ],
+        [
+          0.2
+        ],
+        [
+          0.4
+        ],
+        [
+          0.25
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "CombMoisture",
+      "parents": [
+        "RaoContMoist",
+        "SatContMoist"
+      ],
+      "values": [
+        "VeryWet",
+        "Wet",
+        "Neutral",
+        "Dry"
+      ],
+      "probability_distribution": {
+        "VeryWet,VeryWet": [
+          0.9,
+          0.1,
+          0.0,
+          0.0
+        ],
+        "VeryWet,Wet": [
+          0.6,
+          0.35,
+          0.05,
+          0.0
+        ],
+        "VeryWet,Neutral": [
+          0.3,
+          0.5,
+          0.2,
+          0.0
+        ],
+        "VeryWet,Dry": [
+          0.25,
+          0.35,
+          0.25,
+          0.15
+        ],
+        "Wet,VeryWet": [
+          0.55,
+          0.4,
+          0.05,
+          0.0
+        ],
+        "Wet,Wet": [
+          0.15,
+          0.6,
+          0.2,
+          0.05
+        ],
+        "Wet,Neutral": [
+          0.05,
+          0.4,
+          0.45,
+          0.1
+        ],
+        "Wet,Dry": [
+          0.1,
+          0.3,
+          0.3,
+          0.3
+        ],
+        "Neutral,VeryWet": [
+          0.25,
+          0.3,
+          0.35,
+          0.1
+        ],
+        "Neutral,Wet": [
+          0.1,
+          0.35,
+          0.5,
+          0.05
+        ],
+        "Neutral,Neutral": [
+          0.0,
+          0.15,
+          0.7,
+          0.15
+        ],
+        "Neutral,Dry": [
+          0.0,
+          0.1,
+          0.4,
+          0.5
+        ],
+        "Dry,VeryWet": [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "Dry,Wet": [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "Dry,Neutral": [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "Dry,Dry": [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "AreaMoDryAir",
+      "parents": [
+        "CombMoisture",
+        "AreaMeso_ALS"
+      ],
+      "values": [
+        "VeryWet",
+        "Wet",
+        "Neutral",
+        "Dry"
+      ],
+      "probability_distribution": {
+        "VeryWet,StrongUp": [
+          0.99,
+          0.01,
+          0.0,
+          0.0
+        ],
+        "VeryWet,WeakUp": [
+          0.7,
+          0.29,
+          0.01,
+          0.0
+        ],
+        "VeryWet,Neutral": [
+          0.2,
+          0.55,
+          0.24,
+          0.01
+        ],
+        "VeryWet,Down": [
+          0.0,
+          0.25,
+          0.55,
+          0.2
+        ],
+        "Wet,StrongUp": [
+          0.8,
+          0.2,
+          0.0,
+          0.0
+        ],
+        "Wet,WeakUp": [
+          0.35,
+          0.55,
+          0.1,
+          0.0
+        ],
+        "Wet,Neutral": [
+          0.01,
+          0.39,
+          0.55,
+          0.05
+        ],
+        "Wet,Down": [
+          0.0,
+          0.02,
+          0.43,
+          0.55
+        ],
+        "Neutral,StrongUp": [
+          0.7,
+          0.29,
+          0.01,
+          0.0
+        ],
+        "Neutral,WeakUp": [
+          0.2,
+          0.6,
+          0.2,
+          0.0
+        ],
+        "Neutral,Neutral": [
+          0.01,
+          0.09,
+          0.8,
+          0.1
+        ],
+        "Neutral,Down": [
+          0.0,
+          0.0,
+          0.3,
+          0.7
+        ],
+        "Dry,StrongUp": [
+          0.2,
+          0.74,
+          0.06,
+          0.0
+        ],
+        "Dry,WeakUp": [
+          0.05,
+          0.4,
+          0.45,
+          0.1
+        ],
+        "Dry,Neutral": [
+          0.0,
+          0.05,
+          0.5,
+          0.45
+        ],
+        "Dry,Down": [
+          0.0,
+          0.0,
+          0.01,
+          0.99
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "VISCloudCov",
+      "parents": [],
+      "values": [
+        "Cloudy",
+        "PC",
+        "Clear"
+      ],
+      "probability_distribution": [
+        [
+          0.1
+        ],
+        [
+          0.5
+        ],
+        [
+          0.4
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "IRCloudCover",
+      "parents": [],
+      "values": [
+        "Cloudy",
+        "PC",
+        "Clear"
+      ],
+      "probability_distribution": [
+        [
+          0.15
+        ],
+        [
+          0.45
+        ],
+        [
+          0.4
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "CombClouds",
+      "parents": [
+        "IRCloudCover",
+        "VISCloudCov"
+      ],
+      "values": [
+        "Cloudy",
+        "PC",
+        "Clear"
+      ],
+      "probability_distribution": {
+        "Cloudy,Cloudy": [
+          0.95,
+          0.04,
+          0.01
+        ],
+        "Cloudy,PC": [
+          0.85,
+          0.13,
+          0.02
+        ],
+        "Cloudy,Clear": [
+          0.8,
+          0.1,
+          0.1
+        ],
+        "PC,Cloudy": [
+          0.45,
+          0.52,
+          0.03
+        ],
+        "PC,PC": [
+          0.1,
+          0.8,
+          0.1
+        ],
+        "PC,Clear": [
+          0.05,
+          0.45,
+          0.5
+        ],
+        "Clear,Cloudy": [
+          0.1,
+          0.4,
+          0.5
+        ],
+        "Clear,PC": [
+          0.02,
+          0.28,
+          0.7
+        ],
+        "Clear,Clear": [
+          0.0,
+          0.02,
+          0.98
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "CldShadeOth",
+      "parents": [
+        "CombClouds",
+        "AreaMeso_ALS",
+        "AreaMoDryAir"
+      ],
+      "values": [
+        "Cloudy",
+        "PC",
+        "Clear"
+      ],
+      "probability_distribution": {
+        "Cloudy,StrongUp,VeryWet": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "Cloudy,StrongUp,Wet": [
+          0.85,
+          0.15,
+          0.0
+        ],
+        "Cloudy,StrongUp,Neutral": [
+          0.25,
+          0.35,
+          0.4
+        ],
+        "Cloudy,StrongUp,Dry": [
+          0.95,
+          0.05,
+          0.0
+        ],
+        "Cloudy,WeakUp,VeryWet": [
+          0.4,
+          0.55,
+          0.05
+        ],
+        "Cloudy,WeakUp,Wet": [
+          0.05,
+          0.45,
+          0.5
+        ],
+        "Cloudy,WeakUp,Neutral": [
+          0.93,
+          0.07,
+          0.0
+        ],
+        "Cloudy,WeakUp,Dry": [
+          0.2,
+          0.78,
+          0.02
+        ],
+        "Cloudy,Neutral,VeryWet": [
+          0.01,
+          0.29,
+          0.7
+        ],
+        "Cloudy,Neutral,Wet": [
+          0.74,
+          0.25,
+          0.01
+        ],
+        "Cloudy,Neutral,Neutral": [
+          0.0,
+          0.5,
+          0.5
+        ],
+        "Cloudy,Neutral,Dry": [
+          0.0,
+          0.1,
+          0.9
+        ],
+        "Cloudy,Down,VeryWet": [
+          0.92,
+          0.08,
+          0.0
+        ],
+        "Cloudy,Down,Wet": [
+          0.7,
+          0.29,
+          0.01
+        ],
+        "Cloudy,Down,Neutral": [
+          0.15,
+          0.4,
+          0.45
+        ],
+        "Cloudy,Down,Dry": [
+          0.9,
+          0.09,
+          0.01
+        ],
+        "PC,StrongUp,VeryWet": [
+          0.25,
+          0.6,
+          0.15
+        ],
+        "PC,StrongUp,Wet": [
+          0.01,
+          0.3,
+          0.69
+        ],
+        "PC,StrongUp,Neutral": [
+          0.8,
+          0.2,
+          0.0
+        ],
+        "PC,StrongUp,Dry": [
+          0.01,
+          0.89,
+          0.1
+        ],
+        "PC,WeakUp,VeryWet": [
+          0.0,
+          0.1,
+          0.9
+        ],
+        "PC,WeakUp,Wet": [
+          0.65,
+          0.34,
+          0.01
+        ],
+        "PC,WeakUp,Neutral": [
+          0.0,
+          0.4,
+          0.6
+        ],
+        "PC,WeakUp,Dry": [
+          0.0,
+          0.02,
+          0.98
+        ],
+        "PC,Neutral,VeryWet": [
+          0.88,
+          0.12,
+          0.0
+        ],
+        "PC,Neutral,Wet": [
+          0.4,
+          0.5,
+          0.1
+        ],
+        "PC,Neutral,Neutral": [
+          0.1,
+          0.4,
+          0.5
+        ],
+        "PC,Neutral,Dry": [
+          0.85,
+          0.15,
+          0.0
+        ],
+        "PC,Down,VeryWet": [
+          0.15,
+          0.75,
+          0.1
+        ],
+        "PC,Down,Wet": [
+          0.0,
+          0.2,
+          0.8
+        ],
+        "PC,Down,Neutral": [
+          0.8,
+          0.18,
+          0.02
+        ],
+        "PC,Down,Dry": [
+          0.03,
+          0.85,
+          0.12
+        ],
+        "Clear,StrongUp,VeryWet": [
+          0.0,
+          0.05,
+          0.95
+        ],
+        "Clear,StrongUp,Wet": [
+          0.5,
+          0.48,
+          0.02
+        ],
+        "Clear,StrongUp,Neutral": [
+          0.01,
+          0.74,
+          0.25
+        ],
+        "Clear,StrongUp,Dry": [
+          0.0,
+          0.01,
+          0.99
+        ],
+        "Clear,WeakUp,VeryWet": [
+          0.85,
+          0.14,
+          0.01
+        ],
+        "Clear,WeakUp,Wet": [
+          0.55,
+          0.43,
+          0.02
+        ],
+        "Clear,WeakUp,Neutral": [
+          0.1,
+          0.25,
+          0.65
+        ],
+        "Clear,WeakUp,Dry": [
+          0.6,
+          0.39,
+          0.01
+        ],
+        "Clear,Neutral,VeryWet": [
+          0.01,
+          0.9,
+          0.09
+        ],
+        "Clear,Neutral,Wet": [
+          0.0,
+          0.15,
+          0.85
+        ],
+        "Clear,Neutral,Neutral": [
+          0.78,
+          0.2,
+          0.02
+        ],
+        "Clear,Neutral,Dry": [
+          0.01,
+          0.74,
+          0.25
+        ],
+        "Clear,Down,VeryWet": [
+          0.0,
+          0.04,
+          0.96
+        ],
+        "Clear,Down,Wet": [
+          0.42,
+          0.55,
+          0.03
+        ],
+        "Clear,Down,Neutral": [
+          0.05,
+          0.65,
+          0.3
+        ],
+        "Clear,Down,Dry": [
+          0.0,
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "AMInstabMt",
+      "parents": [],
+      "values": [
+        "None",
+        "Weak",
+        "Strong"
+      ],
+      "probability_distribution": [
+        [
+          0.333333
+        ],
+        [
+          0.333333
+        ],
+        [
+          0.333334
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "InsInMt",
+      "parents": [
+        "AMInstabMt",
+        "CldShadeOth"
+      ],
+      "values": [
+        "None",
+        "Weak",
+        "Strong"
+      ],
+      "probability_distribution": {
+        "None,Cloudy": [
+          0.9,
+          0.1,
+          0.0
+        ],
+        "None,PC": [
+          0.01,
+          0.4,
+          0.59
+        ],
+        "None,Clear": [
+          0.0,
+          0.05,
+          0.95
+        ],
+        "Weak,Cloudy": [
+          0.6,
+          0.39,
+          0.01
+        ],
+        "Weak,PC": [
+          0.0,
+          0.4,
+          0.6
+        ],
+        "Weak,Clear": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "Strong,Cloudy": [
+          0.5,
+          0.35,
+          0.15
+        ],
+        "Strong,PC": [
+          0.0,
+          0.15,
+          0.85
+        ],
+        "Strong,Clear": [
+          0.0,
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "WndHodograph",
+      "parents": [],
+      "values": [
+        "DCVZFavor",
+        "StrongWest",
+        "Westerly",
+        "Other"
+      ],
+      "probability_distribution": [
+        [
+          0.3
+        ],
+        [
+          0.25
+        ],
+        [
+          0.25
+        ],
+        [
+          0.2
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "OutflowFrMt",
+      "parents": [
+        "WndHodograph",
+        "InsInMt"
+      ],
+      "values": [
+        "None",
+        "Weak",
+        "Strong"
+      ],
+      "probability_distribution": {
+        "DCVZFavor,None": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "DCVZFavor,Weak": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "DCVZFavor,Strong": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "StrongWest,None": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "StrongWest,Weak": [
+          0.5,
+          0.4,
+          0.1
+        ],
+        "StrongWest,Strong": [
+          0.15,
+          0.4,
+          0.45
+        ],
+        "Westerly,None": [
+          0.35,
+          0.6,
+          0.05
+        ],
+        "Westerly,Weak": [
+          0.8,
+          0.19,
+          0.01
+        ],
+        "Westerly,Strong": [
+          0.05,
+          0.45,
+          0.5
+        ],
+        "Other,None": [
+          0.01,
+          0.15,
+          0.84
+        ],
+        "Other,Weak": [
+          0.1,
+          0.25,
+          0.65
+        ],
+        "Other,Strong": [
+          0.6,
+          0.3,
+          0.1
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "MorningBound",
+      "parents": [],
+      "values": [
+        "None",
+        "Weak",
+        "Strong"
+      ],
+      "probability_distribution": [
+        [
+          0.5
+        ],
+        [
+          0.35
+        ],
+        [
+          0.15
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Boundaries",
+      "parents": [
+        "MorningBound",
+        "WndHodograph",
+        "OutflowFrMt"
+      ],
+      "values": [
+        "None",
+        "Weak",
+        "Strong"
+      ],
+      "probability_distribution": {
+        "None,DCVZFavor,None": [
+          0.5,
+          0.48,
+          0.02
+        ],
+        "None,DCVZFavor,Weak": [
+          0.3,
+          0.5,
+          0.2
+        ],
+        "None,DCVZFavor,Strong": [
+          0.1,
+          0.25,
+          0.65
+        ],
+        "None,StrongWest,None": [
+          0.75,
+          0.22,
+          0.03
+        ],
+        "None,StrongWest,Weak": [
+          0.45,
+          0.45,
+          0.1
+        ],
+        "None,StrongWest,Strong": [
+          0.25,
+          0.4,
+          0.35
+        ],
+        "None,Westerly,None": [
+          0.8,
+          0.18,
+          0.02
+        ],
+        "None,Westerly,Weak": [
+          0.35,
+          0.5,
+          0.15
+        ],
+        "None,Westerly,Strong": [
+          0.25,
+          0.35,
+          0.4
+        ],
+        "None,Other,None": [
+          0.7,
+          0.28,
+          0.02
+        ],
+        "None,Other,Weak": [
+          0.25,
+          0.6,
+          0.15
+        ],
+        "None,Other,Strong": [
+          0.05,
+          0.35,
+          0.6
+        ],
+        "Weak,DCVZFavor,None": [
+          0.3,
+          0.63,
+          0.07
+        ],
+        "Weak,DCVZFavor,Weak": [
+          0.1,
+          0.5,
+          0.4
+        ],
+        "Weak,DCVZFavor,Strong": [
+          0.05,
+          0.2,
+          0.75
+        ],
+        "Weak,StrongWest,None": [
+          0.15,
+          0.7,
+          0.15
+        ],
+        "Weak,StrongWest,Weak": [
+          0.1,
+          0.75,
+          0.15
+        ],
+        "Weak,StrongWest,Strong": [
+          0.05,
+          0.5,
+          0.45
+        ],
+        "Weak,Westerly,None": [
+          0.15,
+          0.7,
+          0.15
+        ],
+        "Weak,Westerly,Weak": [
+          0.05,
+          0.8,
+          0.15
+        ],
+        "Weak,Westerly,Strong": [
+          0.05,
+          0.45,
+          0.5
+        ],
+        "Weak,Other,None": [
+          0.4,
+          0.55,
+          0.05
+        ],
+        "Weak,Other,Weak": [
+          0.2,
+          0.65,
+          0.15
+        ],
+        "Weak,Other,Strong": [
+          0.05,
+          0.3,
+          0.65
+        ],
+        "Strong,DCVZFavor,None": [
+          0.0,
+          0.55,
+          0.45
+        ],
+        "Strong,DCVZFavor,Weak": [
+          0.0,
+          0.4,
+          0.6
+        ],
+        "Strong,DCVZFavor,Strong": [
+          0.0,
+          0.15,
+          0.85
+        ],
+        "Strong,StrongWest,None": [
+          0.0,
+          0.5,
+          0.5
+        ],
+        "Strong,StrongWest,Weak": [
+          0.0,
+          0.4,
+          0.6
+        ],
+        "Strong,StrongWest,Strong": [
+          0.0,
+          0.2,
+          0.8
+        ],
+        "Strong,Westerly,None": [
+          0.0,
+          0.7,
+          0.3
+        ],
+        "Strong,Westerly,Weak": [
+          0.0,
+          0.5,
+          0.5
+        ],
+        "Strong,Westerly,Strong": [
+          0.0,
+          0.2,
+          0.8
+        ],
+        "Strong,Other,None": [
+          0.02,
+          0.73,
+          0.25
+        ],
+        "Strong,Other,Weak": [
+          0.01,
+          0.5,
+          0.49
+        ],
+        "Strong,Other,Strong": [
+          0.01,
+          0.2,
+          0.79
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "CldShadeConv",
+      "parents": [
+        "WndHodograph",
+        "InsInMt"
+      ],
+      "values": [
+        "None",
+        "Some",
+        "Marked"
+      ],
+      "probability_distribution": {
+        "DCVZFavor,None": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "DCVZFavor,Weak": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "DCVZFavor,Strong": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "StrongWest,None": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "StrongWest,Weak": [
+          0.3,
+          0.6,
+          0.1
+        ],
+        "StrongWest,Strong": [
+          0.2,
+          0.7,
+          0.1
+        ],
+        "Westerly,None": [
+          0.5,
+          0.46,
+          0.04
+        ],
+        "Westerly,Weak": [
+          0.8,
+          0.19,
+          0.01
+        ],
+        "Westerly,Strong": [
+          0.0,
+          0.3,
+          0.7
+        ],
+        "Other,None": [
+          0.0,
+          0.2,
+          0.8
+        ],
+        "Other,Weak": [
+          0.1,
+          0.5,
+          0.4
+        ],
+        "Other,Strong": [
+          0.5,
+          0.38,
+          0.12
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "CompPlFcst",
+      "parents": [
+        "CldShadeOth",
+        "AreaMeso_ALS",
+        "CldShadeConv",
+        "Boundaries"
+      ],
+      "values": [
+        "IncCapDecIns",
+        "LittleChange",
+        "DecCapIncIns"
+      ],
+      "probability_distribution": {
+        "Cloudy,StrongUp,None,None": [
+          0.4,
+          0.35,
+          0.25
+        ],
+        "Cloudy,StrongUp,None,Weak": [
+          0.1,
+          0.35,
+          0.55
+        ],
+        "Cloudy,StrongUp,None,Strong": [
+          0.05,
+          0.3,
+          0.65
+        ],
+        "Cloudy,StrongUp,Some,None": [
+          0.6,
+          0.25,
+          0.15
+        ],
+        "Cloudy,StrongUp,Some,Weak": [
+          0.4,
+          0.3,
+          0.3
+        ],
+        "Cloudy,StrongUp,Some,Strong": [
+          0.2,
+          0.5,
+          0.3
+        ],
+        "Cloudy,StrongUp,Marked,None": [
+          0.6,
+          0.35,
+          0.05
+        ],
+        "Cloudy,StrongUp,Marked,Weak": [
+          0.45,
+          0.4,
+          0.15
+        ],
+        "Cloudy,StrongUp,Marked,Strong": [
+          0.25,
+          0.45,
+          0.3
+        ],
+        "Cloudy,WeakUp,None,None": [
+          0.7,
+          0.27,
+          0.03
+        ],
+        "Cloudy,WeakUp,None,Weak": [
+          0.65,
+          0.3,
+          0.05
+        ],
+        "Cloudy,WeakUp,None,Strong": [
+          0.6,
+          0.35,
+          0.05
+        ],
+        "Cloudy,WeakUp,Some,None": [
+          0.4,
+          0.35,
+          0.25
+        ],
+        "Cloudy,WeakUp,Some,Weak": [
+          0.25,
+          0.3,
+          0.45
+        ],
+        "Cloudy,WeakUp,Some,Strong": [
+          0.15,
+          0.35,
+          0.5
+        ],
+        "Cloudy,WeakUp,Marked,None": [
+          0.65,
+          0.25,
+          0.1
+        ],
+        "Cloudy,WeakUp,Marked,Weak": [
+          0.45,
+          0.3,
+          0.25
+        ],
+        "Cloudy,WeakUp,Marked,Strong": [
+          0.25,
+          0.5,
+          0.25
+        ],
+        "Cloudy,Neutral,None,None": [
+          0.65,
+          0.3,
+          0.05
+        ],
+        "Cloudy,Neutral,None,Weak": [
+          0.5,
+          0.4,
+          0.1
+        ],
+        "Cloudy,Neutral,None,Strong": [
+          0.3,
+          0.45,
+          0.25
+        ],
+        "Cloudy,Neutral,Some,None": [
+          0.75,
+          0.23,
+          0.02
+        ],
+        "Cloudy,Neutral,Some,Weak": [
+          0.7,
+          0.26,
+          0.04
+        ],
+        "Cloudy,Neutral,Some,Strong": [
+          0.65,
+          0.32,
+          0.03
+        ],
+        "Cloudy,Neutral,Marked,None": [
+          0.45,
+          0.3,
+          0.25
+        ],
+        "Cloudy,Neutral,Marked,Weak": [
+          0.4,
+          0.3,
+          0.3
+        ],
+        "Cloudy,Neutral,Marked,Strong": [
+          0.35,
+          0.3,
+          0.35
+        ],
+        "Cloudy,Down,None,None": [
+          0.7,
+          0.22,
+          0.08
+        ],
+        "Cloudy,Down,None,Weak": [
+          0.55,
+          0.3,
+          0.15
+        ],
+        "Cloudy,Down,None,Strong": [
+          0.4,
+          0.45,
+          0.15
+        ],
+        "Cloudy,Down,Some,None": [
+          0.7,
+          0.27,
+          0.03
+        ],
+        "Cloudy,Down,Some,Weak": [
+          0.6,
+          0.3,
+          0.1
+        ],
+        "Cloudy,Down,Some,Strong": [
+          0.55,
+          0.33,
+          0.12
+        ],
+        "Cloudy,Down,Marked,None": [
+          0.85,
+          0.14,
+          0.01
+        ],
+        "Cloudy,Down,Marked,Weak": [
+          0.8,
+          0.17,
+          0.03
+        ],
+        "Cloudy,Down,Marked,Strong": [
+          0.75,
+          0.23,
+          0.02
+        ],
+        "PC,StrongUp,None,None": [
+          0.35,
+          0.35,
+          0.3
+        ],
+        "PC,StrongUp,None,Weak": [
+          0.05,
+          0.35,
+          0.6
+        ],
+        "PC,StrongUp,None,Strong": [
+          0.03,
+          0.25,
+          0.72
+        ],
+        "PC,StrongUp,Some,None": [
+          0.5,
+          0.25,
+          0.25
+        ],
+        "PC,StrongUp,Some,Weak": [
+          0.3,
+          0.35,
+          0.35
+        ],
+        "PC,StrongUp,Some,Strong": [
+          0.15,
+          0.45,
+          0.4
+        ],
+        "PC,StrongUp,Marked,None": [
+          0.55,
+          0.3,
+          0.15
+        ],
+        "PC,StrongUp,Marked,Weak": [
+          0.4,
+          0.4,
+          0.2
+        ],
+        "PC,StrongUp,Marked,Strong": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "PC,WeakUp,None,None": [
+          0.6,
+          0.35,
+          0.05
+        ],
+        "PC,WeakUp,None,Weak": [
+          0.6,
+          0.3,
+          0.1
+        ],
+        "PC,WeakUp,None,Strong": [
+          0.55,
+          0.33,
+          0.12
+        ],
+        "PC,WeakUp,Some,None": [
+          0.35,
+          0.35,
+          0.3
+        ],
+        "PC,WeakUp,Some,Weak": [
+          0.1,
+          0.35,
+          0.55
+        ],
+        "PC,WeakUp,Some,Strong": [
+          0.05,
+          0.3,
+          0.65
+        ],
+        "PC,WeakUp,Marked,None": [
+          0.55,
+          0.25,
+          0.2
+        ],
+        "PC,WeakUp,Marked,Weak": [
+          0.35,
+          0.35,
+          0.3
+        ],
+        "PC,WeakUp,Marked,Strong": [
+          0.2,
+          0.5,
+          0.3
+        ],
+        "PC,Neutral,None,None": [
+          0.6,
+          0.3,
+          0.1
+        ],
+        "PC,Neutral,None,Weak": [
+          0.45,
+          0.4,
+          0.15
+        ],
+        "PC,Neutral,None,Strong": [
+          0.25,
+          0.5,
+          0.25
+        ],
+        "PC,Neutral,Some,None": [
+          0.65,
+          0.3,
+          0.05
+        ],
+        "PC,Neutral,Some,Weak": [
+          0.65,
+          0.3,
+          0.05
+        ],
+        "PC,Neutral,Some,Strong": [
+          0.6,
+          0.35,
+          0.05
+        ],
+        "PC,Neutral,Marked,None": [
+          0.4,
+          0.35,
+          0.25
+        ],
+        "PC,Neutral,Marked,Weak": [
+          0.25,
+          0.4,
+          0.35
+        ],
+        "PC,Neutral,Marked,Strong": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "PC,Down,None,None": [
+          0.65,
+          0.25,
+          0.1
+        ],
+        "PC,Down,None,Weak": [
+          0.45,
+          0.35,
+          0.2
+        ],
+        "PC,Down,None,Strong": [
+          0.3,
+          0.5,
+          0.2
+        ],
+        "PC,Down,Some,None": [
+          0.65,
+          0.3,
+          0.05
+        ],
+        "PC,Down,Some,Weak": [
+          0.55,
+          0.3,
+          0.15
+        ],
+        "PC,Down,Some,Strong": [
+          0.5,
+          0.3,
+          0.2
+        ],
+        "PC,Down,Marked,None": [
+          0.78,
+          0.18,
+          0.04
+        ],
+        "PC,Down,Marked,Weak": [
+          0.75,
+          0.2,
+          0.05
+        ],
+        "PC,Down,Marked,Strong": [
+          0.7,
+          0.25,
+          0.05
+        ],
+        "Clear,StrongUp,None,None": [
+          0.3,
+          0.3,
+          0.4
+        ],
+        "Clear,StrongUp,None,Weak": [
+          0.01,
+          0.25,
+          0.74
+        ],
+        "Clear,StrongUp,None,Strong": [
+          0.01,
+          0.2,
+          0.79
+        ],
+        "Clear,StrongUp,Some,None": [
+          0.35,
+          0.25,
+          0.4
+        ],
+        "Clear,StrongUp,Some,Weak": [
+          0.15,
+          0.4,
+          0.45
+        ],
+        "Clear,StrongUp,Some,Strong": [
+          0.1,
+          0.35,
+          0.55
+        ],
+        "Clear,StrongUp,Marked,None": [
+          0.45,
+          0.3,
+          0.25
+        ],
+        "Clear,StrongUp,Marked,Weak": [
+          0.3,
+          0.4,
+          0.3
+        ],
+        "Clear,StrongUp,Marked,Strong": [
+          0.15,
+          0.4,
+          0.45
+        ],
+        "Clear,WeakUp,None,None": [
+          0.5,
+          0.35,
+          0.15
+        ],
+        "Clear,WeakUp,None,Weak": [
+          0.48,
+          0.32,
+          0.2
+        ],
+        "Clear,WeakUp,None,Strong": [
+          0.45,
+          0.35,
+          0.2
+        ],
+        "Clear,WeakUp,Some,None": [
+          0.3,
+          0.3,
+          0.4
+        ],
+        "Clear,WeakUp,Some,Weak": [
+          0.05,
+          0.6,
+          0.35
+        ],
+        "Clear,WeakUp,Some,Strong": [
+          0.04,
+          0.27,
+          0.69
+        ],
+        "Clear,WeakUp,Marked,None": [
+          0.4,
+          0.25,
+          0.35
+        ],
+        "Clear,WeakUp,Marked,Weak": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "Clear,WeakUp,Marked,Strong": [
+          0.12,
+          0.43,
+          0.45
+        ],
+        "Clear,Neutral,None,None": [
+          0.5,
+          0.3,
+          0.2
+        ],
+        "Clear,Neutral,None,Weak": [
+          0.35,
+          0.4,
+          0.25
+        ],
+        "Clear,Neutral,None,Strong": [
+          0.2,
+          0.45,
+          0.35
+        ],
+        "Clear,Neutral,Some,None": [
+          0.55,
+          0.35,
+          0.1
+        ],
+        "Clear,Neutral,Some,Weak": [
+          0.55,
+          0.3,
+          0.15
+        ],
+        "Clear,Neutral,Some,Strong": [
+          0.5,
+          0.4,
+          0.1
+        ],
+        "Clear,Neutral,Marked,None": [
+          0.3,
+          0.35,
+          0.35
+        ],
+        "Clear,Neutral,Marked,Weak": [
+          0.15,
+          0.35,
+          0.5
+        ],
+        "Clear,Neutral,Marked,Strong": [
+          0.13,
+          0.35,
+          0.52
+        ],
+        "Clear,Down,None,None": [
+          0.5,
+          0.25,
+          0.25
+        ],
+        "Clear,Down,None,Weak": [
+          0.35,
+          0.35,
+          0.3
+        ],
+        "Clear,Down,None,Strong": [
+          0.2,
+          0.45,
+          0.35
+        ],
+        "Clear,Down,Some,None": [
+          0.55,
+          0.35,
+          0.1
+        ],
+        "Clear,Down,Some,Weak": [
+          0.45,
+          0.35,
+          0.2
+        ],
+        "Clear,Down,Some,Strong": [
+          0.4,
+          0.35,
+          0.25
+        ],
+        "Clear,Down,Marked,None": [
+          0.7,
+          0.24,
+          0.06
+        ],
+        "Clear,Down,Marked,Weak": [
+          0.65,
+          0.28,
+          0.07
+        ],
+        "Clear,Down,Marked,Strong": [
+          0.6,
+          0.3,
+          0.1
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "CapChange",
+      "parents": [
+        "CompPlFcst"
+      ],
+      "values": [
+        "Decreasing",
+        "LittleChange",
+        "Increasing"
+      ],
+      "probability_distribution": {
+        "IncCapDecIns": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "LittleChange": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "DecCapIncIns": [
+          1.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "LoLevMoistAd",
+      "parents": [],
+      "values": [
+        "StrongPos",
+        "WeakPos",
+        "Neutral",
+        "Negative"
+      ],
+      "probability_distribution": [
+        [
+          0.12
+        ],
+        [
+          0.28
+        ],
+        [
+          0.3
+        ],
+        [
+          0.3
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "InsChange",
+      "parents": [
+        "CompPlFcst",
+        "LoLevMoistAd"
+      ],
+      "values": [
+        "Decreasing",
+        "LittleChange",
+        "Increasing"
+      ],
+      "probability_distribution": {
+        "IncCapDecIns,StrongPos": [
+          0.0,
+          0.05,
+          0.95
+        ],
+        "IncCapDecIns,WeakPos": [
+          0.0,
+          0.12,
+          0.88
+        ],
+        "IncCapDecIns,Neutral": [
+          0.05,
+          0.15,
+          0.8
+        ],
+        "IncCapDecIns,Negative": [
+          0.05,
+          0.15,
+          0.8
+        ],
+        "LittleChange,StrongPos": [
+          0.1,
+          0.4,
+          0.5
+        ],
+        "LittleChange,WeakPos": [
+          0.25,
+          0.5,
+          0.25
+        ],
+        "LittleChange,Neutral": [
+          0.15,
+          0.5,
+          0.35
+        ],
+        "LittleChange,Negative": [
+          0.2,
+          0.6,
+          0.2
+        ],
+        "DecCapIncIns,StrongPos": [
+          0.35,
+          0.5,
+          0.15
+        ],
+        "DecCapIncIns,WeakPos": [
+          0.5,
+          0.4,
+          0.1
+        ],
+        "DecCapIncIns,Neutral": [
+          0.8,
+          0.16,
+          0.04
+        ],
+        "DecCapIncIns,Negative": [
+          0.9,
+          0.09,
+          0.01
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "MountainFcst",
+      "parents": [
+        "InsInMt"
+      ],
+      "values": [
+        "XNIL",
+        "SIG",
+        "SVR"
+      ],
+      "probability_distribution": {
+        "None": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "Weak": [
+          0.48,
+          0.5,
+          0.02
+        ],
+        "Strong": [
+          0.2,
+          0.5,
+          0.3
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Date",
+      "parents": [],
+      "values": [
+        "May15_Jun14",
+        "Jun15_Jul1",
+        "Jul2_Jul15",
+        "Jul16_Aug10",
+        "Aug11_Aug20",
+        "Aug20_Sep15"
+      ],
+      "probability_distribution": [
+        [
+          0.254098
+        ],
+        [
+          0.131148
+        ],
+        [
+          0.106557
+        ],
+        [
+          0.213115
+        ],
+        [
+          0.07377
+        ],
+        [
+          0.221312
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Scenario",
+      "parents": [
+        "Date"
+      ],
+      "values": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K"
+      ],
+      "probability_distribution": {
+        "May15_Jun14": [
+          0.1,
+          0.16,
+          0.1,
+          0.08,
+          0.08,
+          0.01,
+          0.08,
+          0.1,
+          0.09,
+          0.03,
+          0.17
+        ],
+        "Jun15_Jul1": [
+          0.05,
+          0.16,
+          0.09,
+          0.09,
+          0.12,
+          0.02,
+          0.13,
+          0.06,
+          0.07,
+          0.11,
+          0.1
+        ],
+        "Jul2_Jul15": [
+          0.04,
+          0.13,
+          0.1,
+          0.08,
+          0.15,
+          0.03,
+          0.14,
+          0.04,
+          0.06,
+          0.15,
+          0.08
+        ],
+        "Jul16_Aug10": [
+          0.04,
+          0.13,
+          0.09,
+          0.07,
+          0.2,
+          0.08,
+          0.06,
+          0.05,
+          0.07,
+          0.13,
+          0.08
+        ],
+        "Aug11_Aug20": [
+          0.04,
+          0.11,
+          0.1,
+          0.07,
+          0.17,
+          0.05,
+          0.1,
+          0.05,
+          0.07,
+          0.14,
+          0.1
+        ],
+        "Aug20_Sep15": [
+          0.05,
+          0.11,
+          0.1,
+          0.08,
+          0.11,
+          0.02,
+          0.11,
+          0.06,
+          0.08,
+          0.11,
+          0.17
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "ScenRelAMCIN",
+      "parents": [
+        "Scenario"
+      ],
+      "values": [
+        "AB",
+        "CThruK"
+      ],
+      "probability_distribution": {
+        "A": [
+          1.0,
+          0.0
+        ],
+        "B": [
+          1.0,
+          0.0
+        ],
+        "C": [
+          0.0,
+          1.0
+        ],
+        "D": [
+          0.0,
+          1.0
+        ],
+        "E": [
+          0.0,
+          1.0
+        ],
+        "F": [
+          0.0,
+          1.0
+        ],
+        "G": [
+          0.0,
+          1.0
+        ],
+        "H": [
+          0.0,
+          1.0
+        ],
+        "I": [
+          0.0,
+          1.0
+        ],
+        "J": [
+          0.0,
+          1.0
+        ],
+        "K": [
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "MorningCIN",
+      "parents": [],
+      "values": [
+        "None",
+        "PartInhibit",
+        "Stifling",
+        "TotalInhibit"
+      ],
+      "probability_distribution": [
+        [
+          0.15
+        ],
+        [
+          0.57
+        ],
+        [
+          0.2
+        ],
+        [
+          0.08
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "AMCINInScen",
+      "parents": [
+        "MorningCIN",
+        "ScenRelAMCIN"
+      ],
+      "values": [
+        "LessThanAve",
+        "Average",
+        "MoreThanAve"
+      ],
+      "probability_distribution": {
+        "None,AB": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "None,CThruK": [
+          0.6,
+          0.37,
+          0.03
+        ],
+        "PartInhibit,AB": [
+          0.25,
+          0.45,
+          0.3
+        ],
+        "PartInhibit,CThruK": [
+          0.0,
+          0.1,
+          0.9
+        ],
+        "Stifling,AB": [
+          0.75,
+          0.25,
+          0.0
+        ],
+        "Stifling,CThruK": [
+          0.3,
+          0.6,
+          0.1
+        ],
+        "TotalInhibit,AB": [
+          0.01,
+          0.4,
+          0.59
+        ],
+        "TotalInhibit,CThruK": [
+          0.0,
+          0.03,
+          0.97
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "CapInScen",
+      "parents": [
+        "CapChange",
+        "AMCINInScen"
+      ],
+      "values": [
+        "LessThanAve",
+        "Average",
+        "MoreThanAve"
+      ],
+      "probability_distribution": {
+        "Decreasing,LessThanAve": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "Decreasing,Average": [
+          0.98,
+          0.02,
+          0.0
+        ],
+        "Decreasing,MoreThanAve": [
+          0.35,
+          0.35,
+          0.3
+        ],
+        "LittleChange,LessThanAve": [
+          0.75,
+          0.25,
+          0.0
+        ],
+        "LittleChange,Average": [
+          0.03,
+          0.94,
+          0.03
+        ],
+        "LittleChange,MoreThanAve": [
+          0.0,
+          0.25,
+          0.75
+        ],
+        "Increasing,LessThanAve": [
+          0.3,
+          0.35,
+          0.35
+        ],
+        "Increasing,Average": [
+          0.0,
+          0.02,
+          0.98
+        ],
+        "Increasing,MoreThanAve": [
+          0.0,
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "ScenRelAMIns",
+      "parents": [
+        "Scenario"
+      ],
+      "values": [
+        "ABI",
+        "CDEJ",
+        "F",
+        "G",
+        "H",
+        "K"
+      ],
+      "probability_distribution": {
+        "A": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "B": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "C": [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "D": [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "E": [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "F": [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "G": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "H": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "I": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "J": [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "K": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "LIfr12ZDENSd",
+      "parents": [],
+      "values": [
+        "LIGt0",
+        "N1GtLIGt_4",
+        "N5GtLIGt_8",
+        "LILt_8"
+      ],
+      "probability_distribution": [
+        [
+          0.1
+        ],
+        [
+          0.52
+        ],
+        [
+          0.3
+        ],
+        [
+          0.08
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "AMDewptCalPl",
+      "parents": [],
+      "values": [
+        "Instability",
+        "Neutral",
+        "Stability"
+      ],
+      "probability_distribution": [
+        [
+          0.3
+        ],
+        [
+          0.25
+        ],
+        [
+          0.45
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "AMInsWliScen",
+      "parents": [
+        "AMDewptCalPl",
+        "LIfr12ZDENSd",
+        "ScenRelAMIns"
+      ],
+      "values": [
+        "LessUnstable",
+        "Average",
+        "MoreUnstable"
+      ],
+      "probability_distribution": {
+        "Instability,LIGt0,ABI": [
+          0.6,
+          0.3,
+          0.1
+        ],
+        "Instability,LIGt0,CDEJ": [
+          0.85,
+          0.13,
+          0.02
+        ],
+        "Instability,LIGt0,F": [
+          0.95,
+          0.04,
+          0.01
+        ],
+        "Instability,LIGt0,G": [
+          0.3,
+          0.3,
+          0.4
+        ],
+        "Instability,LIGt0,H": [
+          0.5,
+          0.3,
+          0.2
+        ],
+        "Instability,LIGt0,K": [
+          0.75,
+          0.2,
+          0.05
+        ],
+        "Instability,N1GtLIGt_4,ABI": [
+          0.06,
+          0.21,
+          0.73
+        ],
+        "Instability,N1GtLIGt_4,CDEJ": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "Instability,N1GtLIGt_4,F": [
+          0.5,
+          0.4,
+          0.1
+        ],
+        "Instability,N1GtLIGt_4,G": [
+          0.01,
+          0.04,
+          0.95
+        ],
+        "Instability,N1GtLIGt_4,H": [
+          0.05,
+          0.2,
+          0.75
+        ],
+        "Instability,N1GtLIGt_4,K": [
+          0.35,
+          0.35,
+          0.3
+        ],
+        "Instability,N5GtLIGt_8,ABI": [
+          0.4,
+          0.3,
+          0.3
+        ],
+        "Instability,N5GtLIGt_8,CDEJ": [
+          0.7,
+          0.2,
+          0.1
+        ],
+        "Instability,N5GtLIGt_8,F": [
+          0.9,
+          0.08,
+          0.02
+        ],
+        "Instability,N5GtLIGt_8,G": [
+          0.15,
+          0.3,
+          0.55
+        ],
+        "Instability,N5GtLIGt_8,H": [
+          0.25,
+          0.5,
+          0.25
+        ],
+        "Instability,N5GtLIGt_8,K": [
+          0.6,
+          0.3,
+          0.1
+        ],
+        "Instability,LILt_8,ABI": [
+          0.03,
+          0.17,
+          0.8
+        ],
+        "Instability,LILt_8,CDEJ": [
+          0.2,
+          0.3,
+          0.5
+        ],
+        "Instability,LILt_8,F": [
+          0.45,
+          0.4,
+          0.15
+        ],
+        "Instability,LILt_8,G": [
+          0.01,
+          0.04,
+          0.95
+        ],
+        "Instability,LILt_8,H": [
+          0.05,
+          0.18,
+          0.77
+        ],
+        "Instability,LILt_8,K": [
+          0.25,
+          0.4,
+          0.35
+        ],
+        "Neutral,LIGt0,ABI": [
+          0.35,
+          0.35,
+          0.3
+        ],
+        "Neutral,LIGt0,CDEJ": [
+          0.55,
+          0.4,
+          0.05
+        ],
+        "Neutral,LIGt0,F": [
+          0.85,
+          0.13,
+          0.02
+        ],
+        "Neutral,LIGt0,G": [
+          0.07,
+          0.38,
+          0.55
+        ],
+        "Neutral,LIGt0,H": [
+          0.2,
+          0.6,
+          0.2
+        ],
+        "Neutral,LIGt0,K": [
+          0.5,
+          0.43,
+          0.07
+        ],
+        "Neutral,N1GtLIGt_4,ABI": [
+          0.0,
+          0.05,
+          0.95
+        ],
+        "Neutral,N1GtLIGt_4,CDEJ": [
+          0.05,
+          0.35,
+          0.6
+        ],
+        "Neutral,N1GtLIGt_4,F": [
+          0.25,
+          0.5,
+          0.25
+        ],
+        "Neutral,N1GtLIGt_4,G": [
+          0.0,
+          0.02,
+          0.98
+        ],
+        "Neutral,N1GtLIGt_4,H": [
+          0.0,
+          0.05,
+          0.95
+        ],
+        "Neutral,N1GtLIGt_4,K": [
+          0.04,
+          0.16,
+          0.8
+        ],
+        "Neutral,N5GtLIGt_8,ABI": [
+          0.3,
+          0.4,
+          0.3
+        ],
+        "Neutral,N5GtLIGt_8,CDEJ": [
+          0.5,
+          0.3,
+          0.2
+        ],
+        "Neutral,N5GtLIGt_8,F": [
+          0.75,
+          0.2,
+          0.05
+        ],
+        "Neutral,N5GtLIGt_8,G": [
+          0.15,
+          0.35,
+          0.5
+        ],
+        "Neutral,N5GtLIGt_8,H": [
+          0.2,
+          0.6,
+          0.2
+        ],
+        "Neutral,N5GtLIGt_8,K": [
+          0.15,
+          0.7,
+          0.15
+        ],
+        "Neutral,LILt_8,ABI": [
+          0.07,
+          0.23,
+          0.7
+        ],
+        "Neutral,LILt_8,CDEJ": [
+          0.13,
+          0.47,
+          0.4
+        ],
+        "Neutral,LILt_8,F": [
+          0.1,
+          0.75,
+          0.15
+        ],
+        "Neutral,LILt_8,G": [
+          0.02,
+          0.18,
+          0.8
+        ],
+        "Neutral,LILt_8,H": [
+          0.04,
+          0.26,
+          0.7
+        ],
+        "Neutral,LILt_8,K": [
+          0.07,
+          0.3,
+          0.63
+        ],
+        "Stability,LIGt0,ABI": [
+          0.35,
+          0.45,
+          0.2
+        ],
+        "Stability,LIGt0,CDEJ": [
+          0.4,
+          0.5,
+          0.1
+        ],
+        "Stability,LIGt0,F": [
+          0.58,
+          0.4,
+          0.02
+        ],
+        "Stability,LIGt0,G": [
+          0.1,
+          0.25,
+          0.65
+        ],
+        "Stability,LIGt0,H": [
+          0.15,
+          0.45,
+          0.4
+        ],
+        "Stability,LIGt0,K": [
+          0.4,
+          0.45,
+          0.15
+        ],
+        "Stability,N1GtLIGt_4,ABI": [
+          0.02,
+          0.18,
+          0.8
+        ],
+        "Stability,N1GtLIGt_4,CDEJ": [
+          0.05,
+          0.25,
+          0.7
+        ],
+        "Stability,N1GtLIGt_4,F": [
+          0.15,
+          0.35,
+          0.5
+        ],
+        "Stability,N1GtLIGt_4,G": [
+          0.01,
+          0.09,
+          0.9
+        ],
+        "Stability,N1GtLIGt_4,H": [
+          0.03,
+          0.17,
+          0.8
+        ],
+        "Stability,N1GtLIGt_4,K": [
+          0.08,
+          0.32,
+          0.6
+        ],
+        "Stability,N5GtLIGt_8,ABI": [
+          0.3,
+          0.55,
+          0.15
+        ],
+        "Stability,N5GtLIGt_8,CDEJ": [
+          0.4,
+          0.5,
+          0.1
+        ],
+        "Stability,N5GtLIGt_8,F": [
+          0.5,
+          0.43,
+          0.07
+        ],
+        "Stability,N5GtLIGt_8,G": [
+          0.1,
+          0.35,
+          0.55
+        ],
+        "Stability,N5GtLIGt_8,H": [
+          0.25,
+          0.5,
+          0.25
+        ],
+        "Stability,N5GtLIGt_8,K": [
+          0.3,
+          0.5,
+          0.2
+        ],
+        "Stability,LILt_8,ABI": [
+          0.05,
+          0.22,
+          0.73
+        ],
+        "Stability,LILt_8,CDEJ": [
+          0.1,
+          0.35,
+          0.55
+        ],
+        "Stability,LILt_8,F": [
+          0.15,
+          0.35,
+          0.5
+        ],
+        "Stability,LILt_8,G": [
+          0.02,
+          0.1,
+          0.88
+        ],
+        "Stability,LILt_8,H": [
+          0.04,
+          0.16,
+          0.8
+        ],
+        "Stability,LILt_8,K": [
+          0.1,
+          0.25,
+          0.65
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "InsSclInScen",
+      "parents": [
+        "InsChange",
+        "AMInsWliScen"
+      ],
+      "values": [
+        "LessUnstable",
+        "Average",
+        "MoreUnstable"
+      ],
+      "probability_distribution": {
+        "Decreasing,LessUnstable": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "Decreasing,Average": [
+          0.9,
+          0.1,
+          0.0
+        ],
+        "Decreasing,MoreUnstable": [
+          0.4,
+          0.35,
+          0.25
+        ],
+        "LittleChange,LessUnstable": [
+          0.6,
+          0.4,
+          0.0
+        ],
+        "LittleChange,Average": [
+          0.15,
+          0.7,
+          0.15
+        ],
+        "LittleChange,MoreUnstable": [
+          0.0,
+          0.4,
+          0.6
+        ],
+        "Increasing,LessUnstable": [
+          0.25,
+          0.35,
+          0.4
+        ],
+        "Increasing,Average": [
+          0.0,
+          0.1,
+          0.9
+        ],
+        "Increasing,MoreUnstable": [
+          0.0,
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "ScenRel3_4",
+      "parents": [
+        "Scenario"
+      ],
+      "values": [
+        "ACEFK",
+        "B",
+        "D",
+        "GJ",
+        "HI"
+      ],
+      "probability_distribution": {
+        "A": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "B": [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "C": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "D": [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "E": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "F": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "G": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "H": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "I": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "J": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "K": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "LatestCIN",
+      "parents": [],
+      "values": [
+        "None",
+        "PartInhibit",
+        "Stifling",
+        "TotalInhibit"
+      ],
+      "probability_distribution": [
+        [
+          0.4
+        ],
+        [
+          0.4
+        ],
+        [
+          0.15
+        ],
+        [
+          0.05
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "LLIW",
+      "parents": [],
+      "values": [
+        "Unfavorable",
+        "Weak",
+        "Moderate",
+        "Strong"
+      ],
+      "probability_distribution": [
+        [
+          0.12
+        ],
+        [
+          0.32
+        ],
+        [
+          0.38
+        ],
+        [
+          0.18
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "CurPropConv",
+      "parents": [
+        "LLIW",
+        "LatestCIN"
+      ],
+      "values": [
+        "None",
+        "Slight",
+        "Moderate",
+        "Strong"
+      ],
+      "probability_distribution": {
+        "Unfavorable,None": [
+          0.7,
+          0.28,
+          0.02,
+          0.0
+        ],
+        "Unfavorable,PartInhibit": [
+          0.1,
+          0.5,
+          0.3,
+          0.1
+        ],
+        "Unfavorable,Stifling": [
+          0.01,
+          0.14,
+          0.35,
+          0.5
+        ],
+        "Unfavorable,TotalInhibit": [
+          0.0,
+          0.02,
+          0.18,
+          0.8
+        ],
+        "Weak,None": [
+          0.9,
+          0.09,
+          0.01,
+          0.0
+        ],
+        "Weak,PartInhibit": [
+          0.65,
+          0.25,
+          0.09,
+          0.01
+        ],
+        "Weak,Stifling": [
+          0.25,
+          0.35,
+          0.3,
+          0.1
+        ],
+        "Weak,TotalInhibit": [
+          0.01,
+          0.15,
+          0.33,
+          0.51
+        ],
+        "Moderate,None": [
+          0.95,
+          0.05,
+          0.0,
+          0.0
+        ],
+        "Moderate,PartInhibit": [
+          0.75,
+          0.23,
+          0.02,
+          0.0
+        ],
+        "Moderate,Stifling": [
+          0.4,
+          0.4,
+          0.18,
+          0.02
+        ],
+        "Moderate,TotalInhibit": [
+          0.2,
+          0.3,
+          0.35,
+          0.15
+        ],
+        "Strong,None": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "Strong,PartInhibit": [
+          0.95,
+          0.05,
+          0.0,
+          0.0
+        ],
+        "Strong,Stifling": [
+          0.75,
+          0.2,
+          0.05,
+          0.0
+        ],
+        "Strong,TotalInhibit": [
+          0.5,
+          0.35,
+          0.1,
+          0.05
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "ScnRelPlFcst",
+      "parents": [
+        "Scenario"
+      ],
+      "values": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K"
+      ],
+      "probability_distribution": {
+        "A": [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "B": [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "C": [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "D": [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "E": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "F": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "G": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "H": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "I": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "J": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        "K": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "PlainsFcst",
+      "parents": [
+        "ScnRelPlFcst",
+        "CapInScen",
+        "InsSclInScen",
+        "CurPropConv"
+      ],
+      "values": [
+        "XNIL",
+        "SIG",
+        "SVR"
+      ],
+      "probability_distribution": {
+        "A,LessThanAve,LessUnstable,None": [
+          0.75,
+          0.2,
+          0.05
+        ],
+        "A,LessThanAve,LessUnstable,Slight": [
+          0.75,
+          0.2,
+          0.05
+        ],
+        "A,LessThanAve,LessUnstable,Moderate": [
+          0.9,
+          0.08,
+          0.02
+        ],
+        "A,LessThanAve,LessUnstable,Strong": [
+          0.9,
+          0.06,
+          0.04
+        ],
+        "A,LessThanAve,Average,None": [
+          0.88,
+          0.1,
+          0.02
+        ],
+        "A,LessThanAve,Average,Slight": [
+          0.92,
+          0.08,
+          0.0
+        ],
+        "A,LessThanAve,Average,Moderate": [
+          0.85,
+          0.13,
+          0.02
+        ],
+        "A,LessThanAve,Average,Strong": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "A,LessThanAve,MoreUnstable,None": [
+          0.9,
+          0.08,
+          0.02
+        ],
+        "A,LessThanAve,MoreUnstable,Slight": [
+          0.9,
+          0.08,
+          0.02
+        ],
+        "A,LessThanAve,MoreUnstable,Moderate": [
+          0.95,
+          0.04,
+          0.01
+        ],
+        "A,LessThanAve,MoreUnstable,Strong": [
+          0.75,
+          0.2,
+          0.05
+        ],
+        "A,Average,LessUnstable,None": [
+          0.65,
+          0.3,
+          0.05
+        ],
+        "A,Average,LessUnstable,Slight": [
+          0.9,
+          0.08,
+          0.02
+        ],
+        "A,Average,LessUnstable,Moderate": [
+          0.91,
+          0.05,
+          0.04
+        ],
+        "A,Average,LessUnstable,Strong": [
+          0.85,
+          0.13,
+          0.02
+        ],
+        "A,Average,Average,None": [
+          0.9,
+          0.1,
+          0.0
+        ],
+        "A,Average,Average,Slight": [
+          0.84,
+          0.12,
+          0.04
+        ],
+        "A,Average,Average,Moderate": [
+          0.99,
+          0.01,
+          0.0
+        ],
+        "A,Average,Average,Strong": [
+          0.88,
+          0.1,
+          0.02
+        ],
+        "A,Average,MoreUnstable,None": [
+          0.92,
+          0.06,
+          0.02
+        ],
+        "A,Average,MoreUnstable,Slight": [
+          0.96,
+          0.03,
+          0.01
+        ],
+        "A,Average,MoreUnstable,Moderate": [
+          0.75,
+          0.2,
+          0.05
+        ],
+        "A,Average,MoreUnstable,Strong": [
+          0.75,
+          0.2,
+          0.05
+        ],
+        "A,MoreThanAve,LessUnstable,None": [
+          0.95,
+          0.04,
+          0.01
+        ],
+        "A,MoreThanAve,LessUnstable,Slight": [
+          0.93,
+          0.04,
+          0.03
+        ],
+        "A,MoreThanAve,LessUnstable,Moderate": [
+          0.92,
+          0.06,
+          0.02
+        ],
+        "A,MoreThanAve,LessUnstable,Strong": [
+          0.87,
+          0.13,
+          0.0
+        ],
+        "A,MoreThanAve,Average,None": [
+          0.9,
+          0.06,
+          0.04
+        ],
+        "A,MoreThanAve,Average,Slight": [
+          0.98,
+          0.02,
+          0.0
+        ],
+        "A,MoreThanAve,Average,Moderate": [
+          0.92,
+          0.06,
+          0.02
+        ],
+        "A,MoreThanAve,Average,Strong": [
+          0.95,
+          0.04,
+          0.01
+        ],
+        "A,MoreThanAve,MoreUnstable,None": [
+          0.97,
+          0.02,
+          0.01
+        ],
+        "A,MoreThanAve,MoreUnstable,Slight": [
+          0.5,
+          0.3,
+          0.2
+        ],
+        "A,MoreThanAve,MoreUnstable,Moderate": [
+          0.6,
+          0.3,
+          0.1
+        ],
+        "A,MoreThanAve,MoreUnstable,Strong": [
+          0.8,
+          0.14,
+          0.06
+        ],
+        "B,LessThanAve,LessUnstable,None": [
+          0.85,
+          0.09,
+          0.06
+        ],
+        "B,LessThanAve,LessUnstable,Slight": [
+          0.85,
+          0.1,
+          0.05
+        ],
+        "B,LessThanAve,LessUnstable,Moderate": [
+          0.88,
+          0.11,
+          0.01
+        ],
+        "B,LessThanAve,LessUnstable,Strong": [
+          0.8,
+          0.17,
+          0.03
+        ],
+        "B,LessThanAve,Average,None": [
+          0.92,
+          0.06,
+          0.02
+        ],
+        "B,LessThanAve,Average,Slight": [
+          0.8,
+          0.12,
+          0.08
+        ],
+        "B,LessThanAve,Average,Moderate": [
+          0.75,
+          0.22,
+          0.03
+        ],
+        "B,LessThanAve,Average,Strong": [
+          0.9,
+          0.08,
+          0.02
+        ],
+        "B,LessThanAve,MoreUnstable,None": [
+          0.35,
+          0.3,
+          0.35
+        ],
+        "B,LessThanAve,MoreUnstable,Slight": [
+          0.55,
+          0.3,
+          0.15
+        ],
+        "B,LessThanAve,MoreUnstable,Moderate": [
+          0.82,
+          0.13,
+          0.05
+        ],
+        "B,LessThanAve,MoreUnstable,Strong": [
+          0.82,
+          0.1,
+          0.08
+        ],
+        "B,Average,LessUnstable,None": [
+          0.75,
+          0.18,
+          0.07
+        ],
+        "B,Average,LessUnstable,Slight": [
+          0.88,
+          0.11,
+          0.01
+        ],
+        "B,Average,LessUnstable,Moderate": [
+          0.75,
+          0.2,
+          0.05
+        ],
+        "B,Average,LessUnstable,Strong": [
+          0.9,
+          0.07,
+          0.03
+        ],
+        "B,Average,Average,None": [
+          0.7,
+          0.2,
+          0.1
+        ],
+        "B,Average,Average,Slight": [
+          0.8,
+          0.15,
+          0.05
+        ],
+        "B,Average,Average,Moderate": [
+          0.9,
+          0.08,
+          0.02
+        ],
+        "B,Average,Average,Strong": [
+          0.5,
+          0.2,
+          0.3
+        ],
+        "B,Average,MoreUnstable,None": [
+          0.6,
+          0.25,
+          0.15
+        ],
+        "B,Average,MoreUnstable,Slight": [
+          0.85,
+          0.1,
+          0.05
+        ],
+        "B,Average,MoreUnstable,Moderate": [
+          0.85,
+          0.07,
+          0.08
+        ],
+        "B,Average,MoreUnstable,Strong": [
+          0.75,
+          0.15,
+          0.1
+        ],
+        "B,MoreThanAve,LessUnstable,None": [
+          0.85,
+          0.14,
+          0.01
+        ],
+        "B,MoreThanAve,LessUnstable,Slight": [
+          0.75,
+          0.2,
+          0.05
+        ],
+        "B,MoreThanAve,LessUnstable,Moderate": [
+          0.94,
+          0.05,
+          0.01
+        ],
+        "B,MoreThanAve,LessUnstable,Strong": [
+          0.65,
+          0.22,
+          0.13
+        ],
+        "B,MoreThanAve,Average,None": [
+          0.83,
+          0.1,
+          0.07
+        ],
+        "B,MoreThanAve,Average,Slight": [
+          0.93,
+          0.06,
+          0.01
+        ],
+        "B,MoreThanAve,Average,Moderate": [
+          0.35,
+          0.2,
+          0.45
+        ],
+        "B,MoreThanAve,Average,Strong": [
+          0.45,
+          0.35,
+          0.2
+        ],
+        "B,MoreThanAve,MoreUnstable,None": [
+          0.8,
+          0.1,
+          0.1
+        ],
+        "B,MoreThanAve,MoreUnstable,Slight": [
+          0.72,
+          0.14,
+          0.14
+        ],
+        "B,MoreThanAve,MoreUnstable,Moderate": [
+          0.78,
+          0.15,
+          0.07
+        ],
+        "B,MoreThanAve,MoreUnstable,Strong": [
+          0.86,
+          0.12,
+          0.02
+        ],
+        "C,LessThanAve,LessUnstable,None": [
+          0.65,
+          0.25,
+          0.1
+        ],
+        "C,LessThanAve,LessUnstable,Slight": [
+          0.85,
+          0.1,
+          0.05
+        ],
+        "C,LessThanAve,LessUnstable,Moderate": [
+          0.65,
+          0.2,
+          0.15
+        ],
+        "C,LessThanAve,LessUnstable,Strong": [
+          0.72,
+          0.2,
+          0.08
+        ],
+        "C,LessThanAve,Average,None": [
+          0.85,
+          0.1,
+          0.05
+        ],
+        "C,LessThanAve,Average,Slight": [
+          0.25,
+          0.15,
+          0.6
+        ],
+        "C,LessThanAve,Average,Moderate": [
+          0.45,
+          0.35,
+          0.2
+        ],
+        "C,LessThanAve,Average,Strong": [
+          0.65,
+          0.2,
+          0.15
+        ],
+        "C,LessThanAve,MoreUnstable,None": [
+          0.55,
+          0.2,
+          0.25
+        ],
+        "C,LessThanAve,MoreUnstable,Slight": [
+          0.55,
+          0.25,
+          0.2
+        ],
+        "C,LessThanAve,MoreUnstable,Moderate": [
+          0.81,
+          0.17,
+          0.02
+        ],
+        "C,LessThanAve,MoreUnstable,Strong": [
+          0.6,
+          0.28,
+          0.12
+        ],
+        "C,Average,LessUnstable,None": [
+          0.8,
+          0.13,
+          0.07
+        ],
+        "C,Average,LessUnstable,Slight": [
+          0.6,
+          0.2,
+          0.2
+        ],
+        "C,Average,LessUnstable,Moderate": [
+          0.75,
+          0.15,
+          0.1
+        ],
+        "C,Average,LessUnstable,Strong": [
+          0.88,
+          0.08,
+          0.04
+        ],
+        "C,Average,Average,None": [
+          0.4,
+          0.08,
+          0.52
+        ],
+        "C,Average,Average,Slight": [
+          0.45,
+          0.25,
+          0.3
+        ],
+        "C,Average,Average,Moderate": [
+          0.75,
+          0.1,
+          0.15
+        ],
+        "C,Average,Average,Strong": [
+          0.65,
+          0.15,
+          0.2
+        ],
+        "C,Average,MoreUnstable,None": [
+          0.52,
+          0.25,
+          0.23
+        ],
+        "C,Average,MoreUnstable,Slight": [
+          0.82,
+          0.16,
+          0.02
+        ],
+        "C,Average,MoreUnstable,Moderate": [
+          0.65,
+          0.27,
+          0.08
+        ],
+        "C,Average,MoreUnstable,Strong": [
+          0.85,
+          0.09,
+          0.06
+        ],
+        "C,MoreThanAve,LessUnstable,None": [
+          0.5,
+          0.2,
+          0.3
+        ],
+        "C,MoreThanAve,LessUnstable,Slight": [
+          0.77,
+          0.1,
+          0.13
+        ],
+        "C,MoreThanAve,LessUnstable,Moderate": [
+          0.9,
+          0.07,
+          0.03
+        ],
+        "C,MoreThanAve,LessUnstable,Strong": [
+          0.7,
+          0.25,
+          0.05
+        ],
+        "C,MoreThanAve,Average,None": [
+          0.6,
+          0.33,
+          0.07
+        ],
+        "C,MoreThanAve,Average,Slight": [
+          0.82,
+          0.13,
+          0.05
+        ],
+        "C,MoreThanAve,Average,Moderate": [
+          0.85,
+          0.1,
+          0.05
+        ],
+        "C,MoreThanAve,Average,Strong": [
+          0.82,
+          0.15,
+          0.03
+        ],
+        "C,MoreThanAve,MoreUnstable,None": [
+          0.85,
+          0.14,
+          0.01
+        ],
+        "C,MoreThanAve,MoreUnstable,Slight": [
+          0.8,
+          0.17,
+          0.03
+        ],
+        "C,MoreThanAve,MoreUnstable,Moderate": [
+          0.97,
+          0.02,
+          0.01
+        ],
+        "C,MoreThanAve,MoreUnstable,Strong": [
+          0.88,
+          0.1,
+          0.02
+        ],
+        "D,LessThanAve,LessUnstable,None": [
+          0.86,
+          0.1,
+          0.04
+        ],
+        "D,LessThanAve,LessUnstable,Slight": [
+          0.88,
+          0.1,
+          0.02
+        ],
+        "D,LessThanAve,LessUnstable,Moderate": [
+          0.65,
+          0.25,
+          0.1
+        ],
+        "D,LessThanAve,LessUnstable,Strong": [
+          0.58,
+          0.32,
+          0.1
+        ],
+        "D,LessThanAve,Average,None": [
+          0.8,
+          0.15,
+          0.05
+        ],
+        "D,LessThanAve,Average,Slight": [
+          0.85,
+          0.1,
+          0.05
+        ],
+        "D,LessThanAve,Average,Moderate": [
+          0.8,
+          0.16,
+          0.04
+        ],
+        "D,LessThanAve,Average,Strong": [
+          0.83,
+          0.16,
+          0.01
+        ],
+        "D,LessThanAve,MoreUnstable,None": [
+          0.77,
+          0.17,
+          0.06
+        ],
+        "D,LessThanAve,MoreUnstable,Slight": [
+          0.93,
+          0.06,
+          0.01
+        ],
+        "D,LessThanAve,MoreUnstable,Moderate": [
+          0.85,
+          0.12,
+          0.03
+        ],
+        "D,LessThanAve,MoreUnstable,Strong": [
+          0.85,
+          0.1,
+          0.05
+        ],
+        "D,Average,LessUnstable,None": [
+          0.9,
+          0.08,
+          0.02
+        ],
+        "D,Average,LessUnstable,Slight": [
+          0.6,
+          0.3,
+          0.1
+        ],
+        "D,Average,LessUnstable,Moderate": [
+          0.65,
+          0.28,
+          0.07
+        ],
+        "D,Average,LessUnstable,Strong": [
+          0.9,
+          0.08,
+          0.02
+        ],
+        "D,Average,Average,None": [
+          0.85,
+          0.1,
+          0.05
+        ],
+        "D,Average,Average,Slight": [
+          0.82,
+          0.13,
+          0.05
+        ],
+        "D,Average,Average,Moderate": [
+          0.8,
+          0.19,
+          0.01
+        ],
+        "D,Average,Average,Strong": [
+          0.8,
+          0.13,
+          0.07
+        ],
+        "D,Average,MoreUnstable,None": [
+          0.91,
+          0.08,
+          0.01
+        ],
+        "D,Average,MoreUnstable,Slight": [
+          0.85,
+          0.12,
+          0.03
+        ],
+        "D,Average,MoreUnstable,Moderate": [
+          0.9,
+          0.08,
+          0.02
+        ],
+        "D,Average,MoreUnstable,Strong": [
+          0.93,
+          0.06,
+          0.01
+        ],
+        "D,MoreThanAve,LessUnstable,None": [
+          0.3,
+          0.4,
+          0.3
+        ],
+        "D,MoreThanAve,LessUnstable,Slight": [
+          0.55,
+          0.34,
+          0.11
+        ],
+        "D,MoreThanAve,LessUnstable,Moderate": [
+          0.7,
+          0.2,
+          0.1
+        ],
+        "D,MoreThanAve,LessUnstable,Strong": [
+          0.75,
+          0.15,
+          0.1
+        ],
+        "D,MoreThanAve,Average,None": [
+          0.62,
+          0.28,
+          0.1
+        ],
+        "D,MoreThanAve,Average,Slight": [
+          0.85,
+          0.14,
+          0.01
+        ],
+        "D,MoreThanAve,Average,Moderate": [
+          0.75,
+          0.2,
+          0.05
+        ],
+        "D,MoreThanAve,Average,Strong": [
+          0.82,
+          0.14,
+          0.04
+        ],
+        "D,MoreThanAve,MoreUnstable,None": [
+          0.6,
+          0.25,
+          0.15
+        ],
+        "D,MoreThanAve,MoreUnstable,Slight": [
+          0.68,
+          0.22,
+          0.1
+        ],
+        "D,MoreThanAve,MoreUnstable,Moderate": [
+          0.82,
+          0.15,
+          0.03
+        ],
+        "D,MoreThanAve,MoreUnstable,Strong": [
+          0.28,
+          0.37,
+          0.35
+        ],
+        "E,LessThanAve,LessUnstable,None": [
+          0.48,
+          0.35,
+          0.17
+        ],
+        "E,LessThanAve,LessUnstable,Slight": [
+          0.7,
+          0.2,
+          0.1
+        ],
+        "E,LessThanAve,LessUnstable,Moderate": [
+          0.7,
+          0.17,
+          0.13
+        ],
+        "E,LessThanAve,LessUnstable,Strong": [
+          0.6,
+          0.29,
+          0.11
+        ],
+        "E,LessThanAve,Average,None": [
+          0.82,
+          0.16,
+          0.02
+        ],
+        "E,LessThanAve,Average,Slight": [
+          0.63,
+          0.3,
+          0.07
+        ],
+        "E,LessThanAve,Average,Moderate": [
+          0.8,
+          0.15,
+          0.05
+        ],
+        "E,LessThanAve,Average,Strong": [
+          0.5,
+          0.3,
+          0.2
+        ],
+        "E,LessThanAve,MoreUnstable,None": [
+          0.7,
+          0.2,
+          0.1
+        ],
+        "E,LessThanAve,MoreUnstable,Slight": [
+          0.8,
+          0.16,
+          0.04
+        ],
+        "E,LessThanAve,MoreUnstable,Moderate": [
+          0.4,
+          0.28,
+          0.32
+        ],
+        "E,LessThanAve,MoreUnstable,Strong": [
+          0.5,
+          0.25,
+          0.25
+        ],
+        "E,Average,LessUnstable,None": [
+          0.72,
+          0.18,
+          0.1
+        ],
+        "E,Average,LessUnstable,Slight": [
+          0.65,
+          0.2,
+          0.15
+        ],
+        "E,Average,LessUnstable,Moderate": [
+          0.55,
+          0.3,
+          0.15
+        ],
+        "E,Average,LessUnstable,Strong": [
+          0.78,
+          0.2,
+          0.02
+        ],
+        "E,Average,Average,None": [
+          0.55,
+          0.35,
+          0.1
+        ],
+        "E,Average,Average,Slight": [
+          0.85,
+          0.12,
+          0.03
+        ],
+        "E,Average,Average,Moderate": [
+          0.45,
+          0.3,
+          0.25
+        ],
+        "E,Average,Average,Strong": [
+          0.73,
+          0.15,
+          0.12
+        ],
+        "E,Average,MoreUnstable,None": [
+          0.85,
+          0.12,
+          0.03
+        ],
+        "E,Average,MoreUnstable,Slight": [
+          0.3,
+          0.25,
+          0.45
+        ],
+        "E,Average,MoreUnstable,Moderate": [
+          0.4,
+          0.36,
+          0.24
+        ],
+        "E,Average,MoreUnstable,Strong": [
+          0.65,
+          0.2,
+          0.15
+        ],
+        "E,MoreThanAve,LessUnstable,None": [
+          0.6,
+          0.2,
+          0.2
+        ],
+        "E,MoreThanAve,LessUnstable,Slight": [
+          0.6,
+          0.28,
+          0.12
+        ],
+        "E,MoreThanAve,LessUnstable,Moderate": [
+          0.83,
+          0.14,
+          0.03
+        ],
+        "E,MoreThanAve,LessUnstable,Strong": [
+          0.45,
+          0.4,
+          0.15
+        ],
+        "E,MoreThanAve,Average,None": [
+          0.7,
+          0.18,
+          0.12
+        ],
+        "E,MoreThanAve,Average,Slight": [
+          0.55,
+          0.25,
+          0.2
+        ],
+        "E,MoreThanAve,Average,Moderate": [
+          0.6,
+          0.25,
+          0.15
+        ],
+        "E,MoreThanAve,Average,Strong": [
+          0.72,
+          0.2,
+          0.08
+        ],
+        "E,MoreThanAve,MoreUnstable,None": [
+          0.22,
+          0.17,
+          0.61
+        ],
+        "E,MoreThanAve,MoreUnstable,Slight": [
+          0.35,
+          0.37,
+          0.28
+        ],
+        "E,MoreThanAve,MoreUnstable,Moderate": [
+          0.45,
+          0.3,
+          0.25
+        ],
+        "E,MoreThanAve,MoreUnstable,Strong": [
+          0.45,
+          0.25,
+          0.3
+        ],
+        "F,LessThanAve,LessUnstable,None": [
+          0.48,
+          0.29,
+          0.23
+        ],
+        "F,LessThanAve,LessUnstable,Slight": [
+          0.72,
+          0.25,
+          0.03
+        ],
+        "F,LessThanAve,LessUnstable,Moderate": [
+          0.43,
+          0.4,
+          0.17
+        ],
+        "F,LessThanAve,LessUnstable,Strong": [
+          0.68,
+          0.2,
+          0.12
+        ],
+        "F,LessThanAve,Average,None": [
+          0.35,
+          0.3,
+          0.35
+        ],
+        "F,LessThanAve,Average,Slight": [
+          0.6,
+          0.2,
+          0.2
+        ],
+        "F,LessThanAve,Average,Moderate": [
+          0.74,
+          0.16,
+          0.1
+        ],
+        "F,LessThanAve,Average,Strong": [
+          0.27,
+          0.1,
+          0.63
+        ],
+        "F,LessThanAve,MoreUnstable,None": [
+          0.35,
+          0.3,
+          0.35
+        ],
+        "F,LessThanAve,MoreUnstable,Slight": [
+          0.55,
+          0.22,
+          0.23
+        ],
+        "F,LessThanAve,MoreUnstable,Moderate": [
+          0.45,
+          0.25,
+          0.3
+        ],
+        "F,LessThanAve,MoreUnstable,Strong": [
+          0.42,
+          0.3,
+          0.28
+        ],
+        "F,Average,LessUnstable,None": [
+          0.74,
+          0.22,
+          0.04
+        ],
+        "F,Average,LessUnstable,Slight": [
+          0.45,
+          0.4,
+          0.15
+        ],
+        "F,Average,LessUnstable,Moderate": [
+          0.77,
+          0.13,
+          0.1
+        ],
+        "F,Average,LessUnstable,Strong": [
+          0.3,
+          0.25,
+          0.45
+        ],
+        "F,Average,Average,None": [
+          0.68,
+          0.15,
+          0.17
+        ],
+        "F,Average,Average,Slight": [
+          0.75,
+          0.15,
+          0.1
+        ],
+        "F,Average,Average,Moderate": [
+          0.5,
+          0.4,
+          0.1
+        ],
+        "F,Average,Average,Strong": [
+          0.45,
+          0.42,
+          0.13
+        ],
+        "F,Average,MoreUnstable,None": [
+          0.75,
+          0.18,
+          0.07
+        ],
+        "F,Average,MoreUnstable,Slight": [
+          0.75,
+          0.15,
+          0.1
+        ],
+        "F,Average,MoreUnstable,Moderate": [
+          0.72,
+          0.22,
+          0.06
+        ],
+        "F,Average,MoreUnstable,Strong": [
+          0.78,
+          0.21,
+          0.01
+        ],
+        "F,MoreThanAve,LessUnstable,None": [
+          0.66,
+          0.27,
+          0.07
+        ],
+        "F,MoreThanAve,LessUnstable,Slight": [
+          0.88,
+          0.1,
+          0.02
+        ],
+        "F,MoreThanAve,LessUnstable,Moderate": [
+          0.7,
+          0.22,
+          0.08
+        ],
+        "F,MoreThanAve,LessUnstable,Strong": [
+          0.78,
+          0.16,
+          0.06
+        ],
+        "F,MoreThanAve,Average,None": [
+          0.8,
+          0.16,
+          0.04
+        ],
+        "F,MoreThanAve,Average,Slight": [
+          0.45,
+          0.35,
+          0.2
+        ],
+        "F,MoreThanAve,Average,Moderate": [
+          0.45,
+          0.35,
+          0.2
+        ],
+        "F,MoreThanAve,Average,Strong": [
+          0.7,
+          0.2,
+          0.1
+        ],
+        "F,MoreThanAve,MoreUnstable,None": [
+          0.72,
+          0.17,
+          0.11
+        ],
+        "F,MoreThanAve,MoreUnstable,Slight": [
+          0.7,
+          0.22,
+          0.08
+        ],
+        "F,MoreThanAve,MoreUnstable,Moderate": [
+          0.75,
+          0.24,
+          0.01
+        ],
+        "F,MoreThanAve,MoreUnstable,Strong": [
+          0.62,
+          0.3,
+          0.08
+        ],
+        "G,LessThanAve,LessUnstable,None": [
+          0.85,
+          0.12,
+          0.03
+        ],
+        "G,LessThanAve,LessUnstable,Slight": [
+          0.75,
+          0.15,
+          0.1
+        ],
+        "G,LessThanAve,LessUnstable,Moderate": [
+          0.76,
+          0.17,
+          0.07
+        ],
+        "G,LessThanAve,LessUnstable,Strong": [
+          0.8,
+          0.16,
+          0.04
+        ],
+        "G,LessThanAve,Average,None": [
+          0.35,
+          0.4,
+          0.25
+        ],
+        "G,LessThanAve,Average,Slight": [
+          0.45,
+          0.4,
+          0.15
+        ],
+        "G,LessThanAve,Average,Moderate": [
+          0.75,
+          0.19,
+          0.06
+        ],
+        "G,LessThanAve,Average,Strong": [
+          0.7,
+          0.2,
+          0.1
+        ],
+        "G,LessThanAve,MoreUnstable,None": [
+          0.6,
+          0.3,
+          0.1
+        ],
+        "G,LessThanAve,MoreUnstable,Slight": [
+          0.72,
+          0.27,
+          0.01
+        ],
+        "G,LessThanAve,MoreUnstable,Moderate": [
+          0.6,
+          0.3,
+          0.1
+        ],
+        "G,LessThanAve,MoreUnstable,Strong": [
+          0.8,
+          0.16,
+          0.04
+        ],
+        "G,Average,LessUnstable,None": [
+          0.75,
+          0.17,
+          0.08
+        ],
+        "G,Average,LessUnstable,Slight": [
+          0.75,
+          0.2,
+          0.05
+        ],
+        "G,Average,LessUnstable,Moderate": [
+          0.88,
+          0.1,
+          0.02
+        ],
+        "G,Average,LessUnstable,Strong": [
+          0.2,
+          0.45,
+          0.35
+        ],
+        "G,Average,Average,None": [
+          0.4,
+          0.4,
+          0.2
+        ],
+        "G,Average,Average,Slight": [
+          0.7,
+          0.2,
+          0.1
+        ],
+        "G,Average,Average,Moderate": [
+          0.65,
+          0.22,
+          0.13
+        ],
+        "G,Average,Average,Strong": [
+          0.5,
+          0.34,
+          0.16
+        ],
+        "G,Average,MoreUnstable,None": [
+          0.74,
+          0.24,
+          0.02
+        ],
+        "G,Average,MoreUnstable,Slight": [
+          0.6,
+          0.3,
+          0.1
+        ],
+        "G,Average,MoreUnstable,Moderate": [
+          0.67,
+          0.24,
+          0.09
+        ],
+        "G,Average,MoreUnstable,Strong": [
+          0.35,
+          0.4,
+          0.25
+        ],
+        "G,MoreThanAve,LessUnstable,None": [
+          0.6,
+          0.25,
+          0.15
+        ],
+        "G,MoreThanAve,LessUnstable,Slight": [
+          0.75,
+          0.2,
+          0.05
+        ],
+        "G,MoreThanAve,LessUnstable,Moderate": [
+          0.23,
+          0.4,
+          0.37
+        ],
+        "G,MoreThanAve,LessUnstable,Strong": [
+          0.38,
+          0.35,
+          0.27
+        ],
+        "G,MoreThanAve,Average,None": [
+          0.58,
+          0.25,
+          0.17
+        ],
+        "G,MoreThanAve,Average,Slight": [
+          0.55,
+          0.25,
+          0.2
+        ],
+        "G,MoreThanAve,Average,Moderate": [
+          0.53,
+          0.32,
+          0.15
+        ],
+        "G,MoreThanAve,Average,Strong": [
+          0.73,
+          0.25,
+          0.02
+        ],
+        "G,MoreThanAve,MoreUnstable,None": [
+          0.35,
+          0.53,
+          0.12
+        ],
+        "G,MoreThanAve,MoreUnstable,Slight": [
+          0.65,
+          0.24,
+          0.11
+        ],
+        "G,MoreThanAve,MoreUnstable,Moderate": [
+          0.3,
+          0.4,
+          0.3
+        ],
+        "G,MoreThanAve,MoreUnstable,Strong": [
+          0.6,
+          0.24,
+          0.16
+        ],
+        "H,LessThanAve,LessUnstable,None": [
+          0.68,
+          0.24,
+          0.08
+        ],
+        "H,LessThanAve,LessUnstable,Slight": [
+          0.3,
+          0.34,
+          0.36
+        ],
+        "H,LessThanAve,LessUnstable,Moderate": [
+          0.35,
+          0.35,
+          0.3
+        ],
+        "H,LessThanAve,LessUnstable,Strong": [
+          0.55,
+          0.25,
+          0.2
+        ],
+        "H,LessThanAve,Average,None": [
+          0.5,
+          0.27,
+          0.23
+        ],
+        "H,LessThanAve,Average,Slight": [
+          0.4,
+          0.38,
+          0.22
+        ],
+        "H,LessThanAve,Average,Moderate": [
+          0.7,
+          0.28,
+          0.02
+        ],
+        "H,LessThanAve,Average,Strong": [
+          0.35,
+          0.5,
+          0.15
+        ],
+        "H,LessThanAve,MoreUnstable,None": [
+          0.6,
+          0.25,
+          0.15
+        ],
+        "H,LessThanAve,MoreUnstable,Slight": [
+          0.35,
+          0.35,
+          0.3
+        ],
+        "H,LessThanAve,MoreUnstable,Moderate": [
+          0.62,
+          0.22,
+          0.16
+        ],
+        "H,LessThanAve,MoreUnstable,Strong": [
+          0.7,
+          0.22,
+          0.08
+        ],
+        "H,Average,LessUnstable,None": [
+          0.25,
+          0.28,
+          0.47
+        ],
+        "H,Average,LessUnstable,Slight": [
+          0.3,
+          0.38,
+          0.32
+        ],
+        "H,Average,LessUnstable,Moderate": [
+          0.45,
+          0.3,
+          0.25
+        ],
+        "H,Average,LessUnstable,Strong": [
+          0.5,
+          0.25,
+          0.25
+        ],
+        "H,Average,Average,None": [
+          0.4,
+          0.35,
+          0.25
+        ],
+        "H,Average,Average,Slight": [
+          0.72,
+          0.24,
+          0.04
+        ],
+        "H,Average,Average,Moderate": [
+          0.25,
+          0.57,
+          0.18
+        ],
+        "H,Average,Average,Strong": [
+          0.57,
+          0.28,
+          0.15
+        ],
+        "H,Average,MoreUnstable,None": [
+          0.25,
+          0.35,
+          0.4
+        ],
+        "H,Average,MoreUnstable,Slight": [
+          0.48,
+          0.26,
+          0.26
+        ],
+        "H,Average,MoreUnstable,Moderate": [
+          0.6,
+          0.26,
+          0.14
+        ],
+        "H,Average,MoreUnstable,Strong": [
+          0.19,
+          0.18,
+          0.63
+        ],
+        "H,MoreThanAve,LessUnstable,None": [
+          0.25,
+          0.4,
+          0.35
+        ],
+        "H,MoreThanAve,LessUnstable,Slight": [
+          0.35,
+          0.3,
+          0.35
+        ],
+        "H,MoreThanAve,LessUnstable,Moderate": [
+          0.35,
+          0.3,
+          0.35
+        ],
+        "H,MoreThanAve,LessUnstable,Strong": [
+          0.35,
+          0.35,
+          0.3
+        ],
+        "H,MoreThanAve,Average,None": [
+          0.65,
+          0.3,
+          0.05
+        ],
+        "H,MoreThanAve,Average,Slight": [
+          0.22,
+          0.58,
+          0.2
+        ],
+        "H,MoreThanAve,Average,Moderate": [
+          0.45,
+          0.35,
+          0.2
+        ],
+        "H,MoreThanAve,Average,Strong": [
+          0.25,
+          0.34,
+          0.41
+        ],
+        "H,MoreThanAve,MoreUnstable,None": [
+          0.48,
+          0.26,
+          0.26
+        ],
+        "H,MoreThanAve,MoreUnstable,Slight": [
+          0.58,
+          0.25,
+          0.17
+        ],
+        "H,MoreThanAve,MoreUnstable,Moderate": [
+          0.15,
+          0.16,
+          0.69
+        ],
+        "H,MoreThanAve,MoreUnstable,Strong": [
+          0.25,
+          0.3,
+          0.45
+        ],
+        "I,LessThanAve,LessUnstable,None": [
+          0.4,
+          0.3,
+          0.3
+        ],
+        "I,LessThanAve,LessUnstable,Slight": [
+          0.3,
+          0.3,
+          0.4
+        ],
+        "I,LessThanAve,LessUnstable,Moderate": [
+          0.25,
+          0.4,
+          0.35
+        ],
+        "I,LessThanAve,LessUnstable,Strong": [
+          0.6,
+          0.34,
+          0.06
+        ],
+        "I,LessThanAve,Average,None": [
+          0.18,
+          0.62,
+          0.2
+        ],
+        "I,LessThanAve,Average,Slight": [
+          0.47,
+          0.3,
+          0.23
+        ],
+        "I,LessThanAve,Average,Moderate": [
+          0.25,
+          0.3,
+          0.45
+        ],
+        "I,LessThanAve,Average,Strong": [
+          0.5,
+          0.22,
+          0.28
+        ],
+        "I,LessThanAve,MoreUnstable,None": [
+          0.5,
+          0.27,
+          0.23
+        ],
+        "I,LessThanAve,MoreUnstable,Slight": [
+          0.4,
+          0.45,
+          0.15
+        ],
+        "I,LessThanAve,MoreUnstable,Moderate": [
+          0.35,
+          0.45,
+          0.2
+        ],
+        "I,LessThanAve,MoreUnstable,Strong": [
+          0.6,
+          0.27,
+          0.13
+        ],
+        "I,Average,LessUnstable,None": [
+          0.6,
+          0.22,
+          0.18
+        ],
+        "I,Average,LessUnstable,Slight": [
+          0.55,
+          0.32,
+          0.13
+        ],
+        "I,Average,LessUnstable,Moderate": [
+          0.69,
+          0.29,
+          0.02
+        ],
+        "I,Average,LessUnstable,Strong": [
+          0.54,
+          0.36,
+          0.1
+        ],
+        "I,Average,Average,None": [
+          0.75,
+          0.2,
+          0.05
+        ],
+        "I,Average,Average,Slight": [
+          0.55,
+          0.3,
+          0.15
+        ],
+        "I,Average,Average,Moderate": [
+          0.7,
+          0.22,
+          0.08
+        ],
+        "I,Average,Average,Strong": [
+          0.7,
+          0.25,
+          0.05
+        ],
+        "I,Average,MoreUnstable,None": [
+          0.35,
+          0.4,
+          0.25
+        ],
+        "I,Average,MoreUnstable,Slight": [
+          0.35,
+          0.4,
+          0.25
+        ],
+        "I,Average,MoreUnstable,Moderate": [
+          0.55,
+          0.3,
+          0.15
+        ],
+        "I,Average,MoreUnstable,Strong": [
+          0.55,
+          0.27,
+          0.18
+        ],
+        "I,MoreThanAve,LessUnstable,None": [
+          0.5,
+          0.35,
+          0.15
+        ],
+        "I,MoreThanAve,LessUnstable,Slight": [
+          0.65,
+          0.33,
+          0.02
+        ],
+        "I,MoreThanAve,LessUnstable,Moderate": [
+          0.38,
+          0.5,
+          0.12
+        ],
+        "I,MoreThanAve,LessUnstable,Strong": [
+          0.7,
+          0.24,
+          0.06
+        ],
+        "I,MoreThanAve,Average,None": [
+          0.65,
+          0.2,
+          0.15
+        ],
+        "I,MoreThanAve,Average,Slight": [
+          0.67,
+          0.23,
+          0.1
+        ],
+        "I,MoreThanAve,Average,Moderate": [
+          0.7,
+          0.25,
+          0.05
+        ],
+        "I,MoreThanAve,Average,Strong": [
+          0.2,
+          0.45,
+          0.35
+        ],
+        "I,MoreThanAve,MoreUnstable,None": [
+          0.3,
+          0.45,
+          0.25
+        ],
+        "I,MoreThanAve,MoreUnstable,Slight": [
+          0.55,
+          0.3,
+          0.15
+        ],
+        "I,MoreThanAve,MoreUnstable,Moderate": [
+          0.5,
+          0.3,
+          0.2
+        ],
+        "I,MoreThanAve,MoreUnstable,Strong": [
+          0.45,
+          0.38,
+          0.17
+        ],
+        "J,LessThanAve,LessUnstable,None": [
+          0.6,
+          0.38,
+          0.02
+        ],
+        "J,LessThanAve,LessUnstable,Slight": [
+          0.28,
+          0.57,
+          0.15
+        ],
+        "J,LessThanAve,LessUnstable,Moderate": [
+          0.65,
+          0.28,
+          0.07
+        ],
+        "J,LessThanAve,LessUnstable,Strong": [
+          0.63,
+          0.25,
+          0.12
+        ],
+        "J,LessThanAve,Average,None": [
+          0.62,
+          0.28,
+          0.1
+        ],
+        "J,LessThanAve,Average,Slight": [
+          0.8,
+          0.17,
+          0.03
+        ],
+        "J,LessThanAve,Average,Moderate": [
+          0.16,
+          0.47,
+          0.37
+        ],
+        "J,LessThanAve,Average,Strong": [
+          0.3,
+          0.45,
+          0.25
+        ],
+        "J,LessThanAve,MoreUnstable,None": [
+          0.45,
+          0.32,
+          0.23
+        ],
+        "J,LessThanAve,MoreUnstable,Slight": [
+          0.52,
+          0.26,
+          0.22
+        ],
+        "J,LessThanAve,MoreUnstable,Moderate": [
+          0.35,
+          0.45,
+          0.2
+        ],
+        "J,LessThanAve,MoreUnstable,Strong": [
+          0.65,
+          0.32,
+          0.03
+        ],
+        "J,Average,LessUnstable,None": [
+          0.48,
+          0.39,
+          0.13
+        ],
+        "J,Average,LessUnstable,Slight": [
+          0.58,
+          0.3,
+          0.12
+        ],
+        "J,Average,LessUnstable,Moderate": [
+          0.25,
+          0.45,
+          0.3
+        ],
+        "J,Average,LessUnstable,Strong": [
+          0.5,
+          0.28,
+          0.22
+        ],
+        "J,Average,Average,None": [
+          0.65,
+          0.27,
+          0.08
+        ],
+        "J,Average,Average,Slight": [
+          0.18,
+          0.45,
+          0.37
+        ],
+        "J,Average,Average,Moderate": [
+          0.3,
+          0.35,
+          0.35
+        ],
+        "J,Average,Average,Strong": [
+          0.45,
+          0.3,
+          0.25
+        ],
+        "J,Average,MoreUnstable,None": [
+          0.45,
+          0.3,
+          0.25
+        ],
+        "J,Average,MoreUnstable,Slight": [
+          0.35,
+          0.43,
+          0.22
+        ],
+        "J,Average,MoreUnstable,Moderate": [
+          0.62,
+          0.35,
+          0.03
+        ],
+        "J,Average,MoreUnstable,Strong": [
+          0.2,
+          0.65,
+          0.15
+        ],
+        "J,MoreThanAve,LessUnstable,None": [
+          0.52,
+          0.33,
+          0.15
+        ],
+        "J,MoreThanAve,LessUnstable,Slight": [
+          0.23,
+          0.42,
+          0.35
+        ],
+        "J,MoreThanAve,LessUnstable,Moderate": [
+          0.47,
+          0.3,
+          0.23
+        ],
+        "J,MoreThanAve,LessUnstable,Strong": [
+          0.55,
+          0.3,
+          0.15
+        ],
+        "J,MoreThanAve,Average,None": [
+          0.23,
+          0.4,
+          0.37
+        ],
+        "J,MoreThanAve,Average,Slight": [
+          0.25,
+          0.4,
+          0.35
+        ],
+        "J,MoreThanAve,Average,Moderate": [
+          0.4,
+          0.3,
+          0.3
+        ],
+        "J,MoreThanAve,Average,Strong": [
+          0.4,
+          0.3,
+          0.3
+        ],
+        "J,MoreThanAve,MoreUnstable,None": [
+          0.3,
+          0.45,
+          0.25
+        ],
+        "J,MoreThanAve,MoreUnstable,Slight": [
+          0.57,
+          0.4,
+          0.03
+        ],
+        "J,MoreThanAve,MoreUnstable,Moderate": [
+          0.15,
+          0.65,
+          0.2
+        ],
+        "J,MoreThanAve,MoreUnstable,Strong": [
+          0.5,
+          0.33,
+          0.17
+        ],
+        "K,LessThanAve,LessUnstable,None": [
+          0.25,
+          0.36,
+          0.39
+        ],
+        "K,LessThanAve,LessUnstable,Slight": [
+          0.5,
+          0.28,
+          0.22
+        ],
+        "K,LessThanAve,LessUnstable,Moderate": [
+          0.55,
+          0.3,
+          0.15
+        ],
+        "K,LessThanAve,LessUnstable,Strong": [
+          0.18,
+          0.3,
+          0.52
+        ],
+        "K,LessThanAve,Average,None": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "K,LessThanAve,Average,Slight": [
+          0.3,
+          0.3,
+          0.4
+        ],
+        "K,LessThanAve,Average,Moderate": [
+          0.4,
+          0.3,
+          0.3
+        ],
+        "K,LessThanAve,Average,Strong": [
+          0.25,
+          0.48,
+          0.27
+        ],
+        "K,LessThanAve,MoreUnstable,None": [
+          0.63,
+          0.32,
+          0.05
+        ],
+        "K,LessThanAve,MoreUnstable,Slight": [
+          0.15,
+          0.63,
+          0.22
+        ],
+        "K,LessThanAve,MoreUnstable,Moderate": [
+          0.4,
+          0.38,
+          0.22
+        ],
+        "K,LessThanAve,MoreUnstable,Strong": [
+          0.2,
+          0.37,
+          0.43
+        ],
+        "K,Average,LessUnstable,None": [
+          0.3,
+          0.35,
+          0.35
+        ],
+        "K,Average,LessUnstable,Slight": [
+          0.5,
+          0.32,
+          0.18
+        ],
+        "K,Average,LessUnstable,Moderate": [
+          0.15,
+          0.2,
+          0.65
+        ],
+        "K,Average,LessUnstable,Strong": [
+          0.18,
+          0.4,
+          0.42
+        ],
+        "K,Average,Average,None": [
+          0.25,
+          0.35,
+          0.4
+        ],
+        "K,Average,Average,Slight": [
+          0.25,
+          0.35,
+          0.4
+        ],
+        "K,Average,Average,Moderate": [
+          0.25,
+          0.42,
+          0.33
+        ],
+        "K,Average,Average,Strong": [
+          0.58,
+          0.36,
+          0.06
+        ],
+        "K,Average,MoreUnstable,None": [
+          0.13,
+          0.62,
+          0.25
+        ],
+        "K,Average,MoreUnstable,Slight": [
+          0.3,
+          0.45,
+          0.25
+        ],
+        "K,Average,MoreUnstable,Moderate": [
+          0.22,
+          0.35,
+          0.43
+        ],
+        "K,Average,MoreUnstable,Strong": [
+          0.35,
+          0.32,
+          0.33
+        ],
+        "K,MoreThanAve,LessUnstable,None": [
+          0.5,
+          0.3,
+          0.2
+        ],
+        "K,MoreThanAve,LessUnstable,Slight": [
+          0.1,
+          0.2,
+          0.7
+        ],
+        "K,MoreThanAve,LessUnstable,Moderate": [
+          0.2,
+          0.3,
+          0.5
+        ],
+        "K,MoreThanAve,LessUnstable,Strong": [
+          0.2,
+          0.4,
+          0.4
+        ],
+        "K,MoreThanAve,Average,None": [
+          0.23,
+          0.3,
+          0.47
+        ],
+        "K,MoreThanAve,Average,Slight": [
+          0.15,
+          0.45,
+          0.4
+        ],
+        "K,MoreThanAve,Average,Moderate": [
+          0.5,
+          0.42,
+          0.08
+        ],
+        "K,MoreThanAve,Average,Strong": [
+          0.1,
+          0.65,
+          0.25
+        ],
+        "K,MoreThanAve,MoreUnstable,None": [
+          0.28,
+          0.4,
+          0.32
+        ],
+        "K,MoreThanAve,MoreUnstable,Slight": [
+          0.2,
+          0.32,
+          0.48
+        ],
+        "K,MoreThanAve,MoreUnstable,Moderate": [
+          0.3,
+          0.28,
+          0.42
+        ],
+        "K,MoreThanAve,MoreUnstable,Strong": [
+          0.38,
+          0.32,
+          0.3
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "N34StarFcst",
+      "parents": [
+        "PlainsFcst",
+        "ScenRel3_4"
+      ],
+      "values": [
+        "XNIL",
+        "SIG",
+        "SVR"
+      ],
+      "probability_distribution": {
+        "XNIL,ACEFK": [
+          0.94,
+          0.05,
+          0.01
+        ],
+        "XNIL,B": [
+          0.06,
+          0.89,
+          0.05
+        ],
+        "XNIL,D": [
+          0.01,
+          0.05,
+          0.94
+        ],
+        "XNIL,GJ": [
+          0.98,
+          0.02,
+          0.0
+        ],
+        "XNIL,HI": [
+          0.04,
+          0.94,
+          0.02
+        ],
+        "SIG,ACEFK": [
+          0.0,
+          0.03,
+          0.97
+        ],
+        "SIG,B": [
+          0.92,
+          0.06,
+          0.02
+        ],
+        "SIG,D": [
+          0.01,
+          0.89,
+          0.1
+        ],
+        "SIG,GJ": [
+          0.0,
+          0.01,
+          0.99
+        ],
+        "SIG,HI": [
+          0.92,
+          0.06,
+          0.02
+        ],
+        "SVR,ACEFK": [
+          0.03,
+          0.92,
+          0.05
+        ],
+        "SVR,B": [
+          0.01,
+          0.04,
+          0.95
+        ],
+        "SVR,D": [
+          0.99,
+          0.01,
+          0.0
+        ],
+        "SVR,GJ": [
+          0.09,
+          0.9,
+          0.01
+        ],
+        "SVR,HI": [
+          0.03,
+          0.12,
+          0.85
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "R5Fcst",
+      "parents": [
+        "N34StarFcst",
+        "MountainFcst"
+      ],
+      "values": [
+        "XNIL",
+        "SIG",
+        "SVR"
+      ],
+      "probability_distribution": {
+        "XNIL,XNIL": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "XNIL,SIG": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "XNIL,SVR": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "SIG,XNIL": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "SIG,SIG": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "SIG,SVR": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "SVR,XNIL": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "SVR,SIG": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "SVR,SVR": [
+          0.0,
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Dewpoints",
+      "parents": [
+        "Scenario"
+      ],
+      "values": [
+        "LowEvrywhere",
+        "LowAtStation",
+        "LowSHighN",
+        "LowNHighS",
+        "LowMtsHighPl",
+        "HighEvrywher",
+        "Other"
+      ],
+      "probability_distribution": {
+        "A": [
+          0.04,
+          0.05,
+          0.15,
+          0.05,
+          0.19,
+          0.3,
+          0.22
+        ],
+        "B": [
+          0.05,
+          0.07,
+          0.15,
+          0.1,
+          0.3,
+          0.27,
+          0.06
+        ],
+        "C": [
+          0.4,
+          0.25,
+          0.0,
+          0.15,
+          0.05,
+          0.02,
+          0.13
+        ],
+        "D": [
+          0.13,
+          0.22,
+          0.18,
+          0.07,
+          0.34,
+          0.03,
+          0.03
+        ],
+        "E": [
+          0.15,
+          0.2,
+          0.2,
+          0.18,
+          0.11,
+          0.11,
+          0.05
+        ],
+        "F": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.98,
+          0.02
+        ],
+        "G": [
+          0.5,
+          0.27,
+          0.15,
+          0.02,
+          0.02,
+          0.0,
+          0.04
+        ],
+        "H": [
+          0.0,
+          0.02,
+          0.1,
+          0.05,
+          0.5,
+          0.2,
+          0.13
+        ],
+        "I": [
+          0.0,
+          0.02,
+          0.7,
+          0.0,
+          0.2,
+          0.04,
+          0.04
+        ],
+        "J": [
+          0.1,
+          0.45,
+          0.1,
+          0.05,
+          0.26,
+          0.02,
+          0.02
+        ],
+        "K": [
+          0.1,
+          0.1,
+          0.1,
+          0.2,
+          0.05,
+          0.1,
+          0.35
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "LowLLapse",
+      "parents": [
+        "Scenario"
+      ],
+      "values": [
+        "CloseToDryAd",
+        "Steep",
+        "ModerateOrLe",
+        "Stable"
+      ],
+      "probability_distribution": {
+        "A": [
+          0.04,
+          0.25,
+          0.35,
+          0.36
+        ],
+        "B": [
+          0.07,
+          0.31,
+          0.31,
+          0.31
+        ],
+        "C": [
+          0.35,
+          0.47,
+          0.14,
+          0.04
+        ],
+        "D": [
+          0.4,
+          0.4,
+          0.13,
+          0.07
+        ],
+        "E": [
+          0.45,
+          0.35,
+          0.15,
+          0.05
+        ],
+        "F": [
+          0.01,
+          0.35,
+          0.45,
+          0.19
+        ],
+        "G": [
+          0.78,
+          0.19,
+          0.03,
+          0.0
+        ],
+        "H": [
+          0.0,
+          0.02,
+          0.33,
+          0.65
+        ],
+        "I": [
+          0.22,
+          0.4,
+          0.3,
+          0.08
+        ],
+        "J": [
+          0.13,
+          0.4,
+          0.35,
+          0.12
+        ],
+        "K": [
+          0.09,
+          0.4,
+          0.33,
+          0.18
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "MeanRH",
+      "parents": [
+        "Scenario"
+      ],
+      "values": [
+        "VeryMoist",
+        "Average",
+        "Dry"
+      ],
+      "probability_distribution": {
+        "A": [
+          0.33,
+          0.5,
+          0.17
+        ],
+        "B": [
+          0.4,
+          0.4,
+          0.2
+        ],
+        "C": [
+          0.05,
+          0.45,
+          0.5
+        ],
+        "D": [
+          0.1,
+          0.5,
+          0.4
+        ],
+        "E": [
+          0.05,
+          0.65,
+          0.3
+        ],
+        "F": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "G": [
+          0.0,
+          0.07,
+          0.93
+        ],
+        "H": [
+          0.4,
+          0.55,
+          0.05
+        ],
+        "I": [
+          0.2,
+          0.45,
+          0.35
+        ],
+        "J": [
+          0.05,
+          0.55,
+          0.4
+        ],
+        "K": [
+          0.2,
+          0.4,
+          0.4
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "MidLLapse",
+      "parents": [
+        "Scenario"
+      ],
+      "values": [
+        "CloseToDryAd",
+        "Steep",
+        "ModerateOrLe"
+      ],
+      "probability_distribution": {
+        "A": [
+          0.25,
+          0.55,
+          0.2
+        ],
+        "B": [
+          0.25,
+          0.5,
+          0.25
+        ],
+        "C": [
+          0.4,
+          0.38,
+          0.22
+        ],
+        "D": [
+          0.43,
+          0.37,
+          0.2
+        ],
+        "E": [
+          0.02,
+          0.38,
+          0.6
+        ],
+        "F": [
+          0.0,
+          0.1,
+          0.9
+        ],
+        "G": [
+          0.84,
+          0.16,
+          0.0
+        ],
+        "H": [
+          0.25,
+          0.31,
+          0.44
+        ],
+        "I": [
+          0.41,
+          0.29,
+          0.3
+        ],
+        "J": [
+          0.23,
+          0.42,
+          0.35
+        ],
+        "K": [
+          0.16,
+          0.28,
+          0.56
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "MvmtFeatures",
+      "parents": [
+        "Scenario"
+      ],
+      "values": [
+        "StrongFront",
+        "MarkedUpper",
+        "OtherRapid",
+        "NoMajor"
+      ],
+      "probability_distribution": {
+        "A": [
+          0.25,
+          0.55,
+          0.2,
+          0.0
+        ],
+        "B": [
+          0.05,
+          0.1,
+          0.1,
+          0.75
+        ],
+        "C": [
+          0.1,
+          0.3,
+          0.3,
+          0.3
+        ],
+        "D": [
+          0.18,
+          0.38,
+          0.34,
+          0.1
+        ],
+        "E": [
+          0.02,
+          0.02,
+          0.26,
+          0.7
+        ],
+        "F": [
+          0.05,
+          0.07,
+          0.05,
+          0.83
+        ],
+        "G": [
+          0.1,
+          0.25,
+          0.15,
+          0.5
+        ],
+        "H": [
+          0.0,
+          0.6,
+          0.1,
+          0.3
+        ],
+        "I": [
+          0.2,
+          0.1,
+          0.2,
+          0.5
+        ],
+        "J": [
+          0.04,
+          0.0,
+          0.04,
+          0.92
+        ],
+        "K": [
+          0.5,
+          0.35,
+          0.09,
+          0.06
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "RHRatio",
+      "parents": [
+        "Scenario"
+      ],
+      "values": [
+        "MoistMDryL",
+        "DryMMoistL",
+        "Other"
+      ],
+      "probability_distribution": {
+        "A": [
+          0.05,
+          0.5,
+          0.45
+        ],
+        "B": [
+          0.1,
+          0.5,
+          0.4
+        ],
+        "C": [
+          0.4,
+          0.15,
+          0.45
+        ],
+        "D": [
+          0.2,
+          0.45,
+          0.35
+        ],
+        "E": [
+          0.8,
+          0.05,
+          0.15
+        ],
+        "F": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "G": [
+          0.6,
+          0.0,
+          0.4
+        ],
+        "H": [
+          0.0,
+          0.7,
+          0.3
+        ],
+        "I": [
+          0.1,
+          0.7,
+          0.2
+        ],
+        "J": [
+          0.4,
+          0.4,
+          0.2
+        ],
+        "K": [
+          0.15,
+          0.45,
+          0.4
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "SfcWndShfDis",
+      "parents": [
+        "Scenario"
+      ],
+      "values": [
+        "DenvCyclone",
+        "E_W_N",
+        "E_W_S",
+        "MovingFtorOt",
+        "DryLine",
+        "None",
+        "Other"
+      ],
+      "probability_distribution": {
+        "A": [
+          0.65,
+          0.05,
+          0.1,
+          0.08,
+          0.04,
+          0.07,
+          0.01
+        ],
+        "B": [
+          0.65,
+          0.05,
+          0.1,
+          0.1,
+          0.02,
+          0.07,
+          0.01
+        ],
+        "C": [
+          0.0,
+          0.65,
+          0.2,
+          0.02,
+          0.06,
+          0.05,
+          0.02
+        ],
+        "D": [
+          0.12,
+          0.02,
+          0.02,
+          0.02,
+          0.45,
+          0.27,
+          0.1
+        ],
+        "E": [
+          0.06,
+          0.14,
+          0.04,
+          0.04,
+          0.25,
+          0.4,
+          0.07
+        ],
+        "F": [
+          0.1,
+          0.1,
+          0.1,
+          0.02,
+          0.0,
+          0.56,
+          0.12
+        ],
+        "G": [
+          0.02,
+          0.05,
+          0.05,
+          0.0,
+          0.35,
+          0.33,
+          0.2
+        ],
+        "H": [
+          0.01,
+          0.1,
+          0.15,
+          0.4,
+          0.0,
+          0.23,
+          0.11
+        ],
+        "I": [
+          0.02,
+          0.1,
+          0.5,
+          0.3,
+          0.01,
+          0.02,
+          0.05
+        ],
+        "J": [
+          0.06,
+          0.08,
+          0.04,
+          0.02,
+          0.6,
+          0.14,
+          0.06
+        ],
+        "K": [
+          0.05,
+          0.13,
+          0.05,
+          0.39,
+          0.13,
+          0.15,
+          0.1
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "SynForcng",
+      "parents": [
+        "Scenario"
+      ],
+      "values": [
+        "SigNegative",
+        "NegToPos",
+        "SigPositive",
+        "PosToNeg",
+        "LittleChange"
+      ],
+      "probability_distribution": {
+        "A": [
+          0.35,
+          0.25,
+          0.0,
+          0.35,
+          0.05
+        ],
+        "B": [
+          0.06,
+          0.1,
+          0.06,
+          0.3,
+          0.48
+        ],
+        "C": [
+          0.1,
+          0.27,
+          0.4,
+          0.08,
+          0.15
+        ],
+        "D": [
+          0.35,
+          0.2,
+          0.1,
+          0.25,
+          0.1
+        ],
+        "E": [
+          0.15,
+          0.15,
+          0.1,
+          0.15,
+          0.45
+        ],
+        "F": [
+          0.15,
+          0.1,
+          0.05,
+          0.15,
+          0.55
+        ],
+        "G": [
+          0.15,
+          0.1,
+          0.1,
+          0.25,
+          0.4
+        ],
+        "H": [
+          0.25,
+          0.25,
+          0.25,
+          0.15,
+          0.1
+        ],
+        "I": [
+          0.25,
+          0.2,
+          0.15,
+          0.2,
+          0.2
+        ],
+        "J": [
+          0.01,
+          0.05,
+          0.01,
+          0.05,
+          0.88
+        ],
+        "K": [
+          0.2,
+          0.2,
+          0.35,
+          0.15,
+          0.1
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "TempDis",
+      "parents": [
+        "Scenario"
+      ],
+      "values": [
+        "QStationary",
+        "Moving",
+        "None",
+        "Other"
+      ],
+      "probability_distribution": {
+        "A": [
+          0.13,
+          0.15,
+          0.1,
+          0.62
+        ],
+        "B": [
+          0.15,
+          0.15,
+          0.25,
+          0.45
+        ],
+        "C": [
+          0.12,
+          0.1,
+          0.35,
+          0.43
+        ],
+        "D": [
+          0.1,
+          0.15,
+          0.4,
+          0.35
+        ],
+        "E": [
+          0.04,
+          0.04,
+          0.82,
+          0.1
+        ],
+        "F": [
+          0.05,
+          0.12,
+          0.75,
+          0.08
+        ],
+        "G": [
+          0.03,
+          0.03,
+          0.84,
+          0.1
+        ],
+        "H": [
+          0.05,
+          0.4,
+          0.5,
+          0.05
+        ],
+        "I": [
+          0.8,
+          0.19,
+          0.0,
+          0.01
+        ],
+        "J": [
+          0.1,
+          0.05,
+          0.4,
+          0.45
+        ],
+        "K": [
+          0.2,
+          0.3,
+          0.3,
+          0.2
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "WindAloft",
+      "parents": [
+        "Scenario"
+      ],
+      "values": [
+        "LV",
+        "SWQuad",
+        "NWQuad",
+        "AllElse"
+      ],
+      "probability_distribution": {
+        "A": [
+          0.0,
+          0.95,
+          0.01,
+          0.04
+        ],
+        "B": [
+          0.2,
+          0.3,
+          0.2,
+          0.3
+        ],
+        "C": [
+          0.05,
+          0.09,
+          0.59,
+          0.27
+        ],
+        "D": [
+          0.03,
+          0.32,
+          0.42,
+          0.23
+        ],
+        "E": [
+          0.07,
+          0.66,
+          0.02,
+          0.25
+        ],
+        "F": [
+          0.5,
+          0.0,
+          0.0,
+          0.5
+        ],
+        "G": [
+          0.25,
+          0.3,
+          0.25,
+          0.2
+        ],
+        "H": [
+          0.2,
+          0.14,
+          0.43,
+          0.23
+        ],
+        "I": [
+          0.2,
+          0.41,
+          0.1,
+          0.29
+        ],
+        "J": [
+          0.96,
+          0.0,
+          0.0,
+          0.04
+        ],
+        "K": [
+          0.03,
+          0.08,
+          0.33,
+          0.56
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "WindFieldMt",
+      "parents": [
+        "Scenario"
+      ],
+      "values": [
+        "Westerly",
+        "LVorOther"
+      ],
+      "probability_distribution": {
+        "A": [
+          0.8,
+          0.2
+        ],
+        "B": [
+          0.35,
+          0.65
+        ],
+        "C": [
+          0.75,
+          0.25
+        ],
+        "D": [
+          0.7,
+          0.3
+        ],
+        "E": [
+          0.65,
+          0.35
+        ],
+        "F": [
+          0.15,
+          0.85
+        ],
+        "G": [
+          0.7,
+          0.3
+        ],
+        "H": [
+          0.3,
+          0.7
+        ],
+        "I": [
+          0.5,
+          0.5
+        ],
+        "J": [
+          0.01,
+          0.99
+        ],
+        "K": [
+          0.7,
+          0.3
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "WindFieldPln",
+      "parents": [
+        "Scenario"
+      ],
+      "values": [
+        "LV",
+        "DenvCyclone",
+        "LongAnticyc",
+        "E_NE",
+        "SEQuad",
+        "WidespdDnsl"
+      ],
+      "probability_distribution": {
+        "A": [
+          0.05,
+          0.6,
+          0.02,
+          0.1,
+          0.23,
+          0.0
+        ],
+        "B": [
+          0.08,
+          0.6,
+          0.02,
+          0.1,
+          0.2,
+          0.0
+        ],
+        "C": [
+          0.1,
+          0.0,
+          0.75,
+          0.0,
+          0.0,
+          0.15
+        ],
+        "D": [
+          0.1,
+          0.15,
+          0.2,
+          0.05,
+          0.3,
+          0.2
+        ],
+        "E": [
+          0.43,
+          0.1,
+          0.15,
+          0.06,
+          0.06,
+          0.2
+        ],
+        "F": [
+          0.6,
+          0.07,
+          0.01,
+          0.12,
+          0.2,
+          0.0
+        ],
+        "G": [
+          0.25,
+          0.01,
+          0.3,
+          0.01,
+          0.03,
+          0.4
+        ],
+        "H": [
+          0.04,
+          0.02,
+          0.04,
+          0.8,
+          0.1,
+          0.0
+        ],
+        "I": [
+          0.2,
+          0.3,
+          0.05,
+          0.37,
+          0.07,
+          0.01
+        ],
+        "J": [
+          0.6,
+          0.08,
+          0.07,
+          0.03,
+          0.2,
+          0.02
+        ],
+        "K": [
+          0.1,
+          0.05,
+          0.1,
+          0.05,
+          0.2,
+          0.5
+        ]
+      }
+    }
+  ],
+  "edges": [
+    [
+      "N0_7muVerMo",
+      "CombVerMo"
+    ],
+    [
+      "CombVerMo",
+      "AreaMeso_ALS"
+    ],
+    [
+      "SubjVertMo",
+      "CombVerMo"
+    ],
+    [
+      "QGVertMotion",
+      "CombVerMo"
+    ],
+    [
+      "AreaMeso_ALS",
+      "AreaMoDryAir"
+    ],
+    [
+      "AreaMeso_ALS",
+      "CldShadeOth"
+    ],
+    [
+      "AreaMeso_ALS",
+      "CompPlFcst"
+    ],
+    [
+      "AreaMoDryAir",
+      "CldShadeOth"
+    ],
+    [
+      "CldShadeOth",
+      "InsInMt"
+    ],
+    [
+      "CldShadeOth",
+      "CompPlFcst"
+    ],
+    [
+      "CompPlFcst",
+      "CapChange"
+    ],
+    [
+      "CompPlFcst",
+      "InsChange"
+    ],
+    [
+      "SatContMoist",
+      "CombMoisture"
+    ],
+    [
+      "CombMoisture",
+      "AreaMoDryAir"
+    ],
+    [
+      "RaoContMoist",
+      "CombMoisture"
+    ],
+    [
+      "VISCloudCov",
+      "CombClouds"
+    ],
+    [
+      "CombClouds",
+      "CldShadeOth"
+    ],
+    [
+      "IRCloudCover",
+      "CombClouds"
+    ],
+    [
+      "InsInMt",
+      "OutflowFrMt"
+    ],
+    [
+      "InsInMt",
+      "CldShadeConv"
+    ],
+    [
+      "InsInMt",
+      "MountainFcst"
+    ],
+    [
+      "AMInstabMt",
+      "InsInMt"
+    ],
+    [
+      "OutflowFrMt",
+      "Boundaries"
+    ],
+    [
+      "CldShadeConv",
+      "CompPlFcst"
+    ],
+    [
+      "MountainFcst",
+      "R5Fcst"
+    ],
+    [
+      "WndHodograph",
+      "OutflowFrMt"
+    ],
+    [
+      "WndHodograph",
+      "Boundaries"
+    ],
+    [
+      "WndHodograph",
+      "CldShadeConv"
+    ],
+    [
+      "Boundaries",
+      "CompPlFcst"
+    ],
+    [
+      "MorningBound",
+      "Boundaries"
+    ],
+    [
+      "CapChange",
+      "CapInScen"
+    ],
+    [
+      "InsChange",
+      "InsSclInScen"
+    ],
+    [
+      "CapInScen",
+      "PlainsFcst"
+    ],
+    [
+      "LoLevMoistAd",
+      "InsChange"
+    ],
+    [
+      "InsSclInScen",
+      "PlainsFcst"
+    ],
+    [
+      "Date",
+      "Scenario"
+    ],
+    [
+      "Scenario",
+      "ScenRelAMCIN"
+    ],
+    [
+      "Scenario",
+      "ScenRelAMIns"
+    ],
+    [
+      "Scenario",
+      "ScenRel3_4"
+    ],
+    [
+      "Scenario",
+      "ScnRelPlFcst"
+    ],
+    [
+      "Scenario",
+      "Dewpoints"
+    ],
+    [
+      "Scenario",
+      "LowLLapse"
+    ],
+    [
+      "Scenario",
+      "MeanRH"
+    ],
+    [
+      "Scenario",
+      "MidLLapse"
+    ],
+    [
+      "Scenario",
+      "MvmtFeatures"
+    ],
+    [
+      "Scenario",
+      "RHRatio"
+    ],
+    [
+      "Scenario",
+      "SfcWndShfDis"
+    ],
+    [
+      "Scenario",
+      "SynForcng"
+    ],
+    [
+      "Scenario",
+      "TempDis"
+    ],
+    [
+      "Scenario",
+      "WindAloft"
+    ],
+    [
+      "Scenario",
+      "WindFieldMt"
+    ],
+    [
+      "Scenario",
+      "WindFieldPln"
+    ],
+    [
+      "ScenRelAMCIN",
+      "AMCINInScen"
+    ],
+    [
+      "ScenRelAMIns",
+      "AMInsWliScen"
+    ],
+    [
+      "ScenRel3_4",
+      "N34StarFcst"
+    ],
+    [
+      "ScnRelPlFcst",
+      "PlainsFcst"
+    ],
+    [
+      "AMCINInScen",
+      "CapInScen"
+    ],
+    [
+      "MorningCIN",
+      "AMCINInScen"
+    ],
+    [
+      "PlainsFcst",
+      "N34StarFcst"
+    ],
+    [
+      "AMInsWliScen",
+      "InsSclInScen"
+    ],
+    [
+      "LIfr12ZDENSd",
+      "AMInsWliScen"
+    ],
+    [
+      "AMDewptCalPl",
+      "AMInsWliScen"
+    ],
+    [
+      "N34StarFcst",
+      "R5Fcst"
+    ],
+    [
+      "LatestCIN",
+      "CurPropConv"
+    ],
+    [
+      "CurPropConv",
+      "PlainsFcst"
+    ],
+    [
+      "LLIW",
+      "CurPropConv"
+    ]
+  ]
+}

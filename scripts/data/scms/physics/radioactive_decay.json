@@ -1,0 +1,33 @@
+{
+    "vars": [
+        {
+            "name": "N_0",
+            "class": "EquationBasedNumericalSCMNode",
+            "accessibility": "controllable",
+            "domain": [1e3, 1e9]
+        },
+        {
+            "name": "l",
+            "class": "EquationBasedNumericalSCMNode",
+            "accessibility": "controllable",
+            "domain": [1e-5, 1e-1]
+        },
+        {
+            "name": "t",
+            "class": "EquationBasedNumericalSCMNode",
+            "accessibility": "controllable",
+            "domain": [0.0, 1e6]
+        },
+        {
+            "name": "N",
+            "equation": "N_0*exp(-l*t)",
+            "class": "EquationBasedNumericalSCMNode",
+            "domain": [0.0, 1e9]
+        }
+    ],
+    "edges": [
+        ["N_0", "N"],
+        ["l", "N"],
+        ["t", "N"]
+    ]
+}

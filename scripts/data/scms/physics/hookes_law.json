@@ -1,0 +1,22 @@
+{
+    "vars": [
+        {
+            "name": "F",
+            "equation": "-k*x",
+            "domain": [-1e11, 1e26],
+            "class": "EquationBasedNumericalSCMNode"
+        },
+        {
+            "name": "k",
+            "domain": [0, 1e11],
+            "class": "EquationBasedNumericalSCMNode"
+        },
+        {
+            "name": "x",
+            "domain": [-1e11, 1e11],
+            "class": "EquationBasedNumericalSCMNode",
+            "accessibility": "controllable"
+        }
+    ],
+    "edges": [["x", "F"], ["k", "F"]]
+}

@@ -1,0 +1,267 @@
+{
+    "class_": "TheCausalityGame.core.contracts.problem_instance:ProblemInstance",
+    "id": "seeded/treatment_effect/transformed_outcome/hill_rs-657",
+    "schema_version": "0.1.0",
+    "agents": [
+        {
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "OptimalEffectDesign_Fast",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.transformed_outcome:TransformedOutcomeInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.optimal_effect_design:OptimalEffectDesignDecider",
+                "params": {
+                    "num_obs": 1,
+                    "num_inter": 3,
+                    "n_bootstrap": 24,
+                    "n_graphs": 16,
+                    "fantasy_samples": 24,
+                    "num_value_candidates": 4,
+                    "treatment_bonus": 1.5,
+                    "path_weight": 1.0,
+                    "coverage_weight": 0.25,
+                    "disagreement_weight": 0.75,
+                    "seed": 911
+                }
+            }
+        },
+        {
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "OptimalEffectDesign_Balanced",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.transformed_outcome:TransformedOutcomeInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.optimal_effect_design:OptimalEffectDesignDecider",
+                "params": {
+                    "num_obs": 1,
+                    "num_inter": 3,
+                    "n_bootstrap": 32,
+                    "n_graphs": 24,
+                    "fantasy_samples": 48,
+                    "num_value_candidates": 5,
+                    "treatment_bonus": 2.0,
+                    "path_weight": 1.5,
+                    "coverage_weight": 0.5,
+                    "disagreement_weight": 1.0,
+                    "seed": 911
+                }
+            }
+        },
+        {
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "OptimalEffectDesign_PathFocused",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.transformed_outcome:TransformedOutcomeInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.optimal_effect_design:OptimalEffectDesignDecider",
+                "params": {
+                    "num_obs": 1,
+                    "num_inter": 3,
+                    "n_bootstrap": 32,
+                    "n_graphs": 24,
+                    "fantasy_samples": 48,
+                    "num_value_candidates": 5,
+                    "treatment_bonus": 2.5,
+                    "path_weight": 2.0,
+                    "coverage_weight": 0.25,
+                    "disagreement_weight": 1.0,
+                    "seed": 911
+                }
+            }
+        },
+        {
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "OptimalEffectDesign_DisagreementHeavy",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.transformed_outcome:TransformedOutcomeInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.optimal_effect_design:OptimalEffectDesignDecider",
+                "params": {
+                    "num_obs": 1,
+                    "num_inter": 3,
+                    "n_bootstrap": 32,
+                    "n_graphs": 32,
+                    "fantasy_samples": 72,
+                    "num_value_candidates": 7,
+                    "treatment_bonus": 2.0,
+                    "path_weight": 1.0,
+                    "coverage_weight": 0.5,
+                    "disagreement_weight": 1.75,
+                    "seed": 911
+                }
+            }
+        },
+        {
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "OptimalEffectDesign_InterventionHeavy",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.transformed_outcome:TransformedOutcomeInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.optimal_effect_design:OptimalEffectDesignDecider",
+                "params": {
+                    "num_obs": 0,
+                    "num_inter": 4,
+                    "n_bootstrap": 64,
+                    "n_graphs": 36,
+                    "fantasy_samples": 72,
+                    "num_value_candidates": 6,
+                    "treatment_bonus": 3.0,
+                    "path_weight": 1.5,
+                    "coverage_weight": 0.75,
+                    "disagreement_weight": 1.25,
+                    "seed": 911
+                }
+            }
+        },
+        {
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "ABCI_Fast",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.transformed_outcome:TransformedOutcomeInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.abci:ABCIDecider",
+                "params": {
+                    "num_obs": 1,
+                    "num_inter": 3,
+                    "n_bootstrap": 24,
+                    "n_graphs": 16,
+                    "fantasy_samples": 24,
+                    "num_value_candidates": 4,
+                    "query_focus_weight": 0.5,
+                    "seed": 911
+                }
+            }
+        },
+        {
+            "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+            "id": "ABCI_Balanced",
+            "active": true,
+            "inferer": {
+                "class_": "TheCausalityGame.agent.inferers.transformed_outcome:TransformedOutcomeInferer"
+            },
+            "decider": {
+                "class_": "TheCausalityGame.agent.deciders.abci:ABCIDecider",
+                "params": {
+                    "num_obs": 1,
+                    "num_inter": 3,
+                    "n_bootstrap": 32,
+                    "n_graphs": 24,
+                    "fantasy_samples": 48,
+                    "num_value_candidates": 5,
+                    "query_focus_weight": 0.75,
+                    "seed": 911
+                }
+            }
+        }
+    ],
+    "scm": {
+        "class_": "TheCausalityGame.scm.core:CoreSCM",
+        "vars": [
+            {
+                "class_": "TheCausalityGame.scm.nodes.bn:BayesianNetworkSCMNode",
+                "name": "Z",
+                "accessibility": "controllable",
+                "domain": [
+                    "0",
+                    "1"
+                ],
+                "probability_distribution": [
+                    0.5,
+                    0.5
+                ]
+            },
+            {
+                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+                "name": "X",
+                "accessibility": "measurable",
+                "domain": [
+                    0,
+                    2
+                ],
+                "parents": [
+                    "Z"
+                ],
+                "parent_mappings": {
+                    "Z": {
+                        "0": 0,
+                        "1": 1
+                    }
+                },
+                "equation": "2*Z"
+            },
+            {
+                "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+                "name": "Y",
+                "accessibility": "measurable",
+                "domain": [
+                    0,
+                    4
+                ],
+                "parents": [
+                    "X"
+                ],
+                "equation": "X"
+            }
+        ],
+        "dag": {
+            "class_": "TheCausalityGame.scm.dag.core:CoreDAG",
+            "edges": [
+                [
+                    "Z",
+                    "X"
+                ],
+                [
+                    "X",
+                    "Y"
+                ]
+            ]
+        },
+        "random_state": "{\"bit_generator\": \"RandomState\", \"state\": {\"key\": [657, 1062706230, 3986917200, 4231319234, 3603028777, 787149207, 2367430553, 4198460206, 2509987273, 1611310112, 4277103119, 2861122247, 2890253509, 2739282320, 1973444776, 748655548, 1529406780, 3665499682, 2555274263, 2735716700, 2029613098, 1822245900, 1540476471, 3969597797, 1091199830, 2745417836, 3700935040, 156146634, 937988302, 1642159971, 765727688, 3133789703, 2873957657, 163376840, 3670752522, 2367153584, 3560431966, 120696534, 2097447060, 464091120, 580633048, 1863848545, 3069485066, 3630132051, 490940092, 3663520857, 324026800, 2644581023, 1578665249, 1657447889, 3042949954, 3904512115, 2413476964, 4276677235, 3765071462, 534027024, 1397538184, 3916699718, 28147827, 2320906394, 1685433396, 2903002662, 152311922, 421570361, 32406205, 2045809106, 3669521281, 19145869, 1185734885, 3167403577, 325558413, 4238920936, 3266288639, 1571186357, 3196639566, 1767597895, 3594401002, 2402980154, 1918518118, 3078600434, 4275674368, 2415299968, 1955489436, 996376900, 3880477736, 2055637068, 2350906295, 2755996608, 3724744162, 3272870686, 983951307, 3876394610, 1917015025, 2819329549, 2986218313, 1553842166, 1773726675, 3068554299, 2053256159, 3918677241, 3363111174, 3604485214, 816893463, 715955834, 71291018, 3213697243, 2335250183, 3973235300, 4261466639, 1963936553, 1280905014, 1724411938, 2785802559, 2009463426, 1371599137, 2584298003, 3027839529, 1451992684, 1780743799, 3768224517, 2794000342, 3965170461, 3141974352, 1699872725, 1242456864, 2359346562, 3953093630, 4137353296, 1150848063, 2968421111, 1658964011, 140014357, 2718868685, 2611137840, 996718400, 2099350727, 3019669670, 3622995261, 3366895616, 902323386, 1925324782, 3711336664, 1534265845, 3663888851, 755337120, 3995280049, 3427529420, 915444542, 344475146, 696581255, 1749868761, 2425376207, 3744229241, 473636283, 2052640353, 4028288123, 1229382644, 1890127174, 1002323105, 4108784932, 1368274947, 2837654379, 150622735, 320169870, 3099515306, 3646867437, 1524973452, 3293546568, 1633544511, 881931295, 4077332453, 3581334633, 1450477694, 3363754440, 1490774213, 117258755, 537427679, 3143132588, 1745632344, 3415109840, 2740481779, 2044313290, 1972365773, 3665390131, 1393202600, 3504569702, 832472723, 462734266, 1350943518, 3289027320, 3920711877, 3566785757, 608750166, 358210223, 1363406541, 36463423, 3881361311, 3271472465, 3401870368, 3595724182, 1240584593, 276676249, 2395673639, 753516644, 1122659392, 1009942386, 1514031816, 3357020956, 1838424843, 2943888835, 925718263, 2637070150, 273652392, 600042781, 2918978119, 639443728, 1454532136, 3291299846, 2034233299, 877592757, 1266623813, 2297895089, 1989773949, 252968907, 1230278391, 3751284207, 2279918334, 3939037775, 3674621152, 1787537780, 3304880399, 867643043, 2041553463, 932439607, 2467185565, 2485765542, 1723580064, 595418994, 3433605864, 3530568358, 266422537, 2671157886, 3471210462, 2048757796, 2362485901, 1184210016, 475896891, 1931949886, 2177008595, 285203310, 157380960, 1925061595, 3168708606, 2476876649, 534330677, 3672736744, 354865079, 4286178100, 1882199221, 2130214919, 481802594, 274699951, 2418219793, 1759238790, 4099962699, 2900138097, 4022514025, 1520941533, 1806110936, 3806119850, 1771255739, 1845331825, 110190656, 94190161, 527719431, 643370710, 2045600130, 309040324, 2557122154, 694353951, 1677239379, 2537994099, 925424047, 1734707750, 1561289087, 3299861971, 3289513006, 3695678432, 93770927, 2434568492, 3929597512, 3418226618, 434038305, 3036640554, 848536046, 3412673037, 1262653102, 174519092, 3375417518, 4099850860, 1148788215, 1854634299, 159178512, 1796444799, 3784325862, 1705953930, 3592899849, 3640770597, 3599705650, 4181805962, 619585347, 528626086, 2121887158, 362821996, 1759868118, 334440718, 3786781122, 2434165602, 2901327390, 11664971, 526153687, 3598604308, 1503531349, 3689859943, 1338688440, 1674328642, 2257967285, 1796829306, 3583521999, 987890117, 1451237635, 1900353813, 3392838192, 3775472236, 1896939033, 3327596743, 972663460, 1447958533, 801480422, 4215982097, 974164590, 803775675, 3423474205, 806434093, 2625245465, 3943511040, 2099257737, 3663135747, 3514340700, 1444660952, 3528365563, 3238716471, 718790116, 2921697365, 1970373301, 2544297575, 250082365, 1826816630, 3072502105, 3536553294, 901565897, 2854011574, 3296142958, 1334673260, 2483002477, 1234772024, 3912710379, 4271217911, 3165749684, 3295450175, 4157511966, 3225284324, 4187611543, 1853502681, 2389078702, 3028110163, 2113147245, 1485942037, 312802910, 1137355409, 2653707340, 2466785859, 4103894563, 4157717535, 4163777676, 1749304556, 2320304131, 1840493288, 2734901361, 2436243940, 935950148, 3324736347, 3074857792, 784307347, 203246217, 1244707480, 4282679529, 2640975839, 3299586239, 2658490299, 3259801229, 3874917783, 1612058870, 1653203462, 3431787863, 199727033, 3567246995, 1193140327, 917118934, 3271694087, 1598044718, 1589845286, 228942079, 505462072, 884318390, 732155757, 2308779169, 1683675376, 3498545591, 3194081703, 3444311229, 4139355803, 2863438750, 3332629043, 2181295768, 3832778347, 3181697202, 919580443, 4066544211, 3843384125, 2990429988, 423999917, 1486542833, 4197884769, 3299600732, 223341358, 3685050586, 2538438738, 1835954502, 1411559866, 2196386687, 543110922, 1934299820, 676852988, 4289889576, 853511860, 2357043906, 485095295, 4131036635, 4102086649, 109783396, 1607064119, 2414083858, 2179150613, 4003166425, 2633587145, 2012942815, 3618626655, 198389270, 949286521, 3556442249, 823595583, 3398888361, 3679385057, 3639277050, 405032462, 4269427544, 1276145594, 3227789723, 3303981773, 3021282076, 3181953709, 1250785251, 3190177795, 2841561919, 3621049836, 3137228839, 2889641334, 949372066, 4134651849, 3444895378, 673495574, 3702338192, 644522210, 4132990222, 4204395782, 1313571295, 2170293373, 930735875, 3033383192, 2973375276, 716855569, 816201377, 3414286450, 2591098755, 203620564, 4211919252, 453925252, 2100098822, 673265334, 3797679554, 3848169498, 1755542739, 2344581841, 4211827255, 3262616701, 4011263408, 1376193690, 3737382435, 3231454365, 3169759828, 1878418413, 1394784796, 3038246002, 861102642, 2798682557, 2246797663, 4006500534, 1842667119, 3171328365, 1577785811, 1475384291, 3560721460, 1242858174, 1531498087, 2801272395, 2469826011, 3009288620, 1000358326, 3713946847, 4087691486, 1437120068, 754833485, 4278357366, 870870591, 1970026482, 1229463543, 709444647, 896648317, 326397036, 2179503288, 1097873791, 2591891156, 146256525, 484567233, 334962502, 2200293056, 2027841197, 325357568, 1740427813, 3908054618, 1073671236, 3521092860, 1463183812, 2272602595, 902426864, 556564700, 1032361209, 2104166763, 3173675777, 3261136223, 1432236925, 3491474974, 3924048036, 1777122071, 3760101347, 1920519574, 584052170, 3134188778, 1411948993, 1591186170, 2979156546, 2625549692, 2878343923, 3192278099, 4073355060, 2586737139, 3039762262, 3260820070, 3318728988, 3514102399, 709626161, 1296161691, 2998341641, 2384214431, 4215456314, 920003527, 705863374, 3489064850, 2941056898, 508635086, 1660155029, 3090068660, 1646048287, 2794004520, 2943757541, 637032567, 2173933640, 2109780360, 1657232996, 3673115953, 2769762579, 1261084431, 3092332769, 3187480299, 1383841098, 2485900277, 3917140434, 3228869333, 352503503, 2317760781, 3641085006, 1925550533, 2941282489, 4091701037, 2613859725, 2085636819, 2809522499, 4162834959, 3125431591, 4204543749, 3196655051, 3980209083, 663730695], \"pos\": 624, \"has_gauss\": 0, \"cached_gaussian\": 0.0, \"state_name\": \"MT19937\"}}"
+    },
+    "mission": {
+        "class_": "TheCausalityGame.mission.conditional_average_treatment_effect:ConditionalAverageTreatmentEffectMission",
+        "id": "conditional_average_treatment_effect",
+        "behavior_metric": {
+            "class_": "TheCausalityGame.metric.behavior.resource_usage:ResourceUsageBehaviorMetric"
+        },
+        "result_metric": {
+            "class_": "TheCausalityGame.metric.result.pehe:PEHEResultMetric"
+        },
+        "result_validator": {
+            "class_": "TheCausalityGame.metric.result.result_validator.cate_function_validator:ConditionalAverageTreatmentEffectFunctionValidator"
+        }
+    },
+    "custom_metrics": [],
+    "run_plan": {
+        "execution": "parallel",
+        "parallel_backend": "thread",
+        "budget": {
+            "rounds": 650,
+            "time_s": 37,
+            "samples": 3000,
+            "memory_mb": 0.5
+        },
+        "hook_plan": []
+    },
+    "seeds": {
+        "agent": 42,
+        "scm": 911,
+        "misc": 7
+    },
+    "runtime": {
+        "mode": "dev",
+        "debug_level": 10
+    }
+}

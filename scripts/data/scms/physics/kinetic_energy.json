@@ -1,0 +1,23 @@
+{
+    "vars": [
+        {
+            "name": "KE",
+            "equation": "0.5*m*v**2",
+            "domain": [0, 1e45],
+            "class": "EquationBasedNumericalSCMNode"
+        },
+        {
+            "name": "m",
+            "domain": [0, 1e11],
+            "class": "EquationBasedNumericalSCMNode",
+            "accessibility": "controllable"
+        },
+        {
+            "name": "v",
+            "domain": [-1e11, 1e11],
+            "class": "EquationBasedNumericalSCMNode",
+            "accessibility": "controllable"
+        }
+    ],
+    "edges": [["m", "KE"], ["v", "KE"]]
+}

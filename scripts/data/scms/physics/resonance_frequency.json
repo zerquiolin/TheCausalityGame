@@ -1,0 +1,23 @@
+{
+    "vars": [
+        {
+            "name": "f",
+            "class": "EquationBasedNumericalSCMNode",
+            "domain": [0, 1e10],
+            "equation": "1/(2*pi*sqrt(C*L))"
+        },
+        {
+            "name": "L",
+            "class": "EquationBasedNumericalSCMNode",
+            "domain": [0, 1e10],
+            "accessibility": "controllable"
+        },
+        {
+            "name": "C",
+            "class": "EquationBasedNumericalSCMNode",
+            "domain": [0, 1e10],
+            "accessibility": "controllable"
+        }
+    ],
+    "edges": [["L", "f"], ["C", "f"]]
+}

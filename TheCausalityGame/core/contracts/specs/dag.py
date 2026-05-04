@@ -29,6 +29,6 @@ class DAGSpec(CommonSpec):
         description="List of node identifiers in the DAG.",
     )
     edges: list[tuple[str, str]] = Field(
-        default_factory=list,
+        default=[],
         description="Directed edges as (source, target) node pairs.",
     )

@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use The Causality Game, please cite this software and the accompanying thesis."
+title: "The Causality Game"
+authors:
+  - family-names: "Amortegui"
+    given-names: "Sergio"
+repository-code: "https://github.com/zerquiolin/TheCausalityGame"
+license: "Apache-2.0"
+version: "0.1.0"
+date-released: "2026-05-04"
+preferred-citation:
+  type: thesis
+  title: "The Causality Game: Formalizing Causal Inference as Interactive Scientific Exploration"
+  authors:
+    - family-names: "Amortegui"
+      given-names: "Sergio"
+  institution:
+    name: "Universidad de La Sabana"
+  year: 2026

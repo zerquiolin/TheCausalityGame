@@ -1,0 +1,35 @@
+{
+    "vars": [
+        {
+            "name": "v",
+            "class": "EquationBasedNumericalSCMNode",
+            "accessibility": "controllable",
+            "domain": [0.0, 100.0]
+        },
+        {
+            "name": "r",
+            "class": "EquationBasedNumericalSCMNode",
+            "accessibility": "controllable",
+            "domain": [0.1, 100.0]
+        },
+        {
+            "name": "a_c",
+            "equation": "v**2/r",
+            "class": "EquationBasedNumericalSCMNode",
+            "domain": [0.0, 1e8]
+          },
+          {
+            "name": "m",
+            "class": "EquationBasedNumericalSCMNode",
+            "accessibility": "controllable",
+            "domain": [0.01, 1000.0]
+          },
+          {
+            "name": "F_c",
+            "equation": "a_c*m",
+            "class": "EquationBasedNumericalSCMNode",
+            "domain": [0.0, 1e16]
+          }
+    ],
+    "edges": [["v", "a_c"], ["r", "a_c"], ["m", "F_c"], ["a_c", "F_c"]]
+}

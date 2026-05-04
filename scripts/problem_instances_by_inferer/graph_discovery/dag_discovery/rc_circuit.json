@@ -200,9 +200,9 @@
         "parallel_backend": "thread",
         "budget": {
             "rounds": 150,
-            "time_s": 2500,
-            "samples": 5250,
-            "memory_mb": 10000
+            "time_s": 2250,
+            "samples": 1250,
+            "memory_mb": 0.3
         },
         "hook_plan": [
             {

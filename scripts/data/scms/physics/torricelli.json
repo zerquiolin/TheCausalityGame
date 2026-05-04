@@ -1,0 +1,26 @@
+{
+    "vars": [
+    {
+      "name": "g",
+      "class": "EquationBasedNumericalSCMNode",
+      "domain": [9.79, 9.81]
+    },
+    {
+      "name": "h",
+      "class": "EquationBasedNumericalSCMNode",
+      "accessibility": "controllable",
+      "domain": [0.01, 100.0]
+    },
+    {
+      "name": "v",
+      "equation": "sqrt(2)*sqrt(g*h)",
+      "class": "EquationBasedNumericalSCMNode",
+      "domain": [0.0, 10000.0]
+    }
+  ],
+  "edges": [
+    ["g", "v"],
+    ["h", "v"]
+  ]
+}
+  

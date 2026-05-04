@@ -1,0 +1,45 @@
+{
+    "name": "Stefan-Boltzmann",
+    "vars": [
+        {
+            "name": "E",
+            "class": "EquationBasedNumericalSCMNode",
+            "domain": [
+                0,
+                1e10
+            ],
+            "equation": "5.670374419e-8*A*T**4",
+            "noise_distribution": {
+                "class": "NoNoiseDistribution"
+            }
+        },
+        {
+            "name": "A",
+            "class": "EquationBasedNumericalSCMNode",
+            "domain": [
+                0,
+                1e10
+            ],
+            "accessibility": "controllable"
+        },
+        {
+            "name": "T",
+            "class": "EquationBasedNumericalSCMNode",
+            "domain": [
+                0,
+                1e10
+            ],
+            "accessibility": "controllable"
+        }
+    ],
+    "edges": [
+        [
+            "A",
+            "E"
+        ],
+        [
+            "T",
+            "E"
+        ]
+    ]
+}

@@ -1,0 +1,26 @@
+{
+    "vars": [
+        {
+            "name": "n_1",
+            "class": "EquationBasedNumericalSCMNode",
+            "accessibility": "controllable",
+            "domain": [1.0, 2.5]
+        },
+        {
+            "name": "n_2",
+            "class": "EquationBasedNumericalSCMNode",
+            "accessibility": "controllable",
+            "domain": [1.0, 2.5]
+        },
+        {
+            "name": "theta_B",
+            "equation": "atan(n_2/n_1)",
+            "class": "EquationBasedNumericalSCMNode",
+            "domain": [0.0, 1e100]
+        }
+    ],
+    "edges": [
+        ["n_1", "theta_B"],
+        ["n_2", "theta_B"]
+    ]
+}

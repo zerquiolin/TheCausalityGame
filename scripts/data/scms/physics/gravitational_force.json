@@ -1,0 +1,32 @@
+{
+    "vars": [
+        {
+            "name": "F",
+            "equation": "G*m1*m2/r**2",
+            "domain": [0, 1e100],
+            "class": "EquationBasedNumericalSCMNode"
+        },
+        {
+            "name": "G",
+            "domain": [0, 1e11],
+            "class": "EquationBasedNumericalSCMNode",
+            "accessibility": "controllable"
+        },
+        {
+            "name": "m1",
+            "domain": [0, 1e11],
+            "class": "EquationBasedNumericalSCMNode"
+        },
+        {
+            "name": "m2",
+            "domain": [0, 1e11],
+            "class": "EquationBasedNumericalSCMNode"
+        },
+        {
+            "name": "r",
+            "domain": [0.000001, 1e11],
+            "class": "EquationBasedNumericalSCMNode"
+        }
+    ],
+    "edges": [["G", "F"], ["m1", "F"], ["m2", "F"], ["r", "F"]]
+}

@@ -1,0 +1,62 @@
+{
+    "vars": [
+        {
+            "name": "Z",
+            "class": "BayesianNetworkSCMNode",
+            "parents": [],
+            "values": [
+                "0",
+                "1"
+            ],
+            "probability_distribution": [
+                0.5,
+                0.5
+            ],
+            "accessibility": "controllable"
+        },
+        {
+            "name": "X",
+            "equation": "2*Z",
+            "domain": [
+                0,
+                2
+            ],
+            "class": "EquationBasedNumericalSCMNode",
+            "accessibility": "observable",
+            "noise_distribution": {
+                "class": "GaussianNoiseDistribution",
+                "mean": 0,
+                "std": 1
+            }
+        },
+        {
+            "name": "Y",
+            "equation": "0.5*X + 3*Z",
+            "domain": [
+                0,
+                4
+            ],
+            "class": "EquationBasedNumericalSCMNode",
+            "accessibility": "observable",
+            "noise_distribution": {
+                "class": "GaussianNoiseDistribution",
+                "mean": 0,
+                "std": 1
+            }
+        }
+    ],
+    "edges": [
+        [
+            "Z",
+            "X"
+        ],
+        [
+            "X",
+            "Y"
+        ],
+        [
+            "Z",
+            "Y"
+        ]
+    ]
+}

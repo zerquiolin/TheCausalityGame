@@ -1,0 +1,964 @@
+{
+  "vars": [
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "BirthAsphyxia",
+      "parents": [],
+      "values": [
+        "yes",
+        "no"
+      ],
+      "probability_distribution": [
+        [
+          0.1
+        ],
+        [
+          0.9
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "HypDistrib",
+      "parents": [
+        "CardiacMixing",
+        "DuctFlow"
+      ],
+      "values": [
+        "Equal",
+        "Unequal"
+      ],
+      "probability_distribution": {
+        "None,Lt_to_Rt": [
+          0.95,
+          0.05
+        ],
+        "None,None": [
+          0.95,
+          0.05
+        ],
+        "None,Rt_to_Lt": [
+          0.95,
+          0.05
+        ],
+        "Mild,Lt_to_Rt": [
+          0.95,
+          0.05
+        ],
+        "Mild,None": [
+          0.95,
+          0.05
+        ],
+        "Mild,Rt_to_Lt": [
+          0.95,
+          0.05
+        ],
+        "Complete,Lt_to_Rt": [
+          0.95,
+          0.05
+        ],
+        "Complete,None": [
+          0.95,
+          0.05
+        ],
+        "Complete,Rt_to_Lt": [
+          0.05,
+          0.95
+        ],
+        "Transp.,Lt_to_Rt": [
+          0.5,
+          0.5
+        ],
+        "Transp.,None": [
+          0.95,
+          0.05
+        ],
+        "Transp.,Rt_to_Lt": [
+          0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "HypoxiaInO2",
+      "parents": [
+        "LungParench",
+        "CardiacMixing"
+      ],
+      "values": [
+        "Mild",
+        "Moderate",
+        "Severe"
+      ],
+      "probability_distribution": {
+        "Normal,None": [
+          0.93,
+          0.05,
+          0.02
+        ],
+        "Normal,Mild": [
+          0.15,
+          0.8,
+          0.05
+        ],
+        "Normal,Complete": [
+          0.7,
+          0.2,
+          0.1
+        ],
+        "Normal,Transp.": [
+          0.1,
+          0.8,
+          0.1
+        ],
+        "Congested,None": [
+          0.1,
+          0.75,
+          0.15
+        ],
+        "Congested,Mild": [
+          0.1,
+          0.65,
+          0.25
+        ],
+        "Congested,Complete": [
+          0.1,
+          0.7,
+          0.2
+        ],
+        "Congested,Transp.": [
+          0.05,
+          0.65,
+          0.3
+        ],
+        "Abnormal,None": [
+          0.1,
+          0.5,
+          0.4
+        ],
+        "Abnormal,Mild": [
+          0.02,
+          0.18,
+          0.8
+        ],
+        "Abnormal,Complete": [
+          0.1,
+          0.3,
+          0.6
+        ],
+        "Abnormal,Transp.": [
+          0.02,
+          0.18,
+          0.8
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "CO2",
+      "parents": [
+        "LungParench"
+      ],
+      "values": [
+        "Normal",
+        "Low",
+        "High"
+      ],
+      "probability_distribution": {
+        "Normal": [
+          0.8,
+          0.1,
+          0.1
+        ],
+        "Congested": [
+          0.65,
+          0.05,
+          0.3
+        ],
+        "Abnormal": [
+          0.45,
+          0.05,
+          0.5
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "ChestXray",
+      "parents": [
+        "LungFlow",
+        "LungParench"
+      ],
+      "values": [
+        "Normal",
+        "Oligaemic",
+        "Plethoric",
+        "Grd_Glass",
+        "Asy/Patch"
+      ],
+      "probability_distribution": {
+        "Normal,Normal": [
+          0.9,
+          0.03,
+          0.03,
+          0.01,
+          0.03
+        ],
+        "Normal,Congested": [
+          0.14,
+          0.8,
+          0.02,
+          0.02,
+          0.02
+        ],
+        "Normal,Abnormal": [
+          0.15,
+          0.01,
+          0.79,
+          0.04,
+          0.01
+        ],
+        "Low,Normal": [
+          0.05,
+          0.02,
+          0.15,
+          0.7,
+          0.08
+        ],
+        "Low,Congested": [
+          0.05,
+          0.22,
+          0.08,
+          0.5,
+          0.15
+        ],
+        "Low,Abnormal": [
+          0.05,
+          0.02,
+          0.4,
+          0.4,
+          0.13
+        ],
+        "High,Normal": [
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.8
+        ],
+        "High,Congested": [
+          0.05,
+          0.15,
+          0.05,
+          0.05,
+          0.7
+        ],
+        "High,Abnormal": [
+          0.24,
+          0.33,
+          0.03,
+          0.34,
+          0.06
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Grunting",
+      "parents": [
+        "Sick",
+        "LungParench"
+      ],
+      "values": [
+        "yes",
+        "no"
+      ],
+      "probability_distribution": {
+        "yes,Normal": [
+          0.2,
+          0.8
+        ],
+        "yes,Congested": [
+          0.05,
+          0.95
+        ],
+        "yes,Abnormal": [
+          0.4,
+          0.6
+        ],
+        "no,Normal": [
+          0.2,
+          0.8
+        ],
+        "no,Congested": [
+          0.8,
+          0.2
+        ],
+        "no,Abnormal": [
+          0.6,
+          0.4
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "LVHreport",
+      "parents": [
+        "LVH"
+      ],
+      "values": [
+        "yes",
+        "no"
+      ],
+      "probability_distribution": {
+        "yes": [
+          0.9,
+          0.1
+        ],
+        "no": [
+          0.05,
+          0.95
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "LowerBodyO2",
+      "parents": [
+        "HypoxiaInO2",
+        "HypDistrib"
+      ],
+      "values": [
+        "<5",
+        "5-12",
+        "12+"
+      ],
+      "probability_distribution": {
+        "Mild,Equal": [
+          0.1,
+          0.3,
+          0.6
+        ],
+        "Mild,Unequal": [
+          0.3,
+          0.6,
+          0.1
+        ],
+        "Moderate,Equal": [
+          0.5,
+          0.4,
+          0.1
+        ],
+        "Moderate,Unequal": [
+          0.4,
+          0.5,
+          0.1
+        ],
+        "Severe,Equal": [
+          0.5,
+          0.45,
+          0.05
+        ],
+        "Severe,Unequal": [
+          0.6,
+          0.35,
+          0.05
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "RUQO2",
+      "parents": [
+        "HypoxiaInO2"
+      ],
+      "values": [
+        "<5",
+        "5-12",
+        "12+"
+      ],
+      "probability_distribution": {
+        "Mild": [
+          0.1,
+          0.3,
+          0.6
+        ],
+        "Moderate": [
+          0.3,
+          0.6,
+          0.1
+        ],
+        "Severe": [
+          0.5,
+          0.4,
+          0.1
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "CO2Report",
+      "parents": [
+        "CO2"
+      ],
+      "values": [
+        "<7.5",
+        ">=7.5"
+      ],
+      "probability_distribution": {
+        "Normal": [
+          0.9,
+          0.1
+        ],
+        "Low": [
+          0.9,
+          0.1
+        ],
+        "High": [
+          0.1,
+          0.9
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "XrayReport",
+      "parents": [
+        "ChestXray"
+      ],
+      "values": [
+        "Normal",
+        "Oligaemic",
+        "Plethoric",
+        "Grd_Glass",
+        "Asy/Patchy"
+      ],
+      "probability_distribution": {
+        "Normal": [
+          0.8,
+          0.06,
+          0.06,
+          0.02,
+          0.06
+        ],
+        "Oligaemic": [
+          0.1,
+          0.8,
+          0.02,
+          0.02,
+          0.06
+        ],
+        "Plethoric": [
+          0.1,
+          0.02,
+          0.8,
+          0.02,
+          0.06
+        ],
+        "Grd_Glass": [
+          0.08,
+          0.02,
+          0.1,
+          0.6,
+          0.2
+        ],
+        "Asy/Patch": [
+          0.08,
+          0.02,
+          0.1,
+          0.1,
+          0.7
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Disease",
+      "parents": [
+        "BirthAsphyxia"
+      ],
+      "values": [
+        "PFC",
+        "TGA",
+        "Fallot",
+        "PAIVS",
+        "TAPVD",
+        "Lung"
+      ],
+      "probability_distribution": {
+        "yes": [
+          0.2,
+          0.3,
+          0.25,
+          0.15,
+          0.05,
+          0.05
+        ],
+        "no": [
+          0.03061224,
+          0.33673469,
+          0.29591837,
+          0.23469388,
+          0.05102041,
+          0.05102041
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "GruntingReport",
+      "parents": [
+        "Grunting"
+      ],
+      "values": [
+        "yes",
+        "no"
+      ],
+      "probability_distribution": {
+        "yes": [
+          0.8,
+          0.2
+        ],
+        "no": [
+          0.1,
+          0.9
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Age",
+      "parents": [
+        "Sick",
+        "Disease"
+      ],
+      "values": [
+        "0-3_days",
+        "4-10_days",
+        "11-30_days"
+      ],
+      "probability_distribution": {
+        "yes,PFC": [
+          0.95,
+          0.03,
+          0.02
+        ],
+        "yes,TGA": [
+          0.85,
+          0.1,
+          0.05
+        ],
+        "yes,Fallot": [
+          0.8,
+          0.15,
+          0.05
+        ],
+        "yes,PAIVS": [
+          0.7,
+          0.2,
+          0.1
+        ],
+        "yes,TAPVD": [
+          0.7,
+          0.15,
+          0.15
+        ],
+        "yes,Lung": [
+          0.25,
+          0.25,
+          0.5
+        ],
+        "no,PFC": [
+          0.8,
+          0.15,
+          0.05
+        ],
+        "no,TGA": [
+          0.8,
+          0.15,
+          0.05
+        ],
+        "no,Fallot": [
+          0.8,
+          0.15,
+          0.05
+        ],
+        "no,PAIVS": [
+          0.7,
+          0.2,
+          0.1
+        ],
+        "no,TAPVD": [
+          0.9,
+          0.08,
+          0.02
+        ],
+        "no,Lung": [
+          0.8,
+          0.15,
+          0.05
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "LVH",
+      "parents": [
+        "Disease"
+      ],
+      "values": [
+        "yes",
+        "no"
+      ],
+      "probability_distribution": {
+        "PFC": [
+          0.1,
+          0.9
+        ],
+        "TGA": [
+          0.1,
+          0.9
+        ],
+        "Fallot": [
+          0.1,
+          0.9
+        ],
+        "PAIVS": [
+          0.9,
+          0.1
+        ],
+        "TAPVD": [
+          0.05,
+          0.95
+        ],
+        "Lung": [
+          0.1,
+          0.9
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "DuctFlow",
+      "parents": [
+        "Disease"
+      ],
+      "values": [
+        "Lt_to_Rt",
+        "None",
+        "Rt_to_Lt"
+      ],
+      "probability_distribution": {
+        "PFC": [
+          0.15,
+          0.05,
+          0.8
+        ],
+        "TGA": [
+          0.1,
+          0.8,
+          0.1
+        ],
+        "Fallot": [
+          0.8,
+          0.2,
+          0.0
+        ],
+        "PAIVS": [
+          1.0,
+          0.0,
+          0.0
+        ],
+        "TAPVD": [
+          0.33,
+          0.33,
+          0.34
+        ],
+        "Lung": [
+          0.2,
+          0.4,
+          0.4
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "CardiacMixing",
+      "parents": [
+        "Disease"
+      ],
+      "values": [
+        "None",
+        "Mild",
+        "Complete",
+        "Transp."
+      ],
+      "probability_distribution": {
+        "PFC": [
+          0.4,
+          0.43,
+          0.15,
+          0.02
+        ],
+        "TGA": [
+          0.02,
+          0.09,
+          0.09,
+          0.8
+        ],
+        "Fallot": [
+          0.02,
+          0.16,
+          0.8,
+          0.02
+        ],
+        "PAIVS": [
+          0.01,
+          0.02,
+          0.95,
+          0.02
+        ],
+        "TAPVD": [
+          0.01,
+          0.03,
+          0.95,
+          0.01
+        ],
+        "Lung": [
+          0.4,
+          0.53,
+          0.05,
+          0.02
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "LungParench",
+      "parents": [
+        "Disease"
+      ],
+      "values": [
+        "Normal",
+        "Congested",
+        "Abnormal"
+      ],
+      "probability_distribution": {
+        "PFC": [
+          0.6,
+          0.1,
+          0.3
+        ],
+        "TGA": [
+          0.8,
+          0.05,
+          0.15
+        ],
+        "Fallot": [
+          0.8,
+          0.05,
+          0.15
+        ],
+        "PAIVS": [
+          0.8,
+          0.05,
+          0.15
+        ],
+        "TAPVD": [
+          0.1,
+          0.6,
+          0.3
+        ],
+        "Lung": [
+          0.03,
+          0.25,
+          0.72
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "LungFlow",
+      "parents": [
+        "Disease"
+      ],
+      "values": [
+        "Normal",
+        "Low",
+        "High"
+      ],
+      "probability_distribution": {
+        "PFC": [
+          0.3,
+          0.65,
+          0.05
+        ],
+        "TGA": [
+          0.2,
+          0.05,
+          0.75
+        ],
+        "Fallot": [
+          0.15,
+          0.8,
+          0.05
+        ],
+        "PAIVS": [
+          0.1,
+          0.85,
+          0.05
+        ],
+        "TAPVD": [
+          0.3,
+          0.1,
+          0.6
+        ],
+        "Lung": [
+          0.7,
+          0.1,
+          0.2
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "Sick",
+      "parents": [
+        "Disease"
+      ],
+      "values": [
+        "yes",
+        "no"
+      ],
+      "probability_distribution": {
+        "PFC": [
+          0.4,
+          0.6
+        ],
+        "TGA": [
+          0.3,
+          0.7
+        ],
+        "Fallot": [
+          0.2,
+          0.8
+        ],
+        "PAIVS": [
+          0.3,
+          0.7
+        ],
+        "TAPVD": [
+          0.7,
+          0.3
+        ],
+        "Lung": [
+          0.7,
+          0.3
+        ]
+      }
+    }
+  ],
+  "edges": [
+    [
+      "BirthAsphyxia",
+      "Disease"
+    ],
+    [
+      "Disease",
+      "Age"
+    ],
+    [
+      "Disease",
+      "LVH"
+    ],
+    [
+      "Disease",
+      "DuctFlow"
+    ],
+    [
+      "Disease",
+      "CardiacMixing"
+    ],
+    [
+      "Disease",
+      "LungParench"
+    ],
+    [
+      "Disease",
+      "LungFlow"
+    ],
+    [
+      "Disease",
+      "Sick"
+    ],
+    [
+      "HypDistrib",
+      "LowerBodyO2"
+    ],
+    [
+      "HypoxiaInO2",
+      "LowerBodyO2"
+    ],
+    [
+      "HypoxiaInO2",
+      "RUQO2"
+    ],
+    [
+      "CO2",
+      "CO2Report"
+    ],
+    [
+      "ChestXray",
+      "XrayReport"
+    ],
+    [
+      "Grunting",
+      "GruntingReport"
+    ],
+    [
+      "LVH",
+      "LVHreport"
+    ],
+    [
+      "DuctFlow",
+      "HypDistrib"
+    ],
+    [
+      "CardiacMixing",
+      "HypDistrib"
+    ],
+    [
+      "CardiacMixing",
+      "HypoxiaInO2"
+    ],
+    [
+      "LungParench",
+      "HypoxiaInO2"
+    ],
+    [
+      "LungParench",
+      "CO2"
+    ],
+    [
+      "LungParench",
+      "ChestXray"
+    ],
+    [
+      "LungParench",
+      "Grunting"
+    ],
+    [
+      "LungFlow",
+      "ChestXray"
+    ],
+    [
+      "Sick",
+      "Grunting"
+    ],
+    [
+      "Sick",
+      "Age"
+    ]
+  ]
+}

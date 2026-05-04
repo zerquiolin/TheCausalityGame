@@ -1,0 +1,29 @@
+{
+    "vars": [
+        {
+            "name": "P",
+            "class": "EquationBasedNumericalSCMNode",
+            "domain": [-1e12, 1e12],
+            "equation": "Irms*Vrms*cos(psi)"
+        },
+        {
+            "name": "Vrms",
+            "class": "EquationBasedNumericalSCMNode",
+            "domain": [0, 1e5],
+            "accessibility": "controllable"
+        },
+        {
+            "name": "Irms",
+            "class": "EquationBasedNumericalSCMNode",
+            "domain": [0, 1e5],
+            "accessibility": "controllable"
+        },
+        {
+            "name": "psi",
+            "class": "EquationBasedNumericalSCMNode",
+            "domain": [0, 3.141592653589793],
+            "accessibility": "controllable"
+        }
+    ],
+    "edges": [["Vrms", "P"], ["Irms", "P"], ["psi", "P"]]
+}

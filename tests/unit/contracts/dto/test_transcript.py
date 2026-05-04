@@ -28,7 +28,7 @@ def test_transcript_can_be_marked_invalidated_with_error_reason() -> None:
         budget=BudgetSpec(rounds=1),
     )
 
-    transcript.invalidate(RuntimeError("boom"))
+    transcript.invalidate("RuntimeError: boom")
 
     assert transcript.invalidated is True
     assert transcript.invalidation_reason == "RuntimeError: boom"

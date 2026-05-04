@@ -1,0 +1,183 @@
+{
+  "vars": [
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "A",
+      "parents": [],
+      "values": [
+        "young",
+        "adult",
+        "old"
+      ],
+      "probability_distribution": [
+        [
+          0.3
+        ],
+        [
+          0.5
+        ],
+        [
+          0.2
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "S",
+      "parents": [],
+      "values": [
+        "M",
+        "F"
+      ],
+      "probability_distribution": [
+        [
+          0.6
+        ],
+        [
+          0.4
+        ]
+      ]
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "E",
+      "parents": [
+        "S",
+        "A"
+      ],
+      "values": [
+        "high",
+        "uni"
+      ],
+      "probability_distribution": {
+        "M,young": [
+          0.75,
+          0.25
+        ],
+        "M,adult": [
+          0.64,
+          0.36
+        ],
+        "M,old": [
+          0.72,
+          0.28
+        ],
+        "F,young": [
+          0.7,
+          0.3
+        ],
+        "F,adult": [
+          0.88,
+          0.12
+        ],
+        "F,old": [
+          0.9,
+          0.1
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "O",
+      "parents": [
+        "E"
+      ],
+      "values": [
+        "emp",
+        "self"
+      ],
+      "probability_distribution": {
+        "high": [
+          0.96,
+          0.04
+        ],
+        "uni": [
+          0.92,
+          0.08
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "R",
+      "parents": [
+        "E"
+      ],
+      "values": [
+        "small",
+        "big"
+      ],
+      "probability_distribution": {
+        "high": [
+          0.25,
+          0.75
+        ],
+        "uni": [
+          0.2,
+          0.8
+        ]
+      }
+    },
+    {
+      "class": "BayesianNetworkSCMNode",
+      "name": "T",
+      "parents": [
+        "R",
+        "O"
+      ],
+      "values": [
+        "car",
+        "train",
+        "other"
+      ],
+      "probability_distribution": {
+        "small,emp": [
+          0.48,
+          0.42,
+          0.1
+        ],
+        "small,self": [
+          0.58,
+          0.24,
+          0.18
+        ],
+        "big,emp": [
+          0.56,
+          0.36,
+          0.08
+        ],
+        "big,self": [
+          0.7,
+          0.21,
+          0.09
+        ]
+      }
+    }
+  ],
+  "edges": [
+    [
+      "A",
+      "E"
+    ],
+    [
+      "E",
+      "O"
+    ],
+    [
+      "E",
+      "R"
+    ],
+    [
+      "S",
+      "E"
+    ],
+    [
+      "O",
+      "T"
+    ],
+    [
+      "R",
+      "T"
+    ]
+  ]
+}

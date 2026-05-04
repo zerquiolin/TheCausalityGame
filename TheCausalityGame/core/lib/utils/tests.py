@@ -46,16 +46,16 @@ def assert_dicts_equal(
         assert key in d2, f"Key '{path + key}' missing in second dict"
         if isinstance(value, dict) and isinstance(d2[key], dict):
             # Explicitly cast to help type checkers
-            sub_d1: dict[str, Any] = value
+            sub_d1: dict[str, Any] = value  # type: ignore
             sub_d2: dict[str, Any] = d2[key]
             assert_dicts_equal(sub_d1, sub_d2, path=path + key + ".", msg=msg)
         elif type(value) in [float, np.float64] and atol is not None:  # type: ignore
-            assert np.isclose(
-                value, d2[key], atol=atol
-            ), f"{msg}\nValue mismatch at '{path + key}': {value} != {d2[key]}"
+            assert np.isclose(value, d2[key], atol=atol), (
+                f"{msg}\nValue mismatch at '{path + key}': {value} != {d2[key]}"
+            )
         else:
-            assert (
-                value == d2[key]
-            ), f"{msg}\nValue mismatch at '{path + key}': {value} != {d2[key]}"
+            assert value == d2[key], (
+                f"{msg}\nValue mismatch at '{path + key}': {value} != {d2[key]}"
+            )
     for key in d2:
         assert key in d1, f"{msg}\nKey '{path + key}' missing in first dict"
