@@ -2,6 +2,7 @@
 
 from typing import Any, override
 
+import networkx as nx
 import numpy as np
 import pandas as pd
 
@@ -70,22 +71,33 @@ class PEHEResultMetric(ResultMetric):
             raise NoControllableNodeError()
 
         self.treatment_node = rs.choice(possible_treatments)
+        treatment_descendants = nx.descendants(
+            scm.dag.graph,
+            self.treatment_node,
+        )
         self.input_features = [
             var
             for var in scm.vars
             if var not in (self.te_node, self.treatment_node)
+            and var not in treatment_descendants
             and scm.nodes[var].accessibility
             in {NodeAccessibility.CONTROLLABLE, NodeAccessibility.MEASURABLE}
         ]
 
-        # Generate a random covariate configuration (excluding treatment/outcome)
-        conditional_samples = scm.generate_samples(
-            num_samples=100,
-            cancel_noise=True,
-            random_state=rs,
-        ).drop(columns=[self.te_node, self.treatment_node])
-
-        covariates = conditional_samples.to_dict(orient="records")[rs.choice(100)]  # type: ignore
+        # Only baseline covariates may be fixed. Intervening on a descendant
+        # blocks mediated paths and changes the total-effect estimand into a
+        # controlled direct effect.
+        if self.input_features:
+            conditional_samples = scm.generate_samples(
+                num_samples=100,
+                cancel_noise=True,
+                random_state=rs,
+            )[self.input_features]
+            covariates = conditional_samples.to_dict(orient="records")[  # type: ignore
+                rs.choice(100)
+            ]
+        else:
+            covariates = {}
 
         # Generate interventional data for both treatment states
         domain_values = scm.nodes[self.treatment_node].domain

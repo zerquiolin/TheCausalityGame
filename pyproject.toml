@@ -22,6 +22,15 @@ dev = [
   "pip-audit>=2.7",
   "bandit>=1.7",
 ]
+analysis = [
+  "jupyter>=1.0",
+  "matplotlib>=3.8",
+  "nbclient>=0.10",
+  "nbformat>=5.10",
+  "numpy>=1.26",
+  "pandas>=2.2",
+  "scipy>=1.12",
+]
 
 [project.scripts]
 tcg = "TheCausalityGame.core.cli.main:app"
