@@ -1,0 +1,12 @@
+{
+  "jsonlite": "1.9.1",
+  "remotes": "2.5.0",
+  "causalTree": {
+    "repository": "susanathey/causalTree",
+    "commit": "51a8762bff0ab17b971bce852cb37bece2d8240f"
+  },
+  "causalToolbox": {
+    "repository": "forestry-labs/causalToolbox",
+    "commit": "75acc74ae689fddebe63a43597ff21f3ec233bd4"
+  }
+}

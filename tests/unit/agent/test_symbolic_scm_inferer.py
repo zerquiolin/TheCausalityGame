@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from TheCausalityGame.agent.inferers.symbolic_scm import (
+from TheCausalityGame.agent.inferers.empirical.symbolic_scm import (
     EstimatedSymbolicSCM,
     SparseSymbolicSCMDiscoveryInferer,
     fit_sparse_symbolic_mechanism_for_node,
@@ -105,7 +105,7 @@ def test_symbolic_inferer_uses_learned_dag(monkeypatch: pytest.MonkeyPatch) -> N
         return graph
 
     monkeypatch.setattr(
-        "TheCausalityGame.agent.inferers.symbolic_scm.learn_dag_from_samples",
+        "TheCausalityGame.agent.inferers.empirical.symbolic_scm.learn_dag_from_samples",
         fake_learn_dag_from_samples,
     )
     inferer = SparseSymbolicSCMDiscoveryInferer(lasso_alpha=1e-8, coefficient_threshold=1e-4)

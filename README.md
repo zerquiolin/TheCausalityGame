@@ -31,6 +31,7 @@ The Causality Game models an interactive loop in which an **agent** explores an 
 - Development versus production runtime modes with scoped logging and artifact generation.
 - Typer-based CLI with direct and subcommand usage for single-line execution of manifests.
 - Comprehensive serialization layer enabling manifests to stay readable while remaining strict and self-validating.
+- Published inferers use pinned, author-maintained implementations and record backend provenance in every belief snapshot; the historical handwritten implementations remain available under `agent.inferers.empirical`.
 
 ## Architecture
 
@@ -49,14 +50,16 @@ The Causality Game models an interactive loop in which an **agent** explores an 
 | `TheCausalityGame/core/infrastructure` | Registry, serialization helpers, artifact writer, decision helpers, logging utilities. |
 | `TheCausalityGame/core/managers` | Budget and hook managers coordinating runtime policies. |
 | `TheCausalityGame/agent` | Agent wrappers plus shipped inferers, deciders, and unified policies. |
+| `TheCausalityGame/agent/inferers/empirical` | Reproducible snapshots of the original handwritten inferers. |
 | `TheCausalityGame/mission`, `scm`, `metric`, `hook` | Domain-specific implementations shipped with the game. |
 | `scripts/main.py` | Legacy helper replicating the CLI `run` command. |
+| `scripts/comparisons` | Paired empirical-versus-authoritative benchmark runners and R lock/bootstrap files. |
 | `tests/` | Unit tests and fixtures. |
 
 ## Installation
 
 ### Prerequisites
-- Python ≥ 3.10
+- Python ≥ 3.12
 - macOS, Linux, or Windows with POSIX-compatible shell
 - Optional: `make`, `pipx`, or your preferred virtual environment tooling
 
@@ -74,6 +77,41 @@ The Causality Game models an interactive loop in which an **agent** explores an 
    ```bash
    pip install -e .[dev]
    ```
+
+### Authoritative inferers
+
+The lightweight install intentionally does not install research backends. Install the Python
+backends with:
+
+```bash
+pip install -e '.[analysis,authoritative]'
+```
+
+The public PC, NOTEARS, and DirectLiNGAM paths then call `causal-learn==0.1.4.8`, the
+authors' NOTEARS repository at commit `4a9ab19f`, and `lingam==1.13.0`, respectively.
+They accept only their upstream-native parameters and never fall back to an empirical method.
+
+The S-learner, transformed-outcome tree, and honest causal tree additionally require R and the
+pinned R packages. Bootstrap the project-local R library with:
+
+```bash
+Rscript scripts/comparisons/bootstrap_r.R
+export TCG_R_LIBS="$PWD/.r-library"
+```
+
+This installs `forestry-labs/causalToolbox` at commit `75acc74a` and
+`susanathey/causalTree` at commit `51a8762b`; their GPL-licensed source remains an external
+dependency. Exact citations, licenses, versions/commits, and adapter versions are included in
+snapshot provenance. PC returns a serializable CPDAG; NOTEARS and DirectLiNGAM return directed
+NetworkX graphs. These methods require numeric supported inputs, and the CATE adapters require a
+binary treatment. Unsupported data and missing backends raise explicit errors.
+See the [inferer reference table](TheCausalityGame/agent/inferers/REFERENCES.md) for the exact
+upstream entrypoints, pins, licenses, and primary citations.
+
+For an explicit historical run, change a published inferer path from, for example,
+`TheCausalityGame.agent.inferers.pc:PCInferer` to
+`TheCausalityGame.agent.inferers.empirical.pc:PCInferer`. The project-specific DAG, SCM, and sparse
+symbolic SCM inferers have no authoritative upstream and remain empirical compatibility wrappers.
 
 After installation the `tcg` CLI is available on your PATH.
 

@@ -8,9 +8,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from TheCausalityGame.agent.inferers.causal_tree import HonestCausalTreeInferer
-from TheCausalityGame.agent.inferers.outcome_regression import OutcomeRegressionInferer
-from TheCausalityGame.agent.inferers.transformed_outcome import TransformedOutcomeInferer
+from TheCausalityGame.agent.inferers.empirical.causal_tree import HonestCausalTreeInferer
+from TheCausalityGame.agent.inferers.empirical.outcome_regression import OutcomeRegressionInferer
+from TheCausalityGame.agent.inferers.empirical.transformed_outcome import TransformedOutcomeInferer
 from TheCausalityGame.core.contracts.dto.agent import RoundObservation
 from TheCausalityGame.core.contracts.dto.environment import RoundInfo, Samples, SamplesCollection
 from TheCausalityGame.core.infrastructure.decisions import Decision

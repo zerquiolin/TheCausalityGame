@@ -1,80 +1,130 @@
-"""PC-based inferer for DAG discovery."""
+"""Authoritative adapter for the PC algorithm from causal-learn."""
 
 from __future__ import annotations
 
-from itertools import combinations
-from typing import override
+from importlib.metadata import PackageNotFoundError, version
+from typing import Any, override
 
-import networkx as nx
-import pandas as pd
-
-from TheCausalityGame.agent.inferers._dag_common import empty_graph, observational_frame
-from TheCausalityGame.agent.inferers.dag import (
-    apply_meek_r1,
-    ci_test_continuous_nonlinear,
-    ci_test_discrete_chi2_stratified,
-    ci_test_gaussian,
-    orient_v_structures,
-)
+from TheCausalityGame.agent.inferers._data import numeric_matrix, observational_frame
+from TheCausalityGame.agent.inferers._provenance import BackendProvenance
 from TheCausalityGame.core.contracts.dto.agent import BeliefSnapshot, RoundObservation
+from TheCausalityGame.core.contracts.dto.causal_graph import PartiallyDirectedGraph
 from TheCausalityGame.core.contracts.dto.environment import Samples
 from TheCausalityGame.core.contracts.inferer import Inferer
 from TheCausalityGame.core.contracts.specs.inferer import InfererSpec
 from TheCausalityGame.core.infrastructure.registry import get_class_path
-
-GAUSSIAN_CI_MAX_CONDITIONING = 2
+from TheCausalityGame.core.lib.errors.inferer import (
+    InfererDependencyError,
+    ObsoleteInfererParameterError,
+)
 
 
 class PCInferer(Inferer):
-    """Discover a DAG from observational data using PC-style CI tests."""
+    """Run causal-learn's PC implementation and preserve its CPDAG output."""
 
-    def __init__(self, *, is_numerical: bool = True, alpha: float = 0.05) -> None:
-        self.is_numerical = is_numerical
-        self.alpha = alpha
+    def __init__(
+        self,
+        *,
+        alpha: float = 0.05,
+        indep_test: str = "fisherz",
+        stable: bool = True,
+        uc_rule: int = 0,
+        uc_priority: int = 2,
+        show_progress: bool = False,
+    ) -> None:
+        self.alpha = float(alpha)
+        self.indep_test = str(indep_test)
+        self.stable = bool(stable)
+        self.uc_rule = int(uc_rule)
+        self.uc_priority = int(uc_priority)
+        self.show_progress = bool(show_progress)
         self._samples: list[Samples] = []
-        self._dag: nx.DiGraph | None = None
+        self._graph: PartiallyDirectedGraph | None = None
+
+    @staticmethod
+    def _provenance() -> BackendProvenance:
+        try:
+            installed = version("causal-learn")
+        except PackageNotFoundError:
+            installed = "not-installed"
+        return BackendProvenance(
+            project="py-why/causal-learn",
+            algorithm="PC",
+            version=installed,
+            source="https://github.com/py-why/causal-learn",
+            citation="Zheng et al., JMLR 25(60), 2024; Spirtes et al., 2000",
+            license="MIT",
+        )
 
     @override
     def update(self, observation: RoundObservation) -> None:
         self._samples.extend(observation.samples)
-        self._dag = None
+        self._graph = None
+
+    @staticmethod
+    def _endpoint_name(endpoint: Any) -> str:
+        name = getattr(endpoint, "name", None)
+        return str(name if name is not None else endpoint).lower()
+
+    @classmethod
+    def _convert_graph(
+        cls, causal_graph: Any, columns: list[str]
+    ) -> PartiallyDirectedGraph:
+        directed: set[tuple[str, str]] = set()
+        undirected: set[tuple[str, str]] = set()
+        for edge in causal_graph.G.get_graph_edges():
+            node1 = str(edge.get_node1().get_name())
+            node2 = str(edge.get_node2().get_name())
+            endpoint1 = cls._endpoint_name(edge.get_endpoint1())
+            endpoint2 = cls._endpoint_name(edge.get_endpoint2())
+            if "tail" in endpoint1 and "arrow" in endpoint2:
+                directed.add((node1, node2))
+            elif "arrow" in endpoint1 and "tail" in endpoint2:
+                directed.add((node2, node1))
+            else:
+                undirected.add((node1, node2) if node1 < node2 else (node2, node1))
+        return PartiallyDirectedGraph(
+            nodes=tuple(columns),
+            directed_edges=tuple(sorted(directed)),
+            undirected_edges=tuple(sorted(undirected)),
+        )
 
     @override
-    def answer(self) -> nx.DiGraph:
-        if self._dag is not None:
-            return self._dag
-
-        obs_df = observational_frame(self._samples)
-        if obs_df.empty:
-            self._dag = nx.DiGraph()
-            return self._dag
-
-        skeleton, sep_sets = self._pc_skeleton(obs_df)
-        directed = orient_v_structures(skeleton, sep_sets)
-        directed = apply_meek_r1(skeleton, directed)
-
-        dag = empty_graph(list(obs_df.columns))
-        dag.add_edges_from(directed)
-        for source, target in sorted(skeleton.edges()):
-            if dag.has_edge(source, target) or dag.has_edge(target, source):
-                continue
-            dag.add_edge(source, target)
-            if nx.is_directed_acyclic_graph(dag):
-                continue
-            dag.remove_edge(source, target)
-            dag.add_edge(target, source)
-            if nx.is_directed_acyclic_graph(dag):
-                continue
-            dag.remove_edge(target, source)
-        self._dag = dag
-        return dag
+    def answer(self) -> PartiallyDirectedGraph:
+        if self._graph is not None:
+            return self._graph
+        frame = observational_frame(self._samples)
+        if frame.empty:
+            self._graph = PartiallyDirectedGraph()
+            return self._graph
+        data = numeric_matrix(frame, algorithm="PC")
+        try:
+            from causallearn.search.ConstraintBased.PC import pc
+        except ImportError as exc:
+            raise InfererDependencyError(
+                "PCInferer requires causal-learn==0.1.4.8; install the authoritative extra."
+            ) from exc
+        result = pc(
+            data,
+            alpha=self.alpha,
+            indep_test=self.indep_test,
+            stable=self.stable,
+            uc_rule=self.uc_rule,
+            uc_priority=self.uc_priority,
+            show_progress=self.show_progress,
+            node_names=list(frame.columns),
+        )
+        self._graph = self._convert_graph(result, list(frame.columns))
+        return self._graph
 
     @override
     def snapshot(self) -> BeliefSnapshot:
-        obs_rows = len(observational_frame(self._samples))
         return BeliefSnapshot(
             estimate=self.answer(),
-            summary={"observational_rows": obs_rows},
+            summary={
+                "observational_rows": len(observational_frame(self._samples)),
+                "backend": self._provenance().to_dict(),
+            },
             capabilities=("dag_discovery", "pc"),
         )
 
@@ -83,8 +133,12 @@ class PCInferer(Inferer):
         return InfererSpec(
             class_=get_class_path(self.__class__),
             params={
-                "is_numerical": self.is_numerical,
                 "alpha": self.alpha,
+                "indep_test": self.indep_test,
+                "stable": self.stable,
+                "uc_rule": self.uc_rule,
+                "uc_priority": self.uc_priority,
+                "show_progress": self.show_progress,
             },
         )
 
@@ -92,88 +146,9 @@ class PCInferer(Inferer):
     @override
     def from_spec(cls, spec: InfererSpec) -> PCInferer:
         params = spec.params or {}
-        return cls(
-            is_numerical=bool(params.get("is_numerical", True)),
-            alpha=float(params.get("alpha", 0.05)),
-        )
-
-    def _pc_skeleton(
-        self,
-        obs_df: pd.DataFrame,
-    ) -> tuple[nx.Graph, dict[frozenset[str], set[str]]]:
-        """Run a small PC skeleton search over observational data."""
-        columns = list(obs_df.columns)
-        graph = nx.Graph()
-        graph.add_nodes_from(columns)
-        for source, target in combinations(columns, 2):
-            graph.add_edge(source, target)
-
-        sep_sets: dict[frozenset[str], set[str]] = {}
-        cond_size = 0
-        while True:
-            removed_any = False
-            edges_snapshot = list(graph.edges())
-            for source, target in edges_snapshot:
-                if not graph.has_edge(source, target):
-                    continue
-
-                search_space = (
-                    [node for node in graph.neighbors(source) if node != target],
-                    [node for node in graph.neighbors(target) if node != source],
-                )
-                tested = False
-                for neighbors in search_space:
-                    if len(neighbors) < cond_size:
-                        continue
-                    tested = True
-                    for conditioning in combinations(neighbors, cond_size):
-                        if self._independent(obs_df, source, target, conditioning):
-                            graph.remove_edge(source, target)
-                            sep_sets[frozenset((source, target))] = set(conditioning)
-                            removed_any = True
-                            break
-                    if not graph.has_edge(source, target):
-                        break
-
-                if tested:
-                    continue
-
-            max_neighbors = max(
-                (len(list(graph.neighbors(node))) for node in graph.nodes()),
-                default=0,
+        if "is_numerical" in params:
+            raise ObsoleteInfererParameterError(
+                "is_numerical configured the empirical PC approximation; use causal-learn's "
+                "indep_test parameter, for example 'fisherz' or 'chisq'."
             )
-            if max_neighbors <= cond_size:
-                break
-            if not removed_any and cond_size >= max_neighbors:
-                break
-            cond_size += 1
-
-        return graph, sep_sets
-
-    def _independent(
-        self,
-        obs_df: pd.DataFrame,
-        source: str,
-        target: str,
-        conditioning: tuple[str, ...],
-    ) -> bool:
-        """Dispatch to the configured CI test."""
-        if self.is_numerical:
-            if len(conditioning) <= GAUSSIAN_CI_MAX_CONDITIONING:
-                return ci_test_gaussian(obs_df, source, target, conditioning, self.alpha)
-            return ci_test_continuous_nonlinear(
-                obs_df,
-                source,
-                target,
-                conditioning,
-                self.alpha,
-                n_perm=50,
-                seed=911,
-            )
-        return ci_test_discrete_chi2_stratified(
-            obs_df,
-            source,
-            target,
-            conditioning,
-            self.alpha,
-        )
+        return cls(**params)

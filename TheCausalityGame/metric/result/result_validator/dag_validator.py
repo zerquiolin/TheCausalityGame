@@ -6,6 +6,7 @@ from typing import Any, override
 
 import networkx as nx
 
+from TheCausalityGame.core.contracts.dto.causal_graph import PartiallyDirectedGraph
 from TheCausalityGame.core.contracts.result_validator import ResultValidator
 from TheCausalityGame.core.contracts.specs.result_validator import ResultValidatorSpec
 from TheCausalityGame.core.infrastructure.registry import get_class_path
@@ -29,10 +30,10 @@ class DAGResultValidator(ResultValidator):
 
     @override
     def validate(self, result: Any) -> Any:
-        if not isinstance(result, nx.DiGraph):
+        if not isinstance(result, nx.DiGraph | PartiallyDirectedGraph):
             raise InvalidResultTypeError(
                 type=str(type(result)),  # type: ignore
-                expected=str(nx.DiGraph),
+                expected="nx.DiGraph or PartiallyDirectedGraph",
             )
 
         return result  # type: ignore

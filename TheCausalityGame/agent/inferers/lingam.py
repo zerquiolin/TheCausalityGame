@@ -1,41 +1,59 @@
-"""Direct LiNGAM-style inferer for DAG discovery."""
+"""Authoritative adapter for the official DirectLiNGAM package."""
 
 from __future__ import annotations
 
+from importlib.metadata import PackageNotFoundError, version
 from typing import override
 
 import networkx as nx
-import numpy as np
 
-from TheCausalityGame.agent.inferers._dag_common import (
-    empty_graph,
-    fit_linear_coefficients,
-    graph_from_adjacency,
-    numeric_frame,
+from TheCausalityGame.agent.inferers._data import (
+    adjacency_to_digraph,
+    numeric_matrix,
     observational_frame,
-    residualize,
-    standardize,
 )
+from TheCausalityGame.agent.inferers._provenance import BackendProvenance
 from TheCausalityGame.core.contracts.dto.agent import BeliefSnapshot, RoundObservation
 from TheCausalityGame.core.contracts.dto.environment import Samples
 from TheCausalityGame.core.contracts.inferer import Inferer
 from TheCausalityGame.core.contracts.specs.inferer import InfererSpec
 from TheCausalityGame.core.infrastructure.registry import get_class_path
+from TheCausalityGame.core.lib.errors.inferer import (
+    InfererDependencyError,
+    ObsoleteInfererParameterError,
+)
 
 
 class LiNGAMInferer(Inferer):
-    """Approximate DirectLiNGAM using residual-independence ordering."""
+    """Delegate structure learning to ``lingam.DirectLiNGAM``."""
 
     def __init__(
         self,
         *,
-        ridge: float = 1e-3,
-        coef_threshold: float = 0.1,
+        random_state: int = 911,
+        measure: str = "pwling",
+        apply_prior_knowledge_softly: bool = False,
     ) -> None:
-        self.ridge = ridge
-        self.coef_threshold = coef_threshold
+        self.random_state = int(random_state)
+        self.measure = str(measure)
+        self.apply_prior_knowledge_softly = bool(apply_prior_knowledge_softly)
         self._samples: list[Samples] = []
         self._dag: nx.DiGraph | None = None
+
+    @staticmethod
+    def _provenance() -> BackendProvenance:
+        try:
+            installed = version("lingam")
+        except PackageNotFoundError:
+            installed = "not-installed"
+        return BackendProvenance(
+            project="cdt15/lingam",
+            algorithm="DirectLiNGAM",
+            version=installed,
+            source="https://github.com/cdt15/lingam",
+            citation="Shimizu et al., JMLR 12, 2011",
+            license="MIT",
+        )
 
     @override
     def update(self, observation: RoundObservation) -> None:
@@ -46,102 +64,39 @@ class LiNGAMInferer(Inferer):
     def answer(self) -> nx.DiGraph:
         if self._dag is not None:
             return self._dag
-
-        obs_df = observational_frame(self._samples)
-        if obs_df.empty:
+        frame = observational_frame(self._samples)
+        if frame.empty:
             self._dag = nx.DiGraph()
             return self._dag
-
-        numeric_df = numeric_frame(obs_df)
-        if numeric_df.empty:
-            self._dag = empty_graph(list(obs_df.columns))
-            return self._dag
-
-        columns = list(numeric_df.columns)
-        X = standardize(numeric_df).to_numpy(dtype=float)  # noqa: N806
-        order = self._causal_order(X)
-        adjacency = self._fit_adjacency(X, order)
-        self._dag = graph_from_adjacency(
-            adjacency,
-            columns,
-            threshold=self.coef_threshold,
+        data = numeric_matrix(frame, algorithm="DirectLiNGAM")
+        try:
+            from lingam import DirectLiNGAM
+        except ImportError as exc:
+            raise InfererDependencyError(
+                "LiNGAMInferer requires lingam==1.13.0; install the authoritative extra."
+            ) from exc
+        model = DirectLiNGAM(
+            random_state=self.random_state,
+            measure=self.measure,
+            apply_prior_knowledge_softly=self.apply_prior_knowledge_softly,
+        )
+        model.fit(data)
+        # DirectLiNGAM stores child-by-parent coefficients; transpose for source-by-target.
+        self._dag = adjacency_to_digraph(
+            model.adjacency_matrix_,
+            list(frame.columns),
+            transpose=True,
         )
         return self._dag
 
-    def _causal_order(self, X: np.ndarray) -> list[int]:  # noqa: N803
-        residuals = X.copy()
-        remaining = list(range(X.shape[1]))
-        order: list[int] = []
-
-        while remaining:
-            best_idx = remaining[0]
-            best_score = float("inf")
-            for candidate in remaining:
-                score = self._exogeneity_score(residuals, remaining, candidate)
-                if score < best_score:
-                    best_score = score
-                    best_idx = candidate
-
-            order.append(best_idx)
-            remaining.remove(best_idx)
-            source = residuals[:, best_idx]
-            for target in remaining:
-                residuals[:, target] = residualize(
-                    residuals[:, target],
-                    source,
-                    ridge=self.ridge,
-                )
-
-        return order
-
-    def _exogeneity_score(
-        self,
-        data: np.ndarray,
-        remaining: list[int],
-        candidate: int,
-    ) -> float:
-        source = data[:, candidate]
-        total = 0.0
-        for target in remaining:
-            if target == candidate:
-                continue
-            resid = residualize(data[:, target], source, ridge=self.ridge)
-            total += self._independence_score(source, resid)
-        return total
-
-    @staticmethod
-    def _independence_score(source: np.ndarray, resid: np.ndarray) -> float:
-        """Approximate DirectLiNGAM residual dependence score."""
-        transformed_source = np.tanh(source)
-        transformed_resid = np.tanh(resid)
-        corr_1 = abs(float(np.corrcoef(transformed_resid, source)[0, 1]))
-        corr_2 = abs(float(np.corrcoef(resid, transformed_source)[0, 1]))
-        if np.isnan(corr_1):
-            corr_1 = 0.0
-        if np.isnan(corr_2):
-            corr_2 = 0.0
-        return corr_1 + corr_2
-
-    def _fit_adjacency(self, X: np.ndarray, order: list[int]) -> np.ndarray:  # noqa: N803
-        d = X.shape[1]
-        adjacency = np.zeros((d, d), dtype=float)
-        for position, child in enumerate(order):
-            parents = order[:position]
-            if not parents:
-                continue
-            predictors = X[:, parents]
-            target = X[:, child]
-            coef = fit_linear_coefficients(predictors, target, ridge=self.ridge)
-            for parent, weight in zip(parents, coef, strict=True):
-                adjacency[parent, child] = float(weight)
-        return adjacency
-
     @override
     def snapshot(self) -> BeliefSnapshot:
-        obs_rows = len(observational_frame(self._samples))
         return BeliefSnapshot(
             estimate=self.answer(),
-            summary={"observational_rows": obs_rows},
+            summary={
+                "observational_rows": len(observational_frame(self._samples)),
+                "backend": self._provenance().to_dict(),
+            },
             capabilities=("dag_discovery", "lingam"),
         )
 
@@ -150,8 +105,9 @@ class LiNGAMInferer(Inferer):
         return InfererSpec(
             class_=get_class_path(self.__class__),
             params={
-                "ridge": self.ridge,
-                "coef_threshold": self.coef_threshold,
+                "random_state": self.random_state,
+                "measure": self.measure,
+                "apply_prior_knowledge_softly": self.apply_prior_knowledge_softly,
             },
         )
 
@@ -159,7 +115,9 @@ class LiNGAMInferer(Inferer):
     @override
     def from_spec(cls, spec: InfererSpec) -> LiNGAMInferer:
         params = spec.params or {}
-        return cls(
-            ridge=float(params.get("ridge", 1e-3)),
-            coef_threshold=float(params.get("coef_threshold", 0.1)),
-        )
+        obsolete = {"ridge", "coef_threshold"} & params.keys()
+        if obsolete:
+            raise ObsoleteInfererParameterError(
+                f"Parameters {sorted(obsolete)} belong to the empirical approximation."
+            )
+        return cls(**params)

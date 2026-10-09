@@ -1,4 +1,4 @@
-"""Shared helpers for DAG discovery inferers."""
+"""Shared helpers for empirical DAG-discovery inferers."""
 
 from __future__ import annotations
 

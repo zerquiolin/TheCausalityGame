@@ -9,9 +9,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from TheCausalityGame.agent.inferers.lingam import LiNGAMInferer
-from TheCausalityGame.agent.inferers.notears import NOTEARSInferer
-from TheCausalityGame.agent.inferers.pc import PCInferer
+from TheCausalityGame.agent.inferers.empirical.lingam import LiNGAMInferer
+from TheCausalityGame.agent.inferers.empirical.notears import NOTEARSInferer
+from TheCausalityGame.agent.inferers.empirical.pc import PCInferer
 from TheCausalityGame.core.contracts.dto.agent import RoundObservation
 from TheCausalityGame.core.contracts.dto.environment import RoundInfo, Samples, SamplesCollection
 from TheCausalityGame.core.infrastructure.decisions import Decision

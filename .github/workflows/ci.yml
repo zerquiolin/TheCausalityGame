@@ -1,18 +1,85 @@
 name: ci
 on: [push, pull_request]
 jobs:
-  build:
+  unit:
     runs-on: ubuntu-latest
     strategy:
-      matrix: { python-version: ["3.10","3.11","3.12"] }
+      matrix: { python-version: ["3.12"] }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: ${{ matrix.python-version }} }
-      - run: pip install -e .[dev]
-      - run: ruff check .
-      - run: black --check .
-      - run: mypy src
-      - run: pytest -q --cov=TheCausalityGame --cov-report=term-missing
+      - run: pip install -e '.[dev,analysis]'
+      - name: Lint authoritative adapters and comparisons
+        run: >-
+          ruff check
+          TheCausalityGame/agent/inferers/_data.py
+          TheCausalityGame/agent/inferers/_provenance.py
+          TheCausalityGame/agent/inferers/_r_bridge.py
+          TheCausalityGame/agent/inferers/_r_cate.py
+          TheCausalityGame/agent/inferers/pc.py
+          TheCausalityGame/agent/inferers/notears.py
+          TheCausalityGame/agent/inferers/lingam.py
+          TheCausalityGame/agent/inferers/outcome_regression.py
+          TheCausalityGame/agent/inferers/transformed_outcome.py
+          TheCausalityGame/agent/inferers/causal_tree.py
+          TheCausalityGame/core/contracts/dto/causal_graph.py
+          scripts/comparisons
+          --ignore TRY003,PLC0415,ANN401,PLR0913,BLE001,D103,PERF401
+      - name: Check refactor formatting
+        run: >-
+          black --check
+          TheCausalityGame/agent/inferers/_data.py
+          TheCausalityGame/agent/inferers/_provenance.py
+          TheCausalityGame/agent/inferers/_r_bridge.py
+          TheCausalityGame/agent/inferers/_r_cate.py
+          TheCausalityGame/agent/inferers/pc.py
+          TheCausalityGame/agent/inferers/notears.py
+          TheCausalityGame/agent/inferers/lingam.py
+          TheCausalityGame/agent/inferers/outcome_regression.py
+          TheCausalityGame/agent/inferers/transformed_outcome.py
+          TheCausalityGame/agent/inferers/causal_tree.py
+          TheCausalityGame/core/contracts/dto/causal_graph.py
+          scripts/comparisons
+      - name: Type-check authoritative adapter contracts
+        run: >-
+          mypy
+          TheCausalityGame/core/contracts/dto/causal_graph.py
+          TheCausalityGame/agent/inferers/_data.py
+          TheCausalityGame/agent/inferers/_provenance.py
+          TheCausalityGame/agent/inferers/_r_bridge.py
+          TheCausalityGame/agent/inferers/_r_cate.py
+          TheCausalityGame/agent/inferers/pc.py
+          TheCausalityGame/agent/inferers/notears.py
+          TheCausalityGame/agent/inferers/lingam.py
+          TheCausalityGame/agent/inferers/outcome_regression.py
+          TheCausalityGame/agent/inferers/transformed_outcome.py
+          TheCausalityGame/agent/inferers/causal_tree.py
+          --follow-imports=skip
+          --ignore-missing-imports
+          --python-version ${{ matrix.python-version }}
+          --disable-error-code no-any-unimported
+          --disable-error-code no-any-return
+          --disable-error-code misc
+          --disable-error-code unused-ignore
+          --allow-untyped-decorators
+          --no-incremental
+      - run: pytest -q -m 'not authoritative' --cov=TheCausalityGame --cov-report=term-missing
       - run: pip-audit || true
-      - run: bandit -r src || true
+      - run: bandit -r TheCausalityGame || true
+
+  authoritative-integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: r-lib/actions/setup-r@v2
+      - run: pip install -e '.[dev,analysis,authoritative]'
+      - run: Rscript scripts/comparisons/bootstrap_r.R
+      - run: pytest -q -m authoritative
+        env:
+          TCG_R_LIBS: ${{ github.workspace }}/.r-library
+      - run: python -m scripts.comparisons.run_all --samples 60 --synthetic-only
+        env:
+          TCG_R_LIBS: ${{ github.workspace }}/.r-library

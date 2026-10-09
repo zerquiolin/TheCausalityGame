@@ -10,3 +10,8 @@ scipy
 matplotlib
 scikit-learn
 tqdm
+
+# Authoritative inferer backends (install with `pip install -e '.[authoritative]'`).
+causal-learn==0.1.4.8
+lingam==1.13.0
+notears @ git+https://github.com/xunzheng/notears.git@4a9ab19fe502e392503da331773c5223d82d3666

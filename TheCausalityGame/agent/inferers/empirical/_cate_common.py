@@ -1,4 +1,4 @@
-"""Shared helpers for conditional treatment-effect inferers."""
+"""Shared helpers for empirical conditional treatment-effect inferers."""
 
 from __future__ import annotations
 

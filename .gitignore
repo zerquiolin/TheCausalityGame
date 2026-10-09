@@ -15,3 +15,6 @@ build/
 htmlcov/
 runs/
 runs-old/
+.r-library/
+runs/comparisons/
+post_processing/comparison_reports/

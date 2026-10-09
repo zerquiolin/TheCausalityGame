@@ -1,14 +1,53 @@
+from __future__ import annotations
+
 from pathlib import Path
 from typing import override
 
 import matplotlib.pyplot as plt
+import networkx as nx
 import numpy as np
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
+from TheCausalityGame.core.contracts.dto.causal_graph import PartiallyDirectedGraph
 from TheCausalityGame.core.contracts.dto.transcript import Transcript, TranscriptEntry
 from TheCausalityGame.core.contracts.hook import Hook
 from TheCausalityGame.core.lib.enum.hook import HookEvent
 from TheCausalityGame.scm.dag.core import CoreDAG
+
+
+def _cpdag_figure(graph: PartiallyDirectedGraph) -> plt.Figure:
+    """Render directed and unresolved CPDAG edges without imposing acyclicity on display arcs."""
+    layout_graph = nx.Graph()
+    layout_graph.add_nodes_from(graph.nodes)
+    layout_graph.add_edges_from(graph.directed_edges)
+    layout_graph.add_edges_from(graph.undirected_edges)
+    positions = nx.spring_layout(layout_graph, seed=42)
+    figure, axis = plt.subplots(figsize=(10, 8))
+    nx.draw_networkx_nodes(
+        layout_graph, positions, node_color="white", edgecolors="black", ax=axis
+    )
+    nx.draw_networkx_labels(layout_graph, positions, ax=axis)
+    nx.draw_networkx_edges(
+        layout_graph,
+        positions,
+        edgelist=list(graph.directed_edges),
+        arrows=True,
+        arrowstyle="-|>",
+        edge_color="gray",
+        ax=axis,
+    )
+    nx.draw_networkx_edges(
+        layout_graph,
+        positions,
+        edgelist=list(graph.undirected_edges),
+        arrows=False,
+        style="dashed",
+        edge_color="gray",
+        ax=axis,
+    )
+    axis.set_title("CPDAG Structure")
+    axis.axis("off")
+    return figure
 
 
 def to_imshow_array(obj) -> np.ndarray:
@@ -35,7 +74,9 @@ class FinalDAGPerAgent(Hook):
     step: HookEvent = HookEvent.BENCHMARK_END
 
     @override
-    def run(self, hooks_dir: Path, context: dict[str, Transcript] | TranscriptEntry | None) -> None:
+    def run(
+        self, hooks_dir: Path, context: dict[str, Transcript] | TranscriptEntry | None
+    ) -> None:
         if context is None or not isinstance(context, dict):
             return
 
@@ -51,9 +92,10 @@ class FinalDAGPerAgent(Hook):
                 continue
 
             result = last_entry.result
-            dag = CoreDAG(result)
-
-            figure_obj = dag.generate_figure()
+            if isinstance(result, PartiallyDirectedGraph):
+                figure_obj = _cpdag_figure(result)
+            else:
+                figure_obj = CoreDAG(result).generate_figure()
             img = to_imshow_array(figure_obj)
 
             ax = axes[i]

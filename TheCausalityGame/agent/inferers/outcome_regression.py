@@ -1,92 +1,42 @@
-"""Outcome-regression inferer for conditional treatment effects."""
+"""Authoritative S-learner adapter backed by causalToolbox."""
 
 from __future__ import annotations
 
-from typing import Any, override
+from typing import override
 
-import pandas as pd
-
-from TheCausalityGame.agent.inferers._cate_common import (
-    BufferedSample,
-    buffer_samples,
-    combined_data,
-    fit_tabular_regressor,
-    usable_rows,
-    with_treatment_interactions,
-    zero_answer,
-    zero_effect,
-)
-from TheCausalityGame.core.contracts.dto.agent import BeliefSnapshot, RoundObservation
-from TheCausalityGame.core.contracts.inferer import Inferer
+from TheCausalityGame.agent.inferers._provenance import BackendProvenance
+from TheCausalityGame.agent.inferers._r_cate import AuthoritativeRCATEInferer
 from TheCausalityGame.core.contracts.specs.inferer import InfererSpec
-from TheCausalityGame.core.infrastructure.registry import get_class_path
+from TheCausalityGame.core.lib.errors.inferer import ObsoleteInfererParameterError
+
+CAUSAL_TOOLBOX_COMMIT = "75acc74ae689fddebe63a43597ff21f3ec233bd4"
 
 
-class OutcomeRegressionInferer(Inferer):
-    """Estimate CATE by predicting potential outcomes with an S-learner."""
+class OutcomeRegressionInferer(AuthoritativeRCATEInferer):
+    """Use causalToolbox's author-maintained random-forest S-learner."""
 
-    def __init__(self, alpha: float = 1.0) -> None:
-        self.alpha = float(alpha)
-        self._samples: list[BufferedSample] = []
+    backend_method = "s_learner"
+    capability = "outcome_regression"
+    provenance = BackendProvenance(
+        project="forestry-labs/causalToolbox",
+        algorithm="S_RF",
+        version=CAUSAL_TOOLBOX_COMMIT,
+        source=f"https://github.com/forestry-labs/causalToolbox/tree/{CAUSAL_TOOLBOX_COMMIT}",
+        citation="Künzel et al., PNAS 116(10), 2019",
+        license="GPL-3.0",
+    )
 
-    @override
-    def update(self, observation: RoundObservation) -> None:
-        buffer_samples(self._samples, list(observation.samples))
-
-    @override
-    def answer(self) -> Any:
-        if not self._samples:
-            return zero_answer()
-
-        def estimate(
-            X: list[str],  # noqa: N803
-            treatment: str,
-            outcome: str,
-            covariate_values: tuple[pd.DataFrame, pd.DataFrame],
-        ) -> pd.DataFrame:
-            features = [treatment, *X]
-            data = usable_rows(combined_data(self._samples), [*features, outcome])
-            if data.empty:
-                return zero_effect(covariate_values)
-
-            model = fit_tabular_regressor(
-                with_treatment_interactions(data, treatment, X),
-                data[outcome],
-                alpha=self.alpha,
-            )
-
-            control, treated = covariate_values
-            missing_features = [
-                feature
-                for feature in features
-                if feature not in control.columns or feature not in treated.columns
-            ]
-            if missing_features:
-                return zero_effect(covariate_values)
-
-            y_control = model.predict(with_treatment_interactions(control, treatment, X))
-            y_treated = model.predict(with_treatment_interactions(treated, treatment, X))
-            return pd.DataFrame(y_treated - y_control, columns=["treatment_effect"])
-
-        return estimate
-
-    @override
-    def snapshot(self) -> BeliefSnapshot:
-        return BeliefSnapshot(
-            estimate=self.answer(),
-            summary={"n_samples": sum(len(sample.data) for sample in self._samples)},
-            capabilities=("cate", "outcome_regression"),
-        )
-
-    @override
-    def to_spec(self) -> InfererSpec:
-        return InfererSpec(
-            class_=get_class_path(self.__class__),
-            params={"alpha": self.alpha},
-        )
+    def __init__(self, *, nthread: int = 1, seed: int = 911) -> None:
+        self.nthread = int(nthread)
+        self.seed = int(seed)
+        super().__init__(nthread=self.nthread, seed=self.seed)
 
     @classmethod
     @override
     def from_spec(cls, spec: InfererSpec) -> OutcomeRegressionInferer:
         params = spec.params or {}
-        return cls(alpha=float(params.get("alpha", 1.0)))
+        if "alpha" in params:
+            raise ObsoleteInfererParameterError(
+                "alpha configured the empirical ridge S-learner and is not an S_RF parameter."
+            )
+        return cls(**params)

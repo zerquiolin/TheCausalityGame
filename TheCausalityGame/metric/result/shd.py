@@ -7,6 +7,14 @@ from typing import Any, override
 
 import networkx as nx
 
+from TheCausalityGame.core.contracts.dto.causal_graph import (
+    CausalGraphResult,
+    PartiallyDirectedGraph,
+    graph_adjacencies,
+    graph_directed_edges,
+    graph_nodes,
+    graph_undirected_edges,
+)
 from TheCausalityGame.core.contracts.mission import ResultMetric
 from TheCausalityGame.core.contracts.scm import SCM
 from TheCausalityGame.core.contracts.specs.metric import MetricSpec
@@ -46,7 +54,7 @@ class SHDResultMetric(ResultMetric):
         self.scm = scm
         self.is_mounted = True
 
-    def skeleton_edge_set(self, G: nx.DiGraph, nodes: Iterable[Hashable]) -> set[frozenset[str]]:  # type: ignore # noqa: N803
+    def skeleton_edge_set(self, G: CausalGraphResult, nodes: Iterable[Hashable]) -> set[frozenset[str]]:  # type: ignore # noqa: N803
         """
         Compute the undirected edge set (“skeleton”) of a directed graph G by a given node set.
 
@@ -61,14 +69,7 @@ class SHDResultMetric(ResultMetric):
             {u, v}.
 
         """
-        node_set = set(nodes)
-        # Only consider edges where both endpoints are in node_set
-        edges: set[frozenset[str]] = (  # type: ignore
-            frozenset((u, v))  # type: ignore
-            for u, v in G.edges  # type: ignore
-            if u in node_set and v in node_set
-        )
-        return set(edges)
+        return set(graph_adjacencies(G, nodes))  # type: ignore[arg-type]
 
     @override
     def evaluate(self, kind: str, result: Any) -> float:
@@ -91,11 +92,11 @@ class SHDResultMetric(ResultMetric):
         if kind != "DAG":
             raise UnsupportedMetricTypeError(kind)
 
-        if not isinstance(result, nx.DiGraph):
-            raise TypeError(f"Expected nx.DiGraph result, got {type(result)}")
+        if not isinstance(result, nx.DiGraph | PartiallyDirectedGraph):
+            raise TypeError(f"Expected a DAG or CPDAG result, got {type(result)}")
 
         # Union of nodes
-        all_nodes = set(self.scm.dag.nodes) | set(result.nodes)  # type: ignore
+        all_nodes = set(self.scm.dag.nodes) | graph_nodes(result)  # type: ignore
 
         def directed_edge_set(G: nx.DiGraph) -> set[tuple[str, str]]:  # type: ignore # noqa: N803
             edges: set[tuple[str, str]] = set()
@@ -105,7 +106,16 @@ class SHDResultMetric(ResultMetric):
             return edges
 
         true_edges = directed_edge_set(self.scm.dag)  # type: ignore
-        pred_edges = directed_edge_set(result)
+        pred_edges = {
+            (str(source), str(target))
+            for source, target in graph_directed_edges(result)
+            if source in all_nodes and target in all_nodes
+        }
+        unresolved = {
+            frozenset(str(node) for node in edge)
+            for edge in graph_undirected_edges(result)
+            if edge.issubset(all_nodes)
+        }
 
         reversal_cost = getattr(self, "reversal_cost", 1)
 
@@ -117,13 +127,15 @@ class SHDResultMetric(ResultMetric):
         for u, v in true_edges:
             if (u, v) in remaining_pred:
                 remaining_pred.remove((u, v))
+            elif frozenset((u, v)) in unresolved:
+                unresolved.remove(frozenset((u, v)))
             elif (v, u) in remaining_pred:
                 remaining_pred.remove((v, u))
                 reversed_ += 1
             else:
                 missing += 1
 
-        extra = len(remaining_pred)
+        extra = len(remaining_pred) + len(unresolved)
 
         return float(missing + extra + reversal_cost * reversed_)
 
