@@ -90,16 +90,17 @@ def test_direct_lingam_fits_real_backend() -> None:
 
 
 @pytest.mark.parametrize(
-    "inferer",
+    "inferer_class",
     [
-        OutcomeRegressionInferer(seed=3),
-        TransformedOutcomeInferer(seed=3),
-        HonestCausalTreeInferer(seed=3),
+        OutcomeRegressionInferer,
+        TransformedOutcomeInferer,
+        HonestCausalTreeInferer,
     ],
 )
-def test_r_cate_backend_fits_and_predicts(inferer) -> None:  # noqa: ANN001
+def test_r_cate_backend_fits_and_predicts(inferer_class) -> None:  # noqa: ANN001
     if shutil.which("Rscript") is None:
         pytest.skip("Rscript is not installed")
+    inferer = inferer_class(seed=3)
     inferer.update(_observation(_cate_data()))
     control = pd.DataFrame({"T": [0, 0], "Z": [-0.5, 0.5]})
     treated = pd.DataFrame({"T": [1, 1], "Z": [-0.5, 0.5]})
@@ -108,3 +109,9 @@ def test_r_cate_backend_fits_and_predicts(inferer) -> None:  # noqa: ANN001
 
     assert result.shape == (2, 1)
     assert np.isfinite(result.to_numpy()).all()
+    backend = inferer.snapshot().summary["backend"]
+    assert backend["source_commit"] == backend["pinned_commit"]
+    assert backend["compatibility_patch"]
+    if isinstance(inferer, OutcomeRegressionInferer):
+        nested = backend["dependencies"]["Rforestry"]
+        assert nested["source_commit"] == "92b396d77d7ce2bbaba1c6d97c8861ea43ae1566"

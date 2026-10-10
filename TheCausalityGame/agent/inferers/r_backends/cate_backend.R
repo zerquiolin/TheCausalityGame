@@ -16,10 +16,17 @@ params <- payload$params
 set.seed(as.integer(params$seed))
 
 package_meta <- function(package, commit) {
+  description <- utils::packageDescription(package)
+  if (!identical(description$TCGSourceCommit, commit)) {
+    stop(paste("R backend source commit is unverified or mismatched for", package,
+               "- rerun scripts/comparisons/bootstrap_r.R"))
+  }
   list(
     package = package,
     package_version = as.character(utils::packageVersion(package)),
     pinned_commit = commit,
+    source_commit = description$TCGSourceCommit,
+    compatibility_patch = description$TCGCompatibilityPatch,
     implementation_kind = "authoritative"
   )
 }
@@ -34,6 +41,9 @@ if (payload$method == "s_learner") {
   )
   predictions <- causalToolbox::EstimateCate(model, query[, features, drop = FALSE])
   backend <- package_meta("causalToolbox", "75acc74ae689fddebe63a43597ff21f3ec233bd4")
+  backend$dependencies <- list(
+    Rforestry = package_meta("Rforestry", "92b396d77d7ce2bbaba1c6d97c8861ea43ae1566")
+  )
 } else {
   if (!requireNamespace("causalTree", quietly = TRUE)) stop("R package causalTree is required")
   formula <- stats::reformulate(features, response = outcome)

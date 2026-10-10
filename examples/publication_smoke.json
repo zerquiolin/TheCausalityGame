@@ -1,0 +1,140 @@
+{
+  "class_": "TheCausalityGame.core.contracts.problem_instance:ProblemInstance",
+  "params": null,
+  "id": "publication_smoke",
+  "schema_version": "1.0.0",
+  "agents": [
+    {
+      "class_": "TheCausalityGame.agent.composable:ComposableAgent",
+      "params": null,
+      "id": "first",
+      "active": true,
+      "inferer": {
+        "class_": "TheCausalityGame.agent.inferers.empirical.pc:PCInferer",
+        "params": null
+      },
+      "decider": {
+        "class_": "TheCausalityGame.agent.deciders.exhaustive:ExhaustiveDecider",
+        "params": {
+          "num_obs": 10,
+          "num_inter": 2
+        }
+      },
+      "policy": null
+    }
+  ],
+  "scm": {
+    "class_": "TheCausalityGame.scm.core:CoreSCM",
+    "params": null,
+    "vars": [
+      {
+        "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+        "params": null,
+        "name": "X",
+        "accessibility": "controllable",
+        "domain": [
+          -1.0,
+          1.0
+        ],
+        "parents": null,
+        "parent_mappings": null,
+        "random_state": null,
+        "equation": null,
+        "cdfs": null,
+        "domain_distribution": null,
+        "probability_distribution": null,
+        "noise_distribution": null,
+        "value_computer": null
+      },
+      {
+        "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+        "params": null,
+        "name": "L",
+        "accessibility": "latent",
+        "domain": [
+          -1.0,
+          1.0
+        ],
+        "parents": null,
+        "parent_mappings": null,
+        "random_state": null,
+        "equation": null,
+        "cdfs": null,
+        "domain_distribution": null,
+        "probability_distribution": null,
+        "noise_distribution": null,
+        "value_computer": null
+      },
+      {
+        "class_": "TheCausalityGame.scm.nodes.sympy:EquationBasedNumericalSCMNode",
+        "params": null,
+        "name": "Y",
+        "accessibility": "measurable",
+        "domain": [
+          -1.0,
+          1.0
+        ],
+        "parents": null,
+        "parent_mappings": null,
+        "random_state": null,
+        "equation": "L + 2*X",
+        "cdfs": null,
+        "domain_distribution": null,
+        "probability_distribution": null,
+        "noise_distribution": null,
+        "value_computer": null
+      }
+    ],
+    "dag": {
+      "class_": "TheCausalityGame.scm.dag.core:CoreDAG",
+      "params": null,
+      "nodes": null,
+      "edges": [
+        [
+          "X",
+          "Y"
+        ],
+        [
+          "L",
+          "Y"
+        ]
+      ]
+    },
+    "random_state": null
+  },
+  "mission": {
+    "class_": "TheCausalityGame.mission.dag_discovery:DAGDiscoveryMission",
+    "params": null,
+    "id": "tiny_graph",
+    "behavior_metric": {
+      "class_": "TheCausalityGame.metric.behavior.rounds:RoundsBehaviorMetric",
+      "params": null
+    },
+    "result_metric": {
+      "class_": "TheCausalityGame.metric.result.shd:SHDResultMetric",
+      "params": null
+    },
+    "result_validator": {
+      "class_": "TheCausalityGame.metric.result.result_validator.dag_validator:DAGResultValidator",
+      "params": null
+    }
+  },
+  "custom_metrics": [],
+  "run_plan": {
+    "execution": "sequential",
+    "parallel_backend": "thread",
+    "max_workers": 2,
+    "budget": {
+      "rounds": 2,
+      "time_s": null,
+      "samples": 40,
+      "memory_mb": null
+    },
+    "hook_plan": []
+  },
+  "seeds": {},
+  "runtime": {
+    "mode": "dev",
+    "debug_level": 40
+  }
+}

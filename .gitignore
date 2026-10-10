@@ -16,5 +16,6 @@ htmlcov/
 runs/
 runs-old/
 .r-library/
+.venv/
 runs/comparisons/
 post_processing/comparison_reports/

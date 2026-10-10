@@ -1,0 +1,261 @@
+{
+  "date_local": "2026-10-09",
+  "base_commit": "2c7ac3d7cdac6f58ac575a745ed4afef4270a158",
+  "changes_committed": false,
+  "environment": {
+    "python": "3.12.13",
+    "R": "4.6.1",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "constraints": "constraints-publication-py312.txt",
+    "constraints_sha256": "4769976e71744db6d525ac05d941643fb6b36ef14078fd76577bd732f58d7237",
+    "R_packages": [
+      {
+        "package": "jsonlite",
+        "version": "1.9.1",
+        "source_commit": "",
+        "compatibility_patch": ""
+      },
+      {
+        "package": "remotes",
+        "version": "2.5.0",
+        "source_commit": "",
+        "compatibility_patch": ""
+      },
+      {
+        "package": "causalTree",
+        "version": "0.0",
+        "source_commit": "51a8762bff0ab17b971bce852cb37bece2d8240f",
+        "compatibility_patch": "r45-public-api-c17-v1"
+      },
+      {
+        "package": "causalToolbox",
+        "version": "0.0.2.4",
+        "source_commit": "75acc74ae689fddebe63a43597ff21f3ec233bd4",
+        "compatibility_patch": "srf-rforestry-api-dimensions-v1"
+      },
+      {
+        "package": "Rforestry",
+        "version": "0.10.1",
+        "source_commit": "92b396d77d7ce2bbaba1c6d97c8861ea43ae1566",
+        "compatibility_patch": "unknown-core-count-v1"
+      }
+    ],
+    "editable_checkout_updated": true
+  },
+  "tests": {
+    "passed": 162,
+    "skipped": 0,
+    "duration_s": 16.4,
+    "command": "TCG_R_LIBS=\"$PWD/.r-library\" python -m pytest tests -q -p no:cacheprovider --cov=TheCausalityGame --cov-report=json:/tmp/tcg-pre-submission-final-coverage.json",
+    "test_file_count": 33,
+    "statement_coverage": {
+      "covered_lines": 4670,
+      "num_statements": 6726,
+      "percent_covered": 69.43205471305382,
+      "percent_covered_display": "69",
+      "missing_lines": 2056,
+      "excluded_lines": 1,
+      "percent_statements_covered": 69.43205471305382,
+      "percent_statements_covered_display": "69"
+    },
+    "runtime_coverage": {
+      "TheCausalityGame/core/runtime/__init__.py": {
+        "covered_lines": 0,
+        "num_statements": 0,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 0,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100"
+      },
+      "TheCausalityGame/core/runtime/environment.py": {
+        "covered_lines": 112,
+        "num_statements": 116,
+        "percent_covered": 96.55172413793103,
+        "percent_covered_display": "97",
+        "missing_lines": 4,
+        "excluded_lines": 0,
+        "percent_statements_covered": 96.55172413793103,
+        "percent_statements_covered_display": "97"
+      },
+      "TheCausalityGame/core/runtime/game.py": {
+        "covered_lines": 46,
+        "num_statements": 46,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 0,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100"
+      },
+      "TheCausalityGame/core/runtime/runner.py": {
+        "covered_lines": 93,
+        "num_statements": 102,
+        "percent_covered": 91.17647058823529,
+        "percent_covered_display": "91",
+        "missing_lines": 9,
+        "excluded_lines": 0,
+        "percent_statements_covered": 91.17647058823529,
+        "percent_statements_covered_display": "91"
+      }
+    }
+  },
+  "wheel": {
+    "passed_outside_checkout": 24,
+    "duration_s": 7.64,
+    "environment": "/tmp/tcg-publication-clean",
+    "resources_verified": [
+      "REFERENCES.md",
+      "r_backends/cate_backend.R",
+      "r_backends/s_learner.R",
+      "r_backends/transformed_outcome.R",
+      "r_backends/honest_causal_tree.R"
+    ],
+    "pip_check": "passed",
+    "notears_installed_commit": "4a9ab19fe502e392503da331773c5223d82d3666",
+    "CLI_seven_agent_smoke": [
+      {
+        "agent": "ABCI_Balanced",
+        "rounds": 10,
+        "invalidated": false,
+        "path": "runs/pre_submission/wheel_smoke/publication_smoke/hill_rs-911/20261009_220045/agents/ABCI_Balanced/transcript.json"
+      },
+      {
+        "agent": "ABCI_Fast",
+        "rounds": 10,
+        "invalidated": false,
+        "path": "runs/pre_submission/wheel_smoke/publication_smoke/hill_rs-911/20261009_220045/agents/ABCI_Fast/transcript.json"
+      },
+      {
+        "agent": "OptimalEffectDesign_Balanced",
+        "rounds": 10,
+        "invalidated": false,
+        "path": "runs/pre_submission/wheel_smoke/publication_smoke/hill_rs-911/20261009_220045/agents/OptimalEffectDesign_Balanced/transcript.json"
+      },
+      {
+        "agent": "OptimalEffectDesign_DisagreementHeavy",
+        "rounds": 10,
+        "invalidated": false,
+        "path": "runs/pre_submission/wheel_smoke/publication_smoke/hill_rs-911/20261009_220045/agents/OptimalEffectDesign_DisagreementHeavy/transcript.json"
+      },
+      {
+        "agent": "OptimalEffectDesign_Fast",
+        "rounds": 10,
+        "invalidated": false,
+        "path": "runs/pre_submission/wheel_smoke/publication_smoke/hill_rs-911/20261009_220045/agents/OptimalEffectDesign_Fast/transcript.json"
+      },
+      {
+        "agent": "OptimalEffectDesign_InterventionHeavy",
+        "rounds": 10,
+        "invalidated": false,
+        "path": "runs/pre_submission/wheel_smoke/publication_smoke/hill_rs-911/20261009_220045/agents/OptimalEffectDesign_InterventionHeavy/transcript.json"
+      },
+      {
+        "agent": "OptimalEffectDesign_PathFocused",
+        "rounds": 10,
+        "invalidated": false,
+        "path": "runs/pre_submission/wheel_smoke/publication_smoke/hill_rs-911/20261009_220045/agents/OptimalEffectDesign_PathFocused/transcript.json"
+      }
+    ],
+    "base_only": {
+      "environment": "/tmp/tcg-publication-base",
+      "pip_check": "passed",
+      "imports_outside_checkout": true,
+      "research_extras_absent": [
+        "lingam",
+        "causallearn",
+        "notears"
+      ],
+      "direct_CLI_example": "passed",
+      "transcript": "runs/pre_submission/base_wheel_example/publication_smoke/20261009_220606/agents/first/transcript.json"
+    },
+    "final_wheel_sha256": "a8864ff20a00619e68d7c403ec1db561f2b7e0cf42dc882021ef7186163cc283"
+  },
+  "comparison": {
+    "seed": 911,
+    "samples": 500,
+    "rounds": 5,
+    "record_path": "runs/pre_submission/verified/20261010T025944Z/combined_comparison.jsonl",
+    "record_sha256": "ce15afe8bee60a3a59f420d4acd0f4bd64d7deb6090bcdaaefa1c1f4b8775806",
+    "status_counts": {
+      "ok": 205,
+      "error": 5
+    },
+    "authoritative_status_counts": {
+      "ok": 105
+    },
+    "compute_s": 32.28715150296921,
+    "errors": [
+      {
+        "case": "benchmark_hill",
+        "method": "transformed_outcome",
+        "implementation": "empirical",
+        "round": 1,
+        "error": "ValueError: Found array with 0 feature(s) (shape=(100, 0)) while a minimum of 1 is required by LogisticRegression."
+      },
+      {
+        "case": "benchmark_hill",
+        "method": "transformed_outcome",
+        "implementation": "empirical",
+        "round": 2,
+        "error": "ValueError: Found array with 0 feature(s) (shape=(200, 0)) while a minimum of 1 is required by LogisticRegression."
+      },
+      {
+        "case": "benchmark_hill",
+        "method": "transformed_outcome",
+        "implementation": "empirical",
+        "round": 3,
+        "error": "ValueError: Found array with 0 feature(s) (shape=(300, 0)) while a minimum of 1 is required by LogisticRegression."
+      },
+      {
+        "case": "benchmark_hill",
+        "method": "transformed_outcome",
+        "implementation": "empirical",
+        "round": 4,
+        "error": "ValueError: Found array with 0 feature(s) (shape=(400, 0)) while a minimum of 1 is required by LogisticRegression."
+      },
+      {
+        "case": "benchmark_hill",
+        "method": "transformed_outcome",
+        "implementation": "empirical",
+        "round": 5,
+        "error": "ValueError: Found array with 0 feature(s) (shape=(500, 0)) while a minimum of 1 is required by LogisticRegression."
+      }
+    ],
+    "report_path": "post_processing/comparison_reports/pre_submission_verified",
+    "audit_errors": 0,
+    "audit_warnings": 5,
+    "successful_case_count": 20,
+    "successful_round_pair_count": 100,
+    "figure_stems": 55,
+    "figure_artifacts_valid": true,
+    "bootstrap_resamples": 500,
+    "between_seed_claims_verified": false
+  },
+  "full_rebuttal": {
+    "pending_manifests": 21,
+    "agents_per_manifest": 7,
+    "rounds_per_agent": 100,
+    "executed": false,
+    "pilot_projection_minutes": 35,
+    "projection_is_linear_estimate": true,
+    "resume_granularity": "manifest",
+    "hardware_independent_reproduction_verified": false
+  },
+  "checks": {
+    "bootstrap_idempotence": "passed",
+    "R_syntax": "passed",
+    "scoped_mypy": "11 files passed",
+    "formatting": "changed Python files checked with Black",
+    "lint": "scoped checks passed",
+    "remote_CI_executed": false
+  },
+  "limitations": [
+    "Historical empirical transformed-outcome has no zero-covariate propensity fallback; five Hill rows failed and were excluded from paired quality results.",
+    "Full multi-seed manuscript results and original paper figures were not regenerated.",
+    "Nested CRAN dependencies are not fully hash-locked.",
+    "Treatment-order seed invariance, duplicate-agent IDs and outstanding promised methods/generators remain open."
+  ]
+}

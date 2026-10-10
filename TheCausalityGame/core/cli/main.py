@@ -7,11 +7,26 @@ from pathlib import Path
 
 import typer
 from pydantic import ValidationError
+from typer.core import TyperGroup
 
 from TheCausalityGame.core.contracts.specs.problem_instance import ProblemInstanceSpec
 from TheCausalityGame.core.runtime.runner import Runner
 
+
+class ManifestGroup(TyperGroup):
+    """Route a bare manifest path through the normal run subcommand parser."""
+
+    def resolve_command(
+        self, ctx: typer.Context, args: list[str]
+    ) -> tuple[str | None, object | None, list[str]]:
+        """Parse direct paths with the same options as the explicit run command."""
+        if args and args[0] not in self.commands and not args[0].startswith("-"):
+            args = ["run", *args]
+        return super().resolve_command(ctx, args)
+
+
 app = typer.Typer(
+    cls=ManifestGroup,
     add_completion=False,
     help="Command-line tools for running The Causality Game problem instances.",
 )
@@ -29,7 +44,11 @@ def _load_problem_instance(problem_path: Path) -> ProblemInstanceSpec:
     try:
         raw_spec = json.loads(problem_path.read_text(encoding="utf-8"))
     except FileNotFoundError as exc:
-        typer.secho(f"Problem instance file not found: {problem_path}", fg=typer.colors.RED, err=True)
+        typer.secho(
+            f"Problem instance file not found: {problem_path}",
+            fg=typer.colors.RED,
+            err=True,
+        )
         raise typer.Exit(code=1) from exc
     except json.JSONDecodeError as exc:
         typer.secho(
@@ -49,7 +68,9 @@ def _load_problem_instance(problem_path: Path) -> ProblemInstanceSpec:
     try:
         return ProblemInstanceSpec.model_validate(raw_spec)
     except ValidationError as exc:
-        typer.secho("Problem instance specification is invalid:", fg=typer.colors.RED, err=True)
+        typer.secho(
+            "Problem instance specification is invalid:", fg=typer.colors.RED, err=True
+        )
         typer.echo(exc, err=True)
         raise typer.Exit(code=1) from exc
 
@@ -61,7 +82,8 @@ def _execute_run(problem_path: Path, run_dir: Path) -> None:
     run_dir.mkdir(parents=True, exist_ok=True)
 
     typer.secho(
-        f"Running problem instance '{problem_instance.id}' (schema {problem_instance.schema_version})",
+        f"Running problem instance '{problem_instance.id}' "
+        f"(schema {problem_instance.schema_version})",
         fg=typer.colors.GREEN,
     )
 
@@ -80,6 +102,7 @@ def _execute_run(problem_path: Path, run_dir: Path) -> None:
 
 @app.command()
 def run(
+    ctx: typer.Context,
     problem_path: Path = typer.Argument(
         ...,
         exists=True,
@@ -89,8 +112,8 @@ def run(
         resolve_path=True,
         help="Path to the problem instance JSON file.",
     ),
-    run_dir: Path = typer.Option(
-        Path("runs"),
+    run_dir: Path | None = typer.Option(
+        None,
         "--run-dir",
         "-o",
         file_okay=False,
@@ -105,21 +128,15 @@ def run(
     The command loads a problem instance specification and runs it using the core runner,
     matching the behaviour of the legacy scripts/main.py helper.
     """
-    _execute_run(problem_path, run_dir)
+    _execute_run(problem_path, run_dir or ctx.obj or Path("runs"))
 
 
-@app.callback(invoke_without_command=True, help="Run a problem instance from a JSON specification.")
+@app.callback(
+    invoke_without_command=True,
+    help="Run a problem instance from a JSON specification.",
+)
 def main(
     ctx: typer.Context,
-    problem_path: Path | None = typer.Argument(
-        None,
-        exists=True,
-        file_okay=True,
-        dir_okay=False,
-        readable=True,
-        resolve_path=True,
-        help="Path to the problem instance JSON file.",
-    ),
     run_dir: Path = typer.Option(
         Path("runs"),
         "--run-dir",
@@ -130,17 +147,10 @@ def main(
         help="Directory where run artifacts will be stored.",
     ),
 ) -> None:
-    """
-    Support invoking `tcg` either with the explicit `run` subcommand or directly as a shortcut.
-    """
-    if ctx.invoked_subcommand is not None:
-        return
-
-    if problem_path is None:
+    """Initialize shared CLI options and show help when no manifest is supplied."""
+    ctx.obj = run_dir
+    if ctx.invoked_subcommand is None:
         typer.echo(ctx.get_help())
-        raise typer.Exit()
-
-    _execute_run(problem_path, run_dir)
 
 
 if __name__ == "__main__":

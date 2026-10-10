@@ -22,7 +22,12 @@ The Causality Game models an interactive loop in which an **agent** explores an 
 - Components are defined through strongly typed Pydantic specs and instantiated dynamically at runtime, allowing teams to plug in custom implementations without modifying the core.
 - The CLI (`tcg`) loads a manifest, orchestrates the run, and stores structured artifacts for later analysis.
 
-**Interaction loop:** Agent → Decision → Environment → Samples + Feedback → Agent. Feedback contains metric evaluations of the current answer before the agent informs its next action, ensuring it can adapt using the latest assessment.
+**Interaction loop:** Agent → Decision → Environment → Samples → Agent. The environment records
+metric feedback in the transcript after each round. `Agent.inform` receives observable samples;
+the current interface does not deliver metric feedback to the agent. Answers are captured before
+that round's samples are delivered, so a submission round records the estimate after the previous
+update. See [publication validation](docs/PRE_SUBMISSION_VALIDATION.md) for the tested lifecycle
+and remaining manuscript alignment work.
 
 ## Key Features
 - Modular component contracts for agents, SCMs, missions, metrics, hooks, and validators.
@@ -59,14 +64,14 @@ The Causality Game models an interactive loop in which an **agent** explores an 
 ## Installation
 
 ### Prerequisites
-- Python ≥ 3.12
+- Python 3.12 (the supported and tested publication environment)
 - macOS, Linux, or Windows with POSIX-compatible shell
 - Optional: `make`, `pipx`, or your preferred virtual environment tooling
 
 ### Steps
 1. Create and activate a virtual environment:
    ```bash
-   python3 -m venv .venv
+   python3.12 -m venv .venv
    source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
    ```
 2. Install the project in editable mode along with runtime dependencies:
@@ -79,6 +84,12 @@ The Causality Game models an interactive loop in which an **agent** explores an 
    ```
 
 ### Authoritative inferers
+
+The publication environment uses Python 3.12. `lingam==1.13.0` requires SciPy ≤ 1.13.1,
+which has no Python 3.14 wheels. Python 3.13/3.14 support is not currently declared. Use
+`python -m pip` from the activated environment to avoid installing into a different interpreter.
+See [the reproducible environment instructions](docs/PUBLICATION_ENVIRONMENT.md) for tested
+dependency constraints, R compatibility patches, clean installation and verification commands.
 
 The lightweight install intentionally does not install research backends. Install the Python
 backends with:
@@ -116,69 +127,69 @@ symbolic SCM inferers have no authoritative upstream and remain empirical compat
 After installation the `tcg` CLI is available on your PATH.
 
 ## Quickstart
-1. Prepare a problem instance manifest (see [Problem Instance Specification](#problem-instance-specification)). Save it, for example, as `examples/hill_demo.json`.
+1. Use the runnable `examples/publication_smoke.json` graph example, or prepare a manifest using [Problem Instance Specification](#problem-instance-specification). The example uses the empirical PC implementation and needs no external research backend.
 2. Run the manifest through the CLI:
    ```bash
-   tcg run examples/hill_demo.json --run-dir runs
+   tcg run examples/publication_smoke.json --run-dir runs
    ```
    or use the shortcut form:
    ```bash
-   tcg examples/hill_demo.json
+   tcg examples/publication_smoke.json
    ```
 3. Inspect the generated artifacts under `runs/<problem_id>/<timestamp>` when the manifest requests development-mode outputs.
 
 ### Minimal manifest example
 ```json
 {
-  "class": "TheCausalityGame.core.contracts.problem_instance:ProblemInstance",
+  "class_": "TheCausalityGame.core.contracts.problem_instance:ProblemInstance",
   "schema_version": "1.0.0",
   "id": "demo_instance",
   "agents": [
     {
       "id": "exhaustive",
-      "class": "TheCausalityGame.agent.composable:ComposableAgent",
+      "class_": "TheCausalityGame.agent.composable:ComposableAgent",
       "inferer": {
-        "class": "TheCausalityGame.agent.inferers.outcome_regression:OutcomeRegressionInferer"
+        "class_": "TheCausalityGame.agent.inferers.outcome_regression:OutcomeRegressionInferer"
       },
       "decider": {
-        "class": "TheCausalityGame.agent.deciders.exhaustive:ExhaustiveDecider",
+        "class_": "TheCausalityGame.agent.deciders.exhaustive:ExhaustiveDecider",
         "params": {"num_obs": 2, "num_inter": 2}
       }
     }
   ],
   "scm": {
-    "class": "<SCM module path>:<SCMClass>",
+    "class_": "<SCM module path>:<SCMClass>",
     "vars": [
       {
-        "class": "<SCM node module>:<NodeClass>",
+        "class_": "<SCM node module>:<NodeClass>",
         "name": "Z",
         "accessibility": "controllable",
         "domain": [0, 1],
         "parents": null,
         "noise_distribution": {
-          "class": "<Noise module>:<NoiseClass>",
+          "class_": "<Noise module>:<NoiseClass>",
           "params": {"std": 1.0}
         }
       }
     ],
     "dag": {
-      "class": "TheCausalityGame.scm.dag.core:CoreDAG",
+      "class_": "TheCausalityGame.scm.dag.core:CoreDAG",
       "nodes": ["Z"],
       "edges": []
     }
   },
   "mission": {
     "id": "cate_mission",
-    "class": "TheCausalityGame.mission.conditional_average_treatment_effect:ConditionalAverageTreatmentEffectMission",
+    "class_": "TheCausalityGame.mission.conditional_average_treatment_effect:ConditionalAverageTreatmentEffectMission",
     "behavior_metric": {
-      "class": "TheCausalityGame.metric.behavior.rounds:RoundsBehaviorMetric",
+      "class_": "TheCausalityGame.metric.behavior.rounds:RoundsBehaviorMetric",
       "params": {"alpha": 0.1}
     },
     "result_metric": {
-      "class": "TheCausalityGame.metric.result.pehe:PEHEResultMetric"
+      "class_": "TheCausalityGame.metric.result.pehe:PEHEResultMetric"
     },
     "result_validator": {
-      "class": "TheCausalityGame.metric.result.result_validator.cate_function_validator:ConditionalAverageTreatmentEffectFunctionValidator"
+      "class_": "TheCausalityGame.metric.result.result_validator.cate_function_validator:ConditionalAverageTreatmentEffectFunctionValidator"
     }
   },
   "custom_metrics": [],
@@ -222,11 +233,11 @@ Error handling includes clear diagnostics for missing files, unreadable JSON, an
 
 ## Problem Instance Specification
 
-Problem instances are validated against `ProblemInstanceSpec`. JSON documents may supply `class` instead of `class_` thanks to field aliases. Key top-level fields:
+Problem instances are validated against `ProblemInstanceSpec`. JSON documents must use `class_` for implementation paths; `CommonSpec` does not declare a `class` alias. Key top-level fields:
 
 | Field | Description |
 | --- | --- |
-| `class` | Optional when using the spec-only workflow; set it to a `ProblemInstance` class path when you want `build_from_spec` to construct a concrete instance. |
+| `class_` | Required implementation path, normally `TheCausalityGame.core.contracts.problem_instance:ProblemInstance`. |
 | `schema_version` | Schema identifier for compatibility management. |
 | `id` | Unique identifier for the run; used in artifact folder names. |
 | `agents` | List of [`AgentSpec`](TheCausalityGame/core/contracts/specs/agent.py) entries defining either `inferer + decider` or a unified `policy`. |

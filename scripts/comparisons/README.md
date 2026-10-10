@@ -17,6 +17,22 @@ Rscript scripts/comparisons/bootstrap_r.R .r-library
 export TCG_R_LIBS="$PWD/.r-library"
 ```
 
+The bootstrap applies small compatibility patches while building the locked sources. For
+`causalTree`, it uses R's public variable lookup API on R 4.5+ and compiles legacy callback
+declarations as C17. For `causalToolbox`, it preserves one-column feature names and omits
+the `OOBhonest` argument absent from pinned Rforestry's API; this adapter uses the `S_RF`
+fit and `EstimateCate` prediction path and does not use OOB-honest intervals. The Rforestry
+core-count guard handles systems where `detectCores()` returns `NA` without changing the
+requested worker count. Source commits remain pinned; see `r-backends.lock.json` for patch
+scope.
+
+The publication environment is Python 3.12; install with
+`python -m pip install -c constraints-publication-py312.txt -e '.[authoritative]'`.
+The bootstrap now fetches only the locked commit, verifies Git HEAD, and records
+`TCGSourceCommit`/`TCGCompatibilityPatch` in each local R installation. Re-bootstrap
+older unstamped libraries before fitting; R output provenance verifies those stamps.
+See `docs/PUBLICATION_ENVIRONMENT.md` for clean-wheel checks and patch limitations.
+
 Run all comparisons:
 
 ```bash
@@ -30,6 +46,14 @@ graph run. Results are written as per-round JSONL, aggregate CSV, and Markdown u
 `runs/comparisons/<timestamp>/`; authoritative provenance is retained for both successful and
 failed rows. The custom DAG, SCM, and symbolic-SCM composites are excluded because they have no
 authoritative upstream implementation.
+
+Hill's original string-coded binary treatment is converted to numeric 0/1 once in
+this comparison harness, before pairing, to match its numeric query frames. The
+original benchmark SCM and input contracts are unchanged. The retained empirical
+transformed-outcome inferer can fail on Hill's zero-covariate case; preserve that
+failure in reports. A comparison command exiting successfully means artifacts were
+written, not that every recorded fit succeeded. Fresh audit results and the distinction
+from full manuscript reproduction are in `docs/PRE_SUBMISSION_VALIDATION.md`.
 
 ## Post-process and inspect the comparison
 

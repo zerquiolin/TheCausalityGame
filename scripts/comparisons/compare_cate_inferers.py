@@ -45,6 +45,9 @@ def _hill_case(seed: int, n: int) -> tuple[str, pd.DataFrame, np.ndarray, np.nda
         random_state=np.random.RandomState(seed),
     )
     data = sampled[["Z", "Y"]].rename(columns={"Z": "T"})
+    # Hill encodes its binary categories as strings; queries below use numeric arms.
+    # Convert once before pairing so both implementations receive the same coding.
+    data["T"] = pd.to_numeric(data["T"], errors="raise")
     return "benchmark_hill", data, np.zeros(25), np.full(25, 2.0)
 
 

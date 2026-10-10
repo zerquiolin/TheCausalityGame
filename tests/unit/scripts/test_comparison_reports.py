@@ -3,9 +3,17 @@
 import csv
 import json
 
+import numpy as np
 import pandas as pd
 
-from scripts.comparisons._common import buffered_rounds, input_digest, write_reports
+from scripts.comparisons._common import (
+    buffered_rounds,
+    input_digest,
+    observation,
+    write_reports,
+)
+from scripts.comparisons.compare_cate_inferers import _hill_case, _query
+from TheCausalityGame.agent.inferers.outcome_regression import OutcomeRegressionInferer
 
 
 def test_comparison_reports_include_provenance(tmp_path) -> None:  # noqa: ANN001
@@ -55,3 +63,21 @@ def test_buffered_rounds_are_incremental_and_exhaustive() -> None:
     assert [len(chunk) for _, chunk, _ in rounds] == [4, 3, 3]
     assert [len(cumulative) for _, _, cumulative in rounds] == [4, 7, 10]
     assert rounds[-1][2]["x"].tolist() == list(range(10))
+
+
+def test_hill_binary_coding_matches_queries_and_backend_payload() -> None:
+    """Hill's categorical labels must denote the same arms in data and queries."""
+    name, data, values, truth = _hill_case(seed=911, n=120)
+    assert name == "benchmark_hill"
+    assert set(data["T"].unique()) == {0, 1}
+    assert pd.api.types.is_numeric_dtype(data["T"])
+    np.testing.assert_array_equal(truth, np.full(len(values), 2.0))
+    covariates, treatment, outcome, frames = _query(values, has_covariate=False)
+    inferer = OutcomeRegressionInferer()
+    inferer.update(observation(data))
+    payload = inferer._payload(
+        X=covariates, treatment=treatment, outcome=outcome, covariate_values=frames
+    )
+    assert payload is not None
+    assert set(payload["treatment"]) == {0, 1}
+    assert len(payload["query"][".tcg_intercept"]) == len(truth)

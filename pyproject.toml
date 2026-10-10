@@ -3,10 +3,11 @@ name = "thecausalitygame"
 version = "0.1.0"
 description = "The Causality Game"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<3.13"
 license = { text = "Apache-2.0" }
 authors = [{ name = "Your Org", email = "dev@your.org" }]
 dependencies = [
+  "matplotlib>=3.8",
   "networkx>=3.2",
   "numpy>=1.26",
   "pandas>=2.2",
@@ -60,7 +61,7 @@ include = ["TheCausalityGame*", "post_processing*", "scripts*"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py310"
+target-version = "py312"
 exclude = ["temp"]
 
 [tool.ruff.lint]
@@ -75,7 +76,7 @@ ignore = ["D104","D105","D107"]
 convention = "numpy"
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.12"
 strict = true
 # Extra rules beyond `strict`
 disallow_untyped_calls = true  # Prevent calling untyped functions
