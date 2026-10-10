@@ -1,6 +1,6 @@
-# Uncommitted change review
+# Publication validation change review
 
-No commits or staging were performed. The scientific code in the final wheel was tested outside the checkout; the root trackers are outside this Git repository.
+Package changes were committed as `859efc33970b8d819cb029645c3168f30d1eec7f` and pushed to `origin/main`. The scientific code in the final wheel was tested outside the checkout. Root trackers under `/TCG` are local context files because that directory is not a Git repository.
 
 ## Review entry points
 
@@ -22,7 +22,7 @@ No commits or staging were performed. The scientific code in the final wheel was
 
 ## File hashes for this review snapshot
 
-These hashes identify the current uncommitted files, not a published or committed release. Changing a file after this report requires regenerating its hash.
+These SHA-256 values identify the package source and supporting artifacts included in the published commit above; this report excludes its own hash. Changing any listed file requires regenerating the table.
 
 | File | SHA-256 |
 | --- | --- |
