@@ -1,0 +1,138 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/zerquiolin/Desktop/University/TCG/TheCausalityGame
+configfile: pyproject.toml
+plugins: cov-7.1.0, anyio-4.14.2
+collected 6 items
+
+tests/unit/agent/test_adversarial_adapters.py FFFFFF                     [100%]
+
+=================================== FAILURES ===================================
+___ test_backend_adjacency_must_be_finite_and_match_variable_count[matrix0] ____
+
+matrix = array([[0., 0., 0.],
+       [0., 0., 0.],
+       [0., 0., 0.]])
+
+    @pytest.mark.parametrize("matrix", [np.zeros((3, 3)), np.zeros((1, 2)), np.array([[0, np.nan], [0, 0]]), np.array([[0, np.inf], [0, 0]])])
+    def test_backend_adjacency_must_be_finite_and_match_variable_count(matrix):
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/unit/agent/test_adversarial_adapters.py:13: Failed
+___ test_backend_adjacency_must_be_finite_and_match_variable_count[matrix1] ____
+
+matrix = array([[0., 0.]])
+
+    @pytest.mark.parametrize("matrix", [np.zeros((3, 3)), np.zeros((1, 2)), np.array([[0, np.nan], [0, 0]]), np.array([[0, np.inf], [0, 0]])])
+    def test_backend_adjacency_must_be_finite_and_match_variable_count(matrix):
+        with pytest.raises(ValueError):
+>           adjacency_to_digraph(matrix, ["X", "Y"])
+
+tests/unit/agent/test_adversarial_adapters.py:14:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+adjacency = array([[0., 0.]]), columns = ['X', 'Y'], transpose = False
+
+    def adjacency_to_digraph(
+        adjacency: np.ndarray,
+        columns: list[str],
+        *,
+        transpose: bool = False,
+    ) -> nx.DiGraph:
+        """Convert an upstream weighted adjacency matrix to a NetworkX DAG estimate."""
+        weights = adjacency.T if transpose else adjacency
+        graph = nx.DiGraph()
+        graph.add_nodes_from(columns)
+        for source in range(len(columns)):
+            for target in range(len(columns)):
+>               weight = float(weights[source, target])
+                               ^^^^^^^^^^^^^^^^^^^^^^^
+E               IndexError: index 1 is out of bounds for axis 0 with size 1
+
+TheCausalityGame/agent/inferers/_data.py:63: IndexError
+___ test_backend_adjacency_must_be_finite_and_match_variable_count[matrix2] ____
+
+matrix = array([[ 0., nan],
+       [ 0.,  0.]])
+
+    @pytest.mark.parametrize("matrix", [np.zeros((3, 3)), np.zeros((1, 2)), np.array([[0, np.nan], [0, 0]]), np.array([[0, np.inf], [0, 0]])])
+    def test_backend_adjacency_must_be_finite_and_match_variable_count(matrix):
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/unit/agent/test_adversarial_adapters.py:13: Failed
+___ test_backend_adjacency_must_be_finite_and_match_variable_count[matrix3] ____
+
+matrix = array([[ 0., inf],
+       [ 0.,  0.]])
+
+    @pytest.mark.parametrize("matrix", [np.zeros((3, 3)), np.zeros((1, 2)), np.array([[0, np.nan], [0, 0]]), np.array([[0, np.inf], [0, 0]])])
+    def test_backend_adjacency_must_be_finite_and_match_variable_count(matrix):
+>       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/unit/agent/test_adversarial_adapters.py:13: Failed
+______________ test_random_decider_supports_three_category_domain ______________
+
+    def test_random_decider_supports_three_category_domain():
+        actions = AvailableActions(experiments=[ExperimentVariable(name="X", domain=["red", "green", "blue"])])
+>       decision = RandomDecider(threshold=0).decide(RoundInfo(round=1), actions, None)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/agent/test_adversarial_adapters.py:19:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <TheCausalityGame.agent.deciders.random.RandomDecider object at 0x167583230>
+available_actions = AvailableActions(experiments=[ExperimentVariable(name='X', domain=['red', 'green', 'blue'])], answer='submit')
+
+    @override
+    def decide(
+        self,
+        round_info: RoundInfo,
+        available_actions: AvailableActions,
+        belief: BeliefSnapshot,
+    ) -> Decision:
+        del round_info, belief
+        decision = Decision.experiment()
+        if self._rng.uniform(0, 1) < self._threshold:
+            decision.add_experiment(treatment=None, n=self._num_obs)
+            return decision
+
+        index = self._rng.integers(0, len(available_actions.experiments))
+        experiment = available_actions.experiments[index]
+>       low, high = experiment.domain
+        ^^^^^^^^^
+E       ValueError: too many values to unpack (expected 2)
+
+TheCausalityGame/agent/deciders/random.py:41: ValueError
+____________ test_random_decider_can_observe_when_no_controls_exist ____________
+
+    def test_random_decider_can_observe_when_no_controls_exist():
+>       decision = RandomDecider(threshold=0).decide(RoundInfo(round=1), AvailableActions(experiments=[]), None)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/agent/test_adversarial_adapters.py:24:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+TheCausalityGame/agent/deciders/random.py:39: in decide
+    index = self._rng.integers(0, len(available_actions.experiments))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+numpy/random/_generator.pyx:679: in numpy.random._generator.Generator.integers
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+>   ???
+E   ValueError: high <= 0
+
+numpy/random/_bounded_integers.pyx:1334: ValueError
+=========================== short test summary info ============================
+FAILED tests/unit/agent/test_adversarial_adapters.py::test_backend_adjacency_must_be_finite_and_match_variable_count[matrix0]
+FAILED tests/unit/agent/test_adversarial_adapters.py::test_backend_adjacency_must_be_finite_and_match_variable_count[matrix1]
+FAILED tests/unit/agent/test_adversarial_adapters.py::test_backend_adjacency_must_be_finite_and_match_variable_count[matrix2]
+FAILED tests/unit/agent/test_adversarial_adapters.py::test_backend_adjacency_must_be_finite_and_match_variable_count[matrix3]
+FAILED tests/unit/agent/test_adversarial_adapters.py::test_random_decider_supports_three_category_domain
+FAILED tests/unit/agent/test_adversarial_adapters.py::test_random_decider_can_observe_when_no_controls_exist
+============================== 6 failed in 1.97s ===============================

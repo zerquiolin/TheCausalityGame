@@ -1,0 +1,126 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/zerquiolin/Desktop/University/TCG/TheCausalityGame
+configfile: pyproject.toml
+plugins: cov-7.1.0, anyio-4.14.2
+collected 5 items
+
+tests/unit/managers/test_adversarial_budget.py FFF..                     [100%]
+
+=================================== FAILURES ===================================
+__________ test_decimal_cost_exhaustion_is_batch_independent[chunks0] __________
+
+chunks = [3]
+
+    @pytest.mark.parametrize("chunks", [[3], [1, 1, 1], [1, 2]])
+    def test_decimal_cost_exhaustion_is_batch_independent(chunks):
+        manager = BudgetManager(BudgetSpec(rounds=10, cost=0.3, pricing=AcquisitionPricing(per_sample=0.1)))
+        for n in chunks:
+            experiments = [Experiment(n=n, treatment=None)]
+>           cost = manager.preflight(experiments)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/managers/test_adversarial_budget.py:16:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <TheCausalityGame.core.managers.budget.BudgetManager object at 0x1077eb440>
+experiments = [Experiment(treatment=None, n=3)]
+
+    def preflight(self, experiments: list) -> float:
+        """Validate a whole acquisition atomically before drawing any samples."""
+        n = sum(experiment.n for experiment in experiments)
+        if self.sample_limit is not None and self.samples_used + n > self.sample_limit:
+            raise SamplesBudgetExceededError(self.samples_used + n, self.sample_limit)
+        if (
+            self.spec.experiments is not None
+            and self.experiments_used + len(experiments) > self.spec.experiments
+        ):
+            raise AcquisitionBudgetExceededError("experiments")
+        cost = sum(
+            self.spec.pricing.quote(experiment.treatment, experiment.n)
+            for experiment in experiments
+        )
+        if self.spec.cost is not None and self.cost_used + cost > self.spec.cost:
+>           raise AcquisitionBudgetExceededError("cost")
+E           TheCausalityGame.core.managers.budget.AcquisitionBudgetExceededError: Acquisition exceeds cost budget.
+
+TheCausalityGame/core/managers/budget.py:155: AcquisitionBudgetExceededError
+__________ test_decimal_cost_exhaustion_is_batch_independent[chunks1] __________
+
+chunks = [1, 1, 1]
+
+    @pytest.mark.parametrize("chunks", [[3], [1, 1, 1], [1, 2]])
+    def test_decimal_cost_exhaustion_is_batch_independent(chunks):
+        manager = BudgetManager(BudgetSpec(rounds=10, cost=0.3, pricing=AcquisitionPricing(per_sample=0.1)))
+        for n in chunks:
+            experiments = [Experiment(n=n, treatment=None)]
+>           cost = manager.preflight(experiments)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/managers/test_adversarial_budget.py:16:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <TheCausalityGame.core.managers.budget.BudgetManager object at 0x1046397f0>
+experiments = [Experiment(treatment=None, n=1)]
+
+    def preflight(self, experiments: list) -> float:
+        """Validate a whole acquisition atomically before drawing any samples."""
+        n = sum(experiment.n for experiment in experiments)
+        if self.sample_limit is not None and self.samples_used + n > self.sample_limit:
+            raise SamplesBudgetExceededError(self.samples_used + n, self.sample_limit)
+        if (
+            self.spec.experiments is not None
+            and self.experiments_used + len(experiments) > self.spec.experiments
+        ):
+            raise AcquisitionBudgetExceededError("experiments")
+        cost = sum(
+            self.spec.pricing.quote(experiment.treatment, experiment.n)
+            for experiment in experiments
+        )
+        if self.spec.cost is not None and self.cost_used + cost > self.spec.cost:
+>           raise AcquisitionBudgetExceededError("cost")
+E           TheCausalityGame.core.managers.budget.AcquisitionBudgetExceededError: Acquisition exceeds cost budget.
+
+TheCausalityGame/core/managers/budget.py:155: AcquisitionBudgetExceededError
+__________ test_decimal_cost_exhaustion_is_batch_independent[chunks2] __________
+
+chunks = [1, 2]
+
+    @pytest.mark.parametrize("chunks", [[3], [1, 1, 1], [1, 2]])
+    def test_decimal_cost_exhaustion_is_batch_independent(chunks):
+        manager = BudgetManager(BudgetSpec(rounds=10, cost=0.3, pricing=AcquisitionPricing(per_sample=0.1)))
+        for n in chunks:
+            experiments = [Experiment(n=n, treatment=None)]
+>           cost = manager.preflight(experiments)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/managers/test_adversarial_budget.py:16:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <TheCausalityGame.core.managers.budget.BudgetManager object at 0x1077eb440>
+experiments = [Experiment(treatment=None, n=2)]
+
+    def preflight(self, experiments: list) -> float:
+        """Validate a whole acquisition atomically before drawing any samples."""
+        n = sum(experiment.n for experiment in experiments)
+        if self.sample_limit is not None and self.samples_used + n > self.sample_limit:
+            raise SamplesBudgetExceededError(self.samples_used + n, self.sample_limit)
+        if (
+            self.spec.experiments is not None
+            and self.experiments_used + len(experiments) > self.spec.experiments
+        ):
+            raise AcquisitionBudgetExceededError("experiments")
+        cost = sum(
+            self.spec.pricing.quote(experiment.treatment, experiment.n)
+            for experiment in experiments
+        )
+        if self.spec.cost is not None and self.cost_used + cost > self.spec.cost:
+>           raise AcquisitionBudgetExceededError("cost")
+E           TheCausalityGame.core.managers.budget.AcquisitionBudgetExceededError: Acquisition exceeds cost budget.
+
+TheCausalityGame/core/managers/budget.py:155: AcquisitionBudgetExceededError
+=========================== short test summary info ============================
+FAILED tests/unit/managers/test_adversarial_budget.py::test_decimal_cost_exhaustion_is_batch_independent[chunks0]
+FAILED tests/unit/managers/test_adversarial_budget.py::test_decimal_cost_exhaustion_is_batch_independent[chunks1]
+FAILED tests/unit/managers/test_adversarial_budget.py::test_decimal_cost_exhaustion_is_batch_independent[chunks2]
+========================= 3 failed, 2 passed in 0.47s ==========================

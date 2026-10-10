@@ -77,3 +77,16 @@ def random_state_from_dict(state_dict: dict[str, Any]) -> np.random.RandomState:
         )
     )
     return restored_rng
+
+
+def resolve_scm_random_state(
+    serialized_state: str | None, seeds: dict[str, int] | None = None
+) -> np.random.RandomState:
+    """Prefer serialized SCM state, then named/global manifest seed, then default 911.
+
+    A malformed serialized state raises instead of silently falling back.
+    """
+    if serialized_state is not None:
+        return random_state_from_json(serialized_state)
+    seeds = seeds or {}
+    return np.random.RandomState(seeds.get("scm", seeds.get("global", 911)))

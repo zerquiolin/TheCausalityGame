@@ -149,7 +149,9 @@ def audit_records(records: pd.DataFrame) -> pd.DataFrame:  # noqa: PLR0912
             ):
                 add("error", "invalid_metric", f"{metric}={value!r}", row)
         if row["status"] == "ok" and not any(
-            pd.notna(row.get(metric)) for metric in METRICS
+            pd.notna(row.get(metric))
+            for metric in METRICS
+            if metric not in {"runtime_s", "cumulative_runtime_s"}
         ):
             add(
                 "error",

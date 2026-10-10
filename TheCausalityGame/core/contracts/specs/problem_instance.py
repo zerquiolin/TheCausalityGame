@@ -1,5 +1,7 @@
 """The Causality Game - Problem Instance Specification."""
 
+from pydantic import model_validator
+
 from TheCausalityGame.core.contracts.specs.agent import AgentSpec
 from TheCausalityGame.core.contracts.specs.common import CommonSpec
 from TheCausalityGame.core.contracts.specs.metric import MetricSpec
@@ -53,3 +55,13 @@ class ProblemInstanceSpec(CommonSpec):
 
     seeds: dict[str, int] = {}  # noqa: RUF012
     runtime: RuntimeSettingsSpec = RuntimeSettingsSpec()
+
+    @model_validator(mode="after")
+    def validate_seeds_and_ids(self):
+        """Require known seed namespaces and unique agent identifiers."""
+        if any(not 0 <= seed < 2**32 for seed in self.seeds.values()):
+            raise ValueError("Seeds must be unsigned 32-bit integers.")
+        ids = [agent.id for agent in self.agents]
+        if len(ids) != len(set(ids)):
+            raise ValueError("Agent IDs must be unique.")
+        return self

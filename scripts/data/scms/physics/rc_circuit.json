@@ -9,13 +9,13 @@
         {
             "name": "R",
             "class": "EquationBasedNumericalSCMNode",
-            "domain": [0, 10e10],
+            "domain": [1e-9, 10e10],
             "accessibility": "controllable"
         },
         {
             "name": "C",
             "class": "EquationBasedNumericalSCMNode",
-            "domain": [0, 10e10],
+            "domain": [1e-9, 10e10],
             "accessibility": "controllable"
         },
         {

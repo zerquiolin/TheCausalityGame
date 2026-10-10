@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from typing import Any, override
 
 import pandas as pd
@@ -38,6 +39,8 @@ class OutcomeRegressionInferer(Inferer):
         if not self._samples:
             return zero_answer()
 
+        frozen = deepcopy(self)
+
         def estimate(
             X: list[str],  # noqa: N803
             treatment: str,
@@ -45,14 +48,14 @@ class OutcomeRegressionInferer(Inferer):
             covariate_values: tuple[pd.DataFrame, pd.DataFrame],
         ) -> pd.DataFrame:
             features = [treatment, *X]
-            data = usable_rows(combined_data(self._samples), [*features, outcome])
+            data = usable_rows(combined_data(frozen._samples), [*features, outcome])
             if data.empty:
                 return zero_effect(covariate_values)
 
             model = fit_tabular_regressor(
                 with_treatment_interactions(data, treatment, X),
                 data[outcome],
-                alpha=self.alpha,
+                alpha=frozen.alpha,
             )
 
             control, treated = covariate_values
@@ -64,8 +67,12 @@ class OutcomeRegressionInferer(Inferer):
             if missing_features:
                 return zero_effect(covariate_values)
 
-            y_control = model.predict(with_treatment_interactions(control, treatment, X))
-            y_treated = model.predict(with_treatment_interactions(treated, treatment, X))
+            y_control = model.predict(
+                with_treatment_interactions(control, treatment, X)
+            )
+            y_treated = model.predict(
+                with_treatment_interactions(treated, treatment, X)
+            )
             return pd.DataFrame(y_treated - y_control, columns=["treatment_effect"])
 
         return estimate
@@ -76,7 +83,10 @@ class OutcomeRegressionInferer(Inferer):
             estimate=self.answer(),
             summary={
                 "n_samples": sum(len(sample.data) for sample in self._samples),
-                "backend": {"implementation_kind": "empirical", "project": "TheCausalityGame"},
+                "backend": {
+                    "implementation_kind": "empirical",
+                    "project": "TheCausalityGame",
+                },
             },
             capabilities=("cate", "outcome_regression"),
         )

@@ -1,5 +1,7 @@
 # Pre-submission package validation
 
+Historical validation record for the earlier committed pass. Current uncommitted implementation, seed fallback policy and rerun are documented in [IMPLEMENTATION_REVIEW_V4.md](IMPLEMENTATION_REVIEW_V4.md). Historical claims below must not be read as current missing-feature status.
+
 Prepared 2026-10-09 against package base commit
 `2c7ac3d7cdac6f58ac575a745ed4afef4270a158` and manuscript revision
 `5126ce1158b9708a3c493d4c7107536da93cc01f`. All changes in this audit are uncommitted

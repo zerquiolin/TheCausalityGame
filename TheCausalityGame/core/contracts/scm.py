@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from itertools import product
 from typing import override
 
 import networkx as nx
@@ -10,7 +11,11 @@ import numpy as np
 import pandas as pd
 
 from TheCausalityGame.core.contracts.dag import DAG
-from TheCausalityGame.core.contracts.scm_node import SCMNode
+from TheCausalityGame.core.contracts.scm_node import (
+    CategoricalSCMNode,
+    NumericalSCMNode,
+    SCMNode,
+)
 from TheCausalityGame.core.contracts.serializable import Serializable
 from TheCausalityGame.core.contracts.specs.scm import SCMSpec
 from TheCausalityGame.core.infrastructure.registry import (
@@ -22,6 +27,7 @@ from TheCausalityGame.core.lib.utils.random_state_serialization import (
     random_state_from_json,
     random_state_to_json,
 )
+from TheCausalityGame.core.lib.utils.seeding import derive_random_state, state_identity
 
 
 class SCM(Serializable):
@@ -57,10 +63,36 @@ class SCM(Serializable):
         """Initialize the SCM instance."""
         self.dag = dag
         self.nodes = {node.name: node for node in nodes}
+        if len(self.nodes) != len(nodes) or set(self.nodes) != set(dag.graph.nodes):
+            raise ValueError(
+                "SCM nodes must have unique names matching every DAG node."
+            )
         self._topologically_sorted_var_names: list[str] = list(nx.topological_sort(self.dag.graph))  # type: ignore
         self.random_state = random_state or np.random.RandomState(911)
+        self.acquisition_identity = state_identity(self.random_state)
+        for node in self.nodes.values():
+            if set(node.parents or []) != set(self.dag.graph.predecessors(node.name)):
+                raise ValueError(
+                    f"Declared parents for {node.name} must match its DAG predecessors."
+                )
+            if node.parents and hasattr(node, "probability_distribution"):
+                expected = {
+                    ",".join(map(str, combo))
+                    for combo in product(
+                        *(self.nodes[parent].domain for parent in node.parents)
+                    )
+                }
+                if set(node.probability_distribution) != expected:
+                    raise ValueError(
+                        f"Incomplete conditional probability table for {node.name}."
+                    )
+        self._sampling_streams = self.prepare_new_random_state_structure(
+            self.random_state
+        )
         self.name = name
-        self.logger = logger or logging.getLogger(f"{self.__module__}.{self.__class__.__name__}")
+        self.logger = logger or logging.getLogger(
+            f"{self.__module__}.{self.__class__.__name__}"
+        )
 
     @property
     def vars(self) -> list[str]:
@@ -71,7 +103,9 @@ class SCM(Serializable):
     def controllable_vars(self) -> list[str]:
         """Return variables that are controllable by the agent."""
         return [
-            n for n in self.vars if self.nodes[n].accessibility == NodeAccessibility.CONTROLLABLE
+            n
+            for n in self.vars
+            if self.nodes[n].accessibility == NodeAccessibility.CONTROLLABLE
         ]
 
     @property
@@ -87,18 +121,16 @@ class SCM(Serializable):
     @property
     def latent_vars(self) -> list[str]:
         """Return variables that are latent (not observable or controllable)."""
-        return [n for n in self.vars if self.nodes[n].accessibility == NodeAccessibility.LATENT]
-
-    @property
-    def outcome_vars(self) -> list[str]:
-        """Return observable or controllable variables with no parents (i.e., outcomes)."""
         return [
             n
             for n in self.vars
-            if self.nodes[n].accessibility
-            in [NodeAccessibility.CONTROLLABLE, NodeAccessibility.MEASURABLE]
-            and not self.nodes[n].parents
+            if self.nodes[n].accessibility == NodeAccessibility.LATENT
         ]
+
+    @property
+    def outcome_vars(self) -> list[str]:
+        """Return observable leaf variables (outcome candidates)."""
+        return [n for n in self.leaf_vars if n in self.observable_vars]
 
     @property
     def leaf_vars(self) -> list[str]:
@@ -125,8 +157,11 @@ class SCM(Serializable):
             Random state per node.
         """
         random_state = random_state or self.random_state
+        identity = state_identity(random_state)
         return {
-            node_name: node.prepare_new_random_state_structure(random_state)
+            node_name: node.prepare_new_random_state_structure(
+                derive_random_state("node-v3", identity, node_name)
+            )
             for node_name, node in self.nodes.items()
         }
 
@@ -135,7 +170,9 @@ class SCM(Serializable):
         interventions: dict[str, float | str] | None = None,
         num_samples: int = 1,
         cancel_noise: bool = False,
-        random_state: (dict[str, np.random.RandomState] | np.random.RandomState | None) = None,
+        random_state: (
+            dict[str, np.random.RandomState] | np.random.RandomState | None
+        ) = None,
     ) -> pd.DataFrame:
         """Generate samples from the SCM given optional interventions.
 
@@ -155,11 +192,19 @@ class SCM(Serializable):
         pd.DataFrame
             Generated samples as a DataFrame.
         """
+        if interventions is not None and not isinstance(interventions, dict):
+            raise TypeError("Interventions must be a variable-to-value dictionary.")
+        unknown = set(interventions or {}) - set(self.nodes)
+        if unknown:
+            raise ValueError(f"Unknown intervention variables: {sorted(unknown)}")
         # Setup random states
-        random_states = random_state or dict.fromkeys(self.vars, self.random_state)
+        if num_samples < 0 or int(num_samples) != num_samples:
+            raise ValueError("Sample count must be a nonnegative integer.")
+        random_states = self._sampling_streams if random_state is None else random_state
 
         if not isinstance(random_states, dict):
-            random_states = dict.fromkeys(self.vars, random_states)
+            # A supplied shared RNG is treated as a seed for independent streams.
+            random_states = self.prepare_new_random_state_structure(random_states)
 
         sample = pd.DataFrame(index=range(num_samples))
         interventions = interventions if interventions is not None else {}
@@ -167,7 +212,19 @@ class SCM(Serializable):
         for node_name in self.vars:
             node = self.nodes[node_name]
             if node_name in interventions:
-                sample_for_col: list[int | float | str] = [interventions[node_name]] * num_samples
+                value = interventions[node_name]
+                if isinstance(node, NumericalSCMNode):
+                    value = float(value)
+                elif isinstance(node, CategoricalSCMNode):
+                    matches = [
+                        category for category in node.domain if category == value
+                    ]
+                    if not matches:
+                        raise ValueError(
+                            f"Unknown intervention category for {node_name}: {value}"
+                        )
+                    value = matches[0]
+                sample_for_col: list[int | float | str] = [value] * num_samples
             else:
                 sample_for_col = node.generate_values(
                     parent_values=sample,
@@ -175,7 +232,7 @@ class SCM(Serializable):
                     cancel_noise=cancel_noise,
                 )
 
-            sample = pd.concat([sample, pd.DataFrame({node_name: sample_for_col})], axis=1)
+            sample[node_name] = sample_for_col
 
         return sample
 
@@ -211,10 +268,14 @@ class SCM(Serializable):
             Deserialized SCM instance.
         """
         dag: DAG = build_from_spec(spec.dag)
+        for node in spec.vars:
+            dag.graph.add_node(node.name)
         topological_order: list[str] = list(nx.topological_sort(dag.graph))  # type: ignore
         nodes: list[SCMNode] = []
 
-        for node_spec in sorted(spec.vars, key=lambda n: topological_order.index(n.name)):
+        for node_spec in sorted(
+            spec.vars, key=lambda n: topological_order.index(n.name)
+        ):
             parents = (
                 node_spec.parents
                 or list(dag.graph.predecessors(node_spec.name))  # type: ignore
@@ -227,7 +288,8 @@ class SCM(Serializable):
                 cat_index: dict[str, dict[float | str, int]] = {
                     n.name: {cat: i for i, cat in enumerate(n.domain)}
                     for n in nodes
-                    if getattr(n, "domain", None) and all(isinstance(cat, str) for cat in n.domain)
+                    if getattr(n, "domain", None)
+                    and all(isinstance(cat, str) for cat in n.domain)
                 }
                 parent_mappings = {
                     p: cat_index[p] for p in (parents or []) if p in cat_index
@@ -238,6 +300,8 @@ class SCM(Serializable):
             )
             nodes.append(build_from_spec(updated_spec))
 
-        random_state = random_state_from_json(spec.random_state) if spec.random_state else None
+        random_state = (
+            random_state_from_json(spec.random_state) if spec.random_state else None
+        )
 
         return cls(dag, nodes, random_state)

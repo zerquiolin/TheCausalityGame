@@ -9,10 +9,11 @@ from pathlib import Path
 
 import numpy as np
 
-from TheCausalityGame.core.lib.utils.random_state_serialization import random_state_to_json
+from TheCausalityGame.core.lib.utils.random_state_serialization import (
+    random_state_to_json,
+)
 
-
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1]
 PROBLEM_INSTANCES_ROOT = ROOT / "scripts" / "problem_instances"
 PROBLEM_INSTANCES_BY_INFERER_ROOT = ROOT / "scripts" / "problem_instances_by_inferer"
 SEEDED_ROOT = PROBLEM_INSTANCES_ROOT / "seeded"
@@ -156,7 +157,9 @@ def _source_manifests() -> list[SourceManifest]:
             )
         )
 
-    for path in sorted((PROBLEM_INSTANCES_ROOT / "symbolic_scm_discovery").glob("*.json")):
+    for path in sorted(
+        (PROBLEM_INSTANCES_ROOT / "symbolic_scm_discovery").glob("*.json")
+    ):
         relative = path.relative_to(PROBLEM_INSTANCES_ROOT)
         manifests.append(
             SourceManifest(
@@ -197,9 +200,7 @@ def _source_allowed(source: SourceManifest) -> bool:
 
 def _active_agents(json_content: dict) -> list[dict]:
     return [
-        agent
-        for agent in json_content.get("agents", [])
-        if agent.get("active", True)
+        agent for agent in json_content.get("agents", []) if agent.get("active", True)
     ]
 
 
@@ -266,7 +267,9 @@ def _seed_manifest(
     seeded_json = copy.deepcopy(json_content)
     base_name = Path(json_content["id"]).name
     seeded_json["scm"]["random_state"] = random_state_to_json(random_state)
-    seeded_json["id"] = f"seeded/{mission_folder}/{inferer_folder}/{base_name}_rs-{seed}"
+    seeded_json["id"] = (
+        f"seeded/{mission_folder}/{inferer_folder}/{base_name}_rs-{seed}"
+    )
     seeded_json["run_plan"]["hook_plan"] = []
     return seeded_json
 

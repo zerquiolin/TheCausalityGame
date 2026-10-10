@@ -20,10 +20,10 @@ class RoundInfo(CommonDTO):
 
 # === Availability of Actions ===
 class ExperimentVariable(CommonDTO):
-    """Describes a single experiment variable (intervention target)."""
+    """Describe a target; string domains are categories and numeric pairs intervals."""
 
     name: str
-    domain: list[int | float | str]
+    domain: list[str | int | float]
 
 
 class AvailableActions(CommonDTO):
@@ -94,3 +94,5 @@ class BudgetSnapshot(CommonDTO):
     time_s_left: float | None = None
     samples_left: int | None = None
     memory_mb_left: float | None = None
+    experiments_left: int | None = None
+    cost_left: float | None = None

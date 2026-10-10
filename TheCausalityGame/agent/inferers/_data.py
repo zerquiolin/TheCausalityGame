@@ -55,6 +55,16 @@ def adjacency_to_digraph(
     transpose: bool = False,
 ) -> nx.DiGraph:
     """Convert an upstream weighted adjacency matrix to a NetworkX DAG estimate."""
+    adjacency = np.asarray(adjacency, dtype=float)
+    if (
+        adjacency.shape != (len(columns), len(columns))
+        or not np.isfinite(adjacency).all()
+    ):
+        raise ValueError(
+            "Backend adjacency must be finite and square with one row per variable."
+        )
+    if len(set(columns)) != len(columns):
+        raise ValueError("Backend adjacency variable names must be unique.")
     weights = adjacency.T if transpose else adjacency
     graph = nx.DiGraph()
     graph.add_nodes_from(columns)

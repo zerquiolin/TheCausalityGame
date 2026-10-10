@@ -44,6 +44,7 @@ class CoreDAG(DAG):
 
         return DAGSpec(
             class_=get_class_path(self.__class__),
+            nodes=list(self.graph.nodes),
             edges=[(e["source"], e["target"]) for e in dag["edges"]],  # type: ignore
         )
 

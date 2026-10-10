@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-10",
+  "python": "3.12.13",
+  "source_fingerprint": "52ba2ee1f8364bf66c9376e7185860ed3819266652ce08c122622488f7f64b04",
+  "pytest": {
+    "collected": 357,
+    "passed": 357,
+    "failed": 0,
+    "skipped": 0,
+    "elapsed_seconds": 38.61,
+    "command": "TCG_R_LIBS=.r-library conda run --no-capture-output -n thecausalitygame python -m pytest -q --cov=TheCausalityGame --cov-branch --cov-report=json:/private/tmp/tcg-py312-followup-coverage.json"
+  },
+  "coverage": {
+    "covered_lines": 6195,
+    "num_statements": 7722,
+    "percent_statements_covered": 80.22533022533023,
+    "covered_branches": 1237,
+    "num_branches": 2110,
+    "percent_branches_covered": 58.62559241706161
+  },
+  "skips": [],
+  "r_packages": {
+    "jsonlite": "1.9.1",
+    "causalToolbox": "0.0.2.4",
+    "causalTree": "0.0",
+    "Rforestry": "0.10.1"
+  },
+  "not_run": [
+    "Publication-scale and seeded experiment campaigns were not rerun."
+  ],
+  "python_backends": {
+    "lingam": "1.13.0",
+    "scipy": "1.13.1"
+  }
+}

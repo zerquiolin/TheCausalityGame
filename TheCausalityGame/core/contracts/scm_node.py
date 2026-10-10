@@ -3,6 +3,7 @@
 import logging
 from abc import abstractmethod
 from collections.abc import Callable
+from copy import deepcopy
 from typing import Any, TypeVar
 
 import numpy as np
@@ -67,12 +68,31 @@ class SCMNode(Serializable):
         self.name = name
         self.accessibility = accessibility
         self.evaluation = evaluation
-        self.domain = domain
+        self.domain = deepcopy(domain)
+        if isinstance(self, NumericalSCMNode):
+            if (
+                len(domain) != 2
+                or not all(isinstance(value, (int, float)) for value in domain)
+                or not np.isfinite(domain).all()
+                or domain[0] > domain[1]
+            ):
+                raise ValueError(
+                    f"Numerical node {name} needs an ordered finite interval."
+                )
+        elif isinstance(self, CategoricalSCMNode):
+            if not domain or not all(isinstance(value, str) for value in domain):
+                raise ValueError(
+                    f"Categorical node {name} needs nonempty string labels."
+                )
+            if len(domain) != len(set(domain)):
+                raise ValueError(f"Categorical node {name} needs unique string labels.")
         self.noise_distribution = noise_distribution
-        self.parents = parents
-        self.parent_mappings = parent_mappings
+        self.parents = deepcopy(parents)
+        self.parent_mappings = deepcopy(parent_mappings)
         self.random_state = random_state or np.random.RandomState(911)
-        self.logger = logger or logging.getLogger(f"{self.__module__}.{self.__class__.__name__}")
+        self.logger = logger or logging.getLogger(
+            f"{self.__module__}.{self.__class__.__name__}"
+        )
         super().__init__()
 
     # def _init_random_state(self):
@@ -96,7 +116,9 @@ class SCMNode(Serializable):
         np.random.RandomState
             A new reproducible random state.
         """
-        return np.random.RandomState(random_state.randint(0, 10**5))
+        return np.random.RandomState(
+            random_state.randint(0, 2**32, size=8, dtype=np.uint32)
+        )
 
     @abstractmethod
     def generate_values(
@@ -138,6 +160,7 @@ class SCMNode(Serializable):
         d = {
             "class_": get_class_path(self.__class__),
             "name": self.name,
+            "parents": self.parents,
             "domain": self.domain,
             "parent_mappings": self.parent_mappings or None,
             "noise_distribution": (

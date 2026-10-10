@@ -2,6 +2,11 @@
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from TheCausalityGame.core.contracts.specs.acquisition import (
+    AcquisitionPricing,
+    StopCondition,
+)
+
 
 class BudgetSpec(BaseModel):
     """
@@ -21,7 +26,12 @@ class BudgetSpec(BaseModel):
         Advisory memory usage limit in megabytes. Must be non-negative.
     """
 
-    model_config = ConfigDict(extra="forbid", frozen=True)
+    model_config = ConfigDict(extra="forbid", frozen=True, allow_inf_nan=False)
+
+    experiments: int | None = Field(default=None, ge=0)
+    cost: float | None = Field(default=None, ge=0)
+    pricing: AcquisitionPricing = Field(default_factory=AcquisitionPricing)
+    stopping: StopCondition | None = None
 
     rounds: int = Field(default=100, ge=0, description="Maximum number of rounds.")
     time_s: float | None = Field(

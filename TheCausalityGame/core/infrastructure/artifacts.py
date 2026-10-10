@@ -8,10 +8,19 @@ from math import isfinite
 from pathlib import Path
 from typing import Any
 
+import networkx as nx
 import numpy as np
 
 from TheCausalityGame.core.contracts.dto.transcript import Transcript, TranscriptEntry
+from TheCausalityGame.core.infrastructure.artifact_contract import (
+    PROTOCOL,
+    TRANSCRIPT_SCHEMA_VERSION,
+)
 from TheCausalityGame.core.infrastructure.logger import Logger
+from TheCausalityGame.core.infrastructure.provenance import (
+    dependency_versions,
+    source_fingerprint,
+)
 from TheCausalityGame.core.infrastructure.serialization import dump, is_serializable
 
 
@@ -27,7 +36,9 @@ class ArtifactWriter:
         Enables extended logging and artifact output in development mode.
     """
 
-    def __init__(self, run_dir: Path, is_dev: bool, logger: Logger | None = None) -> None:
+    def __init__(
+        self, run_dir: Path, is_dev: bool, logger: Logger | None = None
+    ) -> None:
         """
         Initialize the artifact writer and create required directories.
 
@@ -38,7 +49,7 @@ class ArtifactWriter:
         is_dev : bool
             Whether to enable development-only outputs (e.g., logs, transcripts).
         """
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
         self.run_dir = run_dir / timestamp
         self.agents_dir = self.run_dir / "agents"
         self.logs_dir = self.run_dir / "logs"
@@ -78,9 +89,17 @@ class ArtifactWriter:
             return self._json_safe(value.item())
         if isinstance(value, np.ndarray):
             return self._json_safe(value.tolist())
+        if isinstance(value, nx.DiGraph):
+            return {
+                "type": "dag",
+                "nodes": sorted(value.nodes),
+                "edges": sorted([list(edge) for edge in value.edges]),
+            }
         if isinstance(value, dict):
             return {str(k): self._json_safe(v) for k, v in value.items()}
-        if isinstance(value, list | tuple | set):
+        if isinstance(value, set):
+            return [self._json_safe(v) for v in sorted(value, key=repr)]
+        if isinstance(value, list | tuple):
             return [self._json_safe(v) for v in value]
         if hasattr(value, "model_dump"):
             return self._json_safe(value.model_dump())
@@ -88,9 +107,16 @@ class ArtifactWriter:
             return self._json_safe(value.expressions())
         if is_serializable(value):
             return value
-        return str(value)
+        return {
+            "type": "lossy",
+            "class": f"{type(value).__module__}:{type(value).__name__}",
+            "representation": str(value),
+            "reconstructable": False,
+        }
 
-    def _clean_transcript_entry_for_serialization(self, entry: TranscriptEntry) -> dict[str, Any]:
+    def _clean_transcript_entry_for_serialization(
+        self, entry: TranscriptEntry
+    ) -> dict[str, Any]:
         """
         Clean a transcript entry.
 
@@ -137,6 +163,8 @@ class ArtifactWriter:
         )
         # Custom attributes
         for key, value in entry.custom_attributes.items():
+            if key in clean_entry:
+                raise ValueError(f"Transcript extension uses reserved field: {key}")
             clean_entry[key] = self._json_safe(value)
 
         return clean_entry
@@ -161,6 +189,24 @@ class ArtifactWriter:
             "manifest_id": transcript.manifest_id,
             "invalidated": transcript.invalidated,
             "invalidation_reason": transcript.invalidation_reason,
+            "schema_version": TRANSCRIPT_SCHEMA_VERSION,
+            "budget": transcript.budget.model_dump(),
+            "termination_reason": transcript.termination_reason,
+            "forced_stop": transcript.forced_stop,
+            "response_status": transcript.response_status,
+            "response_error": transcript.response_error,
+            "final_result": self._json_safe(transcript.final_result),
+            "final_feedback": self._json_safe(transcript.final_feedback),
+            "final_score_status": (
+                "missing"
+                if transcript.final_feedback is None
+                or transcript.final_feedback.result is None
+                else (
+                    "finite"
+                    if isfinite(transcript.final_feedback.result)
+                    else "nonfinite"
+                )
+            ),
             "entries": [
                 self._clean_transcript_entry_for_serialization(entry)
                 for entry in transcript.entries
@@ -195,6 +241,9 @@ class ArtifactWriter:
             "machine": platform.machine(),
             "processor": platform.processor(),
             "env": {"TZ": os.environ.get("TZ", "UTC")},
+            "source_fingerprint": source_fingerprint(),
+            "dependencies": dependency_versions(),
+            "protocol": PROTOCOL,
         }
 
         dump(path=self.run_dir / "provenance.json", obj=metadata)

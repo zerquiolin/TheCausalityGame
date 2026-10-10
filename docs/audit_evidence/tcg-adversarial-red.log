@@ -1,0 +1,256 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/zerquiolin/Desktop/University/TCG/TheCausalityGame
+configfile: pyproject.toml
+plugins: cov-7.1.0, anyio-4.14.2
+collected 14 items
+
+tests/unit/infra/test_adversarial_boundaries.py FFFFFFFFFFF..F           [100%]
+
+=================================== FAILURES ===================================
+__________________ test_reader_rejects_non_json_numbers[NaN] ___________________
+
+token = 'NaN'
+
+    @pytest.mark.parametrize("token", ["NaN", "Infinity", "-Infinity"])
+    def test_reader_rejects_non_json_numbers(token):
+>       with pytest.raises(ObjectNotDeserializableError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ObjectNotDeserializableError
+
+tests/unit/infra/test_adversarial_boundaries.py:18: Failed
+________________ test_reader_rejects_non_json_numbers[Infinity] ________________
+
+token = 'Infinity'
+
+    @pytest.mark.parametrize("token", ["NaN", "Infinity", "-Infinity"])
+    def test_reader_rejects_non_json_numbers(token):
+>       with pytest.raises(ObjectNotDeserializableError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ObjectNotDeserializableError
+
+tests/unit/infra/test_adversarial_boundaries.py:18: Failed
+_______________ test_reader_rejects_non_json_numbers[-Infinity] ________________
+
+token = '-Infinity'
+
+    @pytest.mark.parametrize("token", ["NaN", "Infinity", "-Infinity"])
+    def test_reader_rejects_non_json_numbers(token):
+>       with pytest.raises(ObjectNotDeserializableError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ObjectNotDeserializableError
+
+tests/unit/infra/test_adversarial_boundaries.py:18: Failed
+__________ test_serializable_predicate_rejects_nonfinite_values[nan] ___________
+
+value = nan
+
+    @pytest.mark.parametrize("value", [float("nan"), float("inf"), float("-inf")])
+    def test_serializable_predicate_rejects_nonfinite_values(value):
+>       assert not is_serializable({"score": value}), "Strict JSON cannot encode this score"
+E       AssertionError: Strict JSON cannot encode this score
+E       assert not True
+E        +  where True = is_serializable({'score': nan})
+
+tests/unit/infra/test_adversarial_boundaries.py:24: AssertionError
+__________ test_serializable_predicate_rejects_nonfinite_values[inf] ___________
+
+value = inf
+
+    @pytest.mark.parametrize("value", [float("nan"), float("inf"), float("-inf")])
+    def test_serializable_predicate_rejects_nonfinite_values(value):
+>       assert not is_serializable({"score": value}), "Strict JSON cannot encode this score"
+E       AssertionError: Strict JSON cannot encode this score
+E       assert not True
+E        +  where True = is_serializable({'score': inf})
+
+tests/unit/infra/test_adversarial_boundaries.py:24: AssertionError
+__________ test_serializable_predicate_rejects_nonfinite_values[-inf] __________
+
+value = -inf
+
+    @pytest.mark.parametrize("value", [float("nan"), float("inf"), float("-inf")])
+    def test_serializable_predicate_rejects_nonfinite_values(value):
+>       assert not is_serializable({"score": value}), "Strict JSON cannot encode this score"
+E       AssertionError: Strict JSON cannot encode this score
+E       assert not True
+E        +  where True = is_serializable({'score': -inf})
+
+tests/unit/infra/test_adversarial_boundaries.py:24: AssertionError
+__________________ test_serializable_predicate_handles_cycles __________________
+
+    def test_serializable_predicate_handles_cycles():
+        value = []
+        value.append(value)
+>       assert not is_serializable(value), "Cycles are invalid JSON, not a predicate exception"
+                   ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/infra/test_adversarial_boundaries.py:30:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+TheCausalityGame/core/infrastructure/serialization.py:36: in is_serializable
+    json.dumps(obj)
+/opt/homebrew/Caskroom/miniconda/base/envs/thecausalitygame/lib/python3.12/json/__init__.py:231: in dumps
+    return _default_encoder.encode(obj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniconda/base/envs/thecausalitygame/lib/python3.12/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <json.encoder.JSONEncoder object at 0x1020bbc80>, o = [[[[[[[...]]]]]]]
+_one_shot = True
+
+    def iterencode(self, o, _one_shot=False):
+        """Encode the given object and yield each string
+        representation as available.
+
+        For example::
+
+            for chunk in JSONEncoder().iterencode(bigobject):
+                mysocket.write(chunk)
+
+        """
+        if self.check_circular:
+            markers = {}
+        else:
+            markers = None
+        if self.ensure_ascii:
+            _encoder = encode_basestring_ascii
+        else:
+            _encoder = encode_basestring
+
+        def floatstr(o, allow_nan=self.allow_nan,
+                _repr=float.__repr__, _inf=INFINITY, _neginf=-INFINITY):
+            # Check for specials.  Note that this type of test is processor
+            # and/or platform-specific, so do tests which don't depend on the
+            # internals.
+
+            if o != o:
+                text = 'NaN'
+            elif o == _inf:
+                text = 'Infinity'
+            elif o == _neginf:
+                text = '-Infinity'
+            else:
+                return _repr(o)
+
+            if not allow_nan:
+                raise ValueError(
+                    "Out of range float values are not JSON compliant: " +
+                    repr(o))
+
+            return text
+
+
+        if (_one_shot and c_make_encoder is not None
+                and self.indent is None):
+            _iterencode = c_make_encoder(
+                markers, self.default, _encoder, self.indent,
+                self.key_separator, self.item_separator, self.sort_keys,
+                self.skipkeys, self.allow_nan)
+        else:
+            _iterencode = _make_iterencode(
+                markers, self.default, _encoder, self.indent, floatstr,
+                self.key_separator, self.item_separator, self.sort_keys,
+                self.skipkeys, _one_shot)
+>       return _iterencode(o, 0)
+               ^^^^^^^^^^^^^^^^^
+E       ValueError: Circular reference detected
+
+/opt/homebrew/Caskroom/miniconda/base/envs/thecausalitygame/lib/python3.12/json/encoder.py:258: ValueError
+________ test_serializable_predicate_recognizes_supported_path_encoder _________
+
+    def test_serializable_predicate_recognizes_supported_path_encoder():
+>       assert is_serializable(Path("result.json"))
+E       AssertionError: assert False
+E        +  where False = is_serializable(PosixPath('result.json'))
+E        +    where PosixPath('result.json') = Path('result.json')
+
+tests/unit/infra/test_adversarial_boundaries.py:34: AssertionError
+____________________ test_bn_owns_constructor_configuration ____________________
+
+    def test_bn_owns_constructor_configuration():
+        domain, parents = ["low", "high"], ["P"]
+        node = BayesianNetworkSCMNode("Y", parents, domain, {"0": [1, 0]})
+        domain.reverse()
+        parents.clear()
+>       assert node.domain == ["low", "high"], "Caller mutation changed category meaning"
+E       AssertionError: Caller mutation changed category meaning
+E       assert ['high', 'low'] == ['low', 'high']
+E
+E         At index 0 diff: 'high' != 'low'
+E         Use -v to get more diff
+
+tests/unit/infra/test_adversarial_boundaries.py:42: AssertionError
+___________ test_bn_distribution_lookup_does_not_expose_mutable_cpt ____________
+
+    def test_bn_distribution_lookup_does_not_expose_mutable_cpt():
+        node = BayesianNetworkSCMNode("Y", [], ["low", "high"], [1, 0])
+        rows = node.get_distributions(pd.DataFrame(index=range(1)))
+        rows[0][:] = [0, 1]
+>       assert node.generate_values(pd.DataFrame(index=range(4))).tolist() == ["low"] * 4
+E       AssertionError: assert ['high', 'hig...high', 'high'] == ['low', 'low', 'low', 'low']
+E
+E         At index 0 diff: 'high' != 'low'
+E         Use -v to get more diff
+
+tests/unit/infra/test_adversarial_boundaries.py:51: AssertionError
+_________________ test_bn_lookup_preserves_parent_scalar_types _________________
+
+    def test_bn_lookup_preserves_parent_scalar_types():
+        node = BayesianNetworkSCMNode("Y", ["integer", "real"], [0, 1], {"0,1.5": [0, 1]})
+        parents = pd.DataFrame({"integer": [0], "real": [1.5]})
+>       assert node.generate_values(parents).tolist() == [1]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/infra/test_adversarial_boundaries.py:57:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+TheCausalityGame/scm/nodes/bn.py:73: in generate_values
+    distributions = self.get_distributions(parent_values)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <TheCausalityGame.scm.nodes.bn.BayesianNetworkSCMNode object at 0x1070ba900>
+parent_values =    integer  real
+0        0   1.5
+
+    def get_distributions(self, parent_values: pd.DataFrame) -> list:
+        """Look up CPTs using declared parent order."""
+        if not self.parents:
+            return [self.probability_distribution for _ in range(len(parent_values))]
+        if not set(self.parents).issubset(parent_values.columns):
+            raise ValueError(f"Missing parents for {self.name}: {self.parents}")
+        result = []
+        for row in parent_values[self.parents].values:
+            key = ",".join(map(str, row))
+            if key not in self.probability_distribution:
+>               raise ValueError(f"Missing CPT row for {self.name}: {key}")
+E               ValueError: Missing CPT row for Y: 0.0,1.5
+
+TheCausalityGame/scm/nodes/bn.py:99: ValueError
+___________ test_artifact_extensions_cannot_replace_canonical_round ____________
+
+tmp_path = PosixPath('/private/var/folders/v7/6xphhsf51rx4ctb5lj2366q00000gn/T/pytest-of-zerquiolin/pytest-32/test_artifact_extensions_canno0')
+
+    def test_artifact_extensions_cannot_replace_canonical_round(tmp_path):
+        writer = ArtifactWriter(tmp_path, is_dev=False)
+        entry = TranscriptEntry(round=1, custom_attributes={"round": 999})
+>       with pytest.raises(ValueError, match="reserved"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/unit/infra/test_adversarial_boundaries.py:82: Failed
+=========================== short test summary info ============================
+FAILED tests/unit/infra/test_adversarial_boundaries.py::test_reader_rejects_non_json_numbers[NaN]
+FAILED tests/unit/infra/test_adversarial_boundaries.py::test_reader_rejects_non_json_numbers[Infinity]
+FAILED tests/unit/infra/test_adversarial_boundaries.py::test_reader_rejects_non_json_numbers[-Infinity]
+FAILED tests/unit/infra/test_adversarial_boundaries.py::test_serializable_predicate_rejects_nonfinite_values[nan]
+FAILED tests/unit/infra/test_adversarial_boundaries.py::test_serializable_predicate_rejects_nonfinite_values[inf]
+FAILED tests/unit/infra/test_adversarial_boundaries.py::test_serializable_predicate_rejects_nonfinite_values[-inf]
+FAILED tests/unit/infra/test_adversarial_boundaries.py::test_serializable_predicate_handles_cycles
+FAILED tests/unit/infra/test_adversarial_boundaries.py::test_serializable_predicate_recognizes_supported_path_encoder
+FAILED tests/unit/infra/test_adversarial_boundaries.py::test_bn_owns_constructor_configuration
+FAILED tests/unit/infra/test_adversarial_boundaries.py::test_bn_distribution_lookup_does_not_expose_mutable_cpt
+FAILED tests/unit/infra/test_adversarial_boundaries.py::test_bn_lookup_preserves_parent_scalar_types
+FAILED tests/unit/infra/test_adversarial_boundaries.py::test_artifact_extensions_cannot_replace_canonical_round
+========================= 12 failed, 2 passed in 0.72s =========================

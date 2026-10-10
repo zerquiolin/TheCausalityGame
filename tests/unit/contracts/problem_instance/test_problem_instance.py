@@ -38,7 +38,7 @@ from TheCausalityGame.scm.noise.uniform import UniformNoiseDistribution
 
 
 # Tests
-@pytest.fixture(params=[ProblemInstance], scope="module")
+@pytest.fixture(params=[ProblemInstance], scope="function")
 def problem_instance(request: Any) -> None:  # noqa: ANN401
     """Test class construction."""
     # Arguments for a simple SCM

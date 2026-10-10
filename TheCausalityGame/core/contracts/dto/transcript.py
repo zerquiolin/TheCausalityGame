@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal
 
 from pydantic import ConfigDict, Field
 
@@ -61,9 +61,31 @@ class Transcript(CommonDTO):
 
     entries: Annotated[
         list[TranscriptEntry],
-        Field(default_factory=list, description="Chronological list of transcript entries."),
+        Field(
+            default_factory=list,
+            description="Chronological list of transcript entries.",
+        ),
     ]
     budget: BudgetSpec
+    termination_reason: (
+        Literal[
+            "submitted",
+            "rounds",
+            "samples",
+            "time",
+            "memory",
+            "experiments",
+            "cost",
+            "stopping",
+            "error",
+        ]
+        | None
+    ) = None
+    forced_stop: bool = False
+    response_status: Literal["provided", "missing", "failed"] | None = None
+    response_error: str | None = None
+    final_result: Any | None = None
+    final_feedback: Feedback | None = None
     invalidated: bool = Field(
         default=False,
         description="Whether the run ended because a budget or runtime error invalidated it.",
@@ -76,4 +98,18 @@ class Transcript(CommonDTO):
     def invalidate(self, reason: str) -> None:
         """Mark this transcript as invalidated by a plain-text reason."""
         object.__setattr__(self, "invalidated", True)
+        object.__setattr__(self, "termination_reason", "error")
         object.__setattr__(self, "invalidation_reason", reason)
+
+    def finish(self, reason: str, result: Any, feedback: Feedback) -> None:
+        """Record terminal values while keeping the transcript header immutable."""
+        object.__setattr__(self, "termination_reason", reason)
+        object.__setattr__(self, "forced_stop", reason not in {"submitted", "error"})
+        if self.entries:
+            attributes = self.entries[-1].custom_attributes
+            object.__setattr__(
+                self, "response_status", attributes.get("response_status")
+            )
+            object.__setattr__(self, "response_error", attributes.get("response_error"))
+        object.__setattr__(self, "final_result", result)
+        object.__setattr__(self, "final_feedback", feedback)

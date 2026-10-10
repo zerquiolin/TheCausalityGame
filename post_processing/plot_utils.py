@@ -7,9 +7,10 @@ import os
 import re
 import tempfile
 from collections import defaultdict
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Iterable, TypeAlias
+from typing import Any
 
 os.environ.setdefault("MPLCONFIGDIR", str(Path(tempfile.gettempdir()) / "matplotlib"))
 os.environ.setdefault("XDG_CACHE_HOME", str(Path(tempfile.gettempdir()) / "cache"))
@@ -17,10 +18,10 @@ os.environ.setdefault("XDG_CACHE_HOME", str(Path(tempfile.gettempdir()) / "cache
 import matplotlib.pyplot as plt
 import numpy as np
 
-MetricRuns: TypeAlias = tuple[list[list[float]], list[list[float]]]
-AgentsDict: TypeAlias = dict[str, MetricRuns]
-MissionInfererAgentRuns: TypeAlias = dict[str, dict[str, AgentsDict]]
-MissionAgentInfererRuns: TypeAlias = dict[str, dict[str, AgentsDict]]
+type MetricRuns = tuple[list[list[float]], list[list[float]]]
+type AgentsDict = dict[str, MetricRuns]
+type MissionInfererAgentRuns = dict[str, dict[str, AgentsDict]]
+type MissionAgentInfererRuns = dict[str, dict[str, AgentsDict]]
 
 SEED_RE = re.compile(r"^(?P<problem>.+)_rs-(?P<seed>\d+)$")
 
@@ -145,7 +146,9 @@ def pareto_frontier(points: np.ndarray, maximize_y: bool = True) -> np.ndarray:
     return np.asarray(frontier, dtype=float)
 
 
-def _extract_metric_series(transcript: dict[str, Any]) -> tuple[list[float], list[float]]:
+def _extract_metric_series(
+    transcript: dict[str, Any],
+) -> tuple[list[float], list[float]]:
     behavior: list[float] = []
     result: list[float] = []
     for entry in transcript.get("entries", []):
@@ -163,7 +166,9 @@ def _timestamp_is_complete(timestamp_dir: Path) -> bool:
         return False
 
     agent_dirs = [path for path in agents_dir.iterdir() if path.is_dir()]
-    return bool(agent_dirs) and all((path / "transcript.json").is_file() for path in agent_dirs)
+    return bool(agent_dirs) and all(
+        (path / "transcript.json").is_file() for path in agent_dirs
+    )
 
 
 def _latest_complete_timestamp(instance_dir: Path) -> Path | None:
@@ -244,11 +249,20 @@ def scan_experiments(
             }
         )
 
-    experiments.sort(key=lambda item: (item["mission"], item["inferer"], item["problem"], item["seed"]))
+    experiments.sort(
+        key=lambda item: (
+            item["mission"],
+            item["inferer"],
+            item["problem"],
+            item["seed"],
+        )
+    )
     return experiments
 
 
-def write_results_cache(experiments: list[dict[str, Any]], cache_path: Path | str) -> None:
+def write_results_cache(
+    experiments: list[dict[str, Any]], cache_path: Path | str
+) -> None:
     """Write experiment results using the paper plotting cache schema."""
     path = Path(cache_path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -301,8 +315,7 @@ def inferer_comparison_agents(
     """Return plot-ready labels for one agent compared across inferers."""
     inferer_runs = by_mission_agent_inferer[mission][agent]
     return {
-        f"{agent} @ {inferer}": runs
-        for inferer, runs in sorted(inferer_runs.items())
+        f"{agent} @ {inferer}": runs for inferer, runs in sorted(inferer_runs.items())
     }
 
 
@@ -339,10 +352,16 @@ def resolve_styles(
     for label in labels:
         base, variant = style_key(label)
         if base not in base_colors:
-            base_colors[base] = color_cycle[len(base_colors) % len(color_cycle)] if color_cycle else None
+            base_colors[base] = (
+                color_cycle[len(base_colors) % len(color_cycle)]
+                if color_cycle
+                else None
+            )
         variant_key = (base, variant)
         if variant_key not in variant_index:
-            variant_index[variant_key] = len([key for key in variant_index if key[0] == base])
+            variant_index[variant_key] = len(
+                [key for key in variant_index if key[0] == base]
+            )
         idx = variant_index[variant_key]
         styles[label] = LineStyle(
             color=base_colors[base],
@@ -527,7 +546,9 @@ def plot_agents_mean_std(
             )
 
     if plot_pareto:
-        frontier = pareto_frontier(np.asarray(mean_final_points, dtype=float), maximize_y=True)
+        frontier = pareto_frontier(
+            np.asarray(mean_final_points, dtype=float), maximize_y=False
+        )
         if frontier.shape[0] > 0:
             ax_scatter.plot(
                 frontier[:, 0],
@@ -565,7 +586,7 @@ def plot_agents_mean_std(
         ax_handles, ax_labels = ax.get_legend_handles_labels()
         handles.extend(ax_handles)
         labels.extend(ax_labels)
-    deduped = dict(zip(labels, handles))
+    deduped = dict(zip(labels, handles, strict=True))
     fig.legend(
         handles=deduped.values(),
         labels=deduped.keys(),

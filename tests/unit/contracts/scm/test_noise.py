@@ -20,7 +20,7 @@ classes = load_subclasses_from_path(NoiseDistribution, base_path)
 
 
 # Tests
-@pytest.fixture(params=classes, scope="module")
+@pytest.fixture(params=classes, scope="function")
 def noise_distribution_instance(request: Any) -> None:  # noqa: ANN401
     """Test class construction."""
     cls = request.param

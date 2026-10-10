@@ -6,7 +6,9 @@ from typing import override
 
 import numpy as np
 
-from TheCausalityGame.agent.helpers.ridge_bootstrap_edge_belief import RidgeBootstrapEdgeBelief
+from TheCausalityGame.agent.helpers.ridge_bootstrap_edge_belief import (
+    RidgeBootstrapEdgeBelief,
+)
 from TheCausalityGame.core.contracts.decider import Decider
 from TheCausalityGame.core.contracts.dto.agent import BeliefSnapshot, RoundObservation
 from TheCausalityGame.core.contracts.dto.environment import AvailableActions, RoundInfo
@@ -23,7 +25,8 @@ def _sample_value(rng: np.random.Generator, domain: list[object]) -> object:
         return 0
 
     if len(dom) >= DOMAIN_BOUNDS_COUNT and all(
-        isinstance(x, (int, float, np.integer, np.floating)) for x in dom[:DOMAIN_BOUNDS_COUNT]
+        isinstance(x, (int, float, np.integer, np.floating))
+        for x in dom[:DOMAIN_BOUNDS_COUNT]
     ):
         low, high = float(dom[0]), float(dom[1])  # type: ignore
         if high < low:
@@ -84,7 +87,9 @@ class HeGeng2008MinimaxDecider(Decider):
 
         summ = self._belief.summary()
         if summ is None:
-            vars_sorted = sorted(available_actions.experiments, key=lambda v: str(v.name))
+            vars_sorted = sorted(
+                available_actions.experiments, key=lambda v: str(v.name)
+            )
             var = vars_sorted[self.rng.integers(0, len(vars_sorted))]
             val = _sample_value(self.rng, list(var.domain))
             decision.add_experiment(treatment={var.name: val}, n=self._num_inter)
@@ -101,7 +106,9 @@ class HeGeng2008MinimaxDecider(Decider):
             key=lambda v: str(v.name),
         )
         if not cands:
-            vars_sorted = sorted(available_actions.experiments, key=lambda v: str(v.name))
+            vars_sorted = sorted(
+                available_actions.experiments, key=lambda v: str(v.name)
+            )
             var = vars_sorted[self.rng.integers(0, len(vars_sorted))]
             treatment = {var.name: _sample_value(self.rng, list(var.domain))}
             decision.add_experiment(treatment=treatment, n=self._num_inter)
@@ -113,7 +120,8 @@ class HeGeng2008MinimaxDecider(Decider):
             adjacency_mask = (np.abs(adjacency) > 0).astype(int)
             edges.append(float(adjacency_mask.sum()))  # type: ignore
             degs.append(  # type: ignore
-                adjacency_mask.sum(axis=0).astype(float) + adjacency_mask.sum(axis=1).astype(float)
+                adjacency_mask.sum(axis=0).astype(float)
+                + adjacency_mask.sum(axis=1).astype(float)
             )
 
         chosen: list[object] = []
@@ -153,6 +161,7 @@ class HeGeng2008MinimaxDecider(Decider):
         return DeciderSpec(
             class_=get_class_path(self.__class__),
             params={
+                "seed": self.seed,
                 "num_obs": self._num_obs,
                 "num_inter": self._num_inter,
                 "n_bootstrap": self._belief.n_bootstrap,
@@ -168,6 +177,7 @@ class HeGeng2008MinimaxDecider(Decider):
     def from_spec(cls, spec: DeciderSpec) -> HeGeng2008MinimaxDecider:
         params = spec.params or {}
         return cls(
+            seed=params.get("seed", 911),
             num_obs=int(params.get("num_obs", 2)),
             num_inter=int(params.get("num_inter", 3)),
             n_bootstrap=int(params.get("n_bootstrap", 32)),

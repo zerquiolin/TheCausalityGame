@@ -32,7 +32,8 @@ def _sample_value(rng: np.random.Generator, domain: list[object]) -> object:
         return 0
 
     if len(dom) >= DOMAIN_BOUNDS_COUNT and all(
-        isinstance(x, (int, float, np.integer, np.floating)) for x in dom[:DOMAIN_BOUNDS_COUNT]
+        isinstance(x, (int, float, np.integer, np.floating))
+        for x in dom[:DOMAIN_BOUNDS_COUNT]
     ):
         low, high = float(dom[0]), float(dom[1])  # type: ignore
         if high < low:
@@ -63,6 +64,7 @@ class GIESDecider(Decider):
         self.debug = int(debug)
         self.phases = phases or ["forward", "backward", "turning"]
         self.iterate = bool(iterate)
+        self.seed = seed
         self.rng = np.random.default_rng(seed)
         self._columns: list[str] | None = None
         self._cpdag: np.ndarray | None = None
@@ -145,7 +147,9 @@ class GIESDecider(Decider):
             return decision
 
         if self._cpdag is None or self._columns is None:
-            vars_sorted = sorted(available_actions.experiments, key=lambda v: str(v.name))
+            vars_sorted = sorted(
+                available_actions.experiments, key=lambda v: str(v.name)
+            )
             var = vars_sorted[self.rng.integers(0, len(vars_sorted))]
             val = _sample_value(self.rng, list(var.domain))
             decision.add_experiment(treatment={var.name: val}, n=self._num_inter)
@@ -169,7 +173,9 @@ class GIESDecider(Decider):
             key=lambda v: str(v.name),
         )
         if not cands:
-            vars_sorted = sorted(available_actions.experiments, key=lambda v: str(v.name))
+            vars_sorted = sorted(
+                available_actions.experiments, key=lambda v: str(v.name)
+            )
             var = vars_sorted[self.rng.integers(0, len(vars_sorted))]
             val = _sample_value(self.rng, list(var.domain))
             decision.add_experiment(treatment={var.name: val}, n=self._num_inter)
@@ -214,6 +220,7 @@ class GIESDecider(Decider):
         return DeciderSpec(
             class_=get_class_path(self.__class__),
             params={
+                "seed": self.seed,
                 "num_obs": self._num_obs,
                 "num_inter": self._num_inter,
                 "debug": self.debug,
@@ -228,6 +235,7 @@ class GIESDecider(Decider):
     def from_spec(cls, spec: DeciderSpec) -> GIESDecider:
         params = spec.params or {}
         return cls(
+            seed=(spec.params or {}).get("seed", 911),
             num_obs=int(params.get("num_obs", 3)),
             num_inter=int(params.get("num_inter", 3)),
             debug=int(params.get("debug", 0)),

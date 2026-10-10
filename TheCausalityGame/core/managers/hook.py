@@ -1,6 +1,7 @@
 """The Causality Game - Hook Manager."""
 
 from collections import defaultdict
+from copy import deepcopy
 from pathlib import Path
 
 from TheCausalityGame.core.contracts.dto.transcript import Transcript, TranscriptEntry
@@ -55,7 +56,10 @@ class HookManager:
             Runtime context passed into each hook's `run` method.
         """
         for hook in self.hooks_by_step.get(step, []):
-            hook.run(self.hook_dir, context)
+            snapshot = deepcopy(context)
+            if snapshot is not None and callable(snapshot.result):
+                snapshot.result = {"type": "callable", "inspectable": False}
+            hook.run(self.hook_dir, snapshot)
 
     def finalize(self, transcripts: dict[str, Transcript]) -> None:
         """
@@ -67,4 +71,15 @@ class HookManager:
             The transcripts of all executed agents.
         """
         for hook in self.hooks_by_step.get(HookEvent.BENCHMARK_END, []):
-            hook.run(self.hook_dir, transcripts)
+            snapshots = deepcopy(transcripts)
+            for transcript in snapshots.values():
+                for entry in transcript.entries:
+                    if callable(entry.result):
+                        entry.result = {"type": "callable", "inspectable": False}
+                if callable(transcript.final_result):
+                    object.__setattr__(
+                        transcript,
+                        "final_result",
+                        {"type": "callable", "inspectable": False},
+                    )
+            hook.run(self.hook_dir, snapshots)

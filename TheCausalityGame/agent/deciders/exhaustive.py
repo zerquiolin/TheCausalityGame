@@ -34,11 +34,11 @@ class ExhaustiveDecider(Decider):
         decision.add_experiment(treatment=None, n=self._num_obs)
 
         for var in available_actions.experiments:
-            low, high = var.domain
-            if isinstance(low, str):
+            if all(isinstance(value, str) for value in var.domain):
                 for val in var.domain:
                     decision.add_experiment({var.name: val}, n=self._num_inter)
             else:
+                low, high = var.domain
                 for _ in range(5):
                     decision.add_experiment(
                         {var.name: self.rng.uniform(float(low), float(high))},

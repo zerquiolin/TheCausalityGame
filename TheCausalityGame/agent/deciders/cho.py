@@ -6,7 +6,9 @@ from typing import override
 
 import numpy as np
 
-from TheCausalityGame.agent.helpers.ridge_bootstrap_edge_belief import RidgeBootstrapEdgeBelief
+from TheCausalityGame.agent.helpers.ridge_bootstrap_edge_belief import (
+    RidgeBootstrapEdgeBelief,
+)
 from TheCausalityGame.core.contracts.decider import Decider
 from TheCausalityGame.core.contracts.dto.agent import BeliefSnapshot, RoundObservation
 from TheCausalityGame.core.contracts.dto.environment import AvailableActions, RoundInfo
@@ -38,6 +40,7 @@ class Cho2016ActiveGBNDecider(Decider):
             coef_threshold=coef_threshold,
             seed=seed,
         )
+        self.seed = seed
         self.rng = np.random.default_rng(seed)
         self.k_intervene = int(max(1, k_intervene))
 
@@ -63,7 +66,10 @@ class Cho2016ActiveGBNDecider(Decider):
 
         candidates = sorted(
             available_actions.experiments,
-            key=lambda v: (-float(self._belief.incident_uncertainty(v.name)), str(v.name)),
+            key=lambda v: (
+                -float(self._belief.incident_uncertainty(v.name)),
+                str(v.name),
+            ),
         )
         chosen = candidates[: min(self.k_intervene, len(candidates))]
 
@@ -98,6 +104,7 @@ class Cho2016ActiveGBNDecider(Decider):
         return DeciderSpec(
             class_=get_class_path(self.__class__),
             params={
+                "seed": self.seed,
                 "num_obs": self._num_obs,
                 "num_inter": self._num_inter,
                 "n_bootstrap": self._belief.n_bootstrap,
@@ -112,6 +119,7 @@ class Cho2016ActiveGBNDecider(Decider):
     def from_spec(cls, spec: DeciderSpec) -> Cho2016ActiveGBNDecider:
         params = spec.params or {}
         return cls(
+            seed=(spec.params or {}).get("seed", 911),
             num_obs=int(params.get("num_obs", 5)),
             num_inter=int(params.get("num_inter", 1)),
             n_bootstrap=int(params.get("n_bootstrap", 32)),

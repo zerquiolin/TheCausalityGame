@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import json
+import math
 import os
 import shutil
+import signal
 import subprocess
 import tempfile
 from pathlib import Path
@@ -14,6 +16,35 @@ from TheCausalityGame.core.lib.errors.inferer import (
     InfererBackendError,
     InfererDependencyError,
 )
+
+
+def _run_with_timeout(
+    command: list[str], *, env: dict[str, str], timeout: float
+) -> subprocess.CompletedProcess[str]:
+    """Run a backend in its own process group so timeout cleanup reaps children."""
+    process = subprocess.Popen(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=env,
+        text=True,
+        start_new_session=(os.name == "posix"),
+    )
+    try:
+        stdout, stderr = process.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired as exc:
+        if os.name == "posix":
+            try:
+                os.killpg(process.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+        else:
+            process.kill()
+        stdout, stderr = process.communicate()
+        raise InfererBackendError(
+            f"Authoritative R backend timed out after {exc.timeout} seconds."
+        ) from exc
+    return subprocess.CompletedProcess(command, process.returncode, stdout, stderr)
 
 
 def run_r_cate_backend(payload: dict[str, Any]) -> dict[str, Any]:
@@ -42,19 +73,11 @@ def run_r_cate_backend(payload: dict[str, Any]) -> dict[str, Any]:
         r_library = env.get("TCG_R_LIBS")
         if r_library:
             env["R_LIBS_USER"] = r_library
-        try:
-            completed = subprocess.run(
-                [rscript, str(backend), str(input_path), str(output_path)],
-                capture_output=True,
-                check=False,
-                env=env,
-                text=True,
-                timeout=3600,
-            )
-        except subprocess.TimeoutExpired as exc:
-            raise InfererBackendError(
-                f"Authoritative R backend timed out after {exc.timeout} seconds."
-            ) from exc
+        completed = _run_with_timeout(
+            [rscript, str(backend), str(input_path), str(output_path)],
+            env=env,
+            timeout=3600,
+        )
         if completed.returncode != 0:
             message = (
                 completed.stderr.strip()
@@ -66,9 +89,24 @@ def run_r_cate_backend(payload: dict[str, Any]) -> dict[str, Any]:
             raise InfererBackendError(
                 "Authoritative R backend produced no output file."
             )
-        result = json.loads(output_path.read_text(encoding="utf-8"))
+        try:
+            result = json.loads(output_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+            raise InfererBackendError(
+                "Authoritative R backend returned malformed JSON."
+            ) from exc
         if not isinstance(result, dict) or "predictions" not in result:
             raise InfererBackendError(
                 "Authoritative R backend returned an invalid response."
+            )
+        predictions = result["predictions"]
+        values = predictions if isinstance(predictions, list) else [predictions]
+        if any(type(value) not in (int, float) or not math.isfinite(value) for value in values):
+            raise InfererBackendError(
+                "Authoritative R backend predictions must be finite numbers."
+            )
+        if "backend" in result and not isinstance(result["backend"], dict):
+            raise InfererBackendError(
+                "Authoritative R backend metadata must be an object."
             )
         return result

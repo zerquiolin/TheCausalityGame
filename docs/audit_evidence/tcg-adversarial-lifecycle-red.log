@@ -1,0 +1,63 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/zerquiolin/Desktop/University/TCG/TheCausalityGame
+configfile: pyproject.toml
+plugins: cov-7.1.0, anyio-4.14.2
+collected 37 items / 34 deselected / 3 selected
+
+tests/integration/test_runtime.py FFF                                    [100%]
+
+=================================== FAILURES ===================================
+________________ test_game_cannot_reuse_terminal_episode_state _________________
+
+game_factory = <function game_factory.<locals>.create at 0x107a46a20>
+
+    def test_game_cannot_reuse_terminal_episode_state(game_factory):
+        """Starting another episode requires constructing fresh agent/SCM state."""
+        agent = RecordingAgent(Decision.experiment().add_experiment(None, n=2))
+        game = game_factory(agent)
+        transcript = game.run()
+        rounds = len(transcript.entries)
+        calls = list(agent.calls)
+>       with pytest.raises(RuntimeError, match="already"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE RuntimeError
+
+tests/integration/test_runtime.py:558: Failed
+____________ test_fresh_games_do_not_share_scm_domain_configuration ____________
+
+game_factory = <function game_factory.<locals>.create at 0x12acd5ee0>
+
+    def test_fresh_games_do_not_share_scm_domain_configuration(game_factory):
+        first = game_factory(RecordingAgent(Decision.answer()))
+        second = game_factory(RecordingAgent(Decision.answer()))
+        first.scm.nodes["X"].domain[0] = -999
+>       assert second.scm.nodes["X"].domain == [0, 1]
+E       assert [-1.0, 1.0] == [0, 1]
+E
+E         At index 0 diff: -1.0 != 0
+E         Use -v to get more diff
+
+tests/integration/test_runtime.py:569: AssertionError
+__________ test_wrong_backend_sample_count_is_not_delivered_to_agent ___________
+
+game_factory = <function game_factory.<locals>.create at 0x12acd6480>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x12ac4a450>
+
+    def test_wrong_backend_sample_count_is_not_delivered_to_agent(game_factory, monkeypatch):
+        agent = RecordingAgent(Decision.experiment().add_experiment(None, n=4))
+        game = game_factory(agent)
+        original = game.scm.generate_samples
+        monkeypatch.setattr(game.scm, "generate_samples", lambda *args, **kwargs: original(*args, **kwargs).iloc[:1])
+        transcript = game.run()
+>       assert transcript.invalidated, "A backend returning fewer rows silently corrupts accounting"
+E       AssertionError: A backend returning fewer rows silently corrupts accounting
+E       assert False
+E        +  where False = Transcript(agent_id='recording', mission_id='tiny_graph', manifest_id='runtime_test', entries=[TranscriptEntry(round=1...262177), custom_metrics={'Rounds Metric': np.float64(1.451655366262177)}), invalidated=False, invalidation_reason=None).invalidated
+
+tests/integration/test_runtime.py:578: AssertionError
+=========================== short test summary info ============================
+FAILED tests/integration/test_runtime.py::test_game_cannot_reuse_terminal_episode_state
+FAILED tests/integration/test_runtime.py::test_fresh_games_do_not_share_scm_domain_configuration
+FAILED tests/integration/test_runtime.py::test_wrong_backend_sample_count_is_not_delivered_to_agent
+====================== 3 failed, 34 deselected in 16.58s =======================

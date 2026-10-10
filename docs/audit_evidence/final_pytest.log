@@ -1,0 +1,59 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/zerquiolin/Desktop/University/TCG/TheCausalityGame
+configfile: pyproject.toml
+plugins: cov-7.1.0, anyio-4.14.2
+collected 284 items
+
+tests/integration/test_authoritative_backends.py .......                 [  2%]
+tests/integration/test_runtime.py ...................................... [ 15%]
+...                                                                      [ 16%]
+tests/integration/test_scm_construction.py ......................        [ 24%]
+tests/unit/agent/test_adversarial_adapters.py .......                    [ 27%]
+tests/unit/agent/test_authoritative_inferers.py .........                [ 30%]
+tests/unit/agent/test_cate_inferers.py ..........                        [ 33%]
+tests/unit/agent/test_dag_inferers.py .........                          [ 36%]
+tests/unit/agent/test_symbolic_scm_inferer.py ....                       [ 38%]
+tests/unit/contracts/agent/test_active_deciders.py ...                   [ 39%]
+tests/unit/contracts/agent/test_agent.py ......                          [ 41%]
+tests/unit/contracts/dto/test_transcript.py ..                           [ 42%]
+tests/unit/contracts/metric/result_validator/test_conditional_average_treatment_effect_function_validator.py . [ 42%]
+...                                                                      [ 43%]
+tests/unit/contracts/metric/result_validator/test_cpdag.py ........      [ 46%]
+tests/unit/contracts/metric/result_validator/test_result_validator.py .. [ 47%]
+..                                                                       [ 47%]
+tests/unit/contracts/metric/result_validator/test_symbolic_scm_validator.py . [ 48%]
+..                                                                       [ 48%]
+tests/unit/contracts/metric/test_acquisition.py ....                     [ 50%]
+tests/unit/contracts/metric/test_metric.py ..........                    [ 53%]
+tests/unit/contracts/metric/test_pehe.py .                               [ 54%]
+tests/unit/contracts/mission/test_mission.py ....                        [ 55%]
+tests/unit/contracts/problem_instance/test_problem_instance.py .         [ 55%]
+tests/unit/contracts/scm/test_added_noise.py ..                          [ 56%]
+tests/unit/contracts/scm/test_adversarial_noise.py ....                  [ 58%]
+tests/unit/contracts/scm/test_dag.py ...                                 [ 59%]
+tests/unit/contracts/scm/test_noise.py ............                      [ 63%]
+tests/unit/contracts/scm/test_scm.py ...                                 [ 64%]
+tests/unit/contracts/scm/test_scm_node.py .........                      [ 67%]
+tests/unit/infra/test_adversarial_boundaries.py ................         [ 73%]
+tests/unit/infra/test_artifact_contract.py .................             [ 79%]
+tests/unit/infra/test_artifacts.py ...                                   [ 80%]
+tests/unit/infra/test_cli.py ....                                        [ 81%]
+tests/unit/infra/test_decision.py .....                                  [ 83%]
+tests/unit/infra/test_registry.py ....                                   [ 84%]
+tests/unit/infra/test_seed_fallbacks.py ......                           [ 86%]
+tests/unit/infra/test_serialization.py .                                 [ 87%]
+tests/unit/managers/test_adversarial_budget.py .....                     [ 89%]
+tests/unit/managers/test_budget.py ......                                [ 91%]
+tests/unit/metric/result/test_symbolic_mechanism.py ...                  [ 92%]
+tests/unit/post_processing/test_comparison_analysis.py ...               [ 93%]
+tests/unit/post_processing/test_rebuttal_utils.py .......                [ 95%]
+tests/unit/scripts/test_comparison_reports.py ....                       [ 97%]
+tests/unit/scripts/test_problem_instances_by_inferer.py .......          [ 99%]
+tests/unit/scripts/test_rebuttal_problem_instances.py .                  [100%]
+
+================================ tests coverage ================================
+______________ coverage: platform darwin, python 3.12.13-final-0 _______________
+
+Coverage JSON written to file /tmp/tcg-string-label-coverage-verified.json
+============================= 284 passed in 21.77s =============================

@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-10",
+  "python": "3.14.6",
+  "source_fingerprint": "089191405d1b2d384e453aefa4cf28a768bff416133e1380ab276da428ab21e4",
+  "pytest": {
+    "passed": 284,
+    "failed": 0,
+    "skipped": 0,
+    "elapsed_seconds": 21.77,
+    "command": "MPLCONFIGDIR=/tmp/tcg-mpl-v4 TCG_R_LIBS=.r-library /opt/homebrew/Caskroom/miniconda/base/envs/thecausalitygame/bin/python -m pytest -q --cov=TheCausalityGame --cov-branch --cov-report=json:/tmp/tcg-string-label-coverage-verified.json"
+  },
+  "coverage": {
+    "covered_lines": 5582,
+    "num_statements": 7626,
+    "percent_covered": 68.03177223024551,
+    "percent_covered_display": "68",
+    "missing_lines": 2044,
+    "excluded_lines": 1,
+    "percent_statements_covered": 73.19695777602938,
+    "percent_statements_covered_display": "73",
+    "num_branches": 2068,
+    "num_partial_branches": 341,
+    "covered_branches": 1013,
+    "missing_branches": 1055,
+    "percent_branches_covered": 48.984526112185684,
+    "percent_branches_covered_display": "49"
+  },
+  "scope": {
+    "python_files_inventoried": 247,
+    "bundled_numeric_categorical_domains_found": 0,
+    "campaign_rerun": false,
+    "remote_ci_run": false,
+    "committed": false
+  },
+  "prior_audit_red_phase_caveats": [
+    "Lifecycle red log contains an incorrect audit fixture expectation, corrected and not counted as a package defect.",
+    "New artifact-contract API was introduced with specification tests, not claimed as an existing API red phase."
+  ],
+  "evidence_sha256": {
+    "coverage.json": "532e465576a20357fcef97a5e88b349aae4f57585ad987c57b0635a14da0bb9d",
+    "final_pytest.log": "7bb66446499034b46158f56adb3ffa21cf9fe1f47a6b372230c94713366df7c6",
+    "source_inventory.json": "b047ad967e76c6650f42e391c58be30ef70717928e951377b8397dd290e1627f",
+    "tcg-adversarial-adapters-red.log": "ce19364af617c70f7c7847bd793a4cba2f1686b0c7a56a451ac97160fd4298b8",
+    "tcg-adversarial-budget-red.log": "2071fba0242ed8cafbbc8c9d7840eb94f8fde2bbb2c2b202102f568c7eae7849",
+    "tcg-adversarial-causal-red.log": "7435eb8d4d55312e499ba139388573f76072f8c9e9cacaf674364af83b0711f7",
+    "tcg-adversarial-lifecycle-red.log": "db75fe3336fbc1109c07f3cb7f3a63c0782c2a209566afb0bc227a4461493668",
+    "tcg-adversarial-red.log": "c2ed3f5af0a39de029a804cd57c30413a652da7e6cdaf32803a42fe134a6602f",
+    "tcg-adversarial-rollback-red.log": "55a4ce3ce267358f7f341c434c27f5dfab3dcb1f4969cb90b4b88dd606b9e17c",
+    "tcg-adversarial-second-red.log": "8e660c58535c1f0d12863530e74e795043a9d34d1994d8e48e279c2c8f6c630a"
+  }
+}

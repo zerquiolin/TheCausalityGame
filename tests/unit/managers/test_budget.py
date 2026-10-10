@@ -173,6 +173,7 @@ def test_budget_manager_flow_enforces_limits(perf_counter: _PerfCounter) -> None
 
     final_snapshot = manager.snapshot()
     assert final_snapshot.rounds_left == 0
-    assert final_snapshot.samples_left == 0
+    # A rejected request is not acquired or charged.
+    assert final_snapshot.samples_left == 2
     assert final_snapshot.memory_mb_left == 0.0
     assert final_snapshot.time_s_left == 0.0

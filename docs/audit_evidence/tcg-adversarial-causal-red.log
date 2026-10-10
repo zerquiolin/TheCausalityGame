@@ -1,0 +1,64 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/zerquiolin/Desktop/University/TCG/TheCausalityGame
+configfile: pyproject.toml
+plugins: cov-7.1.0, anyio-4.14.2
+collected 24 items / 19 deselected / 5 selected
+
+tests/unit/contracts/scm/test_adversarial_noise.py ...F                  [ 80%]
+tests/integration/test_scm_construction.py F                             [100%]
+
+=================================== FAILURES ===================================
+_______________ test_dirichlet_owns_concentration_configuration ________________
+
+    def test_dirichlet_owns_concentration_configuration():
+        alpha = [2.0, 6.0]
+        noise = DirichletNoiseDistribution(alpha)
+        alpha[:] = [6.0, 2.0]
+        values = noise.generate(20_000, random_state=731)
+        np.testing.assert_allclose(values.sum(axis=1), 1.0, atol=1e-12)
+>       assert abs(values[:, 0].mean() - 0.25) < 0.01
+E       assert np.float64(0.499855292999582) < 0.01
+E        +  where np.float64(0.499855292999582) = abs((np.float64(0.749855292999582) - 0.25))
+E        +    where np.float64(0.749855292999582) = <built-in method mean of numpy.ndarray object at 0x310ae8570>()
+E        +      where <built-in method mean of numpy.ndarray object at 0x310ae8570> = array([0.8250754 , 0.95592004, 0.92873544, ..., 0.55693954, 0.80793194,\n       0.70792229], shape=(20000,)).mean
+
+tests/unit/contracts/scm/test_adversarial_noise.py:29: AssertionError
+_______ test_unknown_intervention_does_not_silently_become_observational _______
+
+    def test_unknown_intervention_does_not_silently_become_observational():
+        scm = build_from_spec(SyntheticSCMGenerator(n_nodes=3).generate())
+>       with pytest.raises(ValueError, match="Unknown intervention"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/integration/test_scm_construction.py:189: Failed
+----------------------------- Captured stderr call -----------------------------
+
+Fontconfig error: No writable cache directories
+	/opt/homebrew/var/cache/fontconfig
+	/Users/zerquiolin/.cache/fontconfig
+	/Users/zerquiolin/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/opt/homebrew/var/cache/fontconfig
+	/Users/zerquiolin/.cache/fontconfig
+	/Users/zerquiolin/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/opt/homebrew/var/cache/fontconfig
+	/Users/zerquiolin/.cache/fontconfig
+	/Users/zerquiolin/.fontconfig
+
+Fontconfig error: No writable cache directories
+	/opt/homebrew/var/cache/fontconfig
+	/Users/zerquiolin/.cache/fontconfig
+	/Users/zerquiolin/.fontconfig
+------------------------------ Captured log call -------------------------------
+WARNING  matplotlib:__init__.py:577 /Users/zerquiolin/.matplotlib is not a writable directory
+WARNING  matplotlib:__init__.py:593 Matplotlib created a temporary cache directory at /var/folders/v7/6xphhsf51rx4ctb5lj2366q00000gn/T/matplotlib-0_ptnet1 because there was an issue with the default path ({configdir}); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+WARNING  matplotlib.font_manager:font_manager.py:1249 Matplotlib is building the font cache; this may take a moment.
+=========================== short test summary info ============================
+FAILED tests/unit/contracts/scm/test_adversarial_noise.py::test_dirichlet_owns_concentration_configuration
+FAILED tests/integration/test_scm_construction.py::test_unknown_intervention_does_not_silently_become_observational
+================= 2 failed, 3 passed, 19 deselected in 16.56s ==================

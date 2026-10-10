@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from typing import Any, ClassVar, override
 
 import numpy as np
@@ -89,6 +90,12 @@ class AuthoritativeRCATEInferer(Inferer):
         binary_arm_count = 2
         if assignment.nunique() != binary_arm_count:
             return None
+        if (
+            self.backend_method == "honest_causal_tree"
+            and assignment.value_counts().min() < 2
+        ):
+            # Both disjoint samples require at least one row from each arm.
+            return None
         feature_names = list(X)
         training_features = usable[X].copy()
         query = control[X].reset_index(drop=True).copy()
@@ -113,25 +120,34 @@ class AuthoritativeRCATEInferer(Inferer):
         if not self._samples:
             return zero_cate_answer()
 
+        frozen = deepcopy(self)
+
         def estimate(
             X: list[str],  # noqa: N803
             treatment: str,
             outcome: str,
             covariate_values: tuple[pd.DataFrame, pd.DataFrame],
         ) -> pd.DataFrame:
-            payload = self._payload(
+            payload = frozen._payload(
                 X=X,
                 treatment=treatment,
                 outcome=outcome,
                 covariate_values=covariate_values,
             )
             if payload is None:
+                self._last_backend = {
+                    **self.provenance.to_dict(),
+                    "fit_status": "insufficient_data",
+                    "provisional_estimate": "zero",
+                }
                 return pd.DataFrame(
                     np.zeros(len(covariate_values[0])),
                     columns=["treatment_effect"],
                 )
             response = run_r_cate_backend(payload)
             self._last_backend = response.get("backend")
+            if self._last_backend is not None:
+                self._last_backend["fit_status"] = "fitted"
             predictions = np.asarray(response["predictions"], dtype=float).reshape(-1)
             if len(predictions) != len(covariate_values[0]):
                 raise UnsupportedInfererInputError(

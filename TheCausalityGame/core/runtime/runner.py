@@ -12,6 +12,8 @@ from TheCausalityGame.core.contracts.specs.agent import AgentSpec
 from TheCausalityGame.core.contracts.specs.problem_instance import ProblemInstanceSpec
 from TheCausalityGame.core.infrastructure.artifacts import ArtifactWriter
 from TheCausalityGame.core.infrastructure.logger import Logger
+from TheCausalityGame.core.infrastructure.provenance import manifest_fingerprint
+from TheCausalityGame.core.infrastructure.serialization import dump, loads
 from TheCausalityGame.core.lib.enum.hook import HookEvent
 from TheCausalityGame.core.lib.enum.runplan import RunPlanParallelBackEnd
 from TheCausalityGame.core.lib.enum.runtime import RuntimeMode
@@ -44,17 +46,29 @@ class Runner:
             problem_instance = problem_instance.to_spec()
 
         self.problem_instance: ProblemInstanceSpec = problem_instance
+        ids = [agent.id for agent in problem_instance.agents]
+        if len(ids) != len(set(ids)):
+            raise ValueError("Agent IDs must be unique within a problem instance.")
         self.is_dev = self.problem_instance.runtime.mode == RuntimeMode.DEV
 
         # Compute worker pool size
-        assert (self.problem_instance.run_plan.max_workers or 1) > 0, (
-            "max_workers must be non-negative"
+        assert (
+            self.problem_instance.run_plan.max_workers or 1
+        ) > 0, "max_workers must be non-negative"
+        self.workers = self.problem_instance.run_plan.max_workers or max(
+            1, cpu_count() - 3
         )
-        self.workers = self.problem_instance.run_plan.max_workers or max(1, cpu_count() - 3)
 
         # Prepare output directories
         self.run_dir = run_dir / self.problem_instance.id
         self.artifact_writer = ArtifactWriter(run_dir=self.run_dir, is_dev=self.is_dev)
+        if self.is_dev:
+            manifest = self.problem_instance.model_dump(mode="json")
+            dump(manifest, self.artifact_writer.run_dir / "manifest.json")
+            provenance_path = self.artifact_writer.run_dir / "provenance.json"
+            provenance = loads(provenance_path.read_text())
+            provenance["manifest_fingerprint"] = manifest_fingerprint(manifest)
+            dump(provenance, provenance_path)
 
         # Initialize loggers
         self.logger = self._generate_logger("Runner", self.artifact_writer.logs_dir)
@@ -62,7 +76,9 @@ class Runner:
         self.environment_logger = self._generate_logger(
             "Environment", self.artifact_writer.logs_dir
         )
-        self.artifact_logger = self._generate_logger("Artifact", self.artifact_writer.logs_dir)
+        self.artifact_logger = self._generate_logger(
+            "Artifact", self.artifact_writer.logs_dir
+        )
         self.artifact_writer.set_logger(self.artifact_logger)
 
         # Cache executed agents
@@ -103,7 +119,9 @@ class Runner:
             self.logger.info("Running agents sequentially.")
             transcripts = self._sequential_run()
         else:
-            self.logger.info(f"Running agents in parallel ({backend}) with {self.workers} workers.")
+            self.logger.info(
+                f"Running agents in parallel ({backend}) with {self.workers} workers."
+            )
             transcripts = self._parallel_run()
 
         self.logger.info("All agents have completed execution.")
@@ -133,7 +151,9 @@ class Runner:
             self.problem_instance.run_plan.hook_plan,
             self.artifact_writer.agents_dir / agent.id / "hooks",
         )
-        self.logger.info(f"Hook Manager initialized with {[h.id for h in hook_manager.hooks]}.")
+        self.logger.info(
+            f"Hook Manager initialized with {[h.id for h in hook_manager.hooks]}."
+        )
 
         self.logger.info(f"Running agent '{agent.id}'.")
 
@@ -154,6 +174,7 @@ class Runner:
                 agent_logger=agent_logger,
                 game_logger=self.game_logger,
                 environment_logger=self.environment_logger,
+                seeds=self.problem_instance.seeds,
             )
 
             transcript = game.run()
@@ -202,7 +223,8 @@ class Runner:
         """Run all agents in parallel using threads or processes."""
         executor_cls = (
             ThreadPoolExecutor
-            if self.problem_instance.run_plan.parallel_backend == RunPlanParallelBackEnd.THREAD
+            if self.problem_instance.run_plan.parallel_backend
+            == RunPlanParallelBackEnd.THREAD
             else ProcessPoolExecutor
         )
 

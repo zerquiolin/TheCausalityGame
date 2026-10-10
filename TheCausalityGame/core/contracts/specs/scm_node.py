@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from TheCausalityGame.core.contracts.specs.common import CommonSpec
 from TheCausalityGame.core.contracts.specs.noise import NoiseDistributionSpec
@@ -21,8 +21,8 @@ class SCMNodeSpec(CommonSpec):
         Name of the node in the causal graph.
     accessibility : str
         Accessibility of the node. Must be one of: "controllable", "observable", or "latent".
-    domain : list[float | str] | tuple[float, int]
-        Domain of values the node can take. Can be categorical (list of str) or numerical.
+    domain : list[str | int | float] | tuple[float, int]
+        Categorical nodes use string labels; numerical nodes use a two-value interval.
     parents : list[str] or None
         List of parent node names. `None` if the node has no parents.
     parent_mappings : dict[str, int | float] or None
@@ -46,8 +46,8 @@ class SCMNodeSpec(CommonSpec):
             "Accessibility of the node. Must be one of: 'controllable', 'observable', or 'latent'."
         ),
     )
-    domain: list[int | float | str] | tuple[float, int] = Field(
-        description="Set of possible values this node can take.",
+    domain: list[str | int | float] | tuple[float, int] = Field(
+        description="String labels for categorical nodes or a numeric interval.",
     )
     parents: list[str] | None = Field(
         default=None,
@@ -90,6 +90,23 @@ class SCMNodeSpec(CommonSpec):
         default=None,
         description="Optional noise distribution specification.",
     )
+
+    @model_validator(mode="after")
+    def validate_builtin_categorical_domain(self) -> "SCMNodeSpec":
+        """Reject numeric labels early for built-in categorical node specs."""
+        class_name = self.class_.rsplit(":", maxsplit=1)[-1]
+        categorical_classes = {
+            "BayesianNetworkSCMNode",
+            "EquationBasedCategoricalSCMNode",
+            "DatasetCategoricalNode",
+        }
+        if class_name in categorical_classes and (
+            not isinstance(self.domain, list)
+            or not all(isinstance(value, str) for value in self.domain)
+        ):
+            raise ValueError("Categorical node specifications require string labels.")
+        return self
+
     value_computer: dict[str, Any] | None = Field(
         default=None,
         description="Optional value computer specification.",

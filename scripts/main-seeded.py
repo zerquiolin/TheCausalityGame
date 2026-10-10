@@ -34,7 +34,7 @@ EXCLUDE_SEEDS: set[int] = set()
 
 DRY_RUN = False
 LIMIT: int | None = None
-REMOVE_FAILED_RUN_FOLDER = True
+REMOVE_FAILED_RUN_FOLDER = False
 
 
 SEED_PATTERN = re.compile(r"_rs-(\d+)$")
@@ -85,7 +85,9 @@ def _matches_prefix(path: str, prefixes: set[str]) -> bool:
 def _seed_from_path(path: Path) -> int:
     seed_match = SEED_PATTERN.search(path.stem)
     if seed_match is None:
-        raise ValueError(f"Seeded problem instance filename does not end in '_rs-<seed>': {path}")
+        raise ValueError(
+            f"Seeded problem instance filename does not end in '_rs-<seed>': {path}"
+        )
     return int(seed_match.group(1))
 
 
@@ -179,7 +181,9 @@ def _print_scan_summary(targets: list[ProblemInstanceTarget]) -> None:
         f"{counts['pending']} pending."
     )
 
-    incomplete = [target.relative_file for target in targets if target.state == "incomplete"]
+    incomplete = [
+        target.relative_file for target in targets if target.state == "incomplete"
+    ]
     if incomplete:
         print("Incomplete manifests:")
         for relative_file in incomplete:
@@ -198,7 +202,9 @@ def _cleanup_new_timestamp_dirs(run_root: Path, before: set[Path]) -> tuple[Path
 
 
 def _run_target(target: ProblemInstanceTarget) -> RunFailure | None:
-    from TheCausalityGame.core.contracts.specs.problem_instance import ProblemInstanceSpec
+    from TheCausalityGame.core.contracts.specs.problem_instance import (
+        ProblemInstanceSpec,
+    )
     from TheCausalityGame.core.runtime.runner import Runner
 
     before = _timestamp_dirs(target.run_root)
@@ -230,7 +236,9 @@ def main() -> None:
         targets = _scan_targets(SEEDED_ROOT)
         _print_scan_summary(targets)
 
-        runnable = [target for target in targets if target.state in {"pending", "incomplete"}]
+        runnable = [
+            target for target in targets if target.state in {"pending", "incomplete"}
+        ]
         if LIMIT is not None:
             runnable = runnable[:LIMIT]
 
@@ -261,8 +269,7 @@ def main() -> None:
 
     except Exception as error:  # noqa: BLE001
         print(f"Error during execution: {type(error).__name__}: {error}")
-        # Re run main to attempt to run remaining targets, if any
-        main()
+        raise SystemExit(1) from error
 
 
 if __name__ == "__main__":

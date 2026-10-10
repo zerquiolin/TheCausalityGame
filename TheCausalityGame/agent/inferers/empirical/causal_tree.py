@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from dataclasses import dataclass
 from typing import Any, override
 
@@ -72,6 +73,8 @@ class HonestCausalTreeInferer(Inferer):
         if not self._samples:
             return zero_answer()
 
+        frozen = deepcopy(self)
+
         def estimate(
             X: list[str],  # noqa: N803
             treatment: str,
@@ -82,7 +85,7 @@ class HonestCausalTreeInferer(Inferer):
             if values is None:
                 return zero_effect(covariate_values)
             control_value, treated_value = values
-            data = self._training_data(
+            data = frozen._training_data(
                 X=X,
                 treatment=treatment,
                 outcome=outcome,
@@ -92,18 +95,18 @@ class HonestCausalTreeInferer(Inferer):
             if data.empty:
                 return zero_effect(covariate_values)
 
-            split_data, estimate_data = self._honest_partition(data)
+            split_data, estimate_data = frozen._honest_partition(data)
             if split_data.empty or estimate_data.empty:
                 return zero_effect(covariate_values)
 
-            root_effect = self._effect(
+            root_effect = frozen._effect(
                 estimate_data,
                 treatment,
                 outcome,
                 control_value,
                 treated_value,
             )
-            root = self._build_tree(
+            root = frozen._build_tree(
                 split_data=split_data,
                 estimate_data=estimate_data,
                 features=X,
@@ -119,7 +122,7 @@ class HonestCausalTreeInferer(Inferer):
             if any(feature not in control.columns for feature in X):
                 return zero_effect(covariate_values)
             effects = [
-                self._predict_row(root, row)
+                frozen._predict_row(root, row)
                 for _, row in control[X].reset_index(drop=True).iterrows()
             ]
             return pd.DataFrame(effects, columns=["treatment_effect"], dtype=float)
@@ -143,7 +146,9 @@ class HonestCausalTreeInferer(Inferer):
             return data
         return data.loc[data[treatment].isin([control_value, treated_value])].copy()
 
-    def _honest_partition(self, data: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    def _honest_partition(
+        self, data: pd.DataFrame
+    ) -> tuple[pd.DataFrame, pd.DataFrame]:
         rng = np.random.default_rng(self.random_state)
         indices = np.arange(len(data))
         rng.shuffle(indices)
@@ -267,7 +272,9 @@ class HonestCausalTreeInferer(Inferer):
                 best_split = candidate
         return best_split
 
-    def _candidate_splits(self, data: pd.DataFrame, features: list[str]) -> list[_Split]:
+    def _candidate_splits(
+        self, data: pd.DataFrame, features: list[str]
+    ) -> list[_Split]:
         splits: list[_Split] = []
         for feature in features:
             series = data[feature].dropna()
@@ -281,14 +288,20 @@ class HonestCausalTreeInferer(Inferer):
                     for value in values
                 )
             else:
-                values = series.astype(str).value_counts().index[: self.max_candidates_per_feature]
+                values = (
+                    series.astype(str)
+                    .value_counts()
+                    .index[: self.max_candidates_per_feature]
+                )
                 splits.extend(
                     _Split(feature=feature, value=value, is_numeric=False)
                     for value in values
                 )
         return splits
 
-    def _partition(self, data: pd.DataFrame, split: _Split) -> tuple[pd.DataFrame, pd.DataFrame]:
+    def _partition(
+        self, data: pd.DataFrame, split: _Split
+    ) -> tuple[pd.DataFrame, pd.DataFrame]:
         if data.empty:
             return data, data
         if split.is_numeric:
@@ -373,7 +386,10 @@ class HonestCausalTreeInferer(Inferer):
             estimate=self.answer(),
             summary={
                 "n_samples": sum(len(sample.data) for sample in self._samples),
-                "backend": {"implementation_kind": "empirical", "project": "TheCausalityGame"},
+                "backend": {
+                    "implementation_kind": "empirical",
+                    "project": "TheCausalityGame",
+                },
             },
             capabilities=("cate", "honest_causal_tree"),
         )

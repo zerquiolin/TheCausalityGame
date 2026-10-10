@@ -2,17 +2,22 @@
 
 from __future__ import annotations
 
+import hashlib
 import logging
 import os
+import threading
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from typing import Any
+from typing import Any, ClassVar
 
 __all__ = ["Logger"]
 
 
 class Logger:
     """Configurable logging utility with optional file rotation and color output."""
+
+    _lifecycle_lock: ClassVar[threading.RLock] = threading.RLock()
+    _active_instances: ClassVar[dict[str, int]] = {}
 
     def __init__(  # noqa: PLR0913
         self,
@@ -30,15 +35,63 @@ class Logger:
         self.log_to_console = log_to_console
         self.level = level
         self.colorize = colorize
+        self._closed = False
 
-        self.logger = logging.getLogger(name)
+        # ``logging.getLogger(name)`` is process-global. A second run using the
+        # same display name used to clear the first run's handlers, and runs
+        # writing to different directories could silently redirect each
+        # other's output. Give each effective destination/configuration its
+        # own registered logger so it remains multiprocessing-pickleable.
+        destination = str(Path(log_dir).resolve()) if log_dir is not None else None
+        identity = repr((name, destination, log_to_console))
+        suffix = hashlib.sha256(identity.encode("utf-8")).hexdigest()[:12]
+        self.logger = logging.getLogger(f"{name}.{suffix}")
+        configuration = (level, max_bytes, backup_count, colorize)
+        prior_configuration = getattr(self.logger, "_tcg_configuration", None)
+        if prior_configuration is not None and prior_configuration != configuration:
+            raise ValueError(
+                "A logger destination cannot be reused with conflicting handler settings."
+            )
         self.logger.setLevel(level)
         self.logger.propagate = False
 
-        if self.logger.hasHandlers():
-            self.logger.handlers.clear()
+        # Identical destinations share one registered logger. Configure it
+        # once; never remove another Logger instance's handlers.
+        if prior_configuration is None:
+            self.logger._tcg_configuration = configuration  # type: ignore[attr-defined]
+            self._setup_handlers(max_bytes, backup_count)
+        with self._lifecycle_lock:
+            self._active_instances[self.logger.name] = (
+                self._active_instances.get(self.logger.name, 0) + 1
+            )
 
-        self._setup_handlers(max_bytes, backup_count)
+    def close(self) -> None:
+        """Release this wrapper and close shared handlers after the last user."""
+        with self._lifecycle_lock:
+            if self._closed:
+                return
+            self._closed = True
+            remaining = self._active_instances.get(self.logger.name, 1) - 1
+            if remaining > 0:
+                self._active_instances[self.logger.name] = remaining
+                return
+            self._active_instances.pop(self.logger.name, None)
+            for handler in self.logger.handlers[:]:
+                self.logger.removeHandler(handler)
+                handler.flush()
+                handler.close()
+            if hasattr(self.logger, "_tcg_configuration"):
+                delattr(self.logger, "_tcg_configuration")
+
+    def __enter__(self) -> Logger:
+        """Return this logger for use as a context manager."""
+        if self._closed:
+            raise RuntimeError("A closed logger cannot be reopened")
+        return self
+
+    def __exit__(self, *_: object) -> None:
+        """Close this logger when leaving its context."""
+        self.close()
 
     def _setup_handlers(self, max_bytes: int, backup_count: int) -> None:
         """Configure console and file handlers."""

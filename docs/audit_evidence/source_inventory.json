@@ -1,0 +1,6893 @@
+[
+  {
+    "path": "TheCausalityGame/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 3,
+      "num_statements": 3,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/agent/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 3,
+      "num_statements": 3,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/agent/combined.py",
+    "functions": [
+      "__init__",
+      "set_context",
+      "set_logger",
+      "act",
+      "inform",
+      "answer",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 36,
+      "num_statements": 52,
+      "percent_covered": 66.07142857142857,
+      "percent_covered_display": "66",
+      "missing_lines": 16,
+      "excluded_lines": 0,
+      "percent_statements_covered": 69.23076923076923,
+      "percent_statements_covered_display": "69",
+      "num_branches": 4,
+      "num_partial_branches": 1,
+      "covered_branches": 1,
+      "missing_branches": 3,
+      "percent_branches_covered": 25.0,
+      "percent_branches_covered_display": "25"
+    },
+    "missing_lines": [
+      33,
+      34,
+      38,
+      39,
+      47,
+      51,
+      52,
+      53,
+      57,
+      58,
+      60,
+      65,
+      66,
+      67,
+      71,
+      85
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/composable.py",
+    "functions": [
+      "__init__",
+      "set_context",
+      "set_logger",
+      "act",
+      "inform",
+      "answer",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 61,
+      "num_statements": 64,
+      "percent_covered": 91.42857142857143,
+      "percent_covered_display": "91",
+      "missing_lines": 3,
+      "excluded_lines": 0,
+      "percent_statements_covered": 95.3125,
+      "percent_statements_covered_display": "95",
+      "num_branches": 6,
+      "num_partial_branches": 3,
+      "covered_branches": 3,
+      "missing_branches": 3,
+      "percent_branches_covered": 50.0,
+      "percent_branches_covered_display": "50"
+    },
+    "missing_lines": [
+      59,
+      73,
+      102
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/deciders/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 1,
+      "num_statements": 1,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/agent/deciders/abci.py",
+    "functions": [
+      "_context_query_spec",
+      "_domain_lookup",
+      "_treatment_round_value",
+      "_random_value",
+      "__init__",
+      "update",
+      "decide",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 95,
+      "num_statements": 103,
+      "percent_covered": 88.14814814814815,
+      "percent_covered_display": "88",
+      "missing_lines": 8,
+      "excluded_lines": 0,
+      "percent_statements_covered": 92.23300970873787,
+      "percent_statements_covered_display": "92",
+      "num_branches": 32,
+      "num_partial_branches": 8,
+      "covered_branches": 24,
+      "missing_branches": 8,
+      "percent_branches_covered": 75.0,
+      "percent_branches_covered_display": "75"
+    },
+    "missing_lines": [
+      49,
+      131,
+      143,
+      146,
+      147,
+      148,
+      191,
+      194
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/deciders/annadani.py",
+    "functions": [
+      "__init__",
+      "update",
+      "_enumerate_actions",
+      "_softmax",
+      "_candidate_values",
+      "_phi",
+      "decide",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 115,
+      "num_statements": 137,
+      "percent_covered": 78.61271676300578,
+      "percent_covered_display": "79",
+      "missing_lines": 22,
+      "excluded_lines": 0,
+      "percent_statements_covered": 83.94160583941606,
+      "percent_statements_covered_display": "84",
+      "num_branches": 36,
+      "num_partial_branches": 11,
+      "covered_branches": 21,
+      "missing_branches": 15,
+      "percent_branches_covered": 58.333333333333336,
+      "percent_branches_covered_display": "58"
+    },
+    "missing_lines": [
+      70,
+      71,
+      72,
+      73,
+      87,
+      90,
+      115,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      141,
+      142,
+      147,
+      148,
+      154,
+      180,
+      197,
+      208,
+      222
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/deciders/cho.py",
+    "functions": [
+      "__init__",
+      "update",
+      "decide",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 51,
+      "num_statements": 57,
+      "percent_covered": 82.1917808219178,
+      "percent_covered_display": "82",
+      "missing_lines": 6,
+      "excluded_lines": 0,
+      "percent_statements_covered": 89.47368421052632,
+      "percent_statements_covered_display": "89",
+      "num_branches": 16,
+      "num_partial_branches": 7,
+      "covered_branches": 9,
+      "missing_branches": 7,
+      "percent_branches_covered": 56.25,
+      "percent_branches_covered_display": "56"
+    },
+    "missing_lines": [
+      65,
+      77,
+      83,
+      91,
+      94,
+      104
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/deciders/exhaustive.py",
+    "functions": [
+      "__init__",
+      "decide",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 35,
+      "num_statements": 35,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 8,
+      "num_partial_branches": 0,
+      "covered_branches": 8,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/agent/deciders/geng.py",
+    "functions": [
+      "_sample_value",
+      "__init__",
+      "update",
+      "decide",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 86,
+      "num_statements": 98,
+      "percent_covered": 84.375,
+      "percent_covered_display": "84",
+      "missing_lines": 12,
+      "excluded_lines": 0,
+      "percent_statements_covered": 87.75510204081633,
+      "percent_statements_covered_display": "88",
+      "num_branches": 30,
+      "num_partial_branches": 8,
+      "covered_branches": 22,
+      "missing_branches": 8,
+      "percent_branches_covered": 73.33333333333333,
+      "percent_branches_covered_display": "73"
+    },
+    "missing_lines": [
+      25,
+      33,
+      35,
+      86,
+      109,
+      112,
+      113,
+      114,
+      115,
+      138,
+      151,
+      161
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/deciders/gies.py",
+    "functions": [
+      "_df_to_numeric",
+      "_sample_value",
+      "__init__",
+      "update",
+      "decide",
+      "to_spec",
+      "from_spec",
+      "undirected_neighbors"
+    ],
+    "coverage": {
+      "covered_lines": 59,
+      "num_statements": 152,
+      "percent_covered": 30.476190476190474,
+      "percent_covered_display": "30",
+      "missing_lines": 93,
+      "excluded_lines": 0,
+      "percent_statements_covered": 38.81578947368421,
+      "percent_statements_covered_display": "39",
+      "num_branches": 58,
+      "num_partial_branches": 5,
+      "covered_branches": 5,
+      "missing_branches": 53,
+      "percent_branches_covered": 8.620689655172415,
+      "percent_branches_covered_display": "9"
+    },
+    "missing_lines": [
+      22,
+      23,
+      24,
+      25,
+      26,
+      32,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      93,
+      94,
+      95,
+      96,
+      98,
+      99,
+      100,
+      102,
+      103,
+      104,
+      105,
+      107,
+      108,
+      110,
+      111,
+      113,
+      115,
+      116,
+      117,
+      118,
+      119,
+      121,
+      130,
+      131,
+      147,
+      158,
+      159,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167,
+      168,
+      170,
+      171,
+      175,
+      176,
+      179,
+      180,
+      181,
+      182,
+      184,
+      185,
+      187,
+      188,
+      189,
+      190,
+      192,
+      193,
+      194,
+      195,
+      196,
+      197,
+      198,
+      199,
+      200,
+      202,
+      203,
+      204,
+      206,
+      207,
+      209,
+      210,
+      211,
+      212,
+      214,
+      215,
+      216,
+      220
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/deciders/optimal_effect_design.py",
+    "functions": [
+      "__init__",
+      "update",
+      "decide",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 82,
+      "num_statements": 95,
+      "percent_covered": 83.47107438016529,
+      "percent_covered_display": "83",
+      "missing_lines": 13,
+      "excluded_lines": 0,
+      "percent_statements_covered": 86.3157894736842,
+      "percent_statements_covered_display": "86",
+      "num_branches": 26,
+      "num_partial_branches": 5,
+      "covered_branches": 19,
+      "missing_branches": 7,
+      "percent_branches_covered": 73.07692307692308,
+      "percent_branches_covered_display": "73"
+    },
+    "missing_lines": [
+      91,
+      94,
+      95,
+      96,
+      100,
+      105,
+      123,
+      124,
+      127,
+      128,
+      129,
+      176,
+      177
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/deciders/random.py",
+    "functions": [
+      "__init__",
+      "decide",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 38,
+      "num_statements": 38,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 4,
+      "num_partial_branches": 0,
+      "covered_branches": 4,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/agent/deciders/tigas.py",
+    "functions": [
+      "__init__",
+      "update",
+      "_candidate_values",
+      "_expected_entropy_after",
+      "decide",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 86,
+      "num_statements": 99,
+      "percent_covered": 82.44274809160305,
+      "percent_covered_display": "82",
+      "missing_lines": 13,
+      "excluded_lines": 0,
+      "percent_statements_covered": 86.86868686868686,
+      "percent_statements_covered_display": "87",
+      "num_branches": 32,
+      "num_partial_branches": 10,
+      "covered_branches": 22,
+      "missing_branches": 10,
+      "percent_branches_covered": 68.75,
+      "percent_branches_covered_display": "69"
+    },
+    "missing_lines": [
+      67,
+      70,
+      78,
+      84,
+      90,
+      107,
+      121,
+      124,
+      125,
+      153,
+      154,
+      155,
+      162
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/deciders/trust_gradient.py",
+    "functions": [
+      "__init__",
+      "update",
+      "decide",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 67,
+      "num_statements": 73,
+      "percent_covered": 91.01123595505618,
+      "percent_covered_display": "91",
+      "missing_lines": 6,
+      "excluded_lines": 0,
+      "percent_statements_covered": 91.78082191780823,
+      "percent_statements_covered_display": "92",
+      "num_branches": 16,
+      "num_partial_branches": 2,
+      "covered_branches": 14,
+      "missing_branches": 2,
+      "percent_branches_covered": 87.5,
+      "percent_branches_covered_display": "88"
+    },
+    "missing_lines": [
+      90,
+      93,
+      94,
+      95,
+      130,
+      133
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/helpers/active_query_belief.py",
+    "functions": [
+      "__init__",
+      "update",
+      "summary",
+      "has_signal",
+      "n_bootstrap",
+      "ridge_lambda",
+      "coef_threshold",
+      "incident_uncertainty",
+      "outgoing_uncertainty",
+      "sample_models",
+      "column_index",
+      "candidate_values",
+      "canonical_value",
+      "value_signal",
+      "encode_value",
+      "simulate_intervention",
+      "predictive_disagreement",
+      "gradient_score",
+      "query_effect_variance",
+      "query_path_relevance",
+      "query_edge_coverage"
+    ],
+    "coverage": {
+      "covered_lines": 163,
+      "num_statements": 215,
+      "percent_covered": 71.09634551495017,
+      "percent_covered_display": "71",
+      "missing_lines": 52,
+      "excluded_lines": 0,
+      "percent_statements_covered": 75.81395348837209,
+      "percent_statements_covered_display": "76",
+      "num_branches": 86,
+      "num_partial_branches": 17,
+      "covered_branches": 51,
+      "missing_branches": 35,
+      "percent_branches_covered": 59.30232558139535,
+      "percent_branches_covered_display": "59"
+    },
+    "missing_lines": [
+      50,
+      79,
+      98,
+      104,
+      113,
+      115,
+      122,
+      123,
+      128,
+      129,
+      132,
+      138,
+      139,
+      141,
+      142,
+      144,
+      157,
+      200,
+      214,
+      217,
+      221,
+      238,
+      248,
+      260,
+      274,
+      286,
+      287,
+      288,
+      289,
+      290,
+      292,
+      293,
+      294,
+      295,
+      296,
+      298,
+      299,
+      300,
+      302,
+      303,
+      310,
+      317,
+      318,
+      319,
+      320,
+      321,
+      325,
+      326,
+      327,
+      339,
+      370,
+      381
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/helpers/ridge_bootstrap_edge_belief.py",
+    "functions": [
+      "_binary_entropy",
+      "__init__",
+      "summary",
+      "_to_numeric_df",
+      "fit",
+      "incident_uncertainty",
+      "outgoing_uncertainty",
+      "canonical_value",
+      "value_signal",
+      "fantasize_do",
+      "entropy_of_df",
+      "sample_linear_dag_ensemble"
+    ],
+    "coverage": {
+      "covered_lines": 205,
+      "num_statements": 231,
+      "percent_covered": 86.44067796610169,
+      "percent_covered_display": "86",
+      "missing_lines": 26,
+      "excluded_lines": 0,
+      "percent_statements_covered": 88.74458874458874,
+      "percent_statements_covered_display": "89",
+      "num_branches": 64,
+      "num_partial_branches": 10,
+      "covered_branches": 50,
+      "missing_branches": 14,
+      "percent_branches_covered": 78.125,
+      "percent_branches_covered_display": "78"
+    },
+    "missing_lines": [
+      62,
+      63,
+      68,
+      70,
+      74,
+      75,
+      81,
+      82,
+      113,
+      114,
+      157,
+      158,
+      160,
+      163,
+      165,
+      170,
+      189,
+      225,
+      227,
+      243,
+      269,
+      270,
+      309,
+      317,
+      351,
+      352
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 10,
+      "num_statements": 10,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/_data.py",
+    "functions": [
+      "observational_frame",
+      "combined_frame",
+      "numeric_matrix",
+      "adjacency_to_digraph",
+      "zero_cate_answer",
+      "estimate"
+    ],
+    "coverage": {
+      "covered_lines": 38,
+      "num_statements": 44,
+      "percent_covered": 83.87096774193549,
+      "percent_covered_display": "84",
+      "missing_lines": 6,
+      "excluded_lines": 0,
+      "percent_statements_covered": 86.36363636363636,
+      "percent_statements_covered_display": "86",
+      "num_branches": 18,
+      "num_partial_branches": 4,
+      "covered_branches": 14,
+      "missing_branches": 4,
+      "percent_branches_covered": 77.77777777777777,
+      "percent_branches_covered_display": "78"
+    },
+    "missing_lines": [
+      31,
+      40,
+      45,
+      67,
+      88,
+      89
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/_provenance.py",
+    "functions": [
+      "to_dict"
+    ],
+    "coverage": {
+      "covered_lines": 14,
+      "num_statements": 14,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/_r_bridge.py",
+    "functions": [
+      "_run_with_timeout",
+      "run_r_cate_backend"
+    ],
+    "coverage": {
+      "covered_lines": 57,
+      "num_statements": 61,
+      "percent_covered": 91.13924050632912,
+      "percent_covered_display": "91",
+      "missing_lines": 4,
+      "excluded_lines": 0,
+      "percent_statements_covered": 93.44262295081967,
+      "percent_statements_covered_display": "93",
+      "num_branches": 18,
+      "num_partial_branches": 3,
+      "covered_branches": 15,
+      "missing_branches": 3,
+      "percent_branches_covered": 83.33333333333333,
+      "percent_branches_covered_display": "83"
+    },
+    "missing_lines": [
+      39,
+      40,
+      42,
+      99
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/_r_cate.py",
+    "functions": [
+      "__init__",
+      "update",
+      "_payload",
+      "answer",
+      "snapshot",
+      "to_spec",
+      "estimate"
+    ],
+    "coverage": {
+      "covered_lines": 87,
+      "num_statements": 96,
+      "percent_covered": 84.375,
+      "percent_covered_display": "84",
+      "missing_lines": 9,
+      "excluded_lines": 0,
+      "percent_statements_covered": 90.625,
+      "percent_statements_covered_display": "91",
+      "num_branches": 32,
+      "num_partial_branches": 11,
+      "covered_branches": 21,
+      "missing_branches": 11,
+      "percent_branches_covered": 65.625,
+      "percent_branches_covered_display": "66"
+    },
+    "missing_lines": [
+      50,
+      55,
+      57,
+      61,
+      67,
+      81,
+      86,
+      92,
+      153
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/causal_tree.py",
+    "functions": [
+      "__init__",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 27,
+      "num_statements": 30,
+      "percent_covered": 85.29411764705883,
+      "percent_covered_display": "85",
+      "missing_lines": 3,
+      "excluded_lines": 0,
+      "percent_statements_covered": 90.0,
+      "percent_statements_covered_display": "90",
+      "num_branches": 4,
+      "num_partial_branches": 2,
+      "covered_branches": 2,
+      "missing_branches": 2,
+      "percent_branches_covered": 50.0,
+      "percent_branches_covered_display": "50"
+    },
+    "missing_lines": [
+      64,
+      68,
+      69
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/dag.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 2,
+      "num_statements": 2,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/empirical/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 10,
+      "num_statements": 10,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/empirical/_cate_common.py",
+    "functions": [
+      "buffer_samples",
+      "zero_effect",
+      "zero_answer",
+      "treatment_pair",
+      "combined_data",
+      "controlled_data",
+      "usable_rows",
+      "with_treatment_interactions",
+      "fit_tabular_regressor",
+      "fit_binary_propensity",
+      "_preprocessor",
+      "_one_hot_encoder",
+      "answer",
+      "fit",
+      "transform"
+    ],
+    "coverage": {
+      "covered_lines": 88,
+      "num_statements": 100,
+      "percent_covered": 85.15625,
+      "percent_covered_display": "85",
+      "missing_lines": 12,
+      "excluded_lines": 0,
+      "percent_statements_covered": 88.0,
+      "percent_statements_covered_display": "88",
+      "num_branches": 28,
+      "num_partial_branches": 7,
+      "covered_branches": 21,
+      "missing_branches": 7,
+      "percent_branches_covered": 75.0,
+      "percent_branches_covered_display": "75"
+    },
+    "missing_lines": [
+      70,
+      72,
+      79,
+      96,
+      124,
+      128,
+      187,
+      199,
+      200,
+      211,
+      212,
+      215
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/empirical/_dag_common.py",
+    "functions": [
+      "observational_frame",
+      "numeric_frame",
+      "empty_graph",
+      "graph_from_adjacency",
+      "fit_linear_coefficients",
+      "residualize",
+      "standardize"
+    ],
+    "coverage": {
+      "covered_lines": 50,
+      "num_statements": 63,
+      "percent_covered": 74.71264367816092,
+      "percent_covered_display": "75",
+      "missing_lines": 13,
+      "excluded_lines": 0,
+      "percent_statements_covered": 79.36507936507937,
+      "percent_statements_covered_display": "79",
+      "num_branches": 24,
+      "num_partial_branches": 3,
+      "covered_branches": 15,
+      "missing_branches": 9,
+      "percent_branches_covered": 62.5,
+      "percent_branches_covered_display": "62"
+    },
+    "missing_lines": [
+      28,
+      29,
+      30,
+      31,
+      32,
+      64,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      90
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/empirical/causal_tree.py",
+    "functions": [
+      "is_leaf",
+      "__init__",
+      "update",
+      "answer",
+      "_training_data",
+      "_honest_partition",
+      "_build_tree",
+      "_best_split",
+      "_candidate_splits",
+      "_partition",
+      "_valid_leaf",
+      "_node_score",
+      "_effect_or_fallback",
+      "_effect",
+      "_predict_row",
+      "snapshot",
+      "to_spec",
+      "from_spec",
+      "estimate"
+    ],
+    "coverage": {
+      "covered_lines": 154,
+      "num_statements": 171,
+      "percent_covered": 85.20179372197309,
+      "percent_covered_display": "85",
+      "missing_lines": 17,
+      "excluded_lines": 0,
+      "percent_statements_covered": 90.05847953216374,
+      "percent_statements_covered_display": "90",
+      "num_branches": 52,
+      "num_partial_branches": 16,
+      "covered_branches": 36,
+      "missing_branches": 16,
+      "percent_branches_covered": 69.23076923076923,
+      "percent_branches_covered_display": "69"
+    },
+    "missing_lines": [
+      86,
+      96,
+      100,
+      123,
+      146,
+      197,
+      202,
+      282,
+      291,
+      296,
+      306,
+      310,
+      337,
+      365,
+      376,
+      379,
+      385
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/empirical/dag.py",
+    "functions": [
+      "ci_test_gaussian",
+      "_rbf_kernel",
+      "_hsic_stat",
+      "_hsic_pvalue",
+      "ci_test_continuous_nonlinear",
+      "ci_test_discrete_chi2_stratified",
+      "pc_skeleton",
+      "orient_v_structures",
+      "apply_meek_r1",
+      "intervention_changes_target_discrete",
+      "intervention_changes_target_numeric",
+      "learn_dag_from_samples",
+      "_to_float",
+      "_pval_safe",
+      "_residuals",
+      "_fit_and_resid",
+      "ci_indep",
+      "is_adj",
+      "__init__",
+      "update",
+      "answer",
+      "snapshot",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 97,
+      "num_statements": 355,
+      "percent_covered": 22.718446601941746,
+      "percent_covered_display": "23",
+      "missing_lines": 258,
+      "excluded_lines": 0,
+      "percent_statements_covered": 27.323943661971832,
+      "percent_statements_covered_display": "27",
+      "num_branches": 160,
+      "num_partial_branches": 8,
+      "covered_branches": 20,
+      "missing_branches": 140,
+      "percent_branches_covered": 12.5,
+      "percent_branches_covered_display": "12"
+    },
+    "missing_lines": [
+      45,
+      54,
+      60,
+      62,
+      93,
+      94,
+      95,
+      96,
+      99,
+      101,
+      103,
+      104,
+      105,
+      107,
+      108,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      121,
+      122,
+      124,
+      125,
+      126,
+      128,
+      133,
+      134,
+      135,
+      136,
+      137,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      169,
+      170,
+      171,
+      174,
+      175,
+      176,
+      178,
+      180,
+      181,
+      183,
+      185,
+      186,
+      187,
+      189,
+      190,
+      192,
+      193,
+      194,
+      195,
+      196,
+      197,
+      200,
+      201,
+      202,
+      203,
+      205,
+      206,
+      208,
+      209,
+      222,
+      223,
+      224,
+      225,
+      227,
+      228,
+      229,
+      230,
+      231,
+      232,
+      234,
+      235,
+      236,
+      237,
+      238,
+      239,
+      240,
+      241,
+      242,
+      244,
+      245,
+      247,
+      248,
+      260,
+      261,
+      263,
+      264,
+      266,
+      268,
+      269,
+      271,
+      272,
+      274,
+      276,
+      277,
+      278,
+      279,
+      280,
+      281,
+      282,
+      284,
+      285,
+      286,
+      287,
+      288,
+      289,
+      290,
+      292,
+      294,
+      297,
+      298,
+      299,
+      301,
+      314,
+      317,
+      318,
+      331,
+      332,
+      333,
+      334,
+      335,
+      351,
+      352,
+      353,
+      354,
+      355,
+      356,
+      358,
+      371,
+      372,
+      373,
+      375,
+      376,
+      378,
+      380,
+      381,
+      383,
+      384,
+      392,
+      393,
+      394,
+      395,
+      397,
+      398,
+      411,
+      412,
+      414,
+      415,
+      416,
+      418,
+      419,
+      420,
+      421,
+      422,
+      436,
+      437,
+      439,
+      440,
+      441,
+      442,
+      443,
+      444,
+      445,
+      446,
+      448,
+      449,
+      450,
+      451,
+      452,
+      453,
+      454,
+      455,
+      457,
+      458,
+      459,
+      460,
+      462,
+      463,
+      464,
+      465,
+      466,
+      467,
+      468,
+      469,
+      470,
+      471,
+      474,
+      478,
+      479,
+      480,
+      481,
+      482,
+      483,
+      484,
+      488,
+      489,
+      490,
+      491,
+      492,
+      493,
+      494,
+      495,
+      496,
+      497,
+      498,
+      499,
+      500,
+      501,
+      503,
+      506,
+      507,
+      508,
+      512,
+      513,
+      514,
+      515,
+      516,
+      517,
+      518,
+      519,
+      520,
+      521,
+      523,
+      546,
+      548,
+      549,
+      550,
+      552,
+      553,
+      559,
+      560,
+      561,
+      562,
+      563,
+      565,
+      568,
+      572,
+      573,
+      575,
+      576,
+      577,
+      580,
+      581,
+      582,
+      583,
+      585,
+      592,
+      596
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/empirical/lingam.py",
+    "functions": [
+      "__init__",
+      "update",
+      "answer",
+      "_causal_order",
+      "_exogeneity_score",
+      "_independence_score",
+      "_fit_adjacency",
+      "snapshot",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 94,
+      "num_statements": 101,
+      "percent_covered": 90.69767441860465,
+      "percent_covered_display": "91",
+      "missing_lines": 7,
+      "excluded_lines": 0,
+      "percent_statements_covered": 93.06930693069307,
+      "percent_statements_covered_display": "93",
+      "num_branches": 28,
+      "num_partial_branches": 5,
+      "covered_branches": 23,
+      "missing_branches": 5,
+      "percent_branches_covered": 82.14285714285714,
+      "percent_branches_covered_display": "82"
+    },
+    "missing_lines": [
+      48,
+      57,
+      58,
+      120,
+      122,
+      141,
+      142
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/empirical/notears.py",
+    "functions": [
+      "__init__",
+      "update",
+      "answer",
+      "_fit_notears",
+      "_orient_skeleton",
+      "_causal_order",
+      "_exogeneity_score",
+      "_independence_score",
+      "snapshot",
+      "to_spec",
+      "from_spec",
+      "loss_and_grad",
+      "h_and_grad",
+      "objective",
+      "gradient"
+    ],
+    "coverage": {
+      "covered_lines": 141,
+      "num_statements": 149,
+      "percent_covered": 92.34972677595628,
+      "percent_covered_display": "92",
+      "missing_lines": 8,
+      "excluded_lines": 0,
+      "percent_statements_covered": 94.63087248322148,
+      "percent_statements_covered_display": "95",
+      "num_branches": 34,
+      "num_partial_branches": 6,
+      "covered_branches": 28,
+      "missing_branches": 6,
+      "percent_branches_covered": 82.3529411764706,
+      "percent_branches_covered_display": "82"
+    },
+    "missing_lines": [
+      54,
+      63,
+      64,
+      150,
+      205,
+      207,
+      212,
+      213
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/empirical/outcome_regression.py",
+    "functions": [
+      "__init__",
+      "update",
+      "answer",
+      "snapshot",
+      "to_spec",
+      "from_spec",
+      "estimate"
+    ],
+    "coverage": {
+      "covered_lines": 44,
+      "num_statements": 46,
+      "percent_covered": 92.3076923076923,
+      "percent_covered_display": "92",
+      "missing_lines": 2,
+      "excluded_lines": 0,
+      "percent_statements_covered": 95.65217391304348,
+      "percent_statements_covered_display": "96",
+      "num_branches": 6,
+      "num_partial_branches": 2,
+      "covered_branches": 4,
+      "missing_branches": 2,
+      "percent_branches_covered": 66.66666666666667,
+      "percent_branches_covered_display": "67"
+    },
+    "missing_lines": [
+      53,
+      68
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/empirical/pc.py",
+    "functions": [
+      "__init__",
+      "update",
+      "answer",
+      "snapshot",
+      "to_spec",
+      "from_spec",
+      "_pc_skeleton",
+      "_independent"
+    ],
+    "coverage": {
+      "covered_lines": 94,
+      "num_statements": 104,
+      "percent_covered": 87.32394366197182,
+      "percent_covered_display": "87",
+      "missing_lines": 10,
+      "excluded_lines": 0,
+      "percent_statements_covered": 90.38461538461539,
+      "percent_statements_covered_display": "90",
+      "num_branches": 38,
+      "num_partial_branches": 6,
+      "covered_branches": 30,
+      "missing_branches": 8,
+      "percent_branches_covered": 78.94736842105263,
+      "percent_branches_covered_display": "79"
+    },
+    "missing_lines": [
+      60,
+      64,
+      65,
+      66,
+      67,
+      68,
+      121,
+      151,
+      167,
+      176
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/empirical/scm.py",
+    "functions": [
+      "_is_numeric_series",
+      "_coerce_numeric",
+      "_safe_rng",
+      "fit_anm_mechanisms",
+      "fit_anm_mechanism_for_node",
+      "_design_row",
+      "sample",
+      "_parent_signature",
+      "sample",
+      "__init__",
+      "generate_samples",
+      "generate_samples_deterministic",
+      "parent_sig",
+      "_training_df_for_node",
+      "__init__",
+      "update",
+      "answer",
+      "_build_mechanism_training_df",
+      "snapshot",
+      "to_spec",
+      "from_spec",
+      "parent_sig",
+      "__init__",
+      "predict",
+      "__init__",
+      "predict"
+    ],
+    "coverage": {
+      "covered_lines": 111,
+      "num_statements": 442,
+      "percent_covered": 20.3125,
+      "percent_covered_display": "20",
+      "missing_lines": 331,
+      "excluded_lines": 0,
+      "percent_statements_covered": 25.1131221719457,
+      "percent_statements_covered_display": "25",
+      "num_branches": 198,
+      "num_partial_branches": 9,
+      "covered_branches": 19,
+      "missing_branches": 179,
+      "percent_branches_covered": 9.595959595959595,
+      "percent_branches_covered_display": "10"
+    },
+    "missing_lines": [
+      30,
+      31,
+      32,
+      34,
+      38,
+      39,
+      40,
+      69,
+      70,
+      71,
+      72,
+      87,
+      94,
+      95,
+      98,
+      100,
+      116,
+      117,
+      118,
+      119,
+      121,
+      122,
+      123,
+      126,
+      127,
+      136,
+      137,
+      138,
+      139,
+      141,
+      142,
+      155,
+      175,
+      176,
+      177,
+      178,
+      189,
+      190,
+      195,
+      196,
+      198,
+      211,
+      231,
+      234,
+      236,
+      237,
+      239,
+      241,
+      242,
+      245,
+      247,
+      248,
+      249,
+      251,
+      254,
+      255,
+      261,
+      262,
+      263,
+      272,
+      275,
+      276,
+      278,
+      280,
+      281,
+      283,
+      284,
+      286,
+      287,
+      288,
+      290,
+      291,
+      292,
+      293,
+      295,
+      298,
+      301,
+      302,
+      307,
+      308,
+      311,
+      312,
+      313,
+      315,
+      316,
+      317,
+      319,
+      320,
+      321,
+      322,
+      324,
+      326,
+      329,
+      330,
+      332,
+      333,
+      335,
+      352,
+      353,
+      356,
+      357,
+      358,
+      361,
+      362,
+      363,
+      364,
+      365,
+      367,
+      369,
+      370,
+      372,
+      373,
+      374,
+      375,
+      377,
+      382,
+      383,
+      384,
+      385,
+      388,
+      389,
+      390,
+      391,
+      392,
+      395,
+      397,
+      398,
+      399,
+      400,
+      401,
+      402,
+      403,
+      404,
+      406,
+      407,
+      409,
+      410,
+      411,
+      412,
+      413,
+      414,
+      416,
+      417,
+      418,
+      419,
+      420,
+      421,
+      423,
+      424,
+      427,
+      429,
+      438,
+      457,
+      459,
+      470,
+      471,
+      472,
+      473,
+      474,
+      476,
+      478,
+      479,
+      481,
+      482,
+      483,
+      484,
+      486,
+      489,
+      490,
+      496,
+      497,
+      498,
+      508,
+      509,
+      511,
+      512,
+      513,
+      515,
+      516,
+      517,
+      518,
+      519,
+      520,
+      521,
+      522,
+      523,
+      525,
+      526,
+      528,
+      529,
+      534,
+      535,
+      537,
+      538,
+      539,
+      541,
+      542,
+      543,
+      545,
+      546,
+      547,
+      548,
+      550,
+      552,
+      553,
+      554,
+      556,
+      557,
+      559,
+      574,
+      575,
+      577,
+      578,
+      579,
+      581,
+      582,
+      583,
+      584,
+      585,
+      586,
+      587,
+      588,
+      590,
+      591,
+      592,
+      593,
+      594,
+      595,
+      597,
+      599,
+      600,
+      601,
+      602,
+      604,
+      605,
+      606,
+      607,
+      608,
+      610,
+      612,
+      613,
+      614,
+      615,
+      616,
+      617,
+      618,
+      619,
+      620,
+      621,
+      623,
+      624,
+      626,
+      627,
+      628,
+      629,
+      630,
+      632,
+      633,
+      634,
+      635,
+      636,
+      637,
+      639,
+      641,
+      658,
+      659,
+      660,
+      662,
+      663,
+      664,
+      665,
+      667,
+      668,
+      669,
+      697,
+      699,
+      700,
+      701,
+      704,
+      706,
+      707,
+      709,
+      710,
+      716,
+      717,
+      718,
+      719,
+      720,
+      722,
+      724,
+      728,
+      729,
+      731,
+      735,
+      736,
+      739,
+      740,
+      741,
+      742,
+      743,
+      744,
+      753,
+      754,
+      757,
+      758,
+      759,
+      760,
+      763,
+      778,
+      779,
+      782,
+      783,
+      784,
+      785,
+      790,
+      791,
+      792,
+      793,
+      802,
+      803,
+      810,
+      811,
+      812,
+      814,
+      816,
+      817,
+      818,
+      824,
+      825,
+      827,
+      831
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/empirical/symbolic_scm.py",
+    "functions": [
+      "_is_numeric_series",
+      "_coerce_numeric",
+      "_candidate_terms",
+      "fit_sparse_symbolic_mechanism_for_node",
+      "evaluate",
+      "__init__",
+      "mechanism_for",
+      "evaluate_mechanism",
+      "expressions",
+      "__init__",
+      "_training_df_for_node",
+      "update",
+      "answer",
+      "snapshot",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 169,
+      "num_statements": 197,
+      "percent_covered": 80.7829181494662,
+      "percent_covered_display": "81",
+      "missing_lines": 28,
+      "excluded_lines": 0,
+      "percent_statements_covered": 85.78680203045685,
+      "percent_statements_covered_display": "86",
+      "num_branches": 84,
+      "num_partial_branches": 24,
+      "covered_branches": 58,
+      "missing_branches": 26,
+      "percent_branches_covered": 69.04761904761905,
+      "percent_branches_covered_display": "69"
+    },
+    "missing_lines": [
+      34,
+      35,
+      39,
+      44,
+      57,
+      71,
+      77,
+      78,
+      84,
+      117,
+      149,
+      160,
+      181,
+      202,
+      212,
+      257,
+      265,
+      269,
+      281,
+      288,
+      294,
+      295,
+      317,
+      340,
+      341,
+      352,
+      367,
+      368
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/empirical/transformed_outcome.py",
+    "functions": [
+      "__init__",
+      "update",
+      "answer",
+      "_interventional_training_frame",
+      "_observational_training_frame",
+      "snapshot",
+      "to_spec",
+      "from_spec",
+      "estimate"
+    ],
+    "coverage": {
+      "covered_lines": 86,
+      "num_statements": 94,
+      "percent_covered": 86.84210526315789,
+      "percent_covered_display": "87",
+      "missing_lines": 8,
+      "excluded_lines": 0,
+      "percent_statements_covered": 91.48936170212765,
+      "percent_statements_covered_display": "91",
+      "num_branches": 20,
+      "num_partial_branches": 7,
+      "covered_branches": 13,
+      "missing_branches": 7,
+      "percent_branches_covered": 65.0,
+      "percent_branches_covered_display": "65"
+    },
+    "missing_lines": [
+      64,
+      83,
+      93,
+      122,
+      150,
+      155,
+      162,
+      193
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/lingam.py",
+    "functions": [
+      "__init__",
+      "_provenance",
+      "update",
+      "answer",
+      "snapshot",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 50,
+      "num_statements": 61,
+      "percent_covered": 80.59701492537313,
+      "percent_covered_display": "81",
+      "missing_lines": 11,
+      "excluded_lines": 0,
+      "percent_statements_covered": 81.9672131147541,
+      "percent_statements_covered_display": "82",
+      "num_branches": 6,
+      "num_partial_branches": 2,
+      "covered_branches": 4,
+      "missing_branches": 2,
+      "percent_branches_covered": 66.66666666666667,
+      "percent_branches_covered_display": "67"
+    },
+    "missing_lines": [
+      45,
+      46,
+      47,
+      48,
+      49,
+      66,
+      74,
+      75,
+      94,
+      105,
+      120
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/notears.py",
+    "functions": [
+      "__init__",
+      "_provenance",
+      "update",
+      "answer",
+      "snapshot",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 54,
+      "num_statements": 58,
+      "percent_covered": 90.625,
+      "percent_covered_display": "91",
+      "missing_lines": 4,
+      "excluded_lines": 0,
+      "percent_statements_covered": 93.10344827586206,
+      "percent_statements_covered_display": "93",
+      "num_branches": 6,
+      "num_partial_branches": 2,
+      "covered_branches": 4,
+      "missing_branches": 2,
+      "percent_branches_covered": 66.66666666666667,
+      "percent_branches_covered_display": "67"
+    },
+    "missing_lines": [
+      52,
+      69,
+      96,
+      124
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/outcome_regression.py",
+    "functions": [
+      "__init__",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 21,
+      "num_statements": 22,
+      "percent_covered": 91.66666666666667,
+      "percent_covered_display": "92",
+      "missing_lines": 1,
+      "excluded_lines": 0,
+      "percent_statements_covered": 95.45454545454545,
+      "percent_statements_covered_display": "95",
+      "num_branches": 2,
+      "num_partial_branches": 1,
+      "covered_branches": 1,
+      "missing_branches": 1,
+      "percent_branches_covered": 50.0,
+      "percent_branches_covered_display": "50"
+    },
+    "missing_lines": [
+      39
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/pc.py",
+    "functions": [
+      "__init__",
+      "_provenance",
+      "update",
+      "_endpoint_name",
+      "_convert_graph",
+      "answer",
+      "snapshot",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 69,
+      "num_statements": 81,
+      "percent_covered": 83.87096774193549,
+      "percent_covered_display": "84",
+      "missing_lines": 12,
+      "excluded_lines": 0,
+      "percent_statements_covered": 85.18518518518519,
+      "percent_statements_covered_display": "85",
+      "num_branches": 12,
+      "num_partial_branches": 3,
+      "covered_branches": 9,
+      "missing_branches": 3,
+      "percent_branches_covered": 75.0,
+      "percent_branches_covered_display": "75"
+    },
+    "missing_lines": [
+      46,
+      47,
+      48,
+      49,
+      50,
+      81,
+      83,
+      95,
+      103,
+      104,
+      122,
+      133
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/scm.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 2,
+      "num_statements": 2,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/symbolic_scm.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 2,
+      "num_statements": 2,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/agent/inferers/transformed_outcome.py",
+    "functions": [
+      "__init__",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 25,
+      "num_statements": 26,
+      "percent_covered": 92.85714285714286,
+      "percent_covered_display": "93",
+      "missing_lines": 1,
+      "excluded_lines": 0,
+      "percent_statements_covered": 96.15384615384616,
+      "percent_statements_covered_display": "96",
+      "num_branches": 2,
+      "num_partial_branches": 1,
+      "covered_branches": 1,
+      "missing_branches": 1,
+      "percent_branches_covered": 50.0,
+      "percent_branches_covered_display": "50"
+    },
+    "missing_lines": [
+      57
+    ]
+  },
+  {
+    "path": "TheCausalityGame/agent/policies/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 1,
+      "num_statements": 1,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/agent/policies/random.py",
+    "functions": [
+      "__init__",
+      "update",
+      "decide",
+      "answer",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 30,
+      "num_statements": 47,
+      "percent_covered": 56.60377358490566,
+      "percent_covered_display": "57",
+      "missing_lines": 17,
+      "excluded_lines": 0,
+      "percent_statements_covered": 63.829787234042556,
+      "percent_statements_covered_display": "64",
+      "num_branches": 6,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 6,
+      "percent_branches_covered": 0.0,
+      "percent_branches_covered_display": "0"
+    },
+    "missing_lines": [
+      29,
+      37,
+      38,
+      39,
+      40,
+      41,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      51,
+      52,
+      53,
+      57
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 0,
+      "num_statements": 0,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/cli/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 2,
+      "num_statements": 2,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/cli/main.py",
+    "functions": [
+      "_load_problem_instance",
+      "_execute_run",
+      "run",
+      "main",
+      "resolve_command"
+    ],
+    "coverage": {
+      "covered_lines": 31,
+      "num_statements": 52,
+      "percent_covered": 60.3448275862069,
+      "percent_covered_display": "60",
+      "missing_lines": 21,
+      "excluded_lines": 0,
+      "percent_statements_covered": 59.61538461538461,
+      "percent_statements_covered_display": "60",
+      "num_branches": 6,
+      "num_partial_branches": 2,
+      "covered_branches": 4,
+      "missing_branches": 2,
+      "percent_branches_covered": 66.66666666666667,
+      "percent_branches_covered_display": "67"
+    },
+    "missing_lines": [
+      47,
+      52,
+      60,
+      61,
+      66,
+      68,
+      69,
+      70,
+      71,
+      74,
+      75,
+      82,
+      84,
+      90,
+      92,
+      93,
+      94,
+      95,
+      100,
+      153,
+      157
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 0,
+      "num_statements": 0,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/agent.py",
+    "functions": [
+      "set_context",
+      "context",
+      "set_logger",
+      "logger",
+      "act",
+      "inform",
+      "answer"
+    ],
+    "coverage": {
+      "covered_lines": 36,
+      "num_statements": 45,
+      "percent_covered": 71.69811320754717,
+      "percent_covered_display": "72",
+      "missing_lines": 9,
+      "excluded_lines": 0,
+      "percent_statements_covered": 80.0,
+      "percent_statements_covered_display": "80",
+      "num_branches": 8,
+      "num_partial_branches": 2,
+      "covered_branches": 2,
+      "missing_branches": 6,
+      "percent_branches_covered": 25.0,
+      "percent_branches_covered_display": "25"
+    },
+    "missing_lines": [
+      74,
+      75,
+      76,
+      88,
+      89,
+      90,
+      115,
+      130,
+      142
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/agent_policy.py",
+    "functions": [
+      "set_context",
+      "context",
+      "set_logger",
+      "logger",
+      "update",
+      "decide",
+      "answer"
+    ],
+    "coverage": {
+      "covered_lines": 26,
+      "num_statements": 39,
+      "percent_covered": 55.319148936170215,
+      "percent_covered_display": "55",
+      "missing_lines": 13,
+      "excluded_lines": 0,
+      "percent_statements_covered": 66.66666666666667,
+      "percent_statements_covered_display": "67",
+      "num_branches": 8,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 8,
+      "percent_branches_covered": 0.0,
+      "percent_branches_covered_display": "0"
+    },
+    "missing_lines": [
+      29,
+      30,
+      35,
+      36,
+      37,
+      41,
+      42,
+      47,
+      48,
+      49,
+      54,
+      63,
+      68
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/dag.py",
+    "functions": [
+      "__init__",
+      "nodes",
+      "edges",
+      "get_parents",
+      "get_node_types",
+      "get_structured_nodes",
+      "generate_figure",
+      "plot"
+    ],
+    "coverage": {
+      "covered_lines": 34,
+      "num_statements": 40,
+      "percent_covered": 83.33333333333333,
+      "percent_covered_display": "83",
+      "missing_lines": 6,
+      "excluded_lines": 0,
+      "percent_statements_covered": 85.0,
+      "percent_statements_covered_display": "85",
+      "num_branches": 8,
+      "num_partial_branches": 2,
+      "covered_branches": 6,
+      "missing_branches": 2,
+      "percent_branches_covered": 75.0,
+      "percent_branches_covered_display": "75"
+    },
+    "missing_lines": [
+      39,
+      79,
+      103,
+      115,
+      136,
+      157
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/decider.py",
+    "functions": [
+      "set_context",
+      "context",
+      "set_logger",
+      "logger",
+      "required_capabilities",
+      "update",
+      "decide"
+    ],
+    "coverage": {
+      "covered_lines": 31,
+      "num_statements": 36,
+      "percent_covered": 77.27272727272727,
+      "percent_covered_display": "77",
+      "missing_lines": 5,
+      "excluded_lines": 0,
+      "percent_statements_covered": 86.11111111111111,
+      "percent_statements_covered_display": "86",
+      "num_branches": 8,
+      "num_partial_branches": 3,
+      "covered_branches": 3,
+      "missing_branches": 5,
+      "percent_branches_covered": 37.5,
+      "percent_branches_covered_display": "38"
+    },
+    "missing_lines": [
+      35,
+      46,
+      47,
+      48,
+      66
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/dto/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 0,
+      "num_statements": 0,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/dto/agent.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 16,
+      "num_statements": 16,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/dto/causal_graph.py",
+    "functions": [
+      "graph_nodes",
+      "graph_directed_edges",
+      "graph_undirected_edges",
+      "graph_adjacencies",
+      "normalize_undirected_edges",
+      "to_networkx"
+    ],
+    "coverage": {
+      "covered_lines": 34,
+      "num_statements": 46,
+      "percent_covered": 74.13793103448276,
+      "percent_covered_display": "74",
+      "missing_lines": 12,
+      "excluded_lines": 0,
+      "percent_statements_covered": 73.91304347826087,
+      "percent_statements_covered_display": "74",
+      "num_branches": 12,
+      "num_partial_branches": 1,
+      "covered_branches": 9,
+      "missing_branches": 3,
+      "percent_branches_covered": 75.0,
+      "percent_branches_covered_display": "75"
+    },
+    "missing_lines": [
+      30,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      74,
+      75,
+      80,
+      83
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/dto/common.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 3,
+      "num_statements": 3,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/dto/environment.py",
+    "functions": [
+      "is_observational",
+      "total_n",
+      "total_bytes"
+    ],
+    "coverage": {
+      "covered_lines": 44,
+      "num_statements": 44,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/dto/transcript.py",
+    "functions": [
+      "invalidate",
+      "finish"
+    ],
+    "coverage": {
+      "covered_lines": 43,
+      "num_statements": 43,
+      "percent_covered": 97.77777777777777,
+      "percent_covered_display": "98",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 2,
+      "num_partial_branches": 1,
+      "covered_branches": 1,
+      "missing_branches": 1,
+      "percent_branches_covered": 50.0,
+      "percent_branches_covered_display": "50"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/hook.py",
+    "functions": [
+      "run",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 18,
+      "num_statements": 21,
+      "percent_covered": 85.71428571428571,
+      "percent_covered_display": "86",
+      "missing_lines": 3,
+      "excluded_lines": 0,
+      "percent_statements_covered": 85.71428571428571,
+      "percent_statements_covered_display": "86",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": [
+      44,
+      48,
+      57
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/inferer.py",
+    "functions": [
+      "set_context",
+      "context",
+      "set_logger",
+      "logger",
+      "update",
+      "answer",
+      "snapshot"
+    ],
+    "coverage": {
+      "covered_lines": 28,
+      "num_statements": 37,
+      "percent_covered": 66.66666666666667,
+      "percent_covered_display": "67",
+      "missing_lines": 9,
+      "excluded_lines": 0,
+      "percent_statements_covered": 75.67567567567568,
+      "percent_statements_covered_display": "76",
+      "num_branches": 8,
+      "num_partial_branches": 2,
+      "covered_branches": 2,
+      "missing_branches": 6,
+      "percent_branches_covered": 25.0,
+      "percent_branches_covered_display": "25"
+    },
+    "missing_lines": [
+      33,
+      34,
+      35,
+      45,
+      46,
+      47,
+      52,
+      57,
+      62
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/metric.py",
+    "functions": [
+      "mount",
+      "evaluate",
+      "context_metadata",
+      "evaluate",
+      "evaluate"
+    ],
+    "coverage": {
+      "covered_lines": 24,
+      "num_statements": 28,
+      "percent_covered": 85.71428571428571,
+      "percent_covered_display": "86",
+      "missing_lines": 4,
+      "excluded_lines": 0,
+      "percent_statements_covered": 85.71428571428571,
+      "percent_statements_covered_display": "86",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": [
+      47,
+      59,
+      88,
+      122
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/mission.py",
+    "functions": [
+      "__init__",
+      "mount",
+      "context_metadata",
+      "evaluate"
+    ],
+    "coverage": {
+      "covered_lines": 24,
+      "num_statements": 28,
+      "percent_covered": 85.71428571428571,
+      "percent_covered_display": "86",
+      "missing_lines": 4,
+      "excluded_lines": 0,
+      "percent_statements_covered": 85.71428571428571,
+      "percent_statements_covered_display": "86",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": [
+      77,
+      78,
+      79,
+      107
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/noise.py",
+    "functions": [
+      "generate"
+    ],
+    "coverage": {
+      "covered_lines": 5,
+      "num_statements": 6,
+      "percent_covered": 83.33333333333333,
+      "percent_covered_display": "83",
+      "missing_lines": 1,
+      "excluded_lines": 0,
+      "percent_statements_covered": 83.33333333333333,
+      "percent_statements_covered_display": "83",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": [
+      39
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/plot.py",
+    "functions": [
+      "generate"
+    ],
+    "coverage": {
+      "covered_lines": 0,
+      "num_statements": 14,
+      "percent_covered": 0.0,
+      "percent_covered_display": "0",
+      "missing_lines": 14,
+      "excluded_lines": 0,
+      "percent_statements_covered": 0.0,
+      "percent_statements_covered_display": "0",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": [
+      3,
+      5,
+      6,
+      8,
+      9,
+      11,
+      12,
+      15,
+      30,
+      31,
+      32,
+      34,
+      35,
+      54
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/problem_instance.py",
+    "functions": [
+      "__init__",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 34,
+      "num_statements": 34,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/result_validator.py",
+    "functions": [
+      "kind",
+      "validate"
+    ],
+    "coverage": {
+      "covered_lines": 11,
+      "num_statements": 12,
+      "percent_covered": 91.66666666666667,
+      "percent_covered_display": "92",
+      "missing_lines": 1,
+      "excluded_lines": 0,
+      "percent_statements_covered": 91.66666666666667,
+      "percent_statements_covered_display": "92",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": [
+      54
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/scm.py",
+    "functions": [
+      "__init__",
+      "vars",
+      "controllable_vars",
+      "observable_vars",
+      "latent_vars",
+      "outcome_vars",
+      "leaf_vars",
+      "get_random_state",
+      "prepare_new_random_state_structure",
+      "generate_samples",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 97,
+      "num_statements": 108,
+      "percent_covered": 87.32394366197182,
+      "percent_covered_display": "87",
+      "missing_lines": 11,
+      "excluded_lines": 0,
+      "percent_statements_covered": 89.81481481481481,
+      "percent_statements_covered_display": "90",
+      "num_branches": 34,
+      "num_partial_branches": 7,
+      "covered_branches": 27,
+      "missing_branches": 7,
+      "percent_branches_covered": 79.41176470588235,
+      "percent_branches_covered_display": "79"
+    },
+    "missing_lines": [
+      67,
+      75,
+      86,
+      105,
+      114,
+      124,
+      133,
+      142,
+      196,
+      202,
+      223
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/scm_node.py",
+    "functions": [
+      "__init__",
+      "prepare_new_random_state_structure",
+      "generate_values",
+      "_to_dict",
+      "to_spec"
+    ],
+    "coverage": {
+      "covered_lines": 48,
+      "num_statements": 52,
+      "percent_covered": 89.0625,
+      "percent_covered_display": "89",
+      "missing_lines": 4,
+      "excluded_lines": 0,
+      "percent_statements_covered": 92.3076923076923,
+      "percent_statements_covered_display": "92",
+      "num_branches": 12,
+      "num_partial_branches": 3,
+      "covered_branches": 9,
+      "missing_branches": 3,
+      "percent_branches_covered": 75.0,
+      "percent_branches_covered_display": "75"
+    },
+    "missing_lines": [
+      79,
+      88,
+      145,
+      149
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/serializable.py",
+    "functions": [
+      "to_spec",
+      "from_spec",
+      "to_dict",
+      "to_json",
+      "from_json"
+    ],
+    "coverage": {
+      "covered_lines": 18,
+      "num_statements": 20,
+      "percent_covered": 90.0,
+      "percent_covered_display": "90",
+      "missing_lines": 2,
+      "excluded_lines": 0,
+      "percent_statements_covered": 90.0,
+      "percent_statements_covered_display": "90",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": [
+      44,
+      45
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/specs/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 0,
+      "num_statements": 0,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/specs/acquisition.py",
+    "functions": [
+      "quote",
+      "validate_form",
+      "reached"
+    ],
+    "coverage": {
+      "covered_lines": 48,
+      "num_statements": 51,
+      "percent_covered": 91.30434782608695,
+      "percent_covered_display": "91",
+      "missing_lines": 3,
+      "excluded_lines": 0,
+      "percent_statements_covered": 94.11764705882354,
+      "percent_statements_covered_display": "94",
+      "num_branches": 18,
+      "num_partial_branches": 3,
+      "covered_branches": 15,
+      "missing_branches": 3,
+      "percent_branches_covered": 83.33333333333333,
+      "percent_branches_covered_display": "83"
+    },
+    "missing_lines": [
+      35,
+      75,
+      83
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/specs/agent.py",
+    "functions": [
+      "validate_component_shape"
+    ],
+    "coverage": {
+      "covered_lines": 20,
+      "num_statements": 23,
+      "percent_covered": 79.3103448275862,
+      "percent_covered_display": "79",
+      "missing_lines": 3,
+      "excluded_lines": 0,
+      "percent_statements_covered": 86.95652173913044,
+      "percent_statements_covered_display": "87",
+      "num_branches": 6,
+      "num_partial_branches": 3,
+      "covered_branches": 3,
+      "missing_branches": 3,
+      "percent_branches_covered": 50.0,
+      "percent_branches_covered_display": "50"
+    },
+    "missing_lines": [
+      52,
+      55,
+      58
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/specs/agent_policy.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 2,
+      "num_statements": 2,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/specs/budget.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 12,
+      "num_statements": 12,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/specs/common.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 6,
+      "num_statements": 6,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/specs/dag.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 5,
+      "num_statements": 5,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/specs/decider.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 2,
+      "num_statements": 2,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/specs/hook.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 7,
+      "num_statements": 7,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/specs/inferer.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 2,
+      "num_statements": 2,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/specs/metric.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 3,
+      "num_statements": 3,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/specs/mission.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 9,
+      "num_statements": 9,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/specs/noise.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 3,
+      "num_statements": 3,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/specs/plot.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 0,
+      "num_statements": 6,
+      "percent_covered": 0.0,
+      "percent_covered_display": "0",
+      "missing_lines": 6,
+      "excluded_lines": 0,
+      "percent_statements_covered": 0.0,
+      "percent_statements_covered_display": "0",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": [
+      3,
+      5,
+      6,
+      9,
+      28,
+      29
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/specs/problem_instance.py",
+    "functions": [
+      "validate_seeds_and_ids"
+    ],
+    "coverage": {
+      "covered_lines": 24,
+      "num_statements": 26,
+      "percent_covered": 86.66666666666667,
+      "percent_covered_display": "87",
+      "missing_lines": 2,
+      "excluded_lines": 0,
+      "percent_statements_covered": 92.3076923076923,
+      "percent_statements_covered_display": "92",
+      "num_branches": 4,
+      "num_partial_branches": 2,
+      "covered_branches": 2,
+      "missing_branches": 2,
+      "percent_branches_covered": 50.0,
+      "percent_branches_covered_display": "50"
+    },
+    "missing_lines": [
+      63,
+      66
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/specs/result_validator.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 3,
+      "num_statements": 3,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/specs/run.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 11,
+      "num_statements": 11,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/specs/scm.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 8,
+      "num_statements": 8,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/specs/scm_node.py",
+    "functions": [
+      "validate_builtin_categorical_domain"
+    ],
+    "coverage": {
+      "covered_lines": 25,
+      "num_statements": 25,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 2,
+      "num_partial_branches": 0,
+      "covered_branches": 2,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/contracts/specs/settings.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 6,
+      "num_statements": 6,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/infrastructure/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 0,
+      "num_statements": 0,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/infrastructure/artifact_contract.py",
+    "functions": [
+      "validate_publication_transcript"
+    ],
+    "coverage": {
+      "covered_lines": 72,
+      "num_statements": 83,
+      "percent_covered": 84.82758620689656,
+      "percent_covered_display": "85",
+      "missing_lines": 11,
+      "excluded_lines": 0,
+      "percent_statements_covered": 86.74698795180723,
+      "percent_statements_covered_display": "87",
+      "num_branches": 62,
+      "num_partial_branches": 11,
+      "covered_branches": 51,
+      "missing_branches": 11,
+      "percent_branches_covered": 82.25806451612904,
+      "percent_branches_covered_display": "82"
+    },
+    "missing_lines": [
+      20,
+      27,
+      36,
+      46,
+      56,
+      74,
+      92,
+      96,
+      104,
+      108,
+      113
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/infrastructure/artifacts.py",
+    "functions": [
+      "__init__",
+      "set_logger",
+      "create_dirs",
+      "_json_safe",
+      "_clean_transcript_entry_for_serialization",
+      "write_transcript",
+      "write_transcripts",
+      "write_provenance"
+    ],
+    "coverage": {
+      "covered_lines": 73,
+      "num_statements": 83,
+      "percent_covered": 83.19327731092437,
+      "percent_covered_display": "83",
+      "missing_lines": 10,
+      "excluded_lines": 0,
+      "percent_statements_covered": 87.95180722891567,
+      "percent_statements_covered_display": "88",
+      "num_branches": 36,
+      "num_partial_branches": 6,
+      "covered_branches": 26,
+      "missing_branches": 10,
+      "percent_branches_covered": 72.22222222222223,
+      "percent_branches_covered_display": "72"
+    },
+    "missing_lines": [
+      89,
+      91,
+      101,
+      106,
+      107,
+      108,
+      109,
+      110,
+      184,
+      228
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/infrastructure/decisions.py",
+    "functions": [
+      "__init__",
+      "experiment",
+      "answer",
+      "add_experiment",
+      "extend",
+      "is_experiment",
+      "is_answer",
+      "to_dict",
+      "__repr__"
+    ],
+    "coverage": {
+      "covered_lines": 42,
+      "num_statements": 44,
+      "percent_covered": 94.23076923076923,
+      "percent_covered_display": "94",
+      "missing_lines": 2,
+      "excluded_lines": 0,
+      "percent_statements_covered": 95.45454545454545,
+      "percent_statements_covered_display": "95",
+      "num_branches": 8,
+      "num_partial_branches": 1,
+      "covered_branches": 7,
+      "missing_branches": 1,
+      "percent_branches_covered": 87.5,
+      "percent_branches_covered_display": "88"
+    },
+    "missing_lines": [
+      119,
+      173
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/infrastructure/logger.py",
+    "functions": [
+      "__init__",
+      "close",
+      "__enter__",
+      "__exit__",
+      "_setup_handlers",
+      "_get_color_formatter",
+      "debug",
+      "info",
+      "warning",
+      "error",
+      "critical",
+      "format"
+    ],
+    "coverage": {
+      "covered_lines": 91,
+      "num_statements": 97,
+      "percent_covered": 90.5982905982906,
+      "percent_covered_display": "91",
+      "missing_lines": 6,
+      "excluded_lines": 0,
+      "percent_statements_covered": 93.81443298969072,
+      "percent_statements_covered_display": "94",
+      "num_branches": 20,
+      "num_partial_branches": 5,
+      "covered_branches": 15,
+      "missing_branches": 5,
+      "percent_branches_covered": 75.0,
+      "percent_branches_covered_display": "75"
+    },
+    "missing_lines": [
+      72,
+      90,
+      94,
+      145,
+      154,
+      170
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/infrastructure/provenance.py",
+    "functions": [
+      "source_fingerprint",
+      "manifest_fingerprint",
+      "dependency_versions"
+    ],
+    "coverage": {
+      "covered_lines": 21,
+      "num_statements": 23,
+      "percent_covered": 93.10344827586206,
+      "percent_covered_display": "93",
+      "missing_lines": 2,
+      "excluded_lines": 0,
+      "percent_statements_covered": 91.30434782608695,
+      "percent_statements_covered_display": "91",
+      "num_branches": 6,
+      "num_partial_branches": 0,
+      "covered_branches": 6,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": [
+      49,
+      50
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/infrastructure/registry.py",
+    "functions": [
+      "register_allowlist_prefix",
+      "load_class",
+      "get_class_path",
+      "build_from_spec",
+      "load_subclasses_from_path",
+      "_import_module_from_file"
+    ],
+    "coverage": {
+      "covered_lines": 71,
+      "num_statements": 85,
+      "percent_covered": 80.67226890756302,
+      "percent_covered_display": "81",
+      "missing_lines": 14,
+      "excluded_lines": 0,
+      "percent_statements_covered": 83.52941176470588,
+      "percent_statements_covered_display": "84",
+      "num_branches": 34,
+      "num_partial_branches": 7,
+      "covered_branches": 25,
+      "missing_branches": 9,
+      "percent_branches_covered": 73.52941176470588,
+      "percent_branches_covered_display": "74"
+    },
+    "missing_lines": [
+      41,
+      71,
+      72,
+      80,
+      81,
+      106,
+      107,
+      108,
+      115,
+      120,
+      163,
+      175,
+      199,
+      223
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/infrastructure/serialization.py",
+    "functions": [
+      "is_serializable",
+      "_is_dataclass_instance",
+      "_default_encoder",
+      "dumps",
+      "dump",
+      "_reject_nonfinite_constant",
+      "loads",
+      "jsonl_write"
+    ],
+    "coverage": {
+      "covered_lines": 59,
+      "num_statements": 69,
+      "percent_covered": 82.3529411764706,
+      "percent_covered_display": "82",
+      "missing_lines": 10,
+      "excluded_lines": 0,
+      "percent_statements_covered": 85.5072463768116,
+      "percent_statements_covered_display": "86",
+      "num_branches": 16,
+      "num_partial_branches": 3,
+      "covered_branches": 11,
+      "missing_branches": 5,
+      "percent_branches_covered": 68.75,
+      "percent_branches_covered_display": "69"
+    },
+    "missing_lines": [
+      70,
+      78,
+      79,
+      80,
+      84,
+      150,
+      190,
+      191,
+      192,
+      193
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/lib/enum/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 0,
+      "num_statements": 0,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/lib/enum/environment.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 11,
+      "num_statements": 11,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/lib/enum/hook.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 28,
+      "num_statements": 28,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/lib/enum/nodes.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 8,
+      "num_statements": 8,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/lib/enum/plots.py",
+    "functions": []
+  },
+  {
+    "path": "TheCausalityGame/core/lib/enum/runplan.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 11,
+      "num_statements": 11,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/lib/enum/runtime.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 17,
+      "num_statements": 17,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/lib/errors/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 0,
+      "num_statements": 0,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/lib/errors/agent.py",
+    "functions": [
+      "__init__",
+      "__init__",
+      "__init__",
+      "__init__",
+      "__init__"
+    ],
+    "coverage": {
+      "covered_lines": 10,
+      "num_statements": 16,
+      "percent_covered": 62.5,
+      "percent_covered_display": "62",
+      "missing_lines": 6,
+      "excluded_lines": 0,
+      "percent_statements_covered": 62.5,
+      "percent_statements_covered_display": "62",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": [
+      8,
+      15,
+      22,
+      31,
+      32,
+      41
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/lib/errors/budget.py",
+    "functions": [
+      "__init__",
+      "__init__",
+      "__init__",
+      "__init__"
+    ],
+    "coverage": {
+      "covered_lines": 12,
+      "num_statements": 12,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/lib/errors/dag.py",
+    "functions": [
+      "__init__"
+    ],
+    "coverage": {
+      "covered_lines": 3,
+      "num_statements": 3,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/lib/errors/environment.py",
+    "functions": [
+      "__init__",
+      "__init__",
+      "__init__",
+      "__init__",
+      "__init__",
+      "__init__",
+      "__init__"
+    ],
+    "coverage": {
+      "covered_lines": 21,
+      "num_statements": 25,
+      "percent_covered": 84.0,
+      "percent_covered_display": "84",
+      "missing_lines": 4,
+      "excluded_lines": 0,
+      "percent_statements_covered": 84.0,
+      "percent_statements_covered_display": "84",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": [
+      8,
+      15,
+      74,
+      75
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/lib/errors/inferer.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 4,
+      "num_statements": 4,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/lib/errors/metric.py",
+    "functions": [
+      "__init__",
+      "__init__",
+      "__init__"
+    ],
+    "coverage": {
+      "covered_lines": 6,
+      "num_statements": 11,
+      "percent_covered": 54.54545454545455,
+      "percent_covered_display": "55",
+      "missing_lines": 5,
+      "excluded_lines": 0,
+      "percent_statements_covered": 54.54545454545455,
+      "percent_statements_covered_display": "55",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": [
+      9,
+      19,
+      20,
+      21,
+      29
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/lib/errors/mission.py",
+    "functions": [
+      "__init__"
+    ],
+    "coverage": {
+      "covered_lines": 2,
+      "num_statements": 3,
+      "percent_covered": 66.66666666666667,
+      "percent_covered_display": "67",
+      "missing_lines": 1,
+      "excluded_lines": 0,
+      "percent_statements_covered": 66.66666666666667,
+      "percent_statements_covered_display": "67",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": [
+      8
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/lib/errors/registry.py",
+    "functions": [
+      "__init__",
+      "__init__",
+      "__init__",
+      "__init__",
+      "__init__",
+      "__init__",
+      "__init__",
+      "__init__"
+    ],
+    "coverage": {
+      "covered_lines": 24,
+      "num_statements": 46,
+      "percent_covered": 43.333333333333336,
+      "percent_covered_display": "43",
+      "missing_lines": 22,
+      "excluded_lines": 0,
+      "percent_statements_covered": 52.17391304347826,
+      "percent_statements_covered_display": "52",
+      "num_branches": 14,
+      "num_partial_branches": 2,
+      "covered_branches": 2,
+      "missing_branches": 12,
+      "percent_branches_covered": 14.285714285714286,
+      "percent_branches_covered_display": "14"
+    },
+    "missing_lines": [
+      8,
+      9,
+      10,
+      11,
+      28,
+      29,
+      30,
+      31,
+      42,
+      43,
+      44,
+      45,
+      52,
+      53,
+      54,
+      55,
+      62,
+      63,
+      80,
+      81,
+      82,
+      83
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/lib/errors/result_validator.py",
+    "functions": [
+      "__init__",
+      "__init__",
+      "__init__"
+    ],
+    "coverage": {
+      "covered_lines": 9,
+      "num_statements": 9,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/lib/errors/scm.py",
+    "functions": [
+      "__init__",
+      "__init__"
+    ],
+    "coverage": {
+      "covered_lines": 4,
+      "num_statements": 6,
+      "percent_covered": 66.66666666666667,
+      "percent_covered_display": "67",
+      "missing_lines": 2,
+      "excluded_lines": 0,
+      "percent_statements_covered": 66.66666666666667,
+      "percent_statements_covered_display": "67",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": [
+      9,
+      17
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/lib/errors/serialization.py",
+    "functions": [
+      "__init__",
+      "__init__"
+    ],
+    "coverage": {
+      "covered_lines": 7,
+      "num_statements": 7,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/lib/errors/tcg.py",
+    "functions": [
+      "__init__",
+      "__init__"
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/lib/utils/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 0,
+      "num_statements": 0,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/lib/utils/metrics.py",
+    "functions": [
+      "log_penalty"
+    ],
+    "coverage": {
+      "covered_lines": 3,
+      "num_statements": 3,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/lib/utils/random_state_serialization.py",
+    "functions": [
+      "random_state_to_json",
+      "random_state_from_json",
+      "random_state_from_dict",
+      "resolve_scm_random_state"
+    ],
+    "coverage": {
+      "covered_lines": 19,
+      "num_statements": 19,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 2,
+      "num_partial_branches": 0,
+      "covered_branches": 2,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/lib/utils/seeding.py",
+    "functions": [
+      "intervention_identity",
+      "state_identity",
+      "derive_seed",
+      "derive_random_state"
+    ],
+    "coverage": {
+      "covered_lines": 23,
+      "num_statements": 26,
+      "percent_covered": 87.5,
+      "percent_covered_display": "88",
+      "missing_lines": 3,
+      "excluded_lines": 0,
+      "percent_statements_covered": 88.46153846153847,
+      "percent_statements_covered_display": "88",
+      "num_branches": 6,
+      "num_partial_branches": 1,
+      "covered_branches": 5,
+      "missing_branches": 1,
+      "percent_branches_covered": 83.33333333333333,
+      "percent_branches_covered_display": "83"
+    },
+    "missing_lines": [
+      19,
+      39,
+      42
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/lib/utils/tests.py",
+    "functions": [
+      "get_required_init_args",
+      "assert_dicts_equal"
+    ],
+    "coverage": {
+      "covered_lines": 23,
+      "num_statements": 24,
+      "percent_covered": 94.73684210526316,
+      "percent_covered_display": "95",
+      "missing_lines": 1,
+      "excluded_lines": 0,
+      "percent_statements_covered": 95.83333333333333,
+      "percent_statements_covered_display": "96",
+      "num_branches": 14,
+      "num_partial_branches": 1,
+      "covered_branches": 13,
+      "missing_branches": 1,
+      "percent_branches_covered": 92.85714285714286,
+      "percent_branches_covered_display": "93"
+    },
+    "missing_lines": [
+      53
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/managers/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 0,
+      "num_statements": 0,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/managers/budget.py",
+    "functions": [
+      "__init__",
+      "start_time",
+      "pause_time",
+      "resume_time",
+      "seconds_elapsed",
+      "seconds_left",
+      "rounds_left",
+      "samples_left",
+      "memory_mb_left",
+      "check_time",
+      "tick_round",
+      "charge_samples",
+      "preflight",
+      "charge_acquisition",
+      "stop_reason",
+      "charge_memory",
+      "snapshot",
+      "__init__"
+    ],
+    "coverage": {
+      "covered_lines": 99,
+      "num_statements": 101,
+      "percent_covered": 96.35036496350365,
+      "percent_covered_display": "96",
+      "missing_lines": 2,
+      "excluded_lines": 1,
+      "percent_statements_covered": 98.01980198019803,
+      "percent_statements_covered_display": "98",
+      "num_branches": 36,
+      "num_partial_branches": 3,
+      "covered_branches": 33,
+      "missing_branches": 3,
+      "percent_branches_covered": 91.66666666666667,
+      "percent_branches_covered_display": "92"
+    },
+    "missing_lines": [
+      150,
+      195
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/managers/hook.py",
+    "functions": [
+      "__init__",
+      "trigger",
+      "finalize"
+    ],
+    "coverage": {
+      "covered_lines": 22,
+      "num_statements": 34,
+      "percent_covered": 53.84615384615385,
+      "percent_covered_display": "54",
+      "missing_lines": 12,
+      "excluded_lines": 0,
+      "percent_statements_covered": 64.70588235294117,
+      "percent_statements_covered_display": "65",
+      "num_branches": 18,
+      "num_partial_branches": 4,
+      "covered_branches": 6,
+      "missing_branches": 12,
+      "percent_branches_covered": 33.333333333333336,
+      "percent_branches_covered_display": "33"
+    },
+    "missing_lines": [
+      39,
+      40,
+      45,
+      61,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      85
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/managers/plot.py",
+    "functions": [
+      "__init__",
+      "trigger_round",
+      "trigger_rounds",
+      "trigger_end",
+      "trigger_benchmark_end"
+    ],
+    "coverage": {
+      "covered_lines": 0,
+      "num_statements": 19,
+      "percent_covered": 0.0,
+      "percent_covered_display": "0",
+      "missing_lines": 19,
+      "excluded_lines": 0,
+      "percent_statements_covered": 0.0,
+      "percent_statements_covered_display": "0",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": [
+      3,
+      5,
+      6,
+      7,
+      8,
+      9,
+      12,
+      26,
+      35,
+      38,
+      41,
+      45,
+      61,
+      67,
+      83,
+      89,
+      105,
+      111,
+      127
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/runtime/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 0,
+      "num_statements": 0,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/core/runtime/environment.py",
+    "functions": [
+      "__init__",
+      "run",
+      "_apply_decision",
+      "_validate_experiment",
+      "_get_feedback",
+      "timed_answer"
+    ],
+    "coverage": {
+      "covered_lines": 200,
+      "num_statements": 209,
+      "percent_covered": 93.77289377289377,
+      "percent_covered_display": "94",
+      "missing_lines": 9,
+      "excluded_lines": 0,
+      "percent_statements_covered": 95.69377990430623,
+      "percent_statements_covered_display": "96",
+      "num_branches": 64,
+      "num_partial_branches": 6,
+      "covered_branches": 56,
+      "missing_branches": 8,
+      "percent_branches_covered": 87.5,
+      "percent_branches_covered_display": "88"
+    },
+    "missing_lines": [
+      133,
+      177,
+      178,
+      210,
+      229,
+      251,
+      419,
+      420,
+      424
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/runtime/game.py",
+    "functions": [
+      "__init__",
+      "run"
+    ],
+    "coverage": {
+      "covered_lines": 68,
+      "num_statements": 71,
+      "percent_covered": 93.97590361445783,
+      "percent_covered_display": "94",
+      "missing_lines": 3,
+      "excluded_lines": 0,
+      "percent_statements_covered": 95.77464788732394,
+      "percent_statements_covered_display": "96",
+      "num_branches": 12,
+      "num_partial_branches": 2,
+      "covered_branches": 10,
+      "missing_branches": 2,
+      "percent_branches_covered": 83.33333333333333,
+      "percent_branches_covered_display": "83"
+    },
+    "missing_lines": [
+      105,
+      106,
+      107
+    ]
+  },
+  {
+    "path": "TheCausalityGame/core/runtime/runner.py",
+    "functions": [
+      "__init__",
+      "_generate_logger",
+      "_invalidation_reason",
+      "_invalidated_transcript",
+      "run",
+      "_run_agent",
+      "_sequential_run",
+      "_parallel_run"
+    ],
+    "coverage": {
+      "covered_lines": 105,
+      "num_statements": 114,
+      "percent_covered": 88.57142857142857,
+      "percent_covered_display": "89",
+      "missing_lines": 9,
+      "excluded_lines": 0,
+      "percent_statements_covered": 92.10526315789474,
+      "percent_statements_covered_display": "92",
+      "num_branches": 26,
+      "num_partial_branches": 7,
+      "covered_branches": 19,
+      "missing_branches": 7,
+      "percent_branches_covered": 73.07692307692308,
+      "percent_branches_covered_display": "73"
+    },
+    "missing_lines": [
+      46,
+      146,
+      147,
+      185,
+      186,
+      202,
+      249,
+      250,
+      251
+    ]
+  },
+  {
+    "path": "TheCausalityGame/generators/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 4,
+      "num_statements": 4,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/generators/bif.py",
+    "functions": [
+      "migrate_legacy_scm",
+      "_tokens",
+      "_blocks",
+      "load_bif"
+    ],
+    "coverage": {
+      "covered_lines": 90,
+      "num_statements": 105,
+      "percent_covered": 78.61635220125787,
+      "percent_covered_display": "79",
+      "missing_lines": 15,
+      "excluded_lines": 0,
+      "percent_statements_covered": 85.71428571428571,
+      "percent_statements_covered_display": "86",
+      "num_branches": 54,
+      "num_partial_branches": 17,
+      "covered_branches": 35,
+      "missing_branches": 19,
+      "percent_branches_covered": 64.81481481481481,
+      "percent_branches_covered_display": "65"
+    },
+    "missing_lines": [
+      43,
+      46,
+      47,
+      52,
+      98,
+      104,
+      125,
+      130,
+      133,
+      143,
+      151,
+      159,
+      165,
+      168,
+      181
+    ]
+  },
+  {
+    "path": "TheCausalityGame/generators/dataset.py",
+    "functions": [
+      "dataset_scm",
+      "__init__",
+      "generate_values",
+      "_to_dict",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 92,
+      "num_statements": 101,
+      "percent_covered": 87.05035971223022,
+      "percent_covered_display": "87",
+      "missing_lines": 9,
+      "excluded_lines": 0,
+      "percent_statements_covered": 91.08910891089108,
+      "percent_statements_covered_display": "91",
+      "num_branches": 38,
+      "num_partial_branches": 9,
+      "covered_branches": 29,
+      "missing_branches": 9,
+      "percent_branches_covered": 76.3157894736842,
+      "percent_branches_covered_display": "76"
+    },
+    "missing_lines": [
+      51,
+      76,
+      84,
+      87,
+      127,
+      186,
+      190,
+      198,
+      202
+    ]
+  },
+  {
+    "path": "TheCausalityGame/generators/synthetic.py",
+    "functions": [
+      "generate_values",
+      "generate"
+    ],
+    "coverage": {
+      "covered_lines": 68,
+      "num_statements": 73,
+      "percent_covered": 89.01098901098901,
+      "percent_covered_display": "89",
+      "missing_lines": 5,
+      "excluded_lines": 0,
+      "percent_statements_covered": 93.15068493150685,
+      "percent_statements_covered_display": "93",
+      "num_branches": 18,
+      "num_partial_branches": 5,
+      "covered_branches": 13,
+      "missing_branches": 5,
+      "percent_branches_covered": 72.22222222222223,
+      "percent_branches_covered_display": "72"
+    },
+    "missing_lines": [
+      60,
+      67,
+      74,
+      77,
+      87
+    ]
+  },
+  {
+    "path": "TheCausalityGame/hook/core.py",
+    "functions": [
+      "__init__",
+      "_plot_scores",
+      "_plot_time_series",
+      "generate",
+      "to_spec",
+      "from_spec"
+    ]
+  },
+  {
+    "path": "TheCausalityGame/hook/plots/agent_comparison_plot.py",
+    "functions": [
+      "_plot_scores",
+      "_plot_time_series",
+      "run",
+      "to_spec",
+      "from_spec"
+    ]
+  },
+  {
+    "path": "TheCausalityGame/hook/plots/final_dag_per_agent.py",
+    "functions": [
+      "_cpdag_figure",
+      "to_imshow_array",
+      "run"
+    ],
+    "coverage": {
+      "covered_lines": 32,
+      "num_statements": 64,
+      "percent_covered": 41.02564102564103,
+      "percent_covered_display": "41",
+      "missing_lines": 32,
+      "excluded_lines": 0,
+      "percent_statements_covered": 50.0,
+      "percent_statements_covered_display": "50",
+      "num_branches": 14,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 14,
+      "percent_branches_covered": 0.0,
+      "percent_branches_covered_display": "0"
+    },
+    "missing_lines": [
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      63,
+      66,
+      67,
+      69,
+      80,
+      81,
+      83,
+      84,
+      86,
+      87,
+      88,
+      90,
+      91,
+      92,
+      94,
+      95,
+      96,
+      98,
+      99,
+      101,
+      102,
+      103,
+      104,
+      106,
+      108,
+      109
+    ]
+  },
+  {
+    "path": "TheCausalityGame/hook/plots/symbolic_mechanisms_per_agent.py",
+    "functions": [
+      "run",
+      "to_spec",
+      "from_spec"
+    ]
+  },
+  {
+    "path": "TheCausalityGame/metric/behavior/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 3,
+      "num_statements": 3,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/metric/behavior/acquisition.py",
+    "functions": [
+      "mount",
+      "evaluate",
+      "to_spec",
+      "from_spec",
+      "evaluate",
+      "__init__",
+      "mount",
+      "evaluate",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 38,
+      "num_statements": 45,
+      "percent_covered": 78.43137254901961,
+      "percent_covered_display": "78",
+      "missing_lines": 7,
+      "excluded_lines": 0,
+      "percent_statements_covered": 84.44444444444444,
+      "percent_statements_covered_display": "84",
+      "num_branches": 6,
+      "num_partial_branches": 2,
+      "covered_branches": 2,
+      "missing_branches": 4,
+      "percent_branches_covered": 33.333333333333336,
+      "percent_branches_covered_display": "33"
+    },
+    "missing_lines": [
+      24,
+      27,
+      71,
+      75,
+      79,
+      80,
+      81
+    ]
+  },
+  {
+    "path": "TheCausalityGame/metric/behavior/available_resources.py",
+    "functions": [
+      "__init__",
+      "mount",
+      "evaluate",
+      "to_spec",
+      "from_spec",
+      "_percentage_remaining"
+    ],
+    "coverage": {
+      "covered_lines": 29,
+      "num_statements": 49,
+      "percent_covered": 54.54545454545455,
+      "percent_covered_display": "55",
+      "missing_lines": 20,
+      "excluded_lines": 0,
+      "percent_statements_covered": 59.183673469387756,
+      "percent_statements_covered_display": "59",
+      "num_branches": 6,
+      "num_partial_branches": 1,
+      "covered_branches": 1,
+      "missing_branches": 5,
+      "percent_branches_covered": 16.666666666666668,
+      "percent_branches_covered_display": "17"
+    },
+    "missing_lines": [
+      44,
+      53,
+      54,
+      55,
+      56,
+      60,
+      61,
+      63,
+      64,
+      66,
+      67,
+      69,
+      72,
+      80,
+      90,
+      95,
+      101,
+      106,
+      111,
+      131
+    ]
+  },
+  {
+    "path": "TheCausalityGame/metric/behavior/resource_usage.py",
+    "functions": [
+      "__init__",
+      "__init__",
+      "mount",
+      "evaluate",
+      "to_spec",
+      "from_spec",
+      "_percentage_used"
+    ],
+    "coverage": {
+      "covered_lines": 49,
+      "num_statements": 53,
+      "percent_covered": 88.13559322033899,
+      "percent_covered_display": "88",
+      "missing_lines": 4,
+      "excluded_lines": 0,
+      "percent_statements_covered": 92.45283018867924,
+      "percent_statements_covered_display": "92",
+      "num_branches": 6,
+      "num_partial_branches": 3,
+      "covered_branches": 3,
+      "missing_branches": 3,
+      "percent_branches_covered": 50.0,
+      "percent_branches_covered_display": "50"
+    },
+    "missing_lines": [
+      18,
+      40,
+      57,
+      63
+    ]
+  },
+  {
+    "path": "TheCausalityGame/metric/behavior/rounds.py",
+    "functions": [
+      "__init__",
+      "mount",
+      "evaluate",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 34,
+      "num_statements": 35,
+      "percent_covered": 95.1219512195122,
+      "percent_covered_display": "95",
+      "missing_lines": 1,
+      "excluded_lines": 0,
+      "percent_statements_covered": 97.14285714285714,
+      "percent_statements_covered_display": "97",
+      "num_branches": 6,
+      "num_partial_branches": 1,
+      "covered_branches": 5,
+      "missing_branches": 1,
+      "percent_branches_covered": 83.33333333333333,
+      "percent_branches_covered_display": "83"
+    },
+    "missing_lines": [
+      45
+    ]
+  },
+  {
+    "path": "TheCausalityGame/metric/result/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 0,
+      "num_statements": 0,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/metric/result/pehe.py",
+    "functions": [
+      "mount",
+      "evaluate",
+      "context_metadata",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 58,
+      "num_statements": 65,
+      "percent_covered": 83.11688311688312,
+      "percent_covered_display": "83",
+      "missing_lines": 7,
+      "excluded_lines": 0,
+      "percent_statements_covered": 89.23076923076923,
+      "percent_statements_covered_display": "89",
+      "num_branches": 12,
+      "num_partial_branches": 6,
+      "covered_branches": 6,
+      "missing_branches": 6,
+      "percent_branches_covered": 50.0,
+      "percent_branches_covered_display": "50"
+    },
+    "missing_lines": [
+      59,
+      71,
+      91,
+      96,
+      150,
+      153,
+      181
+    ]
+  },
+  {
+    "path": "TheCausalityGame/metric/result/result_validator/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 0,
+      "num_statements": 0,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/metric/result/result_validator/cate_function_validator.py",
+    "functions": [
+      "validate",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 25,
+      "num_statements": 25,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 6,
+      "num_partial_branches": 0,
+      "covered_branches": 6,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/metric/result/result_validator/dag_validator.py",
+    "functions": [
+      "__init__",
+      "validate",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 53,
+      "num_statements": 59,
+      "percent_covered": 86.20689655172414,
+      "percent_covered_display": "86",
+      "missing_lines": 6,
+      "excluded_lines": 0,
+      "percent_statements_covered": 89.83050847457628,
+      "percent_statements_covered_display": "90",
+      "num_branches": 28,
+      "num_partial_branches": 6,
+      "covered_branches": 22,
+      "missing_branches": 6,
+      "percent_branches_covered": 78.57142857142857,
+      "percent_branches_covered_display": "79"
+    },
+    "missing_lines": [
+      44,
+      46,
+      64,
+      84,
+      86,
+      89
+    ]
+  },
+  {
+    "path": "TheCausalityGame/metric/result/result_validator/scm_validator.py",
+    "functions": [
+      "validate",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 18,
+      "num_statements": 21,
+      "percent_covered": 78.26086956521739,
+      "percent_covered_display": "78",
+      "missing_lines": 3,
+      "excluded_lines": 0,
+      "percent_statements_covered": 85.71428571428571,
+      "percent_statements_covered_display": "86",
+      "num_branches": 2,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 2,
+      "percent_branches_covered": 0.0,
+      "percent_branches_covered_display": "0"
+    },
+    "missing_lines": [
+      31,
+      32,
+      37
+    ]
+  },
+  {
+    "path": "TheCausalityGame/metric/result/result_validator/symbolic_scm_validator.py",
+    "functions": [
+      "validate",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 27,
+      "num_statements": 27,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 4,
+      "num_partial_branches": 0,
+      "covered_branches": 4,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/metric/result/scm_combined_score.py",
+    "functions": [
+      "mount",
+      "skeleton_edge_set",
+      "evaluate",
+      "to_spec",
+      "from_spec",
+      "directed_edge_set",
+      "_is_numeric",
+      "_moment_score",
+      "_categorical_l1"
+    ],
+    "coverage": {
+      "covered_lines": 161,
+      "num_statements": 172,
+      "percent_covered": 91.37931034482759,
+      "percent_covered_display": "91",
+      "missing_lines": 11,
+      "excluded_lines": 0,
+      "percent_statements_covered": 93.6046511627907,
+      "percent_statements_covered_display": "94",
+      "num_branches": 60,
+      "num_partial_branches": 9,
+      "covered_branches": 51,
+      "missing_branches": 9,
+      "percent_branches_covered": 85.0,
+      "percent_branches_covered_display": "85"
+    },
+    "missing_lines": [
+      104,
+      133,
+      135,
+      140,
+      158,
+      161,
+      164,
+      225,
+      246,
+      249,
+      295
+    ]
+  },
+  {
+    "path": "TheCausalityGame/metric/result/shd.py",
+    "functions": [
+      "mount",
+      "skeleton_edge_set",
+      "evaluate",
+      "to_spec",
+      "from_spec",
+      "directed_edge_set"
+    ],
+    "coverage": {
+      "covered_lines": 56,
+      "num_statements": 60,
+      "percent_covered": 89.74358974358974,
+      "percent_covered_display": "90",
+      "missing_lines": 4,
+      "excluded_lines": 0,
+      "percent_statements_covered": 93.33333333333333,
+      "percent_statements_covered_display": "93",
+      "num_branches": 18,
+      "num_partial_branches": 4,
+      "covered_branches": 14,
+      "missing_branches": 4,
+      "percent_branches_covered": 77.77777777777777,
+      "percent_branches_covered_display": "78"
+    },
+    "missing_lines": [
+      72,
+      90,
+      93,
+      96
+    ]
+  },
+  {
+    "path": "TheCausalityGame/metric/result/symbolic_mechanism.py",
+    "functions": [
+      "__init__",
+      "mount",
+      "_true_numeric_mechanism_nodes",
+      "_true_noiseless_values",
+      "_normalized_mse",
+      "evaluate",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 76,
+      "num_statements": 84,
+      "percent_covered": 86.53846153846153,
+      "percent_covered_display": "87",
+      "missing_lines": 8,
+      "excluded_lines": 0,
+      "percent_statements_covered": 90.47619047619048,
+      "percent_statements_covered_display": "90",
+      "num_branches": 20,
+      "num_partial_branches": 6,
+      "covered_branches": 14,
+      "missing_branches": 6,
+      "percent_branches_covered": 70.0,
+      "percent_branches_covered_display": "70"
+    },
+    "missing_lines": [
+      59,
+      80,
+      91,
+      94,
+      97,
+      103,
+      117,
+      118
+    ]
+  },
+  {
+    "path": "TheCausalityGame/mission/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 0,
+      "num_statements": 0,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/mission/conditional_average_treatment_effect.py",
+    "functions": [
+      "__init__",
+      "mount",
+      "evaluate",
+      "context_metadata",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 43,
+      "num_statements": 44,
+      "percent_covered": 95.65217391304348,
+      "percent_covered_display": "96",
+      "missing_lines": 1,
+      "excluded_lines": 0,
+      "percent_statements_covered": 97.72727272727273,
+      "percent_statements_covered_display": "98",
+      "num_branches": 2,
+      "num_partial_branches": 1,
+      "covered_branches": 1,
+      "missing_branches": 1,
+      "percent_branches_covered": 50.0,
+      "percent_branches_covered_display": "50"
+    },
+    "missing_lines": [
+      89
+    ]
+  },
+  {
+    "path": "TheCausalityGame/mission/dag_discovery.py",
+    "functions": [
+      "__init__",
+      "mount",
+      "evaluate",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 41,
+      "num_statements": 42,
+      "percent_covered": 93.47826086956522,
+      "percent_covered_display": "93",
+      "missing_lines": 1,
+      "excluded_lines": 0,
+      "percent_statements_covered": 97.61904761904762,
+      "percent_statements_covered_display": "98",
+      "num_branches": 4,
+      "num_partial_branches": 2,
+      "covered_branches": 2,
+      "missing_branches": 2,
+      "percent_branches_covered": 50.0,
+      "percent_branches_covered_display": "50"
+    },
+    "missing_lines": [
+      94
+    ]
+  },
+  {
+    "path": "TheCausalityGame/mission/scm_estimation.py",
+    "functions": [
+      "__init__",
+      "mount",
+      "evaluate",
+      "context_metadata",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 33,
+      "num_statements": 44,
+      "percent_covered": 71.73913043478261,
+      "percent_covered_display": "72",
+      "missing_lines": 11,
+      "excluded_lines": 0,
+      "percent_statements_covered": 75.0,
+      "percent_statements_covered_display": "75",
+      "num_branches": 2,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 2,
+      "percent_branches_covered": 0.0,
+      "percent_branches_covered_display": "0"
+    },
+    "missing_lines": [
+      66,
+      67,
+      68,
+      90,
+      91,
+      94,
+      95,
+      98,
+      99,
+      104,
+      108
+    ]
+  },
+  {
+    "path": "TheCausalityGame/mission/symbolic_scm_discovery.py",
+    "functions": [
+      "__init__",
+      "mount",
+      "evaluate",
+      "context_metadata",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 32,
+      "num_statements": 43,
+      "percent_covered": 71.11111111111111,
+      "percent_covered_display": "71",
+      "missing_lines": 11,
+      "excluded_lines": 0,
+      "percent_statements_covered": 74.4186046511628,
+      "percent_statements_covered_display": "74",
+      "num_branches": 2,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 2,
+      "percent_branches_covered": 0.0,
+      "percent_branches_covered_display": "0"
+    },
+    "missing_lines": [
+      47,
+      48,
+      49,
+      53,
+      54,
+      56,
+      57,
+      59,
+      60,
+      65,
+      69
+    ]
+  },
+  {
+    "path": "TheCausalityGame/scm/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 0,
+      "num_statements": 0,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/scm/core.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 3,
+      "num_statements": 3,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/scm/dag/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 0,
+      "num_statements": 0,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/scm/dag/core.py",
+    "functions": [
+      "__init__",
+      "to_spec",
+      "from_spec",
+      "generate_figure",
+      "plot"
+    ],
+    "coverage": {
+      "covered_lines": 33,
+      "num_statements": 63,
+      "percent_covered": 49.333333333333336,
+      "percent_covered_display": "49",
+      "missing_lines": 30,
+      "excluded_lines": 0,
+      "percent_statements_covered": 52.38095238095238,
+      "percent_statements_covered_display": "52",
+      "num_branches": 12,
+      "num_partial_branches": 0,
+      "covered_branches": 4,
+      "missing_branches": 8,
+      "percent_branches_covered": 33.333333333333336,
+      "percent_branches_covered_display": "33"
+    },
+    "missing_lines": [
+      75,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      88,
+      89,
+      92,
+      94,
+      97,
+      107,
+      117,
+      118,
+      119,
+      120,
+      121,
+      124,
+      125,
+      127,
+      142,
+      143,
+      145,
+      151,
+      153,
+      154
+    ]
+  },
+  {
+    "path": "TheCausalityGame/scm/nodes/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 0,
+      "num_statements": 0,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/scm/nodes/bn.py",
+    "functions": [
+      "__init__",
+      "generate_values",
+      "get_distributions",
+      "_to_dict",
+      "from_spec",
+      "normalized"
+    ],
+    "coverage": {
+      "covered_lines": 42,
+      "num_statements": 48,
+      "percent_covered": 82.3529411764706,
+      "percent_covered_display": "82",
+      "missing_lines": 6,
+      "excluded_lines": 0,
+      "percent_statements_covered": 87.5,
+      "percent_statements_covered_display": "88",
+      "num_branches": 20,
+      "num_partial_branches": 6,
+      "covered_branches": 14,
+      "missing_branches": 6,
+      "percent_branches_covered": 70.0,
+      "percent_branches_covered_display": "70"
+    },
+    "missing_lines": [
+      40,
+      42,
+      57,
+      76,
+      96,
+      101
+    ]
+  },
+  {
+    "path": "TheCausalityGame/scm/nodes/sympy.py",
+    "functions": [
+      "__init__",
+      "generate_values",
+      "_to_dict",
+      "from_spec",
+      "__init__",
+      "prepare_new_random_state_structure",
+      "_noise_to_category_distribution",
+      "generate_values",
+      "_to_dict",
+      "from_spec",
+      "__init__",
+      "__call__",
+      "to_list",
+      "from_list",
+      "get_symbols_for_formula_while_checking_that_those_are_declared"
+    ],
+    "coverage": {
+      "covered_lines": 148,
+      "num_statements": 163,
+      "percent_covered": 86.51162790697674,
+      "percent_covered_display": "87",
+      "missing_lines": 15,
+      "excluded_lines": 0,
+      "percent_statements_covered": 90.79754601226993,
+      "percent_statements_covered_display": "91",
+      "num_branches": 52,
+      "num_partial_branches": 14,
+      "covered_branches": 38,
+      "missing_branches": 14,
+      "percent_branches_covered": 73.07692307692308,
+      "percent_branches_covered_display": "73"
+    },
+    "missing_lines": [
+      87,
+      89,
+      98,
+      111,
+      122,
+      237,
+      291,
+      320,
+      321,
+      324,
+      327,
+      334,
+      339,
+      343,
+      381
+    ]
+  },
+  {
+    "path": "TheCausalityGame/scm/noise/__init__.py",
+    "functions": [],
+    "coverage": {
+      "covered_lines": 1,
+      "num_statements": 1,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/scm/noise/dirac.py",
+    "functions": [
+      "__init__",
+      "generate",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 19,
+      "num_statements": 19,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/scm/noise/dirichlet.py",
+    "functions": [
+      "__init__",
+      "generate",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 22,
+      "num_statements": 22,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 6,
+      "num_partial_branches": 0,
+      "covered_branches": 6,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/scm/noise/gaussian.py",
+    "functions": [
+      "__init__",
+      "generate",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 22,
+      "num_statements": 23,
+      "percent_covered": 92.0,
+      "percent_covered_display": "92",
+      "missing_lines": 1,
+      "excluded_lines": 0,
+      "percent_statements_covered": 95.65217391304348,
+      "percent_statements_covered_display": "96",
+      "num_branches": 2,
+      "num_partial_branches": 1,
+      "covered_branches": 1,
+      "missing_branches": 1,
+      "percent_branches_covered": 50.0,
+      "percent_branches_covered_display": "50"
+    },
+    "missing_lines": [
+      69
+    ]
+  },
+  {
+    "path": "TheCausalityGame/scm/noise/laplace.py",
+    "functions": [
+      "__init__",
+      "generate",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 18,
+      "num_statements": 18,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 2,
+      "num_partial_branches": 0,
+      "covered_branches": 2,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/scm/noise/no_noise.py",
+    "functions": [
+      "__init__",
+      "generate",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 19,
+      "num_statements": 19,
+      "percent_covered": 100.0,
+      "percent_covered_display": "100",
+      "missing_lines": 0,
+      "excluded_lines": 0,
+      "percent_statements_covered": 100.0,
+      "percent_statements_covered_display": "100",
+      "num_branches": 0,
+      "num_partial_branches": 0,
+      "covered_branches": 0,
+      "missing_branches": 0,
+      "percent_branches_covered": 100.0,
+      "percent_branches_covered_display": "100"
+    },
+    "missing_lines": []
+  },
+  {
+    "path": "TheCausalityGame/scm/noise/uniform.py",
+    "functions": [
+      "__init__",
+      "generate",
+      "to_spec",
+      "from_spec"
+    ],
+    "coverage": {
+      "covered_lines": 22,
+      "num_statements": 23,
+      "percent_covered": 92.0,
+      "percent_covered_display": "92",
+      "missing_lines": 1,
+      "excluded_lines": 0,
+      "percent_statements_covered": 95.65217391304348,
+      "percent_statements_covered_display": "96",
+      "num_branches": 2,
+      "num_partial_branches": 1,
+      "covered_branches": 1,
+      "missing_branches": 1,
+      "percent_branches_covered": 50.0,
+      "percent_branches_covered_display": "50"
+    },
+    "missing_lines": [
+      70
+    ]
+  },
+  {
+    "path": "post_processing/__init__.py",
+    "functions": []
+  },
+  {
+    "path": "post_processing/build_rebuttal_notebook.py",
+    "functions": [
+      "code",
+      "markdown",
+      "main"
+    ]
+  },
+  {
+    "path": "post_processing/comparison_analysis.py",
+    "functions": [
+      "discover_run_directories",
+      "_read_jsonl",
+      "load_records",
+      "audit_records",
+      "paired_differences",
+      "summarize_pairs",
+      "availability_table",
+      "failure_table",
+      "provenance_table",
+      "_save_figure",
+      "_message_figure",
+      "_plot_availability",
+      "_plot_improvement",
+      "_plot_primary_scatter",
+      "_plot_runtime",
+      "_plot_case_improvement",
+      "_plot_failures",
+      "_plot_absolute_overview",
+      "_plot_inferer_side_by_side",
+      "_plot_round_trajectory",
+      "_plot_round_vs_all_metrics",
+      "generate_figures",
+      "inspect_figure_artifacts",
+      "_markdown_table",
+      "write_analysis_report",
+      "analyze_comparisons",
+      "main",
+      "add"
+    ]
+  },
+  {
+    "path": "post_processing/execute_rebuttal_notebook.py",
+    "functions": [
+      "display",
+      "main"
+    ]
+  },
+  {
+    "path": "post_processing/plot_utils.py",
+    "functions": [
+      "normalize_prefix",
+      "matches_prefix",
+      "parse_manifest_id",
+      "summarize_runs",
+      "final_stats",
+      "pareto_frontier",
+      "_extract_metric_series",
+      "_timestamp_is_complete",
+      "_latest_complete_timestamp",
+      "scan_experiments",
+      "write_results_cache",
+      "load_results_cache",
+      "build_agent_comparisons",
+      "build_inferer_comparisons",
+      "inferer_comparison_agents",
+      "_to_plain_nested_dict",
+      "default_style_key",
+      "resolve_styles",
+      "plot_agents_mean_std",
+      "safe_filename"
+    ]
+  },
+  {
+    "path": "post_processing/rebuttal_figures.py",
+    "functions": [
+      "configure_matplotlib",
+      "save_figure",
+      "_last_value",
+      "_by_seed",
+      "_curve_summary",
+      "_selected_runs",
+      "_matched_graph_seeds",
+      "figure_decider_inferer_interaction",
+      "figure_error_vs_accumulated_evidence",
+      "_configuration_summaries",
+      "figure_acquisition_quality_map",
+      "_treatment_contrasts",
+      "figure_treatment_effect_repaired",
+      "_dominance_probability",
+      "create_supplementary_gallery",
+      "build_evidence_table",
+      "write_evidence_csv"
+    ]
+  },
+  {
+    "path": "post_processing/rebuttal_utils.py",
+    "functions": [
+      "display_name",
+      "parse_experiment_id",
+      "index_manifests",
+      "latest_transcript_paths",
+      "_resource_used",
+      "transcript_to_round_records",
+      "scan_round_records",
+      "write_round_cache",
+      "load_round_cache",
+      "valid_feedback_records",
+      "group_runs",
+      "align_run_to_budgets",
+      "anytime_auc",
+      "trajectory_instability",
+      "_percentile",
+      "bootstrap_mean_ci",
+      "paired_effect",
+      "interaction_difference",
+      "pareto_lower"
+    ]
+  },
+  {
+    "path": "post_processing/resource_usage_summary.py",
+    "functions": [
+      "_latest_complete_timestamp",
+      "_manifest_path",
+      "_load_budget",
+      "_used_from_snapshot",
+      "_transcript_max_usage",
+      "_replace_if_larger",
+      "summarize_resource_usage",
+      "main"
+    ]
+  },
+  {
+    "path": "post_processing/seeded_scripts_gen.py",
+    "functions": [
+      "_normalize_path",
+      "_normalized_set",
+      "_seeded_random_states",
+      "_source_manifests",
+      "_source_allowed",
+      "_active_agents",
+      "_validation_error",
+      "_load_valid_source",
+      "_seed_manifest",
+      "main"
+    ]
+  },
+  {
+    "path": "scripts/__init__.py",
+    "functions": []
+  },
+  {
+    "path": "scripts/analyze_publication.py",
+    "functions": [
+      "main"
+    ]
+  },
+  {
+    "path": "scripts/build_catalog.py",
+    "functions": [
+      "task",
+      "dataset_examples",
+      "main"
+    ]
+  },
+  {
+    "path": "scripts/comparisons/__init__.py",
+    "functions": []
+  },
+  {
+    "path": "scripts/comparisons/_common.py",
+    "functions": [
+      "input_digest",
+      "_aggregate",
+      "observation",
+      "buffered_rounds",
+      "output_directory",
+      "write_reports"
+    ]
+  },
+  {
+    "path": "scripts/comparisons/compare_cate_inferers.py",
+    "functions": [
+      "_hill_case",
+      "_cases",
+      "_query",
+      "compare",
+      "main"
+    ]
+  },
+  {
+    "path": "scripts/comparisons/compare_graph_inferers.py",
+    "functions": [
+      "_synthetic_cases",
+      "_rc_circuit_case",
+      "_scores",
+      "compare",
+      "main"
+    ]
+  },
+  {
+    "path": "scripts/comparisons/run_all.py",
+    "functions": [
+      "main"
+    ]
+  },
+  {
+    "path": "scripts/main-inferers.py",
+    "functions": []
+  },
+  {
+    "path": "scripts/main-seeded.py",
+    "functions": [
+      "_normalize_path",
+      "_normalized_set",
+      "_matches_prefix",
+      "_seed_from_path",
+      "_active_agent_ids",
+      "_timestamp_is_complete",
+      "_classify_run",
+      "_timestamp_dirs",
+      "_target_from_path",
+      "_passes_config",
+      "_scan_targets",
+      "_print_scan_summary",
+      "_cleanup_new_timestamp_dirs",
+      "_run_target",
+      "main",
+      "problem_instance_id",
+      "run_root"
+    ]
+  },
+  {
+    "path": "scripts/main-single.py",
+    "functions": []
+  },
+  {
+    "path": "scripts/main.py",
+    "functions": []
+  },
+  {
+    "path": "scripts/problem_instances_rebuttal/generate_manifests.py",
+    "functions": [
+      "build_manifest",
+      "main"
+    ]
+  },
+  {
+    "path": "scripts/problem_instances_rebuttal/run_rebuttal.py",
+    "functions": [
+      "_seed",
+      "_active_agents",
+      "_timestamp_is_valid",
+      "classify",
+      "scan",
+      "parse_args",
+      "main"
+    ]
+  },
+  {
+    "path": "scripts/verify_wheel.py",
+    "functions": [
+      "main",
+      "run"
+    ]
+  },
+  {
+    "path": "temp/asdf/testdag.py",
+    "functions": [
+      "test_dag_reproducibility",
+      "test_dag_variability",
+      "test_dag_serialization",
+      "test_dag_is_valid"
+    ]
+  },
+  {
+    "path": "temp/asdf/testdb_scm.py",
+    "functions": [
+      "test_functionality_of_db_scm",
+      "test_db_sample_generation_speed",
+      "test_serializability_of_scm",
+      "test_df_equalness"
+    ]
+  },
+  {
+    "path": "temp/asdf/testenvironment.py",
+    "functions": [
+      "test_that_sample_sequences_are_invariant_to_treatment_organization",
+      "experiment"
+    ]
+  },
+  {
+    "path": "temp/asdf/testoutcome_generators.py",
+    "functions": [
+      "test_core_functionality",
+      "test_serializability_before_fit",
+      "test_serializability_after_fit",
+      "test_complementary_outcome_generator"
+    ]
+  },
+  {
+    "path": "temp/asdf/testsample_generation_speed.py",
+    "functions": [
+      "test_physical_problem_sample_generation_speed"
+    ]
+  },
+  {
+    "path": "temp/asdf/testscm.py",
+    "functions": [
+      "assert_dicts_equal",
+      "check_sample_equivalence",
+      "test_scm_generator",
+      "test_scm_reproducibility",
+      "test_scm_variability",
+      "test_scm_serialization",
+      "test_scm_deserialization",
+      "test_scm_samples_reproducibility",
+      "test_bayesian_network_scm_deserialization"
+    ]
+  },
+  {
+    "path": "temp/asdf/testshipped_scms.py",
+    "functions": [
+      "test_usability_of_shipped_scms",
+      "test_playability_of_shipped_scms"
+    ]
+  },
+  {
+    "path": "tests/integration/conftest.py",
+    "functions": [
+      "tiny_problem"
+    ]
+  },
+  {
+    "path": "tests/integration/test_authoritative_backends.py",
+    "functions": [
+      "_require_r_packages_or_skip",
+      "_observation",
+      "_linear_data",
+      "_cate_data",
+      "test_pc_returns_chain_cpdag",
+      "test_notears_returns_acyclic_graph",
+      "test_direct_lingam_fits_real_backend",
+      "test_r_cate_backend_fits_and_predicts",
+      "test_honest_tree_waits_for_two_rows_per_arm_then_fits"
+    ]
+  },
+  {
+    "path": "tests/integration/test_runtime.py",
+    "functions": [
+      "game_factory",
+      "test_lifecycle_filters_latents_and_scores_post_update_answer",
+      "test_invalid_intervention_is_reported_and_end_hook_runs",
+      "test_exact_sample_limit_and_overspend_stop_before_extra_sampling",
+      "test_round_exhaustion_scores_the_last_acquired_batch",
+      "test_end_hook_failure_invalidates_a_completed_game",
+      "test_time_exhaustion_uses_fake_clock",
+      "test_chunked_observations_preserve_the_same_treatment_stream",
+      "test_real_runner_backends_write_isolated_equivalent_scientific_artifacts",
+      "test_runner_skips_inactive_agent_and_preserves_setup_failure",
+      "test_empty_runner_writes_provenance_without_agent_artifacts",
+      "test_intervention_streams_ignore_first_use_order_and_interleaving",
+      "test_rejected_multibatch_acquisition_consumes_no_rng_or_budget",
+      "test_invalid_second_experiment_fails_before_any_draw",
+      "test_acquisition_identity_survives_evaluator_sampling",
+      "test_time_limit_after_act_prevents_acquisition",
+      "test_runner_rejects_duplicate_agent_ids",
+      "test_financial_preflight_stops_without_sampling",
+      "test_copied_answers_preserve_earlier_graphs",
+      "test_named_scm_seeds_change_samples_and_replay_identically",
+      "test_hook_payload_mutation_cannot_change_live_entry",
+      "test_real_cate_runtime_supports_timed_callable_validation",
+      "test_forced_stop_without_valid_response_has_no_score",
+      "test_serialized_scm_state_wins_over_conflicting_manifest_seed",
+      "test_configured_component_seed_wins_over_manifest_fallback",
+      "test_game_cannot_reuse_terminal_episode_state",
+      "test_fresh_games_do_not_share_scm_domain_configuration",
+      "test_wrong_backend_sample_count_is_not_delivered_to_agent",
+      "test_failed_acquisition_rolls_back_rng_and_all_budget_counters",
+      "__init__",
+      "set_context",
+      "set_logger",
+      "act",
+      "answer",
+      "inform",
+      "create",
+      "trigger",
+      "draw",
+      "act",
+      "answer",
+      "fail_after_drawing_second_batch",
+      "build",
+      "run",
+      "answer"
+    ]
+  },
+  {
+    "path": "tests/integration/test_scm_construction.py",
+    "functions": [
+      "test_synthetic_mixed_type_bounds_roundtrip_and_chunking",
+      "test_constant_and_root_equations_broadcast_and_validate",
+      "test_bif_parent_order_and_normalized_cpt",
+      "test_bif_rejects_incomplete_cpt",
+      "test_legacy_asia_migration_samples_and_roundtrips",
+      "test_dataset_controls_do_not_condition_other_controls_and_preserve_rows",
+      "test_dataset_categorical_stringification_rejects_label_collisions",
+      "test_equation_categorical_nodes_reject_numeric_labels",
+      "test_typed_canonical_interventions",
+      "test_dataset_configurable_scikit_learn_outcome_matches_analytic_function",
+      "test_unknown_intervention_does_not_silently_become_observational"
+    ]
+  },
+  {
+    "path": "tests/unit/agent/test_adversarial_adapters.py",
+    "functions": [
+      "test_backend_adjacency_must_be_finite_and_match_variable_count",
+      "test_random_decider_supports_three_category_domain",
+      "test_random_decider_can_observe_when_no_controls_exist",
+      "test_exhaustive_decider_enumerates_string_categories"
+    ]
+  },
+  {
+    "path": "tests/unit/agent/test_authoritative_inferers.py",
+    "functions": [
+      "_observation",
+      "_chain",
+      "test_pc_adapter_preserves_unresolved_edge",
+      "test_notears_adapter_calls_official_function",
+      "test_lingam_adapter_transposes_child_parent_matrix",
+      "test_r_cate_adapter_uses_checked_boundary",
+      "test_authoritative_empty_answers_do_not_require_backends",
+      "test_missing_authoritative_dependency_is_explicit",
+      "test_obsolete_parameter_has_migration_error",
+      "test_native_parameters_round_trip",
+      "test_r_cate_rejects_nonbinary_training_treatment",
+      "fake_notears",
+      "fake_backend",
+      "__init__",
+      "get_name",
+      "get_node1",
+      "get_node2",
+      "get_endpoint1",
+      "get_endpoint2",
+      "__init__",
+      "fit"
+    ]
+  },
+  {
+    "path": "tests/unit/agent/test_cate_inferers.py",
+    "functions": [
+      "_observation",
+      "_query",
+      "_linear_effect_data",
+      "_interventional_effect_data",
+      "test_cate_inferer_empty_answer_shape_and_validation",
+      "test_cate_inferer_spec_roundtrip",
+      "test_outcome_regression_recovers_linear_heterogeneous_effect",
+      "test_transformed_outcome_prefers_interventional_data",
+      "test_transformed_outcome_observational_propensity_fallback",
+      "test_honest_causal_tree_learns_two_effect_regions"
+    ]
+  },
+  {
+    "path": "tests/unit/agent/test_dag_inferers.py",
+    "functions": [
+      "_observation",
+      "_chain_data",
+      "test_dag_inferer_empty_answer_returns_graph",
+      "test_dag_inferer_spec_roundtrip",
+      "test_pc_inferer_recovers_chain_skeleton",
+      "test_notears_inferer_recovers_chain_orientation",
+      "test_lingam_inferer_recovers_chain_orientation"
+    ]
+  },
+  {
+    "path": "tests/unit/agent/test_r_bridge_failures.py",
+    "functions": [
+      "_payload",
+      "test_missing_rscript_is_a_dependency_error",
+      "test_unknown_method_is_rejected_before_subprocess",
+      "test_nonzero_exit_surfaces_stderr",
+      "test_timeout_is_converted_to_backend_error",
+      "test_success_without_output_file_is_rejected",
+      "test_invalid_success_payloads_are_rejected",
+      "test_valid_response_is_returned",
+      "test_jsonlite_singleton_unboxing_is_valid",
+      "__init__",
+      "communicate",
+      "kill",
+      "write_response",
+      "write_response",
+      "write_response"
+    ]
+  },
+  {
+    "path": "tests/unit/agent/test_symbolic_scm_inferer.py",
+    "functions": [
+      "_observation",
+      "_mechanism_data",
+      "test_sparse_symbolic_mechanism_recovers_product",
+      "test_symbolic_inferer_excludes_target_intervened_rows",
+      "test_symbolic_inferer_empty_answer_returns_symbolic_scm",
+      "test_symbolic_inferer_uses_learned_dag",
+      "fake_learn_dag_from_samples"
+    ]
+  },
+  {
+    "path": "tests/unit/contracts/agent/test_active_deciders.py",
+    "functions": [
+      "_agent_context",
+      "_available_actions",
+      "_round_observation",
+      "test_optimal_effect_design_prefers_treatment_without_history",
+      "test_abci_decider_returns_valid_intervention_after_update",
+      "test_trust_gradient_returns_valid_intervention_after_update",
+      "test_active_deciders_respect_string_category_and_numeric_interval_domains",
+      "test_query_aware_deciders_observe_when_controls_are_unavailable",
+      "_query_aware_factories",
+      "_assert_query_aware_domain",
+      "test_query_aware_deciders_repeat_seeded_actions_and_handle_constant_data",
+      "test_query_aware_proposals_cannot_bypass_environment_sample_preflight"
+    ]
+  },
+  {
+    "path": "tests/unit/contracts/agent/test_agent.py",
+    "functions": [
+      "agent_instance",
+      "test_agent_serialization_roundtrip"
+    ]
+  },
+  {
+    "path": "tests/unit/contracts/agent/test_legacy_decider_contract.py",
+    "functions": [
+      "_decider_factories",
+      "_actions",
+      "_constant_observation",
+      "_varied_observation",
+      "_assert_domain_valid",
+      "test_legacy_deciders_emit_domain_valid_reproducible_actions",
+      "test_legacy_deciders_handle_constant_observations",
+      "test_environment_budget_preflight_rejects_oversized_legacy_design_atomically",
+      "test_legacy_model_informed_paths_handle_varied_observations"
+    ]
+  },
+  {
+    "path": "tests/unit/contracts/dto/test_transcript.py",
+    "functions": [
+      "test_transcript_invalidation_metadata_defaults_to_valid",
+      "test_transcript_can_be_marked_invalidated_with_error_reason"
+    ]
+  },
+  {
+    "path": "tests/unit/contracts/metric/result_validator/test_conditional_average_treatment_effect_function_validator.py",
+    "functions": [
+      "_valid_fn",
+      "_wrong_arity_fn",
+      "_wrong_names_fn",
+      "test_validate_requires_callable",
+      "test_validate_enforces_argument_count",
+      "test_validate_enforces_argument_names",
+      "test_validator_serialization_roundtrip_preserves_behavior"
+    ]
+  },
+  {
+    "path": "tests/unit/contracts/metric/result_validator/test_cpdag.py",
+    "functions": [
+      "test_dag_validator_accepts_cpdag",
+      "test_cpdag_serialization_round_trip",
+      "test_cpdag_plot_accepts_unresolved_edges",
+      "test_matching_unresolved_edge_has_no_orientation_penalty",
+      "test_contradicted_cpdag_arrowhead_costs_one",
+      "test_validator_rejects_cycles_unknown_labels_and_partial_conflicts",
+      "test_validator_allows_missing_nodes_for_edge_scoring",
+      "test_validator_rejects_semidirected_cycle"
+    ]
+  },
+  {
+    "path": "tests/unit/contracts/metric/result_validator/test_result_validator.py",
+    "functions": [
+      "result_validator_instance",
+      "test_result_validator_serialization_roundtrip"
+    ]
+  },
+  {
+    "path": "tests/unit/contracts/metric/result_validator/test_symbolic_scm_validator.py",
+    "functions": [
+      "test_symbolic_scm_validator_accepts_symbolic_scm",
+      "test_symbolic_scm_validator_rejects_wrong_type",
+      "test_symbolic_scm_validator_rejects_invalid_expression"
+    ]
+  },
+  {
+    "path": "tests/unit/contracts/metric/test_acquisition.py",
+    "functions": [
+      "test_prices_inherit_and_specific_override",
+      "test_price_conflict_is_explicit",
+      "test_composite_stopping_boundary",
+      "test_linear_weights_need_not_sum_to_one"
+    ]
+  },
+  {
+    "path": "tests/unit/contracts/metric/test_metric.py",
+    "functions": [
+      "metric_instance",
+      "test_metric_serialization_roundtrip"
+    ]
+  },
+  {
+    "path": "tests/unit/contracts/metric/test_pehe.py",
+    "functions": [
+      "test_pehe_excludes_post_treatment_mediators"
+    ]
+  },
+  {
+    "path": "tests/unit/contracts/mission/test_mission.py",
+    "functions": [
+      "mission_instance",
+      "test_mission_serialization_roundtrip"
+    ]
+  },
+  {
+    "path": "tests/unit/contracts/problem_instance/test_problem_instance.py",
+    "functions": [
+      "problem_instance",
+      "test_agent_serialization_roundtrip"
+    ]
+  },
+  {
+    "path": "tests/unit/contracts/scm/test_added_noise.py",
+    "functions": [
+      "test_laplace_nondefault_roundtrip_and_population_moments",
+      "test_dirichlet_simplex_shape_chunking_and_nondefault_roundtrip"
+    ]
+  },
+  {
+    "path": "tests/unit/contracts/scm/test_adversarial_noise.py",
+    "functions": [
+      "test_noise_matches_analytical_first_two_moments",
+      "test_dirichlet_owns_concentration_configuration"
+    ]
+  },
+  {
+    "path": "tests/unit/contracts/scm/test_dag.py",
+    "functions": [
+      "dag_instance",
+      "test_dag_properties",
+      "test_dag_serialization_roundtrip",
+      "test_coredag_rejects_cycle"
+    ]
+  },
+  {
+    "path": "tests/unit/contracts/scm/test_noise.py",
+    "functions": [
+      "noise_distribution_instance",
+      "test_noise_distribution_serialization_roundtrip",
+      "test_noise_distribution_generate_consistency"
+    ]
+  },
+  {
+    "path": "tests/unit/contracts/scm/test_scm.py",
+    "functions": [
+      "scm_instance",
+      "test_scm_properties",
+      "test_scm_serialization_roundtrip",
+      "test_data_generation"
+    ]
+  },
+  {
+    "path": "tests/unit/contracts/scm/test_scm_node.py",
+    "functions": [
+      "scm_node_instance",
+      "test_scm_node_properties",
+      "test_scm_node_serialization_roundtrip",
+      "test_data_generation"
+    ]
+  },
+  {
+    "path": "tests/unit/infra/test_adversarial_boundaries.py",
+    "functions": [
+      "test_reader_rejects_non_json_numbers",
+      "test_serializable_predicate_rejects_nonfinite_values",
+      "test_serializable_predicate_handles_cycles",
+      "test_serializable_predicate_recognizes_supported_path_encoder",
+      "test_atomic_dump_replaces_complete_json",
+      "test_atomic_dump_preserves_previous_artifact_when_replace_fails",
+      "test_bn_owns_constructor_configuration",
+      "test_bn_distribution_lookup_does_not_expose_mutable_cpt",
+      "test_bn_lookup_preserves_parent_scalar_types",
+      "test_bn_rejects_numeric_category_labels",
+      "test_categorical_node_spec_rejects_numeric_labels_before_build",
+      "test_bn_reconstruction_continues_rng_without_sharing_it",
+      "test_artifact_extensions_cannot_replace_canonical_round",
+      "test_bn_serialization_preserves_string_category_labels",
+      "fail_replace"
+    ]
+  },
+  {
+    "path": "tests/unit/infra/test_artifact_contract.py",
+    "functions": [
+      "payload",
+      "test_current_protocol_validates_without_mutating_input",
+      "test_invalid_headers_are_rejected",
+      "test_unknown_protocol_is_not_silently_pooled",
+      "test_sample_count_mismatch_is_rejected",
+      "test_nested_sample_schema_rejects_invalid_rows_and_interventions",
+      "test_duplicate_round_is_rejected",
+      "test_forced_stop_without_response_is_valid_but_unscored",
+      "test_malformed_entry_fields_raise_contract_errors"
+    ]
+  },
+  {
+    "path": "tests/unit/infra/test_artifacts.py",
+    "functions": [
+      "test_write_transcript_includes_invalidation_metadata",
+      "test_write_transcript_converts_numpy_values",
+      "test_write_transcript_converts_non_finite_floats"
+    ]
+  },
+  {
+    "path": "tests/unit/infra/test_cli.py",
+    "functions": [
+      "test_cli_routes_manifest_and_output_directory",
+      "test_cli_invalid_json_returns_failure_before_execution"
+    ]
+  },
+  {
+    "path": "tests/unit/infra/test_decision.py",
+    "functions": [
+      "test_experiment_factory_initializes_empty_decision",
+      "test_add_experiment_appends_experiment_instances",
+      "test_extend_accepts_mixed_input_types",
+      "test_to_dict_serializes_kind_and_experiments",
+      "test_answer_decision_rejects_experiments"
+    ]
+  },
+  {
+    "path": "tests/unit/infra/test_logger_isolation.py",
+    "functions": [
+      "test_same_display_name_keeps_distinct_run_files_isolated",
+      "test_identical_configuration_does_not_duplicate_handlers",
+      "test_loggers_remain_registered_for_multiprocessing_pickling",
+      "test_same_destination_rejects_conflicting_handler_configuration",
+      "test_shared_logger_closes_handlers_after_last_owner"
+    ]
+  },
+  {
+    "path": "tests/unit/infra/test_registry.py",
+    "functions": [
+      "test_load_class_disallowed_package_rejected",
+      "test_build_from_spec_requires_class",
+      "test_get_class_path",
+      "test_build_from_spec"
+    ]
+  },
+  {
+    "path": "tests/unit/infra/test_seed_fallbacks.py",
+    "functions": [
+      "test_serialized_rng_continues_consumed_state_despite_conflicting_seeds",
+      "test_missing_serialized_rng_uses_manifest_then_default",
+      "test_malformed_serialized_rng_does_not_silently_fall_back"
+    ]
+  },
+  {
+    "path": "tests/unit/infra/test_serialization.py",
+    "functions": [
+      "test_dumps_loads_roundtrip"
+    ]
+  },
+  {
+    "path": "tests/unit/managers/test_adversarial_budget.py",
+    "functions": [
+      "test_decimal_cost_exhaustion_is_batch_independent",
+      "test_rejected_acquisition_leaves_every_counter_unchanged",
+      "test_unlimited_samples_are_still_accounted"
+    ]
+  },
+  {
+    "path": "tests/unit/managers/test_budget.py",
+    "functions": [
+      "simulate_dataframe_memory",
+      "perf_counter",
+      "test_simulate_dataframe_memory_shape_and_dtype",
+      "test_charge_samples_respects_limits",
+      "test_charge_memory_respects_limits",
+      "test_tick_round_respects_limit",
+      "test_check_time_respects_pause_and_resume",
+      "test_budget_manager_flow_enforces_limits",
+      "__init__",
+      "advance",
+      "__call__"
+    ]
+  },
+  {
+    "path": "tests/unit/metric/result/test_scm_combined_score.py",
+    "functions": [
+      "_metric",
+      "_estimate",
+      "test_perfect_directed_graph_and_distribution_score_is_zero",
+      "test_reversing_an_edge_adds_one_directed_shd_unit",
+      "test_missing_and_extra_directed_edges_are_counted_independently",
+      "test_metric_mount_samples_string_category_as_intervention",
+      "test_metric_uses_observational_trials_when_no_controls_exist",
+      "test_metric_keeps_finite_shd_when_no_nonintervened_variables_are_scoreable",
+      "test_combined_score_handles_numeric_and_string_category_descendants",
+      "test_combined_score_penalizes_missing_generated_descendant",
+      "test_metric_mount_rejects_malformed_controllable_domains",
+      "test_metric_rejects_invalid_reference_sample_output",
+      "test_metric_penalizes_invalid_estimated_sample_outputs",
+      "predict",
+      "__init__",
+      "generate_samples"
+    ]
+  },
+  {
+    "path": "tests/unit/metric/result/test_symbolic_mechanism.py",
+    "functions": [
+      "_product_scm",
+      "test_symbolic_mechanism_metric_scores_exact_expression_near_zero",
+      "test_symbolic_mechanism_metric_penalizes_missing_expression",
+      "test_symbolic_mechanism_metric_scores_equivalent_expression_near_zero"
+    ]
+  },
+  {
+    "path": "tests/unit/post_processing/test_comparison_analysis.py",
+    "functions": [
+      "_backend",
+      "_row",
+      "test_analysis_exports_only_successful_pairs_and_validates_figures",
+      "test_audit_detects_nonidentical_pair_inputs",
+      "test_success_without_any_scientific_metric_is_an_audit_error"
+    ]
+  },
+  {
+    "path": "tests/unit/post_processing/test_rebuttal_utils.py",
+    "functions": [
+      "_manifest",
+      "_transcript",
+      "test_transcript_extraction_uses_collected_samples_and_raw_resources",
+      "test_invalidated_rounds_are_never_valid_feedback",
+      "test_budget_alignment_is_left_continuous_and_does_not_look_ahead",
+      "test_anytime_auc_and_instability",
+      "test_bootstrap_and_paired_effect_are_deterministic",
+      "test_interaction_uses_the_four_way_seed_intersection",
+      "test_pareto_lower_minimizes_every_dimension"
+    ]
+  },
+  {
+    "path": "tests/unit/scripts/test_comparison_reports.py",
+    "functions": [
+      "test_comparison_reports_include_provenance",
+      "test_input_digest_is_stable_and_data_sensitive",
+      "test_buffered_rounds_are_incremental_and_exhaustive",
+      "test_hill_binary_coding_matches_queries_and_backend_payload"
+    ]
+  },
+  {
+    "path": "tests/unit/scripts/test_problem_instances_by_inferer.py",
+    "functions": [
+      "test_inferer_grouped_problem_instance_loads"
+    ]
+  },
+  {
+    "path": "tests/unit/scripts/test_rebuttal_problem_instances.py",
+    "functions": [
+      "test_rebuttal_suite_has_21_unique_valid_matched_seed_manifests",
+      "_complete_transcript",
+      "test_resume_classification_rejects_malformed_protocol_transcript",
+      "test_resume_classification_accepts_valid_current_protocol_artifact",
+      "test_resume_classification_rejects_duplicate_or_misplaced_agent_artifacts"
+    ]
+  }
+]

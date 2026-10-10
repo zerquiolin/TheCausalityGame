@@ -6,7 +6,9 @@ from typing import override
 
 import numpy as np
 
-from TheCausalityGame.agent.helpers.ridge_bootstrap_edge_belief import RidgeBootstrapEdgeBelief
+from TheCausalityGame.agent.helpers.ridge_bootstrap_edge_belief import (
+    RidgeBootstrapEdgeBelief,
+)
 from TheCausalityGame.core.contracts.decider import Decider
 from TheCausalityGame.core.contracts.dto.agent import BeliefSnapshot, RoundObservation
 from TheCausalityGame.core.contracts.dto.environment import (
@@ -46,6 +48,7 @@ class Annadani2024CAASLOnlineDecider(Decider):
         )
         self.lr = float(lr)
         self.temperature = float(max(1e-6, temperature))
+        self.seed = seed
         self.rng = np.random.default_rng(seed)
         self.num_value_candidates = int(max(2, num_value_candidates))
         self.k = 6
@@ -69,7 +72,9 @@ class Annadani2024CAASLOnlineDecider(Decider):
         self._entropy_before = None
         self._last_phi = None
 
-    def _enumerate_actions(self, available_actions: AvailableActions) -> list[tuple[str, object]]:
+    def _enumerate_actions(
+        self, available_actions: AvailableActions
+    ) -> list[tuple[str, object]]:
         out: list[tuple[str, object]] = []
         for var in available_actions.experiments:
             dom = list(var.domain)
@@ -110,7 +115,8 @@ class Annadani2024CAASLOnlineDecider(Decider):
             return []
 
         if len(dom) >= DOMAIN_BOUNDS_COUNT and all(
-            isinstance(x, (int, float, np.integer, np.floating)) for x in dom[:DOMAIN_BOUNDS_COUNT]
+            isinstance(x, (int, float, np.integer, np.floating))
+            for x in dom[:DOMAIN_BOUNDS_COUNT]
         ):
             low, high = float(dom[0]), float(dom[1])
             if high < low:
@@ -173,7 +179,11 @@ class Annadani2024CAASLOnlineDecider(Decider):
         if self._num_inter <= 0 or not available_actions.experiments:
             return decision
 
-        rounds_left = round_info.budget_snapshot.rounds_left if round_info.budget_snapshot else None
+        rounds_left = (
+            round_info.budget_snapshot.rounds_left
+            if round_info.budget_snapshot
+            else None
+        )
 
         if summ is None:
             for var in available_actions.experiments:
@@ -212,6 +222,7 @@ class Annadani2024CAASLOnlineDecider(Decider):
         return DeciderSpec(
             class_=get_class_path(self.__class__),
             params={
+                "seed": self.seed,
                 "num_obs": self._num_obs,
                 "num_inter": self._num_inter,
                 "n_bootstrap": self._belief.n_bootstrap,
@@ -228,6 +239,7 @@ class Annadani2024CAASLOnlineDecider(Decider):
     def from_spec(cls, spec: DeciderSpec) -> Annadani2024CAASLOnlineDecider:
         params = spec.params or {}
         return cls(
+            seed=(spec.params or {}).get("seed", 911),
             num_obs=int(params.get("num_obs", 1)),
             num_inter=int(params.get("num_inter", 1)),
             n_bootstrap=int(params.get("n_bootstrap", 24)),

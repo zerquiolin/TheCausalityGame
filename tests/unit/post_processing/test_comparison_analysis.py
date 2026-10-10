@@ -110,3 +110,28 @@ def test_audit_detects_nonidentical_pair_inputs() -> None:
     audit = audit_records(records)
 
     assert "input_digest_mismatch" in set(audit["code"])
+
+
+def test_success_without_any_scientific_metric_is_an_audit_error():
+    """Runtime alone cannot establish a successful scientific comparison."""
+    import pandas as pd
+
+    from post_processing.comparison_analysis import audit_records
+
+    records = pd.DataFrame(
+        [
+            {
+                "run_id": "r",
+                "case": "c",
+                "method": "m",
+                "seed": 1,
+                "round": 1,
+                "implementation": "empirical",
+                "status": "ok",
+                "runtime_s": 0.1,
+                "backend": {},
+            }
+        ]
+    )
+    findings = audit_records(records)
+    assert "successful_row_without_metrics" in set(findings["code"])

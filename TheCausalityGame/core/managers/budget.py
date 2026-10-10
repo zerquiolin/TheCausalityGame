@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import time
+from decimal import Decimal
 
 from TheCausalityGame.core.contracts.dto.environment import BudgetSnapshot
 from TheCausalityGame.core.contracts.specs.budget import BudgetSpec
@@ -37,6 +38,9 @@ class BudgetManager:
     BYTES_PER_MB = 1024.0 * 1024.0
 
     def __init__(self, budget_spec: BudgetSpec) -> None:
+        self.spec = budget_spec
+        self.experiments_used = 0
+        self.cost_used = 0.0
         # Hard limits
         self.rounds_limit: int = budget_spec.rounds
         self.time_limit_s: float | None = budget_spec.time_s
@@ -128,11 +132,68 @@ class BudgetManager:
         """
         if n <= 0:
             return
-        self.samples_used += n
-        if self.sample_limit is not None and self.samples_used > self.sample_limit:
+        if self.sample_limit is not None and self.samples_used + n > self.sample_limit:
             raise SamplesBudgetExceededError(
-                used=self.samples_used, allowed=self.sample_limit
+                used=self.samples_used + n, allowed=self.sample_limit
             )
+        self.samples_used += n
+
+    def preflight(self, experiments: list) -> float:
+        """Validate a whole acquisition atomically before drawing any samples."""
+        n = sum(experiment.n for experiment in experiments)
+        if self.sample_limit is not None and self.samples_used + n > self.sample_limit:
+            raise SamplesBudgetExceededError(self.samples_used + n, self.sample_limit)
+        if (
+            self.spec.experiments is not None
+            and self.experiments_used + len(experiments) > self.spec.experiments
+        ):
+            raise AcquisitionBudgetExceededError("experiments")
+        cost = sum(
+            (
+                Decimal(
+                    str(self.spec.pricing.quote(experiment.treatment, experiment.n))
+                )
+                for experiment in experiments
+            ),
+            Decimal(0),
+        )
+        if self.spec.cost is not None and Decimal(str(self.cost_used)) + cost > Decimal(
+            str(self.spec.cost)
+        ):
+            raise AcquisitionBudgetExceededError("cost")
+        return float(cost)
+
+    def charge_acquisition(self, experiments: list, cost: float) -> None:
+        """Commit a preflighted acquisition after successful sampling."""
+        self.charge_samples(sum(experiment.n for experiment in experiments))
+        self.experiments_used += len(experiments)
+        self.cost_used = float(Decimal(str(self.cost_used)) + Decimal(str(cost)))
+
+    def stop_reason(self) -> str | None:
+        """Return the first exhausted hard resource, then evaluate optional stopping."""
+        used = {
+            "rounds": self.rounds_used,
+            "samples": self.samples_used,
+            "experiments": self.experiments_used,
+            "cost": self.cost_used,
+            "time_s": self.seconds_elapsed(),
+            "memory_mb": self.memory_used_mb,
+        }
+        limits = {
+            "rounds": self.rounds_limit,
+            "samples": self.sample_limit,
+            "experiments": self.spec.experiments,
+            "cost": self.spec.cost,
+            "time": self.time_limit_s,
+            "memory": self.memory_mb_limit,
+        }
+        for resource, limit in limits.items():
+            key = {"time": "time_s", "memory": "memory_mb"}.get(resource, resource)
+            if limit is not None and used[key] >= limit:
+                return resource
+        if self.spec.stopping is not None and self.spec.stopping.reached(used):
+            return "stopping"
+        return None
 
     def charge_memory(self, bytes_used: int | float) -> None:
         """
@@ -162,4 +223,22 @@ class BudgetManager:
             time_s_left=self.seconds_left(),
             samples_left=self.samples_left(),
             memory_mb_left=self.memory_mb_left(),
+            experiments_left=(
+                None
+                if self.spec.experiments is None
+                else max(0, self.spec.experiments - self.experiments_used)
+            ),
+            cost_left=(
+                None
+                if self.spec.cost is None
+                else max(0.0, self.spec.cost - self.cost_used)
+            ),
         )
+
+
+class AcquisitionBudgetExceededError(RuntimeError):
+    """A requested acquisition would exceed an experiment or financial limit."""
+
+    def __init__(self, resource: str) -> None:
+        self.resource = resource
+        super().__init__(f"Acquisition exceeds {resource} budget.")

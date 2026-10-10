@@ -1,0 +1,465 @@
+{
+  "verified": 52,
+  "failed": 0,
+  "disabled_assets": [
+    "scripts/data/scms/literature_cases/very_large/munin_sn1.json.disabled"
+  ],
+  "inventory": [
+    {
+      "id": "catalog/custom/foundations",
+      "source": "scripts/data/scms/custom/foundations.json",
+      "source_sha256": "09b97dd640f97f6b4d49ca5234a68700e754bd1670e947224549e6ef490f2ff0",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/custom/foundations.json",
+      "nodes": 3,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/large/hailfinder",
+      "source": "scripts/data/scms/literature_cases/large/hailfinder.json",
+      "source_sha256": "8724899b213582246fc689c2779d521f9ee0dab78780ce62ee11429e49c7b78d",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/large/hailfinder.json",
+      "nodes": 56,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/large/hepar2",
+      "source": "scripts/data/scms/literature_cases/large/hepar2.json",
+      "source_sha256": "0b1429572d0dee52d298008c15a025f011ecf1cff927fe7f4a749b8ea69199ca",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/large/hepar2.json",
+      "nodes": 70,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/large/win95pts",
+      "source": "scripts/data/scms/literature_cases/large/win95pts.json",
+      "source_sha256": "739ecb62c4cc1669889f20f68fa95bcef92e7fb62f3bf0b0d396f1f49bc8e31a",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/large/win95pts.json",
+      "nodes": 76,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/massive/munin",
+      "source": "scripts/data/scms/literature_cases/massive/munin.json",
+      "source_sha256": "5d141683b0645e13bcddcf38e3ad80353e6ebe4176bde36cb61cb1573904906b",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/massive/munin.json",
+      "nodes": 1041,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/massive/munin_sn2",
+      "source": "scripts/data/scms/literature_cases/massive/munin_sn2.json",
+      "source_sha256": "94fd115a2d09777033b0dc44b4688613264a08c917ede5b3a653382e4bb0efa9",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/massive/munin_sn2.json",
+      "nodes": 1003,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/massive/munin_sn3",
+      "source": "scripts/data/scms/literature_cases/massive/munin_sn3.json",
+      "source_sha256": "5ecb40114eeadece1cbd0390a6f3e927f2b69134860d46a09f64d90657414134",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/massive/munin_sn3.json",
+      "nodes": 1041,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/massive/munin_sn4",
+      "source": "scripts/data/scms/literature_cases/massive/munin_sn4.json",
+      "source_sha256": "8956823f3c19ef3c500bcce777ab564cbb270c176496a6f4410a2c9ef38ba346",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/massive/munin_sn4.json",
+      "nodes": 1038,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/medium/alarm",
+      "source": "scripts/data/scms/literature_cases/medium/alarm.json",
+      "source_sha256": "ffa5865c465135e22eeca9918f3efb309ee323e86ec5af08d52d12ab44a8c250",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/medium/alarm.json",
+      "nodes": 37,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/medium/barley",
+      "source": "scripts/data/scms/literature_cases/medium/barley.json",
+      "source_sha256": "49a6fd321d7e21f6aab5684d51233a033b6f0822b9de227dd764c09151518c89",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/medium/barley.json",
+      "nodes": 48,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/medium/child",
+      "source": "scripts/data/scms/literature_cases/medium/child.json",
+      "source_sha256": "a20a1ceffd9cd338a923aac81e1084f977dc97efa90a283f63f4252d45823279",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/medium/child.json",
+      "nodes": 20,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/medium/insurance",
+      "source": "scripts/data/scms/literature_cases/medium/insurance.json",
+      "source_sha256": "c79342bcf57b4cd7a576d126e29ba29baa825f58ed267c70ed5d47a662388999",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/medium/insurance.json",
+      "nodes": 27,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/medium/mildew",
+      "source": "scripts/data/scms/literature_cases/medium/mildew.json",
+      "source_sha256": "e0151d913145cb56e238b0ffe2e75252a0a153e12ec73850f4e1b0af952a2985",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/medium/mildew.json",
+      "nodes": 35,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/medium/water",
+      "source": "scripts/data/scms/literature_cases/medium/water.json",
+      "source_sha256": "d9f4b1ad33b47da451894cab61fa0a7c0a42f3aa6957f9a2a0b080bedb279aa8",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/medium/water.json",
+      "nodes": 32,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/small/asia",
+      "source": "scripts/data/scms/literature_cases/small/asia.json",
+      "source_sha256": "95c7757d7e2d46d63eb2139ee09d7e15e51cdd59f439a27a39864ddf6944c06f",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/small/asia.json",
+      "nodes": 8,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/small/cancer",
+      "source": "scripts/data/scms/literature_cases/small/cancer.json",
+      "source_sha256": "b935d527cd4867bcea95eb5f66d93e065524a5df9b61062c1aa061d003c99245",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/small/cancer.json",
+      "nodes": 5,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/small/earthquake",
+      "source": "scripts/data/scms/literature_cases/small/earthquake.json",
+      "source_sha256": "dcaded0cc7018c96cb0b0f9b0a96159b1cfa7ce52e342249397f3ad39db9dd48",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/small/earthquake.json",
+      "nodes": 5,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/small/sachs",
+      "source": "scripts/data/scms/literature_cases/small/sachs.json",
+      "source_sha256": "7829ade0aa5c472fc3200416c870758cda108ff1bcc3c95c8b721958f31e9a12",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/small/sachs.json",
+      "nodes": 11,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/small/survey",
+      "source": "scripts/data/scms/literature_cases/small/survey.json",
+      "source_sha256": "cfee591ce6775e5cb80e2fa34cbd53c91022e6a57c625f6dd97d5bd61233a67f",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/small/survey.json",
+      "nodes": 6,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/very_large/andes",
+      "source": "scripts/data/scms/literature_cases/very_large/andes.json",
+      "source_sha256": "43b678738fb551524caa0f73967ed9b179f99b7356c6449ffc25c791625896b0",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/very_large/andes.json",
+      "nodes": 223,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/very_large/diabetes",
+      "source": "scripts/data/scms/literature_cases/very_large/diabetes.json",
+      "source_sha256": "b870faea04b29d1a7d48c2cc1e3edabaadd454e53db325de3eb5b90bc022b01c",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/very_large/diabetes.json",
+      "nodes": 413,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/very_large/link",
+      "source": "scripts/data/scms/literature_cases/very_large/link.json",
+      "source_sha256": "43391040ed4befc1d99b42d832ff66f9c6a4a98b5024315831f4610329825f98",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/very_large/link.json",
+      "nodes": 724,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/very_large/munin",
+      "source": "scripts/data/scms/literature_cases/very_large/munin.json",
+      "source_sha256": "9cd98c7762ea9fccb617d77cbe688e3734ea74eb362061e9c4fba4f0828158c8",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/very_large/munin.json",
+      "nodes": 186,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/very_large/pathfinder",
+      "source": "scripts/data/scms/literature_cases/very_large/pathfinder.json",
+      "source_sha256": "b5e8aa591cd40e1776d3c13bdab98edf2811ef904d842a3aa49258940e10fcb8",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/very_large/pathfinder.json",
+      "nodes": 109,
+      "samples": 3
+    },
+    {
+      "id": "catalog/literature_cases/very_large/pigs",
+      "source": "scripts/data/scms/literature_cases/very_large/pigs.json",
+      "source_sha256": "00740bdc488c61976a350390120739fd6f708898115eb08779ea1a50211aa32b",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/literature_cases/very_large/pigs.json",
+      "nodes": 441,
+      "samples": 3
+    },
+    {
+      "id": "catalog/papers/hill",
+      "source": "scripts/data/scms/papers/hill.json",
+      "source_sha256": "7825a2c79c3e1962ec32fc22bcc236024a57cb2c5b3b3e024af2e1c167df9395",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/papers/hill.json",
+      "nodes": 3,
+      "samples": 3
+    },
+    {
+      "id": "catalog/physics/ac_electrical_power",
+      "source": "scripts/data/scms/physics/ac_electrical_power.json",
+      "source_sha256": "b18fd5aa28dcd352a290be1311eb706fabc036c42b136df17df47286fa11befc",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/physics/ac_electrical_power.json",
+      "nodes": 4,
+      "samples": 3
+    },
+    {
+      "id": "catalog/physics/brewsters_angle",
+      "source": "scripts/data/scms/physics/brewsters_angle.json",
+      "source_sha256": "12d751b6cc1edb6b2fd9b5cfd3d99e7c805254f8baee3c1d78ffffae3707f1e4",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/physics/brewsters_angle.json",
+      "nodes": 3,
+      "samples": 3
+    },
+    {
+      "id": "catalog/physics/capacitor",
+      "source": "scripts/data/scms/physics/capacitor.json",
+      "source_sha256": "11a462d0f41d16557ef37f2d8cc6eda22609269c3ea086358047c0d5e8c7a1e3",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/physics/capacitor.json",
+      "nodes": 3,
+      "samples": 3
+    },
+    {
+      "id": "catalog/physics/circular_motion",
+      "source": "scripts/data/scms/physics/circular_motion.json",
+      "source_sha256": "3b1bbdf53cbe95273b06b5f760999fbca81438cba759972a4ceef0e8a353a518",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/physics/circular_motion.json",
+      "nodes": 5,
+      "samples": 3
+    },
+    {
+      "id": "catalog/physics/gravitational_force",
+      "source": "scripts/data/scms/physics/gravitational_force.json",
+      "source_sha256": "dd20695dfd2ec5587e3e676d8fe97a30b8210726e74a1229efe28e86676b59b9",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/physics/gravitational_force.json",
+      "nodes": 5,
+      "samples": 3
+    },
+    {
+      "id": "catalog/physics/hookes_law",
+      "source": "scripts/data/scms/physics/hookes_law.json",
+      "source_sha256": "148d3881502f4d681389847f22857765296b61924d297b4651352ca0c5191f01",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/physics/hookes_law.json",
+      "nodes": 3,
+      "samples": 3
+    },
+    {
+      "id": "catalog/physics/ideal_gas",
+      "source": "scripts/data/scms/physics/ideal_gas.json",
+      "source_sha256": "8a145572017b31539699f05a98392786ead00877d4ca0a025765613c724bf517",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/physics/ideal_gas.json",
+      "nodes": 5,
+      "samples": 3
+    },
+    {
+      "id": "catalog/physics/kepler_3",
+      "source": "scripts/data/scms/physics/kepler_3.json",
+      "source_sha256": "49547df55e45fe9284eab6356e0bf6ddceb9eb9239a15dadc629a6d38d88a95e",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/physics/kepler_3.json",
+      "nodes": 3,
+      "samples": 3
+    },
+    {
+      "id": "catalog/physics/kinetic_energy",
+      "source": "scripts/data/scms/physics/kinetic_energy.json",
+      "source_sha256": "81b5d340a0a636d381f5fdb4b6188eed6a2fe8ed48a1e587156e8ec2a21bf563",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/physics/kinetic_energy.json",
+      "nodes": 3,
+      "samples": 3
+    },
+    {
+      "id": "catalog/physics/lensmaker",
+      "source": "scripts/data/scms/physics/lensmaker.json",
+      "source_sha256": "c9f0bd50e9a68c12928f399515e056dae81680fb0536c6cadba15ef7d1b08dd7",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/physics/lensmaker.json",
+      "nodes": 4,
+      "samples": 3
+    },
+    {
+      "id": "catalog/physics/newton_2nd_law",
+      "source": "scripts/data/scms/physics/newton_2nd_law.json",
+      "source_sha256": "3f408d2ae3d1f277c2915f3671b64c9d6c8992a33661473f248cabcbdd17bb02",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/physics/newton_2nd_law.json",
+      "nodes": 3,
+      "samples": 3
+    },
+    {
+      "id": "catalog/physics/ohms_law_1",
+      "source": "scripts/data/scms/physics/ohms_law_1.json",
+      "source_sha256": "1624002d0e40850efffabc0a6f95723707dd315db65ee3e2fc15fc7f9f04791e",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/physics/ohms_law_1.json",
+      "nodes": 3,
+      "samples": 3
+    },
+    {
+      "id": "catalog/physics/ohms_law_2",
+      "source": "scripts/data/scms/physics/ohms_law_2.json",
+      "source_sha256": "02ae437a09997d650d030df13284be8abae06eb0f747983a222063f2e647dc9d",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/physics/ohms_law_2.json",
+      "nodes": 3,
+      "samples": 3
+    },
+    {
+      "id": "catalog/physics/ph",
+      "source": "scripts/data/scms/physics/ph.json",
+      "source_sha256": "066d29597432c68e414507334169f22a32fee3ef85bb5a96a54cbea63011859f",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/physics/ph.json",
+      "nodes": 2,
+      "samples": 3
+    },
+    {
+      "id": "catalog/physics/radioactive_decay",
+      "source": "scripts/data/scms/physics/radioactive_decay.json",
+      "source_sha256": "b297f8ec4c0b4e815d53d861857b1f0149aa5d41fd7fcca758bfae67aac53cee",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/physics/radioactive_decay.json",
+      "nodes": 4,
+      "samples": 3
+    },
+    {
+      "id": "catalog/physics/rc_circuit",
+      "source": "scripts/data/scms/physics/rc_circuit.json",
+      "source_sha256": "b356b380350a12fd9e54178c81a8ec24095e71eae59b9eccf75ab4d6c8623c05",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/physics/rc_circuit.json",
+      "nodes": 6,
+      "samples": 3
+    },
+    {
+      "id": "catalog/physics/refraction_snell",
+      "source": "scripts/data/scms/physics/refraction_snell.json",
+      "source_sha256": "5042f0c01023b0360dbacf932e9cd1db374addeafe9586140b6607d980527e1e",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/physics/refraction_snell.json",
+      "nodes": 4,
+      "samples": 3
+    },
+    {
+      "id": "catalog/physics/resonance_frequency",
+      "source": "scripts/data/scms/physics/resonance_frequency.json",
+      "source_sha256": "51ce91e9a74ec981c5dcdc75aafdf8848997ada519b402289c94103a2f9012f8",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/physics/resonance_frequency.json",
+      "nodes": 3,
+      "samples": 3
+    },
+    {
+      "id": "catalog/physics/stefan_boltzmann",
+      "source": "scripts/data/scms/physics/stefan_boltzmann.json",
+      "source_sha256": "8669e10f2fc92757713b8e17ac7493d1cb4dafab3a3e7bc8725254ef1a0ec2c4",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/physics/stefan_boltzmann.json",
+      "nodes": 3,
+      "samples": 3
+    },
+    {
+      "id": "catalog/physics/torricelli",
+      "source": "scripts/data/scms/physics/torricelli.json",
+      "source_sha256": "1b80805caf83c7f128d353fc23b14a3dd4b4745826f0c6a747b454ef4ec4b730",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/physics/torricelli.json",
+      "nodes": 3,
+      "samples": 3
+    },
+    {
+      "id": "catalog/generated/synthetic-continuous",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/generated/synthetic-continuous.json",
+      "nodes": 8
+    },
+    {
+      "id": "catalog/generated/synthetic-hybrid",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/generated/synthetic-hybrid.json",
+      "nodes": 8
+    },
+    {
+      "id": "catalog/generated/synthetic-categorical",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/generated/synthetic-categorical.json",
+      "nodes": 8
+    },
+    {
+      "id": "catalog/generated/ihdp",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/generated/ihdp.json",
+      "nodes": 4
+    },
+    {
+      "id": "catalog/generated/jobs",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/generated/jobs.json",
+      "nodes": 4
+    },
+    {
+      "id": "catalog/generated/twins",
+      "status": "verified",
+      "manifest": "runs/catalog-v3/generated/twins.json",
+      "nodes": 4
+    }
+  ],
+  "limitations": [
+    "Construction/sampling verifies schema and finite numerical sampling, not identifiability or dataset licenses.",
+    "Dataset examples use the first 500 complete rows and configurable random forests; they are construction demonstrations, not benchmark comparisons."
+  ],
+  "scope": "Construct and sample each SCM+mission+budget manifest; not a comparative agent benchmark, data-license audit, or proof of identifiability.",
+  "source_fingerprint": "fd421edb06652f08709e553bca1e7389b00ead0c8e94ee78d85d6ee47212c0b8"
+}

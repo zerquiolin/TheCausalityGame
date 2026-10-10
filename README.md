@@ -139,6 +139,8 @@ After installation the `tcg` CLI is available on your PATH.
 3. Inspect the generated artifacts under `runs/<problem_id>/<timestamp>` when the manifest requests development-mode outputs.
 
 ### Minimal manifest example
+Categorical node domains use string labels (for example `["control", "treated"]`); numerical node domains use two numeric interval bounds. Dataset-derived categorical columns are converted to string labels when building an SCM.
+
 ```json
 {
   "class_": "TheCausalityGame.core.contracts.problem_instance:ProblemInstance",
@@ -164,7 +166,7 @@ After installation the `tcg` CLI is available on your PATH.
         "class_": "<SCM node module>:<NodeClass>",
         "name": "Z",
         "accessibility": "controllable",
-        "domain": [0, 1],
+        "domain": ["0", "1"],
         "parents": null,
         "noise_distribution": {
           "class_": "<Noise module>:<NoiseClass>",
@@ -245,17 +247,20 @@ Problem instances are validated against `ProblemInstanceSpec`. JSON documents mu
 | `mission` | [`MissionSpec`](TheCausalityGame/core/contracts/specs/mission.py) including behavior/result metrics and validators. |
 | `custom_metrics` | Optional list of [`MetricSpec`](TheCausalityGame/core/contracts/specs/metric.py) evaluated in addition to mission metrics. |
 | `run_plan` | [`RunPlanSpec`](TheCausalityGame/core/contracts/specs/run.py) covering execution mode, parallel backend, budgets, and hook plan. |
-| `seeds` | Mapping of component-specific seeds for reproducibility (`global`, `agents`, `mission`, `scm`, ...). |
+| `seeds` | Seed namespaces: `global`, `scm`, `agent`, `inferer`, `decider`, `policy`, `acquisition`. Other names are retained as provenance. |
 | `runtime` | [`RuntimeSettingsSpec`](TheCausalityGame/core/contracts/specs/settings.py) toggling DEV/PROD mode and debug verbosity. |
 
+SCM randomness follows this fallback order: a serialized `scm.random_state` takes precedence; if absent, use `seeds.scm`, then `seeds.global`, then default **911**. A serialized state restores the full RNG state, including its position. Invalid serialized states raise rather than silently falling back. Acquisition streams derive from that resolved initial SCM state unless `seeds.acquisition` explicitly selects a separate stream. Configured component `params.seed` or `params.random_state` also take precedence over problem-instance component fallbacks; absent fallback values retain constructor defaults.
+
+
 ### Budgets and hooks
-- Budgets (`run_plan.budget`) enforce per-agent limits on rounds, time (seconds), samples, and memory.
+- Budgets (`run_plan.budget`) support rounds, samples, experiments, financial cost, compute time and acquired-data memory. Entire acquisition batches are preflighted for sample/experiment/cost limits; compute and memory limits are checked at call boundaries. `pricing` supports intervention-specific prices, and `stopping` supports recursive resource thresholds with `all`/`any` composition.
 - Hooks (`run_plan.hook_plan`) subscribe to lifecycle events enumerated in `HookEvent` (e.g., `before_act`, `after_eval`, `benchmark_end`), enabling custom logging, visualizations, or integrations.
 
 ### Metrics and missions
 - Missions encapsulate evaluation logic and must expose an ID, description, behavior metric, result metric, and validator.
 - Metrics express support for mission deliverables, typically via `params` entries such as accepted deliverable kinds.
-- Feedback returned to agents carries the latest metric evaluations so they can adapt before answering.
+- Agents receive observable sample updates through `inform`; metric feedback is recorded in the transcript. At a forced stop, a valid final response is scored; a missing, failed or invalid response has no score, with the boundary and response status recorded.
 
 ## Extending the Game
 

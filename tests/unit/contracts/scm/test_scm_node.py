@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from TheCausalityGame.core.contracts.scm_node import SCMNode
+from TheCausalityGame.core.contracts.scm_node import CategoricalSCMNode, SCMNode
 from TheCausalityGame.core.infrastructure.registry import (
     build_from_spec,
     load_subclasses_from_path,
@@ -24,7 +24,7 @@ classes = load_subclasses_from_path(SCMNode, base_path)
 
 
 # Tests
-@pytest.fixture(params=classes, scope="module")
+@pytest.fixture(params=classes, scope="function")
 def scm_node_instance(request: Any) -> None:  # noqa: ANN401
     """Test class construction."""
     cls = request.param
@@ -32,7 +32,7 @@ def scm_node_instance(request: Any) -> None:  # noqa: ANN401
     args = {
         "name": cls.__name__,
         "evaluation": None,
-        "domain": [0, 1],
+        "domain": ["0", "1"] if issubclass(cls, CategoricalSCMNode) else [0, 1],
         "noise_distribution": UniformNoiseDistribution(),
         "accessibility": NodeAccessibility.CONTROLLABLE,
         "parents": [],
@@ -48,7 +48,10 @@ def test_scm_node_properties(scm_node_instance: Any) -> None:  # noqa: ANN401
     # Check name
     assert scm_node_instance.name == scm_node_instance.__class__.__name__
     # Check domain
-    assert scm_node_instance.domain == [0, 1]
+    expected_domain = (
+        ["0", "1"] if isinstance(scm_node_instance, CategoricalSCMNode) else [0, 1]
+    )
+    assert scm_node_instance.domain == expected_domain
     # Check accessibility
     assert scm_node_instance.accessibility == NodeAccessibility.CONTROLLABLE
     # Check noise distribution

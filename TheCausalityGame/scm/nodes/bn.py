@@ -1,3 +1,5 @@
+"""Discrete Bayesian-network nodes with validated, ordered conditional tables."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -13,15 +15,17 @@ from TheCausalityGame.core.lib.utils.random_state_serialization import (
 
 
 class BayesianNetworkSCMNode(CategoricalSCMNode):
+    """Sample a finite categorical domain from a normalized CPT."""
+
     def __init__(
         self,
         name: str,
         parents: list[str],
-        domain: list[float | str],
+        domain: list[str],
         probability_distribution: dict | list,
         accessibility: NodeAccessibility = NodeAccessibility.CONTROLLABLE,
-        random_state: np.random.RandomState = np.random.RandomState(911),
-    ):
+        random_state: np.random.RandomState | None = None,
+    ) -> None:
         super().__init__(
             name=name,
             accessibility=accessibility,
@@ -32,109 +36,85 @@ class BayesianNetworkSCMNode(CategoricalSCMNode):
             random_state=random_state,
             noise_distribution=None,
         )
-        self.probability_distribution = probability_distribution
+        if not domain or len(set(domain)) != len(domain):
+            raise ValueError(f"{name} needs a nonempty unique categorical domain.")
+        if any("," in str(category) for category in domain):
+            raise ValueError("CPT category labels cannot contain commas.")
 
-        # sanity check of given distribution
-        if isinstance(probability_distribution, list):
-            assert all(
-                [isinstance(v, (float, np.float64)) for v in probability_distribution]
-            ), f"invalid entries in distribution for {name}: {probability_distribution}"
-            s = np.sum(probability_distribution)
-            assert np.isclose(
-                s, 1
-            ), f"Invalid distribution for leaf node {name}, which sum up to {sum(probability_distribution)}: {probability_distribution}"
-            if s != 1:
-                self.probability_distribution /= s
+        def normalized(values: list) -> list[float]:
+            probabilities = np.asarray(values, dtype=float).reshape(-1)
+            if (
+                len(probabilities) != len(domain)
+                or not np.isfinite(probabilities).all()
+                or (probabilities < 0).any()
+                or not np.isclose(probabilities.sum(), 1)
+            ):
+                raise ValueError(f"Invalid probability vector for {name}: {values}")
+            return (probabilities / probabilities.sum()).tolist()
+
+        if parents:
+            if not isinstance(probability_distribution, dict):
+                raise ValueError("A parented BN node needs a conditional table.")
+            self.probability_distribution = {
+                key: normalized(values)
+                for key, values in probability_distribution.items()
+            }
         else:
-            for parent_combo, distribution in probability_distribution.items():
-                assert all(
-                    [isinstance(v, (float, np.float64)) for v in distribution]
-                ), f"invalid entries in distribution for {name}: {distribution}"
-                s = np.sum(distribution)
-                assert np.isclose(
-                    s, 1
-                ), f"Invalid distribution for parent combination {parent_combo} node {name}, which sum up to {sum(distribution)}: {distribution}"
-                if s != 1:
-                    probability_distribution[parent_combo] /= s
+            self.probability_distribution = normalized(probability_distribution)
 
     def generate_values(
-        self, parent_values: pd.DataFrame, random_state, cancel_noise=False
+        self,
+        parent_values: pd.DataFrame,
+        random_state: np.random.RandomState | None = None,
+        cancel_noise: bool = False,
     ) -> np.ndarray:
-        """
-        Given a dictionary of parent values, returns a sampled value from the node's distribution.
-
-        Args:
-            parent_values (dict): A dictionary mapping parent names to their values.
-
-        Returns:
-            str: A sampled value from the node's distribution.
-        """
-
-        # get distribution for each of the samples
+        """Use one scalar uniform draw per row, preserving batch/chunk equivalence."""
+        rs = self.random_state if random_state is None else random_state
         distributions = self.get_distributions(parent_values)
-
-        # draw samples from each distribution
-        rs = random_state if random_state else self.random_state
-        return np.array([rs.choice(self.domain, p=dist) for dist in distributions])
+        uniforms = rs.uniform(size=len(parent_values))
+        if cancel_noise:
+            uniforms[:] = 0.5
+        return np.asarray(
+            [
+                self.domain[
+                    min(
+                        np.searchsorted(np.cumsum(dist), u, side="right"),
+                        len(self.domain) - 1,
+                    )
+                ]
+                for dist, u in zip(distributions, uniforms, strict=True)
+            ],
+        )
 
     def get_distributions(self, parent_values: pd.DataFrame) -> list:
+        """Look up CPTs using declared parent order."""
         if not self.parents:
-            # Flatten the possibly nested list
             return [
-                [
-                    p
-                    for sub in self.probability_distribution
-                    for p in (sub if isinstance(sub, list) else [sub])
-                ]
-                for _ in range(len(parent_values))
+                list(self.probability_distribution) for _ in range(len(parent_values))
             ]
-
-        # get the distribution for each entry, based on the respective values of the parent variables
-        dists = []
-        for row in parent_values[self.parents].values:
-            key = ",".join(row)
-            dists.append(
-                [
-                    p
-                    for sub in self.probability_distribution[key]
-                    for p in (sub if isinstance(sub, list) else [sub])
-                ]
-            )
-        return dists
+        if not set(self.parents).issubset(parent_values.columns):
+            raise ValueError(f"Missing parents for {self.name}: {self.parents}")
+        result = []
+        for row in parent_values[self.parents].itertuples(index=False, name=None):
+            key = ",".join(map(str, row))
+            if key not in self.probability_distribution:
+                raise ValueError(f"Missing CPT row for {self.name}: {key}")
+            result.append(list(self.probability_distribution[key]))
+        return result
 
     def _to_dict(self) -> dict[str, Any]:
-        dict_repr = {
-            "class": self.__class__.__name__,
-            "name": self.name,
-            "domain": self.domain,
-            "probability_distribution": self.probability_distribution,
-        }
-
-        if self.accessibility != NodeAccessibility.CONTROLLABLE:
-            dict_repr["accessibility"] = self.accessibility
-
-        return dict_repr
+        return {"probability_distribution": self.probability_distribution}
 
     @classmethod
     def from_spec(cls, spec: SCMNodeSpec) -> BayesianNetworkSCMNode:
-        # Reconstruct the random state.
+        """Reconstruct a node without changing parent ordering or probabilities."""
         return cls(
             name=spec.name,
             parents=spec.parents or [],
-            domain=spec.domain or [],
-            probability_distribution=(
-                spec.probability_distribution
-                if spec.parents
-                else (
-                    [v[0] for v in spec.probability_distribution]
-                    if isinstance(spec.probability_distribution[0], list)
-                    else [v for v in spec.probability_distribution]
-                )
-            ),
-            accessibility=spec.accessibility or NodeAccessibility.CONTROLLABLE,
+            domain=list(spec.domain),
+            probability_distribution=spec.probability_distribution,
+            accessibility=spec.accessibility,
             random_state=(
-                random_state_from_json(spec.random_state)
-                if spec.random_state
-                else np.random.RandomState(911)
+                random_state_from_json(spec.random_state) if spec.random_state else None
             ),
         )

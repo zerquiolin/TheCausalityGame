@@ -20,7 +20,7 @@ classes = load_subclasses_from_path(Metric, base_path)
 
 
 # Tests
-@pytest.fixture(params=classes, scope="module")
+@pytest.fixture(params=classes, scope="function")
 def metric_instance(request: Any) -> None:  # noqa: ANN401
     """Test class construction."""
     cls = request.param

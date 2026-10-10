@@ -28,7 +28,7 @@ classes = load_subclasses_from_path(SCM, base_path)
 
 
 # Tests
-@pytest.fixture(params=classes, scope="module")
+@pytest.fixture(params=classes, scope="function")
 def scm_instance(request: Any) -> None:  # noqa: ANN401
     """Test class construction."""
     cls = request.param
@@ -91,13 +91,13 @@ def test_data_generation(scm_instance: Any) -> None:  # noqa: ANN401
     df = pd.DataFrame(index=range(5))
     # Generate data
     result = scm_instance.generate_samples(
-        df, num_samples=5, random_state=np.random.RandomState(911)
+        num_samples=5, random_state=np.random.RandomState(911)
     )
     # Assertion
     assert len(result) == len(df)
     # Generate again to check for consistency
     result_second = scm_instance.generate_samples(
-        df, num_samples=5, random_state=np.random.RandomState(911)
+        num_samples=5, random_state=np.random.RandomState(911)
     )
 
     # Compare

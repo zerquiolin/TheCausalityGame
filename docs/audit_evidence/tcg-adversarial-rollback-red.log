@@ -1,0 +1,82 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/zerquiolin/Desktop/University/TCG/TheCausalityGame
+configfile: pyproject.toml
+plugins: cov-7.1.0, anyio-4.14.2
+collected 39 items / 37 deselected / 2 selected
+
+tests/integration/test_runtime.py FF                                     [100%]
+
+=================================== FAILURES ===================================
+____ test_failed_acquisition_rolls_back_rng_and_all_budget_counters[False] _____
+
+game_factory = <function game_factory.<locals>.create at 0x111737060>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1119c7320>
+same_arm = False
+
+    @pytest.mark.parametrize("same_arm", [False, True])
+    def test_failed_acquisition_rolls_back_rng_and_all_budget_counters(game_factory, monkeypatch, same_arm):
+        decision = Decision.experiment().add_experiment(None, n=3).add_experiment(None if same_arm else {"X": 0.5}, n=4)
+        game = game_factory(RecordingAgent(decision))
+        fresh = game_factory(RecordingAgent(decision))
+        original = game.scm.generate_samples
+        calls = 0
+
+        def fail_after_drawing_second_batch(*args, **kwargs):
+            nonlocal calls
+            calls += 1
+            result = original(*args, **kwargs)
+            if calls == 2:
+                raise RuntimeError("injected sampling failure")
+            return result
+
+        monkeypatch.setattr(game.scm, "generate_samples", fail_after_drawing_second_batch)
+        with pytest.raises(RuntimeError, match="injected"):
+            game.environment._apply_decision(decision)
+        budget = game.environment.budget
+        assert (budget.samples_used, budget.experiments_used, budget.cost_used) == (0, 0, 0)
+>       assert not game.environment.random_states, "Failed acquisition installed or advanced live streams"
+E       AssertionError: Failed acquisition installed or advanced live streams
+E       assert not {'[]': {'X': RandomState(MT19937) at 0x132924040, 'L': RandomState(MT19937) at 0x132924140, 'Y': RandomState(MT19937) ...ndomState(MT19937) at 0x132924D40, 'L': RandomState(MT19937) at 0x132925240, 'Y': RandomState(MT19937) at 0x132925440}}
+E        +  where {'[]': {'X': RandomState(MT19937) at 0x132924040, 'L': RandomState(MT19937) at 0x132924140, 'Y': RandomState(MT19937) ...ndomState(MT19937) at 0x132924D40, 'L': RandomState(MT19937) at 0x132925240, 'Y': RandomState(MT19937) at 0x132925440}} = <TheCausalityGame.core.runtime.environment.Environment object at 0x13200df40>.random_states
+E        +    where <TheCausalityGame.core.runtime.environment.Environment object at 0x13200df40> = <TheCausalityGame.core.runtime.game.Game object at 0x111a0bad0>.environment
+
+tests/integration/test_runtime.py:603: AssertionError
+_____ test_failed_acquisition_rolls_back_rng_and_all_budget_counters[True] _____
+
+game_factory = <function game_factory.<locals>.create at 0x1117377e0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x111955d30>
+same_arm = True
+
+    @pytest.mark.parametrize("same_arm", [False, True])
+    def test_failed_acquisition_rolls_back_rng_and_all_budget_counters(game_factory, monkeypatch, same_arm):
+        decision = Decision.experiment().add_experiment(None, n=3).add_experiment(None if same_arm else {"X": 0.5}, n=4)
+        game = game_factory(RecordingAgent(decision))
+        fresh = game_factory(RecordingAgent(decision))
+        original = game.scm.generate_samples
+        calls = 0
+
+        def fail_after_drawing_second_batch(*args, **kwargs):
+            nonlocal calls
+            calls += 1
+            result = original(*args, **kwargs)
+            if calls == 2:
+                raise RuntimeError("injected sampling failure")
+            return result
+
+        monkeypatch.setattr(game.scm, "generate_samples", fail_after_drawing_second_batch)
+        with pytest.raises(RuntimeError, match="injected"):
+            game.environment._apply_decision(decision)
+        budget = game.environment.budget
+        assert (budget.samples_used, budget.experiments_used, budget.cost_used) == (0, 0, 0)
+>       assert not game.environment.random_states, "Failed acquisition installed or advanced live streams"
+E       AssertionError: Failed acquisition installed or advanced live streams
+E       assert not {'[]': {'X': RandomState(MT19937) at 0x132927440, 'L': RandomState(MT19937) at 0x132927540, 'Y': RandomState(MT19937) at 0x132927640}}
+E        +  where {'[]': {'X': RandomState(MT19937) at 0x132927440, 'L': RandomState(MT19937) at 0x132927540, 'Y': RandomState(MT19937) at 0x132927640}} = <TheCausalityGame.core.runtime.environment.Environment object at 0x1329513a0>.random_states
+E        +    where <TheCausalityGame.core.runtime.environment.Environment object at 0x1329513a0> = <TheCausalityGame.core.runtime.game.Game object at 0x1326629f0>.environment
+
+tests/integration/test_runtime.py:603: AssertionError
+=========================== short test summary info ============================
+FAILED tests/integration/test_runtime.py::test_failed_acquisition_rolls_back_rng_and_all_budget_counters[False]
+FAILED tests/integration/test_runtime.py::test_failed_acquisition_rolls_back_rng_and_all_budget_counters[True]
+====================== 2 failed, 37 deselected in 16.08s =======================

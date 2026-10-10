@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from typing import Any, override
 
 import numpy as np
@@ -50,6 +51,8 @@ class TransformedOutcomeInferer(Inferer):
         if not self._samples:
             return zero_answer()
 
+        frozen = deepcopy(self)
+
         def estimate(
             X: list[str],  # noqa: N803
             treatment: str,
@@ -61,7 +64,7 @@ class TransformedOutcomeInferer(Inferer):
                 return zero_effect(covariate_values)
 
             control_value, treated_value = values
-            train = self._interventional_training_frame(
+            train = frozen._interventional_training_frame(
                 X=X,
                 treatment=treatment,
                 outcome=outcome,
@@ -69,7 +72,7 @@ class TransformedOutcomeInferer(Inferer):
                 treated_value=treated_value,
             )
             if train is None:
-                train = self._observational_training_frame(
+                train = frozen._observational_training_frame(
                     X=X,
                     treatment=treatment,
                     outcome=outcome,
@@ -82,7 +85,7 @@ class TransformedOutcomeInferer(Inferer):
             model = fit_tabular_regressor(
                 train[X],
                 train["_transformed_outcome"],
-                alpha=self.alpha,
+                alpha=frozen.alpha,
             )
 
             control, _treated = covariate_values
@@ -122,12 +125,12 @@ class TransformedOutcomeInferer(Inferer):
         p_treated = n_treated / total
         p_control = n_control / total
         transformed = np.zeros(len(data), dtype=float)
-        transformed[treated_mask.to_numpy()] = data.loc[treated_mask, outcome].to_numpy(
-            dtype=float
-        ) / p_treated
-        transformed[control_mask.to_numpy()] = -data.loc[control_mask, outcome].to_numpy(
-            dtype=float
-        ) / p_control
+        transformed[treated_mask.to_numpy()] = (
+            data.loc[treated_mask, outcome].to_numpy(dtype=float) / p_treated
+        )
+        transformed[control_mask.to_numpy()] = (
+            -data.loc[control_mask, outcome].to_numpy(dtype=float) / p_control
+        )
 
         train = data[X].copy()
         train["_transformed_outcome"] = transformed
@@ -172,12 +175,14 @@ class TransformedOutcomeInferer(Inferer):
         p_control = 1.0 - p_treated
 
         transformed = np.zeros(len(data), dtype=float)
-        transformed[treated_mask.to_numpy()] = data.loc[treated_mask, outcome].to_numpy(
-            dtype=float
-        ) / p_treated[treated_mask.to_numpy()]
-        transformed[control_mask.to_numpy()] = -data.loc[control_mask, outcome].to_numpy(
-            dtype=float
-        ) / p_control[control_mask.to_numpy()]
+        transformed[treated_mask.to_numpy()] = (
+            data.loc[treated_mask, outcome].to_numpy(dtype=float)
+            / p_treated[treated_mask.to_numpy()]
+        )
+        transformed[control_mask.to_numpy()] = (
+            -data.loc[control_mask, outcome].to_numpy(dtype=float)
+            / p_control[control_mask.to_numpy()]
+        )
 
         train = data[X].copy()
         train["_transformed_outcome"] = transformed
@@ -189,7 +194,10 @@ class TransformedOutcomeInferer(Inferer):
             estimate=self.answer(),
             summary={
                 "n_samples": sum(len(sample.data) for sample in self._samples),
-                "backend": {"implementation_kind": "empirical", "project": "TheCausalityGame"},
+                "backend": {
+                    "implementation_kind": "empirical",
+                    "project": "TheCausalityGame",
+                },
             },
             capabilities=("cate", "transformed_outcome"),
         )

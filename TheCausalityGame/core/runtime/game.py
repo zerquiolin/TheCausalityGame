@@ -13,6 +13,11 @@ from TheCausalityGame.core.contracts.specs.scm import SCMSpec
 from TheCausalityGame.core.infrastructure.logger import Logger
 from TheCausalityGame.core.infrastructure.registry import build_from_spec
 from TheCausalityGame.core.lib.enum.hook import HookEvent
+from TheCausalityGame.core.lib.utils.random_state_serialization import (
+    random_state_to_json,
+    resolve_scm_random_state,
+)
+from TheCausalityGame.core.lib.utils.seeding import derive_seed
 from TheCausalityGame.core.managers.hook import HookManager
 from TheCausalityGame.core.runtime.environment import Environment
 
@@ -62,18 +67,60 @@ class Game:
         agent_logger: Logger,
         game_logger: Logger,
         environment_logger: Logger,
+        seeds: dict[str, int] | None = None,
     ) -> None:
         # Store manifest
+        self._has_run = False
         self.manifest_id = manifest_id
+        seeds = seeds or {}
+        scm_spec = scm_spec.model_copy(
+            update={
+                "random_state": random_state_to_json(
+                    resolve_scm_random_state(scm_spec.random_state, seeds)
+                )
+            }
+        )
+        agent_data = agent_spec.model_dump()
+        for family in ("inferer", "decider", "policy"):
+            component = agent_data.get(family)
+            component_seed = seeds.get(family, seeds.get("agent", seeds.get("global")))
+            component_params = (component or {}).get("params") or {}
+            configured_rng = (
+                component_params.get("random_state") is not None
+                or component_params.get("seed") is not None
+            )
+            if (
+                component is not None
+                and component_seed is not None
+                and not configured_rng
+            ):
+                import inspect
+
+                from TheCausalityGame.core.infrastructure.registry import load_class
+
+                constructor = inspect.signature(
+                    load_class(component["class_"]).__init__
+                )
+                if "seed" in constructor.parameters:
+                    component.setdefault("params", {})
+                    component["params"] = component["params"] or {}
+                    component["params"]["seed"] = derive_seed(
+                        "agent", family, component_seed
+                    ) % (2**31 - 1)
+        agent_spec = AgentSpec.model_validate(agent_data)
 
         # Build components from specs
         self.agent: Agent = build_from_spec(agent_spec)
         self.scm: SCM = build_from_spec(scm_spec)
         self.mission: Mission = build_from_spec(mission_spec)
-        self.custom_metrics: list[Metric] = [build_from_spec(m) for m in custom_metrics_specs]
+        self.custom_metrics: list[Metric] = [
+            build_from_spec(m) for m in custom_metrics_specs
+        ]
 
         if not self.mission.is_mounted:
             self.mission.mount(self.scm)
+        for metric in self.custom_metrics:
+            metric.mount(self.scm)
 
         # Set agent context
         agent_ctx = AgentContext(
@@ -124,6 +171,7 @@ class Game:
             budget_spec=budget_spec,
             hook_manager=hook_manager,
             logger=environment_logger,
+            acquisition_seed=seeds.get("acquisition"),
         )
 
         self.hook_manager = hook_manager
@@ -138,6 +186,11 @@ class Game:
         Transcript
             The full recorded transcript of the run.
         """
+        if self._has_run:
+            raise RuntimeError(
+                "This game has already run; construct a fresh game for another episode."
+            )
+        self._has_run = True
         self.logger.info(f"Starting game run for agent {self.agent.id}.")
         try:
             self.hook_manager.trigger(HookEvent.GAME_START)

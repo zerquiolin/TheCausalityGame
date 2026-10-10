@@ -69,8 +69,8 @@ if (payload$method == "s_learner") {
     controls <- which(w == 0)
     fraction <- as.numeric(params$honest_fraction)
     train_idx <- c(
-      sample(treated, max(1, floor(length(treated) * (1 - fraction)))),
-      sample(controls, max(1, floor(length(controls) * (1 - fraction))))
+      treated[sample.int(length(treated), max(1, floor(length(treated) * (1 - fraction))))],
+      controls[sample.int(length(controls), max(1, floor(length(controls) * (1 - fraction))))]
     )
     estimate_idx <- setdiff(seq_len(nrow(train)), train_idx)
     if (length(unique(w[train_idx])) != 2 || length(unique(w[estimate_idx])) != 2) {

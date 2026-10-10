@@ -1,0 +1,50 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/zerquiolin/Desktop/University/TCG/TheCausalityGame
+configfile: pyproject.toml
+plugins: cov-7.1.0, anyio-4.14.2
+collected 23 items
+
+tests/unit/infra/test_adversarial_boundaries.py ..............F          [ 65%]
+tests/unit/managers/test_adversarial_budget.py .....                     [ 86%]
+tests/unit/post_processing/test_comparison_analysis.py ..F               [100%]
+
+=================================== FAILURES ===================================
+___________ test_bn_sampling_preserves_both_types_in_a_mixed_domain ____________
+
+    def test_bn_sampling_preserves_both_types_in_a_mixed_domain():
+        node = BayesianNetworkSCMNode("Y", [], [1, "other"], [0.5, 0.5], random_state=np.random.RandomState(17))
+        values = node.generate_values(pd.DataFrame(index=range(64))).tolist()
+>       assert set(values) == {1, "other"}, "A mixed domain must not stringify numeric categories"
+E       AssertionError: A mixed domain must not stringify numeric categories
+E       assert {'1', 'other'} == {1, 'other'}
+E
+E         Extra items in the left set:
+E         '1'
+E         Extra items in the right set:
+E         1
+E         Use -v to get more diff
+
+tests/unit/infra/test_adversarial_boundaries.py:89: AssertionError
+_________ test_success_without_any_scientific_metric_is_an_audit_error _________
+
+    def test_success_without_any_scientific_metric_is_an_audit_error():
+        """Runtime alone cannot establish a successful scientific comparison."""
+        import pandas as pd
+        from post_processing.comparison_analysis import audit_records
+
+        records = pd.DataFrame([
+            {"run_id": "r", "case": "c", "method": "m", "seed": 1, "round": 1,
+             "implementation": "empirical", "status": "ok", "runtime_s": 0.1,
+             "backend": {}}
+        ])
+        findings = audit_records(records)
+>       assert "successful_row_without_metrics" in set(findings["code"])
+E       AssertionError: assert 'successful_row_without_metrics' in {'incomplete_pair', 'missing_input_digest'}
+E        +  where {'incomplete_pair', 'missing_input_digest'} = set(0         incomplete_pair\n1    missing_input_digest\nName: code, dtype: str)
+
+tests/unit/post_processing/test_comparison_analysis.py:126: AssertionError
+=========================== short test summary info ============================
+FAILED tests/unit/infra/test_adversarial_boundaries.py::test_bn_sampling_preserves_both_types_in_a_mixed_domain
+FAILED tests/unit/post_processing/test_comparison_analysis.py::test_success_without_any_scientific_metric_is_an_audit_error
+======================== 2 failed, 21 passed in 18.08s =========================

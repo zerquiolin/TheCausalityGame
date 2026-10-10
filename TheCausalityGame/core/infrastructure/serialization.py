@@ -5,6 +5,8 @@ from __future__ import annotations
 import dataclasses as _dc
 import datetime as _dt
 import json
+import os
+import tempfile
 from collections.abc import Mapping
 from enum import Enum
 from pathlib import Path
@@ -33,8 +35,8 @@ def is_serializable(obj: Any) -> bool:  # noqa :ANN401
         True if the object is serializable, False otherwise.
     """
     try:
-        json.dumps(obj)
-    except TypeError:
+        dumps(obj)
+    except (ObjectNotSerializableError, TypeError, ValueError, RecursionError):
         return False
     else:
         return True
@@ -74,7 +76,7 @@ def _default_encoder(o: Any) -> Any:  # noqa :ANN401
         return str(o)
     if isinstance(o, _dt.datetime | _dt.date | _dt.time):
         if isinstance(o, _dt.datetime) and o.tzinfo is None:
-            o = o.replace(tzinfo=_dt.timezone.utc)
+            o = o.replace(tzinfo=_dt.UTC)
         return o.isoformat()
     if isinstance(o, set | tuple):
         return list(o)  # type: ignore
@@ -126,11 +128,34 @@ def dump(obj: Any, path: Path, *, indent: int | None = 2) -> None:  # noqa :ANN4
     indent : int, optional
         Indentation level for pretty-printed JSON (default is 2).
     """
+    temporary_path: Path | None = None
     try:
+        serialized = dumps(obj, indent=indent)
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(dumps(obj, indent=indent))
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            dir=path.parent,
+            prefix=f".{path.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as stream:
+            temporary_path = Path(stream.name)
+            stream.write(serialized)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary_path, path)
+        temporary_path = None
     except (TypeError, ValueError) as e:
         raise ObjectNotSerializableError(obj) from e
+    finally:
+        if temporary_path is not None:
+            temporary_path.unlink(missing_ok=True)
+
+
+def _reject_nonfinite_constant(value: str) -> None:
+    """Reject JavaScript numeric extensions that are not valid JSON."""
+    raise ValueError(f"Invalid JSON numeric constant: {value}")
 
 
 def loads(s: str) -> Any:  # noqa :ANN401
@@ -147,8 +172,8 @@ def loads(s: str) -> Any:  # noqa :ANN401
         Deserialized Python object.
     """
     try:
-        return json.loads(s)
-    except json.JSONDecodeError as e:
+        return json.loads(s, parse_constant=_reject_nonfinite_constant)
+    except (ValueError, RecursionError) as e:
         raise ObjectNotDeserializableError(s) from e
 
 

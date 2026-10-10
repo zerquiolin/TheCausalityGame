@@ -7,7 +7,9 @@ from typing import override
 import numpy as np
 import pandas as pd
 
-from TheCausalityGame.agent.helpers.ridge_bootstrap_edge_belief import RidgeBootstrapEdgeBelief
+from TheCausalityGame.agent.helpers.ridge_bootstrap_edge_belief import (
+    RidgeBootstrapEdgeBelief,
+)
 from TheCausalityGame.core.contracts.decider import Decider
 from TheCausalityGame.core.contracts.dto.agent import BeliefSnapshot, RoundObservation
 from TheCausalityGame.core.contracts.dto.environment import AvailableActions, RoundInfo
@@ -46,6 +48,7 @@ class Tigas2022CBEDDecider(Decider):
         self.eval_bootstrap = int(eval_bootstrap)
         self.topk_vars = int(topk_vars)
         self.num_value_candidates = int(max(2, num_value_candidates))
+        self.seed = seed
         self.rng = np.random.default_rng(seed)
 
     @override
@@ -55,12 +58,9 @@ class Tigas2022CBEDDecider(Decider):
     def _candidate_values(self, var: object) -> list[object]:
         dom = list(var.domain)  # type: ignore
 
-        if (
-            len(dom) >= DOMAIN_BOUNDS_COUNT  # type: ignore
-            and all(
-                isinstance(x, (int, float, np.integer, np.floating))
-                for x in dom[:DOMAIN_BOUNDS_COUNT]  # type: ignore
-            )
+        if len(dom) >= DOMAIN_BOUNDS_COUNT and all(  # type: ignore
+            isinstance(x, (int, float, np.integer, np.floating))
+            for x in dom[:DOMAIN_BOUNDS_COUNT]  # type: ignore
         ):
             low, high = float(dom[0]), float(dom[1])  # type: ignore
             if high < low:
@@ -141,7 +141,9 @@ class Tigas2022CBEDDecider(Decider):
 
         for var in vars_scored:
             for val in self._candidate_values(var):
-                exp_ent = self._expected_entropy_after(var.name, val, n_add=self._num_inter)
+                exp_ent = self._expected_entropy_after(
+                    var.name, val, n_add=self._num_inter
+                )
                 ig = current_entropy - exp_ent
                 if ig > best_ig:
                     best_ig = ig
@@ -160,6 +162,7 @@ class Tigas2022CBEDDecider(Decider):
         return DeciderSpec(
             class_=get_class_path(self.__class__),
             params={
+                "seed": self.seed,
                 "num_obs": self._num_obs,
                 "num_inter": self._num_inter,
                 "n_bootstrap": self._belief.n_bootstrap,
@@ -177,6 +180,7 @@ class Tigas2022CBEDDecider(Decider):
     def from_spec(cls, spec: DeciderSpec) -> Tigas2022CBEDDecider:
         params = spec.params or {}
         return cls(
+            seed=(spec.params or {}).get("seed", 911),
             num_obs=int(params.get("num_obs", 2)),
             num_inter=int(params.get("num_inter", 3)),
             n_bootstrap=int(params.get("n_bootstrap", 32)),

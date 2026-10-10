@@ -61,6 +61,11 @@ class DAGDiscoveryMission(Mission):
 
     @override
     def mount(self, scm: SCM) -> None:
+        if (
+            hasattr(self.result_validator, "allowed_nodes")
+            and self.result_validator.allowed_nodes is None
+        ):
+            self.result_validator.allowed_nodes = set(scm.vars)
         self.behavior_metric.mount(scm)
         self.result_metric.mount(scm)
         self.is_mounted = True

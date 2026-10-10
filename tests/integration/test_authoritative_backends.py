@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import os
 import shutil
+import subprocess
 
 import networkx as nx
 import numpy as np
@@ -27,6 +29,35 @@ from TheCausalityGame.core.contracts.dto.environment import (
 from TheCausalityGame.core.infrastructure.decisions import Decision
 
 pytestmark = pytest.mark.authoritative
+
+
+def _require_r_packages_or_skip(packages: tuple[str, ...]) -> None:
+    """Skip live-R cases when their explicitly provisioned libraries are absent."""
+    rscript = shutil.which("Rscript")
+    if rscript is None:
+        pytest.skip("Rscript is not installed")
+    package_vector = ", ".join(f'"{package}"' for package in packages)
+    expression = (
+        f"packages <- c({package_vector}); "
+        "available <- vapply(packages, requireNamespace, logical(1), quietly=TRUE); "
+        "quit(status=if (all(available)) 0 else 1)"
+    )
+    env = os.environ.copy()
+    r_library = env.get("TCG_R_LIBS")
+    if r_library:
+        env["R_LIBS_USER"] = r_library
+    check = subprocess.run(
+        [rscript, "-e", expression],
+        capture_output=True,
+        check=False,
+        timeout=30,
+        env=env,
+    )
+    if check.returncode != 0:
+        pytest.skip(
+            "Required pinned R backend packages are not installed; "
+            "run scripts/comparisons/bootstrap_r.R"
+        )
 
 
 def _observation(data: pd.DataFrame) -> RoundObservation:
@@ -57,6 +88,7 @@ def _cate_data() -> pd.DataFrame:
 
 
 def test_pc_returns_chain_cpdag() -> None:
+    """PC recovers the undirected chain equivalence class on Gaussian data."""
     pytest.importorskip("causallearn")
     inferer = PCInferer(alpha=0.01)
     inferer.update(_observation(_linear_data()))
@@ -71,6 +103,7 @@ def test_pc_returns_chain_cpdag() -> None:
 
 
 def test_notears_returns_acyclic_graph() -> None:
+    """NOTEARS returns a DAG from a synthetic linear chain."""
     pytest.importorskip("notears")
     inferer = NOTEARSInferer(lambda1=0.05)
     inferer.update(_observation(_linear_data()))
@@ -82,6 +115,7 @@ def test_notears_returns_acyclic_graph() -> None:
 
 
 def test_direct_lingam_fits_real_backend() -> None:
+    """DirectLiNGAM runs on non-Gaussian chain data."""
     pytest.importorskip("lingam")
     inferer = LiNGAMInferer(random_state=42)
     inferer.update(_observation(_linear_data(non_gaussian=True)))
@@ -98,8 +132,11 @@ def test_direct_lingam_fits_real_backend() -> None:
     ],
 )
 def test_r_cate_backend_fits_and_predicts(inferer_class) -> None:  # noqa: ANN001
-    if shutil.which("Rscript") is None:
-        pytest.skip("Rscript is not installed")
+    """Pinned R CATE backends return finite predictions and source metadata."""
+    if inferer_class is OutcomeRegressionInferer:
+        _require_r_packages_or_skip(("jsonlite", "causalToolbox", "Rforestry"))
+    else:
+        _require_r_packages_or_skip(("jsonlite", "causalTree", "rpart"))
     inferer = inferer_class(seed=3)
     inferer.update(_observation(_cate_data()))
     control = pd.DataFrame({"T": [0, 0], "Z": [-0.5, 0.5]})
@@ -115,3 +152,20 @@ def test_r_cate_backend_fits_and_predicts(inferer_class) -> None:  # noqa: ANN00
     if isinstance(inferer, OutcomeRegressionInferer):
         nested = backend["dependencies"]["Rforestry"]
         assert nested["source_commit"] == "92b396d77d7ce2bbaba1c6d97c8861ea43ae1566"
+
+
+def test_honest_tree_waits_for_two_rows_per_arm_then_fits() -> None:
+    """The honest tree waits for adequate arms before fitting its backend."""
+    _require_r_packages_or_skip(("jsonlite", "causalTree", "rpart"))
+    inferer = HonestCausalTreeInferer(seed=3)
+    first = pd.DataFrame(
+        {"T": [0, 0, 0, 1], "Z": [-1.0, 0.0, 1.0, 0.5], "Y": [0.0, 0.0, 0.0, 2.0]}
+    )
+    query = (pd.DataFrame({"T": [0], "Z": [0.0]}), pd.DataFrame({"T": [1], "Z": [0.0]}))
+    inferer.update(_observation(first))
+    assert inferer.answer()(["Z"], "T", "Y", query).iloc[0, 0] == 0
+    assert inferer.snapshot().summary["backend"]["fit_status"] == "insufficient_data"
+    inferer.update(_observation(_cate_data()))
+    result = inferer.answer()(["Z"], "T", "Y", query)
+    assert np.isfinite(result.to_numpy()).all()
+    assert inferer.snapshot().summary["backend"]["fit_status"] == "fitted"

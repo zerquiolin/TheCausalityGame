@@ -60,16 +60,51 @@ class SCMCombinedScoreResultMetric(ResultMetric):
         self._trial_specs: list[dict[str, Any]] = []
 
         for _ in range(num_trials):
-            intervention_var = self.rng.choice(self.scm.controllable_vars)
-            low, high = self.scm.nodes[intervention_var].domain
-            value = self.rng.uniform(float(low), float(high))
+            controllable_vars = list(self.scm.controllable_vars)
+            if controllable_vars:
+                intervention_var = str(self.rng.choice(controllable_vars))
+                domain = self.scm.nodes[intervention_var].domain
+                if all(isinstance(category, str) for category in domain):
+                    if not domain:
+                        raise ValueError(
+                            f"Controllable categorical variable {intervention_var!r} "
+                            "has an empty domain."
+                        )
+                    value = str(self.rng.choice(domain))
+                else:
+                    if len(domain) != 2:
+                        raise ValueError(
+                            f"Controllable numeric variable {intervention_var!r} "
+                            "must declare [low, high] bounds."
+                        )
+                    low, high = domain
+                    value = float(self.rng.uniform(float(low), float(high)))
+            else:
+                # With no controls, use the observational distribution. The
+                # score is less informative but still finite and well-defined.
+                intervention_var = None
+                value = None
 
             true_samples = self.scm.generate_samples(
                 num_samples=num_samples,
-                interventions={intervention_var: value},
+                interventions=(
+                    {intervention_var: value} if intervention_var is not None else None
+                ),
                 cancel_noise=True,
                 random_state=np.random.RandomState(self.seed),
             )
+            if not isinstance(true_samples, pd.DataFrame):
+                raise ValueError("SCM reference sampling must return a DataFrame.")
+            if len(true_samples) != num_samples:
+                raise ValueError(
+                    "SCM reference sampling returned a row count different from num_samples."
+                )
+            missing_true_vars = set(self.scm.vars) - set(true_samples.columns)
+            if missing_true_vars:
+                raise ValueError(
+                    "SCM reference sampling omitted variables: "
+                    f"{sorted(missing_true_vars)}"
+                )
 
             self._trial_specs.append(
                 {
@@ -234,24 +269,26 @@ class SCMCombinedScoreResultMetric(ResultMetric):
             true_samples = trial["true_samples"]
 
             # Estimated SCM: prefer deterministic generation if available to reduce variance
-            try:
-                estimated_samples = result.generate_samples(
-                    num_samples=num_samples,
-                    interventions={intervention_var: value},
-                    deterministic=True,
-                )
-            except TypeError:
-                estimated_samples = result.generate_samples(
-                    num_samples=num_samples,
-                    interventions={intervention_var: value},
-                )
+            interventions = (
+                {intervention_var: value} if intervention_var is not None else None
+            )
+            estimated_samples = result.generate_samples(
+                num_samples=num_samples,
+                interventions=interventions,
+                deterministic=True,
+            )
+
+            estimated_samples_valid = (
+                isinstance(estimated_samples, pd.DataFrame)
+                and len(estimated_samples) == num_samples
+            )
 
             # Score all variables except the intervened one
             per_trial = 0.0
             per_count = 0
 
             for var in self.scm.vars:
-                if var == intervention_var:
+                if intervention_var is not None and var == intervention_var:
                     continue
 
                 if var not in true_samples.columns:
@@ -259,7 +296,7 @@ class SCMCombinedScoreResultMetric(ResultMetric):
 
                 true_values = true_samples[var].values
 
-                if var not in estimated_samples.columns:
+                if not estimated_samples_valid or var not in estimated_samples.columns:
                     # Missing variable output is a hard failure
                     per_trial += 5.0
                     per_count += 1
@@ -281,7 +318,9 @@ class SCMCombinedScoreResultMetric(ResultMetric):
         if trial_count > 0:
             scm_score /= trial_count
         else:
-            scm_score = float("inf")
+            # No non-intervened variables means there is no distributional
+            # evidence to score. Keep the component neutral and retain SHD.
+            scm_score = 0.0
 
         # Combine SHD score and SCM distributional score.
         # Default: mostly SCM fit, with optional small SHD weight.

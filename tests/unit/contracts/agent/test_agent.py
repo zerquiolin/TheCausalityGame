@@ -49,7 +49,7 @@ from TheCausalityGame.core.lib.utils.tests import assert_dicts_equal
         ),
         CombinedAgent(id="combined_random", policy=RandomAgentPolicy()),
     ],
-    scope="module",
+    scope="function",
 )
 def agent_instance(request: Any) -> Any:  # noqa: ANN401
     """Construct representative agent wrappers."""
